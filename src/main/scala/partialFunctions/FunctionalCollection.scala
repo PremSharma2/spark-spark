@@ -9,46 +9,55 @@ object FunctionalCollection extends App {
     (A => Boolean) it is same as Function1[A,Boolean]
     Hence Set is a function
      */
-    trait MySet[A] extends (A => Boolean){
-    def apply(element:A):Boolean=
-      contains(element)
-    def contains(element:A):Boolean
-    def +(element:A):MySet[A]
-    def ++(element:MySet[A]):MySet[A] // this is called union operator
-    def map[B](fx: A=>B): MySet[B]
-    def flatMap[B](fx: A=>MySet[B]): MySet[B]
-    def filter(predicate: A=>Boolean): MySet[A]
-    def forEach(fx: A=> Unit) : Unit
-    def -(element:A):MySet[A]
-    def &(anotherSet:MySet[A]):MySet[A] // intersection
-    def --(anotherSet:MySet[A]):MySet[A] // diffrence
+  trait MySet[A] extends (A => Boolean) {
+    def apply(element: A): Boolean = contains(element)
+
+    def contains(element: A): Boolean
+
+    def +(element: A): MySet[A]
+
+    def ++(element: MySet[A]): MySet[A] // this is called union operator
+    def map[B](fx: A => B): MySet[B]
+
+    def flatMap[B](fx: A => MySet[B]): MySet[B]
+
+    def filter(predicate: A => Boolean): MySet[A]
+
+    def forEach(fx: A => Unit): Unit
+
+    def -(element: A): MySet[A]
+
+    def &(anotherSet: MySet[A]): MySet[A] // intersection
+    def --(anotherSet: MySet[A]): MySet[A] // diffrence
     def unary_! : MySet[A]
 
   }
 
-class EmptySet[A] extends MySet[A]{
-  override def contains(element: A): Boolean = false
+  class EmptySet[A] extends MySet[A] {
+    override def contains(element: A): Boolean = false
 
-  override def +(element: A): MySet[A] = new NonEmptySet[A](element,this)
+    override def +(element: A): MySet[A] = new NonEmptySet[A](element, this)
 
-  override def ++(element: MySet[A]): MySet[A] = element
+    override def ++(element: MySet[A]): MySet[A] = element
 
-  override def map[B](fx: A => B): MySet[B] = new EmptySet[B]
+    override def map[B](fx: A => B): MySet[B] = new EmptySet[B]
 
-  override def flatMap[B](fx: A => MySet[B]): MySet[B] = new EmptySet[B]
+    override def flatMap[B](fx: A => MySet[B]): MySet[B] = new EmptySet[B]
 
-  override def filter(predicate: A => Boolean): MySet[A] = this
-  def forEach(fx: A=> Unit) : Unit= ()
+    override def filter(predicate: A => Boolean): MySet[A] = this
 
-  override def -(element: A): MySet[A] = this
+    def forEach(fx: A => Unit): Unit = ()
 
-  override def &(anotherSet: MySet[A]): MySet[A] = this
+    override def -(element: A): MySet[A] = this
 
-  override def --(anotherSet: MySet[A]): MySet[A] = this
+    override def &(anotherSet: MySet[A]): MySet[A] = this
 
-  override def unary_! : MySet[A] = ???
-}
-  class NonEmptySet[A](head:A, tail:MySet[A]) extends MySet[A] {
+    override def --(anotherSet: MySet[A]): MySet[A] = this
+
+    override def unary_! : MySet[A] = new PropertyBasedSet[A](_ => true)
+  }
+
+  class NonEmptySet[A](head: A, tail: MySet[A]) extends MySet[A] {
     override def contains(element: A): Boolean =
       element == head || tail.contains(element)
 
@@ -84,32 +93,34 @@ now recursion is tracing back
       this.tail ++ newSetAccumulator
 
     }
-/*
 
-[1,2,3].map(x=> x+1)
-accum= 2
-[2,3].map(fx) + 2
-[3].map(fx) + 3
-[] .map(fx) + 4
-now recursion trace back
-[]+ 4 = [4]
-[]+ 4+ 3 = [4,3]
-[4,3] + 2= [2,3,4]
-[2,3,4]
- */
+    /*
+
+    [1,2,3].map(x=> x+1)
+    accum= 2
+    [2,3].map(fx) + 2
+    [3].map(fx) + 3
+    [] .map(fx) + 4
+    now recursion trace back
+    []+ 4 = [4]
+    []+ 4+ 3 = [4,3]
+    [4,3] + 2= [2,3,4]
+    [2,3,4]
+     */
     override def map[B](fx: A => B): MySet[B] = {
       var accumulator: B = fx.apply(this.head)
       (this.tail.map(fx)) + accumulator
     }
-/*
-[1,2,3].flatMap(x=> MySet(x+1))
-[2,3].flatMap(fx) ++ [2]
-[3] .flatmap(fx) ++ [5] ++ [2]
-[].faltMAp(fx)  ++ [4] ++ [5] ++ [2]
-recursion will traceback now
-[] ++ [4,5,2]
-[4,5,2]
- */
+
+    /*
+    [1,2,3].flatMap(x=> MySet(x+1))
+    [2,3].flatMap(fx) ++ [2]
+    [3] .flatmap(fx) ++ [5] ++ [2]
+    [].faltMAp(fx)  ++ [4] ++ [5] ++ [2]
+    recursion will traceback now
+    [] ++ [4,5,2]
+    [4,5,2]
+     */
     override def flatMap[B](fx: A => MySet[B]): MySet[B] = {
       var accumulator: MySet[B] = fx.apply(this.head)
       (tail.flatMap(fx)) ++ accumulator
@@ -117,53 +128,68 @@ recursion will traceback now
 
     override def filter(predicate: A => Boolean): MySet[A] = {
 
-    val filteredTail = this.tail.filter(predicate)
-      if(predicate(this.head)) filteredTail + head
+      val filteredTail = this.tail.filter(predicate)
+      if (predicate(this.head)) filteredTail + head
       else filteredTail
-  }
-    def forEach(fx: A=> Unit): Unit={
+    }
+
+    def forEach(fx: A => Unit): Unit = {
       fx(head)
       tail.forEach(fx)
     }
 
     override def -(element: A): MySet[A] =
-      if(head == element) tail
+      if (head == element) tail
       else tail - element + head
 
     override def &(anotherSet: MySet[A]): MySet[A] =
-      //filter(x => anotherSet.contains(x))
-      //filter(x => anotherSet.apply(x))
+    //filter(x => anotherSet.contains(x))
+    //filter(x => anotherSet.apply(x))
       filter(anotherSet)
 
-    override def --(anotherSet: MySet[A]): MySet[A] = ???
+    override def --(anotherSet: MySet[A]): MySet[A] =
+      filter(x => !anotherSet(x))
 
-    override def unary_! : MySet[A] = ???
+    // unary_! is define to negate the current Set it will return the property Set
+    override def unary_! : MySet[A] = new PropertyBasedSet[A](x => !this.contains(x))
   }
-  class AllInclusiveSet[A] extends MySet[A]{
-    override def contains(element: A): Boolean = true
 
-    override def +(element: A): MySet[A] = this
+  // all elements of Type A in Allinclusive sets which satisfy the property
+  //{ x in A | property(x)  } that means x which is of A type and satisfy this property
+  // can only be added into this set
+  class PropertyBasedSet[A](property: A => Boolean) extends MySet[A] {
+    override def contains(element: A): Boolean = property(element)
 
-    override def ++(element: MySet[A]): MySet[A] = this
+    //Set{ x in A | property(x)  } + element = { x in A | property(x)|| x==element}
+    override def +(element: A): MySet[A] =
+      new PropertyBasedSet[A](x => property(x) || x == element)
 
-    // allinclusiveSet[Int]= all natural numbers
-    override def map[B](fx: A => B): MySet[B] = ???
+    // Set{ x in A | property(x)  } ++anotherSet => Set{ x in A | property(x) || anotherSet contains x }
+    override def ++(anotherSet: MySet[A]): MySet[A] =
+      new PropertyBasedSet[A](x => property(x) || anotherSet.contains(x))
 
-    override def flatMap[B](fx: A => MySet[B]): MySet[B] = ???
+    override def map[B](fx: A => B): MySet[B] = politlyFail
 
-    override def filter(predicate: A => Boolean): MySet[A] = ???
+    override def flatMap[B](fx: A => MySet[B]): MySet[B] = politlyFail
 
-    override def forEach(fx: A => Unit): Unit = ???
+    //that means set is going to hold th element if it satisfies the property and predicate
+    override def filter(predicate: A => Boolean): MySet[A] =
+      new PropertyBasedSet[A](x => property(x) && predicate(x))
 
-    override def -(element: A): MySet[A] = ???
+    override def forEach(fx: A => Unit): Unit = politlyFail
+
+    override def -(element: A): MySet[A] = filter(x => x != element)
 
     override def &(anotherSet: MySet[A]): MySet[A] = filter(anotherSet)
 
-    override def --(anotherSet: MySet[A]): MySet[A] = filter(!anotherSet)
+    override def --(anotherSet: MySet[A]): MySet[A] = filter(anotherSet)
 
-    override def unary_! : MySet[A] = ???
+    override def unary_! : MySet[A] = new PropertyBasedSet[A](x => !property(x))
+
+    def politlyFail: Nothing = throw new IllegalArgumentException("Its really deep hole")
   }
-  object MySet  {
+
+  object MySet {
     /*
     val s= MySet(1,2,3)= buildSet(seq(1,2,3),[])
           = buildSet(seq(2,3),[] + 1)
@@ -171,18 +197,24 @@ recursion will traceback now
           = buildSet([],[] + 1 + 2 + 3)
           = [1,2,3]
      */
-    def apply[A](values:A*):MySet[A]={
+    def apply[A](values: A*): MySet[A] = {
 
-      def buildSet(valSeq:Seq[A],accumlator:MySet[A]): MySet[A]={
-         if(valSeq.isEmpty) accumlator
-         else buildSet(valSeq.tail, accumlator + valSeq.head)
+      def buildSet(valSeq: Seq[A], accumlator: MySet[A]): MySet[A] = {
+        if (valSeq.isEmpty) accumlator
+        else buildSet(valSeq.tail, accumlator + valSeq.head)
       }
+
       buildSet(values.toSeq, new EmptySet[A])
     }
   }
-val s=MySet(1,2,3)
+
+  val s = MySet(1, 2, 3)
   //s forEach(println)
- //s + 5 forEach(println)
+  //s + 5 forEach(println)
   //s + 5 ++ MySet(-1,-3) forEach(println)
-    s + 5 ++ MySet(-1,-3) + 3 flatMap (x=> MySet(x,2*x)) forEach println
+  // s + 5 ++ MySet(-1,-3) + 3 flatMap (x=> MySet(x,2*x)) forEach println
+  val negetive: MySet[Int] = s.unary_! // all the natural numbers not equal to the [1,2,3,4]
+  // i.e we negate the Set we changed the dimensions of set we returned the PropertySet here
+
+  println(negetive(2))
 }
