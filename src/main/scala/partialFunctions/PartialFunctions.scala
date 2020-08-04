@@ -1,6 +1,6 @@
 package partialFunctions
 
-object PartialFunctions  extends App {
+object PartialFunctions extends App {
 
   val aFunction: Int => Int = (x: Int) => x + 1 //Function1[Int,Int]
 
@@ -58,8 +58,8 @@ object PartialFunctions  extends App {
   val aTotalFuntion1: Int => Int = x => x match {
     case 1 => 99
   }
-//HoFs also accepts Partial Functions
-  val MappedList= List(1,2,3).map{
+  //HoFs also accepts Partial Functions
+  val MappedList = List(1, 2, 3).map {
     case 1 => 42
     case 2 => 43
     case 3 => 999

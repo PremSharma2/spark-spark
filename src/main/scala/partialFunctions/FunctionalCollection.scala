@@ -1,7 +1,5 @@
 package partialFunctions
 
-import scala.annotation.tailrec
-
 object FunctionalCollection extends App {
 
   /*
@@ -78,7 +76,7 @@ or
 [1,2,3].tail ++ [4,5] - first stack
 [2,3].tail ++ [4,5,1] - second stack
 [3].tail ++ [4,5,1,2] - third stack
-[].tail ++  [4,5,1,2,3] - fourth stack
+EmptySet.tail ++  [4,5,1,2,3] - fourth stack
 now recursion is tracing back
 []
 [] ++ [4,5,1,2,3]
@@ -100,7 +98,7 @@ now recursion is tracing back
     accum= 2
     [2,3].map(fx) + 2
     [3].map(fx) + 3
-    [] .map(fx) + 4
+    EmptySet .map(fx) + 4
     now recursion trace back
     []+ 4 = [4]
     []+ 4+ 3 = [4,3]
@@ -161,10 +159,17 @@ now recursion is tracing back
     override def contains(element: A): Boolean = property(element)
 
     //Set{ x in A | property(x)  } + element = { x in A | property(x)|| x==element}
+    // this means that all elements are present in in this set should satisfy this property
+    // and new element is being addes should be equal to already [resent element
     override def +(element: A): MySet[A] =
       new PropertyBasedSet[A](x => property(x) || x == element)
 
-    // Set{ x in A | property(x)  } ++anotherSet => Set{ x in A | property(x) || anotherSet contains x }
+    // Set{ x in A | property(x)  } ++anotherSet =>
+    // Set{ x in A | property(x) || anotherSet contains x }
+    // o/p is here is the new set with new customized property
+    // Hence output will be new set which either satisfies the property or passed argument set
+    // should contains the same type element which are present in calling set
+    // i.e property based set
     override def ++(anotherSet: MySet[A]): MySet[A] =
       new PropertyBasedSet[A](x => property(x) || anotherSet.contains(x))
 
@@ -183,7 +188,8 @@ now recursion is tracing back
     override def &(anotherSet: MySet[A]): MySet[A] = filter(anotherSet)
 
     override def --(anotherSet: MySet[A]): MySet[A] = filter(anotherSet)
-// thi is important it will netegate the current set to Property based set
+
+    // this is negate method it will return Property Based set
     override def unary_! : MySet[A] = new PropertyBasedSet[A](x => !property(x))
 
     def politlyFail: Nothing = throw new IllegalArgumentException("Its really deep hole")
@@ -213,8 +219,17 @@ now recursion is tracing back
   //s + 5 forEach(println)
   //s + 5 ++ MySet(-1,-3) forEach(println)
   // s + 5 ++ MySet(-1,-3) + 3 flatMap (x=> MySet(x,2*x)) forEach println
+  // s.unary_!  it will give property based set with property that validate oppsite nature set
+  //new PropertyBasedSet[A](x => !property(x))
+  // and apply calls contain property(element)
+  // so we are trying to add  2 intoProperty based set using apply method that in turn will call
+  // contains which will refer to property of this PropertyBased Set
   val negetive: MySet[Int] = s.unary_! // all the natural numbers not equal to the [1,2,3,4]
   // i.e we negate the Set we changed the dimensions of set we returned the PropertySet here
 
-  println(negetive(2))
+  println(negetive.apply(2))
+  println(negetive.apply(5))
+  val negetiveEven = negetive.filter(_ % 2 == 0)
+  println(negetiveEven(5))
+
 }
