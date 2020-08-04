@@ -183,7 +183,7 @@ now recursion is tracing back
     override def &(anotherSet: MySet[A]): MySet[A] = filter(anotherSet)
 
     override def --(anotherSet: MySet[A]): MySet[A] = filter(anotherSet)
-
+// thi is important it will netegate the current set to Property based set
     override def unary_! : MySet[A] = new PropertyBasedSet[A](x => !property(x))
 
     def politlyFail: Nothing = throw new IllegalArgumentException("Its really deep hole")
