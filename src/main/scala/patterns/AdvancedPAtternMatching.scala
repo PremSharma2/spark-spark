@@ -13,7 +13,7 @@ object AdvancedPAtternMatching  extends App {
 
   val description1: Unit = numbers1 match {
     // This is called :: Infix Pattern
-    case head ::  tail => println(s"the only element is head $head  and tail is $tail")
+    case head ::  tail => println(s"the only element is head $head  and tail is ${tail.head}")
 
   }
   println(description1)
@@ -64,7 +64,7 @@ object AdvancedPAtternMatching  extends App {
   object singledigit{
     def unapply(arg: Int): Option[Boolean] = if (arg > -10 && arg<10 ) Some(true) else None
   }
-// its like if if and else
+// its like if if and else conditions implementation via pattern matching
   val matchpattern1: String = n match {
     case singledigit(_) => s" is single Digit"
     case even(_) => s" is even number"

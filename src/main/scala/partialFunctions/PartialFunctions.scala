@@ -1,27 +1,47 @@
 package partialFunctions
 
+import scala.util.Failure
+
 object PartialFunctions extends App {
 
   val aFunction: Int => Int = (x: Int) => x + 1 //Function1[Int,Int]
-
-  val aFussyFunction = (x: Int) =>
+// a function which is applicable on certain set of inputs
+  val aFussyFunction: Int => Int = (x: Int) =>
     if (x == 1) 42
     else if (x == 2) 43
     else if (x == 2) 999
     else throw new FunctionNotApplicableException
 
   class FunctionNotApplicableException extends RuntimeException
+  /*
+  A partial function of type PartialFunction[A, B] is a unary function
+   where the domain does not necessarily include all values of type A.
+  The function isDefinedAt allows [you] to test dynamically
+   if a value is in the domain of the function.”
+
+   In short, a function is a mapping A => B that
+   relates each value of type A to a value of type B–modulo bottom.
+   A and B are called domain and codomain, respectively.
+   If you’re not a math addict, roughly speaking,
+   the domain is the set of all values that you may provide as input to your function,
+   while the codomain is the result of the function application to the input,
+    that is your function output.
+On the other hand a partial function from A to B is not defined for some inputs of type A
+   */
 
   val anicerFussyFunction: Int => Int = (x: Int) => x match {
 
     case 1 => 42
     case 2 => 43
     case 3 => 999
+
   }
+ // println(anicerFussyFunction(33))
   //Hence this anicerFussyFunction is a partial function because it is applicable
   // only to subset of Int values {1,2,5}
   //[1,2,5] => Int
   // it is same as above that we gave implementation of Function1[Int,Int] using lambda
+  // We have Partial Function in scala to implement this kind of functionality
   val aPartialFunction: PartialFunction[Int, Int] = {
     //these all are called partial function values
     case 1 => 42
@@ -42,9 +62,17 @@ object PartialFunctions extends App {
   // if first partial function is failed to for the given out of range input you gave
   // then u can chain the other partial function which works on that range
   // so it will fall back to another partial function
-  /*aPartialFunction.orElse[Int, Int] = {
+  val newPartialFunction: PartialFunction[Int, Int] = {
+    //these all are called partial function values
+    case 1 => 42
+    case 2 => 43
+    case 3 => 999
+  }
+  val chainedfunction: PartialFunction[Int, Int] = {
     case 34 => 67
-  }*/
+  }
+ val shouldHandleAlldomainValues= newPartialFunction orElse chainedfunction
+  println(shouldHandleAlldomainValues.apply(34))
   // Partial function extends Normal Function
   // Hence we can write Total Function with Single Argument or
   // Normal Function Like Partial Function Syntax
@@ -74,4 +102,7 @@ object PartialFunctions extends App {
   Note:PArtial Function can only have one parameter Type
 
    */
+  val partialList=List(3,9,99)
+  println(partialList.map(newPartialFunction))
+
 }

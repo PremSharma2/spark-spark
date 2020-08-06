@@ -1,11 +1,14 @@
 package partialFunctions
 
+import scala.annotation.tailrec
+
 object FunctionalCollection extends App {
 
   /*
     Exercise implement aFunctional Set
     (A => Boolean) it is same as Function1[A,Boolean]
     Hence Set is a function
+    Hence we can pass the refrence of Myset as input to any HOF
      */
   trait MySet[A] extends (A => Boolean) {
     def apply(element: A): Boolean = contains(element)
@@ -57,6 +60,7 @@ object FunctionalCollection extends App {
 
   class NonEmptySet[A](head: A, tail: MySet[A]) extends MySet[A] {
     override def contains(element: A): Boolean =
+      //Here we have used || operator as an alternative to if and else condition
       element == head || tail.contains(element)
 
     override def +(element: A): MySet[A] =
@@ -85,7 +89,7 @@ now recursion is tracing back
 
  */
 
-    override def ++(anotherSet: MySet[A]): MySet[A] = {
+    override def ++ (anotherSet: MySet[A]): MySet[A] = {
       //this.tail ++ element + this.head
       var newSetAccumulator: MySet[A] = anotherSet + this.head
       this.tail ++ newSetAccumulator
@@ -93,7 +97,12 @@ now recursion is tracing back
     }
 
     /*
-
+In this approach we will use existing set
+and make the recursion call in away that
+when last call is made Seq is Empty
+and when recursion traces back it start adding the transformed elements in accumulator
+to the Seq returned by last stack at every stack we will add and at last finally all elements
+will be addded
     [1,2,3].map(x=> x+1)
     accum= 2
     [2,3].map(fx) + 2
@@ -104,6 +113,7 @@ now recursion is tracing back
     []+ 4+ 3 = [4,3]
     [4,3] + 2= [2,3,4]
     [2,3,4]
+
      */
     override def map[B](fx: A => B): MySet[B] = {
       var accumulator: B = fx.apply(this.head)
@@ -111,6 +121,12 @@ now recursion is tracing back
     }
 
     /*
+    In this approach what we will do we will return the last accumulated value
+    from the last stack call in recursion
+    it is like when it is tail is empty then return accumlator
+    else this.tal.flatmap
+
+    following is the demonstration of recursion
     [1,2,3].flatMap(x=> MySet(x+1))
     [2,3].flatMap(fx) ++ [2]
     [3] .flatmap(fx) ++ [5] ++ [2]

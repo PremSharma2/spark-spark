@@ -23,6 +23,11 @@ object PartialFunctionExercise extends App {
 
 
   }
-  scala.io.Source.stdin.getLines().map(chatBot).foreach(println)
+  val input: Iterator[String] =scala.io.Source.stdin.getLines()
+  input.map(chatBot).foreach(println)
 
+  val divide2: PartialFunction[Int, Int] = {
+    case d: Int if d != 0 => 42 / d
+  }
+println(divide2.isDefinedAt(0))
 }
