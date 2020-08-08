@@ -121,19 +121,24 @@ will be addded
     }
 
     /*
-    In this approach what we will do we will return the last accumulated value
-    from the last stack call in recursion
-    it is like when it is tail is empty then return accumlator
-    else this.tal.flatmap
+    In this approach we will use existing set
+and make the recursion call in away that
+when last call is made Seq is Empty
+and when recursion traces back it start adding the transformed elements in accumulator
+to the Seq returned by last stack at every stack we will add and at last finally all elements
 
     following is the demonstration of recursion
     [1,2,3].flatMap(x=> MySet(x+1))
     [2,3].flatMap(fx) ++ [2]
-    [3] .flatmap(fx) ++ [5] ++ [2]
-    [].faltMAp(fx)  ++ [4] ++ [5] ++ [2]
+    [3] .flatmap(fx) ++ [5]
+    [].flatmap(fx)  ++ [4]
+    [] ++ [4]
     recursion will traceback now
-    [] ++ [4,5,2]
+    [] ++ [4]
+    [4] ++ [5]
+    [4,5] ++ [2]
     [4,5,2]
+    [4,5,2] : FINAL RESULT AFTER RECURSION FINISHES
      */
     override def flatMap[B](fx: A => MySet[B]): MySet[B] = {
       var accumulator: MySet[B] = fx.apply(this.head)
