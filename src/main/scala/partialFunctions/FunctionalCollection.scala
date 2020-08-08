@@ -98,7 +98,7 @@ now recursion is tracing back
 
     /*
 In this approach we will use existing set
-and make the recursion call in away that
+and make the recursion call in a way that
 when last call is made Seq is Empty
 and when recursion traces back it start adding the transformed elements in accumulator
 to the Seq returned by last stack at every stack we will add and at last finally all elements
@@ -145,6 +145,17 @@ to the Seq returned by last stack at every stack we will add and at last finally
       (tail.flatMap(fx)) ++ accumulator
     }
 
+    /*
+    In this approach we will use existing set
+and make the recursion call in away that
+when last call is made Seq is Empty
+and now recursion traces back
+[4,2,6].filter(%2==0)
+[] + 6
+[6] + 2
+[6,2] + 4
+[4,2,6]
+     */
     override def filter(predicate: A => Boolean): MySet[A] = {
 
       val filteredTail = this.tail.filter(predicate)
@@ -164,6 +175,7 @@ to the Seq returned by last stack at every stack we will add and at last finally
     override def &(anotherSet: MySet[A]): MySet[A] =
     //filter(x => anotherSet.contains(x))
     //filter(x => anotherSet.apply(x))
+      // here anotherset is also a function so we can pass this as refrence
       filter(anotherSet)
 
     override def --(anotherSet: MySet[A]): MySet[A] =
@@ -173,9 +185,11 @@ to the Seq returned by last stack at every stack we will add and at last finally
     override def unary_! : MySet[A] = new PropertyBasedSet[A](x => !this.contains(x))
   }
 
-  // all elements of Type A in Allinclusive sets which satisfy the property
+  // all elements of Type A in All inclusive sets which satisfy the property
   //{ x in A | property(x)  } that means x which is of A type and satisfy this property
-  // can only be added into this set
+  // can only be added into this set this is canonical definition of Property based set
+  // PropertyBasedSet[A](property: A => Boolean) This is scala representaion of { x in A | property(x)  }
+  // Canonical defination of property bases set
   class PropertyBasedSet[A](property: A => Boolean) extends MySet[A] {
     override def contains(element: A): Boolean = property(element)
 
