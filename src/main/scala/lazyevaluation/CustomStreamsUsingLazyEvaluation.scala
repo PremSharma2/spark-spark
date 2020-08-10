@@ -68,11 +68,11 @@ object CustomStreamsUsingLazyEvaluation extends App {
     override def takeAsList(n: Int): List[Nothing] = Nil
   }
 
-  class Node[+A](hd: A, tl: => MyStream[A]) extends MyStream[A] {
+  class Node[+A](hd: A, lazyTail: => MyStream[A]) extends MyStream[A] {
     //tl: => MyStream[A] its callbyname expression which returns MyStream[A]
     override val head: A = hd
 
-    override lazy val tail: MyStream[A] = tl // it is called callByneed
+    override lazy val tail: MyStream[A] = lazyTail // it is called callByneed
 
     override def isEmpty: Boolean = false
 
@@ -88,29 +88,45 @@ null  i.e call by need
 
     override def #::[B >: A](element: B): MyStream[B] = new Node[B](element, this)
 
-    //tail ++ anotherStream this expression will remain unevaluated because it tail is lazy and byName
+    /*
+    (lazy val lazytail=tail ++ anotherStream) this expression will remain unevaluated because it tail is lazy and byName
+    here lazytail will be evaluated later bcz its lazy,
+    so s remains unevaluated when prepend operator acts
+    i.e until some one access (lazy val tail) it will not evaluated
+  i.e call by need
+     */
 
     override def ++[B >: A](anotherStream: MyStream[B]): MyStream[B] =
       new Node[B](head, tail ++ anotherStream)
 
     override def forEach(fx: A => Unit): Unit = {
-      //This will force the lazy evaluation
+      /*
+      This is termination operation this will force the
+      CallBy name Expression to be evaluated
+      i.e  tail.forEach(fx) When we access the lazyTail
+      Expression gets evaluated
+       */
       fx.apply(head)
       tail.forEach(fx)
     }
 
-    // tail.map(fx) this expression will be evaluated by need,So map preserves the lazy evaluation
+    // lazyTail=tail.map(fx) this expression will be evaluated by need,
+    // So map preserves the lazy evaluation
     /*
-    tail.map(fx) this expression will be evaluated by need,So map preserves the lazy evaluation
-    Lets understand with this example
-    ? represents here Lazy evaluated EmptyStream which is at present not evaluated
-    val s=new Node(1,?)
+   lazyTail= tail.map(fx) this expression will be evaluated by need,
+   So map preserves the lazy evaluation
+    Lets understand with this example to understand
+    lazyTail represents here Lazy evaluated EmptyStream reference which is at present not evaluated
+    val s=new Node(1,lazyTail)
     so output of map operation will be
-    mapped= s.map(_+1)= new Node(2,?) //This is actually callByNAme expression for tail(  s.tail.map(_+1) = ?)
+    mapped= s.map(_+1)= new Node(2,lazyTail)
+    But actually lazytail=s.tail.map(_+1) is an expression now
+    This is actually callByNAme expression for tail(  lazyTail=s.tail.map(_+1) )
     tail.map(_+1) that still not evaluated,Hence whole expression is not evaluated till now
     it will be not be evaluated until someone called
-    mapped.tail or mapped.foreach i.e if someone call for next iteration then it will be evaluated
-
+    mapped.lazyTail or mapped.foreach i.e if someone call for next iteration then it will be evaluated
+    list refrence=mapped.lazyTail but again that list tail is still not evaluated only head is evluated
+    because it is eager
      */
     override def map[B](fx: A => B): MyStream[B] = new Node[B](fx.apply(head), tail.map(fx))
 
@@ -119,12 +135,19 @@ null  i.e call by need
     override def take(n: Int): MyStream[A] =
       if (n <= 0) EmptyStream
       else if (n == 1) new Node[A](this.head, EmptyStream)
-      // new Node(head,[2,3]) after this is lazy evaluated upto here is eager evaluation bcz this is first call
+        // here we have a Stream [0,1,2,3] we want to take n items out of this stream
+      // new Node(head,[2,3]) after this is lazy evaluated
+      // upto here is eager evaluation bcz this is first call
       //i.e when again take is call recursively tail.
+      // so at first iteration we will get Node[A](0, tail.take(n - 1))
+      // lazyTail=tail.take(n - 1) is lazyTail so it will become like this
+      // stream=Node[A](0, lazyTail)
+      // so when someone call stream.lazyTail then only tail will get evaluated
       // take(n-1) as this expression is lazy so it will be evaluated
       // here tail.take(n-1) this is an expression
       //startFrom0.take(5).forEach(println)
-      //Here when first time foreach is called the first tail is evaluated and so on as we call foreach
+      //Here when first time foreach is called the first tail is evaluated
+      // and so on as we call foreach
       else new Node[A](head, tail.take(n - 1))
 
     // here first element is eagerly evaluated and remains lazy evaluated
