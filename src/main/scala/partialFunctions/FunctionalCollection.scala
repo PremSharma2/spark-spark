@@ -54,7 +54,8 @@ object FunctionalCollection extends App {
     override def &(anotherSet: MySet[A]): MySet[A] = this
 
     override def --(anotherSet: MySet[A]): MySet[A] = this
-
+// When you negate the EmptySet its output will be the EveryThing of Type A i.e all values of domain A
+    // thats why we gave here _ => true or true we have returend
     override def unary_! : MySet[A] = new PropertyBasedSet[A](_ => true)
   }
 
@@ -182,32 +183,42 @@ and now recursion traces back
       filter(x => !anotherSet(x))
 
     // unary_! is define to negate the current Set it will return the property Set
+    // this will return the exact opposite to current i.e all -ve numbers
+    // because we have negate the current set
     override def unary_! : MySet[A] = new PropertyBasedSet[A](x => !this.contains(x))
   }
 
+  //Property based sets are useful for defining infinite All inclusive sets
+  // it could be infinite set
   // all elements of Type A in All inclusive sets which satisfy the property
   //{ x in A | property(x)  } that means x which is of A type and satisfy this property
   // can only be added into this set this is canonical definition of Property based set
   // PropertyBasedSet[A](property: A => Boolean) This is scala representaion of { x in A | property(x)  }
   // Canonical defination of property bases set
+
   class PropertyBasedSet[A](property: A => Boolean) extends MySet[A] {
+    // { x in A | property(x)  } in this method are verifying that this element is exist in this set or not
+    // if it exist it has to satisfy the property
     override def contains(element: A): Boolean = property(element)
 
     //Set{ x in A | property(x)  } + element = { x in A | property(x)|| x==element}
     // this means that all elements are present in in this set should satisfy this property
-    // and new element is being addes should be equal to already [resent element
+    // and new element is being added should be similar to already present elements in set
+    // Hence   canonical definition of Set is been changed now
     override def +(element: A): MySet[A] =
       new PropertyBasedSet[A](x => property(x) || x == element)
 
-    // Set{ x in A | property(x)  } ++anotherSet =>
+    // Set{ x in A | property(x)  } ++ anotherSet => Set{ x in A | property(x) || anotherSet contains x }
     // Set{ x in A | property(x) || anotherSet contains x }
     // o/p is here is the new set with new customized property
     // Hence output will be new set which either satisfies the property or passed argument set
     // should contains the same type element which are present in calling set
-    // i.e property based set
+    // i.e property based set then only canonical definition will get complete
     override def ++(anotherSet: MySet[A]): MySet[A] =
       new PropertyBasedSet[A](x => property(x) || anotherSet.contains(x))
-
+//all inclusive set i.e all integers of domain Int we apply map function x=> _%3
+    // now we dont know whether is is infinite set or finite set
+    // or whether it will satisfy the property
     override def map[B](fx: A => B): MySet[B] = politlyFail
 
     override def flatMap[B](fx: A => MySet[B]): MySet[B] = politlyFail
@@ -225,6 +236,7 @@ and now recursion traces back
     override def --(anotherSet: MySet[A]): MySet[A] = filter(anotherSet)
 
     // this is negate method it will return Property Based set
+    // with opposite property thats how negate function works
     override def unary_! : MySet[A] = new PropertyBasedSet[A](x => !property(x))
 
     def politlyFail: Nothing = throw new IllegalArgumentException("Its really deep hole")
@@ -250,21 +262,25 @@ and now recursion traces back
   }
 
   val s = MySet(1, 2, 3)
-  //s forEach(println)
-  //s + 5 forEach(println)
-  //s + 5 ++ MySet(-1,-3) forEach(println)
-  // s + 5 ++ MySet(-1,-3) + 3 flatMap (x=> MySet(x,2*x)) forEach println
+  s forEach(println)
+  s + 5 forEach(println)
+  s + 5 ++ MySet(-1,-3) forEach(println)
+   s + 5 ++ MySet(-1,-3) + 3 flatMap (x=> MySet(x,2*x)) forEach println
   // s.unary_!  it will give property based set with property that validate oppsite nature set
   //new PropertyBasedSet[A](x => !property(x))
   // and apply calls contain property(element)
   // so we are trying to add  2 intoProperty based set using apply method that in turn will call
   // contains which will refer to property of this PropertyBased Set
   val negetive: MySet[Int] = s.unary_! // all the natural numbers not equal to the [1,2,3,4]
-  // i.e we negate the Set we changed the dimensions of set we returned the PropertySet here
+  // i.e we negate the Set we changed the dimensions of set and  returned the PropertySet here
+  //i.e this will result it has reomved the current elements   satisfying the property
+//x => !this.contains(x)
+  // i.e we have reversed the property by using s.unary_!
 
   println(negetive.apply(2))
   println(negetive.apply(5))
-  val negetiveEven = negetive.filter(_ % 2 == 0)
+  val negetiveEven: MySet[Int] = negetive.filter(_ % 2 == 0)
   println(negetiveEven(5))
+    val negetiveEven5= negetiveEven + 5 // it will become like this all the vene numbers except [1,2,34]
 
 }

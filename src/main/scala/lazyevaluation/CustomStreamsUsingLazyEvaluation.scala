@@ -78,8 +78,11 @@ object CustomStreamsUsingLazyEvaluation extends App {
 
     /*
     val s=new Node(EmptyStream)
+    // here s is an expression which will be evaluated later
     val prepended=1 #:: s= new Cons(1,s)
-    here s will be evaluated later bcz its lazy,so s remains unevaluated when prepand operator acts
+    here s will be evaluated later bcz its lazy,so s remains unevaluated when prepend operator acts
+    i.e until some one access (lazy val tail) it will not evaluated
+null  i.e call by need
 
      */
 
@@ -87,7 +90,8 @@ object CustomStreamsUsingLazyEvaluation extends App {
 
     //tail ++ anotherStream this expression will remain unevaluated because it tail is lazy and byName
 
-    override def ++[B >: A](anotherStream: MyStream[B]): MyStream[B] = new Node[B](head, tail ++ anotherStream)
+    override def ++[B >: A](anotherStream: MyStream[B]): MyStream[B] =
+      new Node[B](head, tail ++ anotherStream)
 
     override def forEach(fx: A => Unit): Unit = {
       //This will force the lazy evaluation

@@ -8,3 +8,5 @@ println(l :: l1)
 println(l ::: l1)
 
 s.filter(x => s1.apply(x))
+var x,y,z = (1,2,3)
+println(x,y,z)

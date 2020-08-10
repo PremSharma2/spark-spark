@@ -19,6 +19,14 @@ object LazyEvaluation extends App {
   println(x1)
 
   //More examples
+  /*
+ Side  effect if it modifies a mutable data structure or variable, uses IO,
+  throws an exception or halts an error; all of these things are considered side effects.
+  The reason why side effects are bad is because, if you had them,
+  a function can be unpredictable depending on the state of the system;
+  when a function has no side effects we can execute it anytime,
+  it will always return the same result, given the same input.
+   */
   def sideEffectsCondition: Boolean = {
     println("Boolean")
     true
@@ -37,7 +45,7 @@ object LazyEvaluation extends App {
 
   //Here we have make it lazy val so it will be evaluated only once
   def byNameModified(n: => Int): Int = {
-    // now it will be evaluated once here because its lazy
+    // now it will be evaluated once here because its lazy and this function has local side effect
     lazy val t = n
     t + t + t + 1
   }
@@ -50,11 +58,12 @@ object LazyEvaluation extends App {
     Thread.sleep(1000)
     42
   }
-
+// now retriveMagicValue is evaluated only once here
   println(byNameModified(retriveMagicValue))
 
   // filtering without lazy vals
   def lessThan30(i: Int): Boolean = {
+    //This function has a local side effect
     println(s"$i is less then 30")
     i < 30
   }
