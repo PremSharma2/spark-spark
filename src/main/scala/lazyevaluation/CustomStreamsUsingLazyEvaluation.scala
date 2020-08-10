@@ -181,10 +181,15 @@ null  i.e call by need
   println(startFrom0.head)
   // [0,1,2,3]
   println(startFrom0.take(5))
-  startFrom0.take(5).forEach(println)
+
   //Here When We call take on o/p of map then tail is get eveluated so we are calling take for each tail
-  // hence tail is getting evaluated until all tail are accesed now we are ready with new transformed List
-  // on that list we will call take
+  startFrom0.take(5).forEach(print)
+
+  // here tail is getting evaluated until all tail is accesed by map
+  //on the top of that we called take(10)
+  // on that stream which is complete now  we will call take to take n elements out
+  // so after take when we will call toList then toList method will access all the tails
+  // of each node tail expression will get evluated for each call
   println(startFrom0.map(_ * 2).take(10).toList())
 
 }
