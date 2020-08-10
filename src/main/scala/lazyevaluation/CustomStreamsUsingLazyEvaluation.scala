@@ -180,16 +180,19 @@ null  i.e call by need
   val startFrom0: MyStream[Int] = 0 #:: naturals // naturals.#::(0) because :: is right associative
   println(startFrom0.head)
   // [0,1,2,3]
-  println(startFrom0.take(5))
+  print(startFrom0.take(5))
 
   //Here When We call take on o/p of map then tail is get eveluated so we are calling take for each tail
+  // so what foreach will do fx.apply(head) here fx is println
+  //      tail.forEach(fx) it will evaluate all tails of Stream and print the head
+  // so its is printing the new head and accesing the new tail
   startFrom0.take(5).forEach(print)
 
   // here tail is getting evaluated until all tail is accesed by map
   //on the top of that we called take(10)
   // on that stream which is complete now  we will call take to take n elements out
   // so after take when we will call toList then toList method will access all the tails
-  // of each node tail expression will get evluated for each call
+  // of each node tail expression will get evaluated for each call
   println(startFrom0.map(_ * 2).take(10).toList())
 
 }
