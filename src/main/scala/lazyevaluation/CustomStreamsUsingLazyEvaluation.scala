@@ -196,6 +196,7 @@ null  i.e call by need
   // so its is printing the new head and accessing the next  tail
   startFrom0Naturals.take(7).forEach(println)
 
+
   // here tail is getting evaluated until all tail is accesed by map
   //on the top of that we called take(10)
   // on that stream which is complete now  we will call take to take n elements out
@@ -228,7 +229,15 @@ println(flatMappedStream)
   // now everything will be evaluated here in take
   val flatMappedTakenStream=flatMappedStream.take(10)
   val streamtoList: Seq[Int] = flatMappedTakenStream.toList()
+  println(streamtoList)
   val filteredStream: MyStream[Int] =startFrom0Naturals.filter(_ <10)
   // every this will be elauated here
-  val filteredTakenStream: MyStream[Int] =filteredStream.take(10)
+  val filteredTakenStreamList=filteredStream.take(8).toList()
+  // this will also blow up same reason as for the flatmap we discussed take is manadatory
+  //startFrom0Naturals.forEach(println)
+  println(filteredTakenStreamList)
+  //Stream of fibonacci numbers Execise
+
+
+
 }
