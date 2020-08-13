@@ -18,7 +18,7 @@ object CustomStreamsUsingLazyEvaluation extends App {
 
     def #::[B >: A](element: B): MyStream[B]
 
-    def ++[B >: A](anotherStream: MyStream[B]): MyStream[B]
+    def ++[B >: A](anotherStream: => MyStream[B]): MyStream[B]
 
     def forEach(fx: A => Unit): Unit
 
@@ -53,7 +53,7 @@ object CustomStreamsUsingLazyEvaluation extends App {
 
     override def #::[B >: Nothing](element: B): MyStream[B] = new Node[B](element, this)
 
-    override def ++[B >: Nothing](anotherStream: MyStream[B]): MyStream[B] = anotherStream
+    override def ++[B >: Nothing](anotherStream: =>  MyStream[B]): MyStream[B] = anotherStream
 
     override def forEach(fx: Nothing => Unit): Unit = ()
 
@@ -95,8 +95,10 @@ null  i.e call by need
     i.e until some one access (lazy val tail) it will not evaluated
   i.e call by need
      */
-
-    override def ++[B >: A](anotherStream: MyStream[B]): MyStream[B] =
+// here we changed (anotherStream:  MyStream[B]) to (anotherStream: => MyStream[B])
+    // because it was eagerly evaluating so stack was blowing
+    // so we masde this callybyname so that it will x
+    override def ++ [B >: A](anotherStream: => MyStream[B]): MyStream[B] =
       new Node[B](head, tail ++ anotherStream)
 
     override def forEach(fx: A => Unit): Unit = {
@@ -130,7 +132,7 @@ null  i.e call by need
      */
     override def map[B](fx: A => B): MyStream[B] = new Node[B](fx.apply(head), tail.map(fx))
 
-    override def flatMap[B](fx: A => MyStream[B]): MyStream[B] = fx.apply(head) ++ tail.flatMap(fx)
+    override def flatMap[B](fx: A => MyStream[B]): MyStream[B] = fx.apply(this.head) ++ this.tail.flatMap(fx)
 
     override def take(n: Int): MyStream[A] =
       if (n <= 0) EmptyStream
@@ -182,7 +184,7 @@ null  i.e call by need
   // [0,1,2,3]
   //now inside take method when take try to access the startFrom0Naturals tail
   //new Node [A](start, MyStream.from(accumulator)(fx)) then from gets executed to evaluate the lazy tail
-  // so take is evaluating the lazy tail and creating a stream
+  // so take is evaluating the lazy tail and creating a stream it gets evluated till take(n-1)
   print(startFrom0Naturals.take(5))
 
   //Here When We call take on o/p of map then tail is get eveluated so we are calling take for each tail
@@ -208,5 +210,16 @@ null  i.e call by need
   val takenStream: MyStream[Int] =mappedLazyStream.take(10)
   val streamToList: Seq[Int] =takenStream.toList()
   println(streamToList)
+val flatMappedStream=startFrom0Naturals.flatMap(x => new Node[Int](x, new Node[Int](x+1,EmptyStream)))
+// here in case of flat map we have the implementation like this
+  // fx.apply(this.head) ++ this.tail.flatMap(fx) and ++ signature is
+  // (anotherStream: => MyStream[B]) which is eager eveluation it is not callby name
+  // hence due to this this.tail.flatMap(fx) Expression will be eagerly evaluated
+  // which by means that it will keep calling tail.faltMap and tail is from method
+  // hence we will keep calling from method so stack will blow up
+  // to fix this we changed the signature of ++ to anotherStream: => MyStream[B]
+  // now fx.apply(this.head) ++ this.tail.flatMap(fx)
+  // this.tail.flatMap(fx) expression will be lazily evaluated
 
+println(flatMappedStream)
 }
