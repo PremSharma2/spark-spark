@@ -145,6 +145,9 @@ null  i.e call by need
       // lazyTail=tail.take(n - 1) is lazyTail so it will become like this
       // stream=Node[A](0, lazyTail)
       // so when someone call stream.lazyTail then only tail will get evaluated
+      // here this.tail.take(n - 1) we are trying to acccess tail here but still this postion is lazy
+      // hence until unless foreach is not called it will not get evualted because
+      // foreach arguments are eagerly eveluated
       // take(n-1) as this expression is lazy so it will be evaluated
       // here tail.take(n-1) this is an expression
       //startFrom0.take(5).forEach(println)
@@ -222,4 +225,10 @@ val flatMappedStream=startFrom0Naturals.flatMap(x => new Node[Int](x, new Node[I
   // this.tail.flatMap(fx) expression will be lazily evaluated
 
 println(flatMappedStream)
+  // now everything will be evaluated here in take
+  val flatMappedTakenStream=flatMappedStream.take(10)
+  val streamtoList: Seq[Int] = flatMappedTakenStream.toList()
+  val filteredStream: MyStream[Int] =startFrom0Naturals.filter(_ <10)
+  // every this will be elauated here
+  val filteredTakenStream: MyStream[Int] =filteredStream.take(10)
 }
