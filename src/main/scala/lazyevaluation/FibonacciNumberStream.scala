@@ -46,6 +46,7 @@ That means Expression of calculating the next number fibonacci series is lazily 
   LazyEvaluatedExpression= eratosthenes(applied to (numbers filtered by n%2!=0)
   Hence new filtered stream will be constructed on need basis
   i.e the input to eratosthenes should be prime
+  [2,3,4,5,6,7,8,9,10,11,12 ....]
   [2,3,5,7,9....]
   [2 ,eratosthenes ( primeNumberstream=[2,3,5,7,9....])
   [ 2,3 ,eratosthenes ( primeNumberstream=[5,7,9....] should be filtered by n%3!=0)]
@@ -60,7 +61,7 @@ That means Expression of calculating the next number fibonacci series is lazily 
         eachNumber% stream.head!=0
       i.e the filter creteria depends on the current stream head like we gave examples above
       in terms of Lazy evaluation
-      LazyExpression=eratosthenes(numberStream.tail.filter(n => n% numberStream.head !=0)))
+      LazyTailExpression=eratosthenes(numberStream.tail.filter(n => n% numberStream.head !=0)))
       This LazyExpression will be evaluated lazily i.e callByneed
 
 
@@ -70,5 +71,12 @@ That means Expression of calculating the next number fibonacci series is lazily 
     else new Node[Int](numberStream.head,
                        eratosthenes(numberStream.tail.
                          filter(n => n% numberStream.head !=0)))
+
+
+  val infiniteStreamOfNaturalsNumbersStartingFrom2: MyStream[Int] = MyStream.from(2)(_ + 1)
+    val infiniteEratosthenesProcessedStream: MyStream[Int] = eratosthenes(infiniteStreamOfNaturalsNumbersStartingFrom2)
+    val finiteEratosthenesProcessedStream= infiniteEratosthenesProcessedStream.take(10)
+    val eratosthenes_Finite_ProcessedStream_Converted_toList=  finiteEratosthenesProcessedStream.toList()
+   println(eratosthenes_Finite_ProcessedStream_Converted_toList)
 
 }
