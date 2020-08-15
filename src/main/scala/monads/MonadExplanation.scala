@@ -9,10 +9,13 @@ left identity
 if you built a basic monad from an element and you flatmap it should give you the function you used
 in flatMap
 unit(x).flatmap(fx) ==f(x)
+------------------------------------------------------------------
+val instance=Some(x)
 right identity
 amonadInstance.flatMap(unit)== amonadInstance
 if you have a monadicInstance and you flat map it using the unit function then it should give
 a same amonadInstance
+------------------------------------------------------------------------------------------
 3rd law is associativity
 m.flatMap(f).flatMap(g) == m.flatMap(x => f(x).flatMap(g))
 IF you have monadeInstance and you flatMap it with two functions (f and g)

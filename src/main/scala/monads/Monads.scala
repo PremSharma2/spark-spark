@@ -33,6 +33,30 @@ object Monads extends App {
   Attempt(x).flatMap(f) =f(x) // it only make sense for Success case
   Success(x).flatMap(f) = fx.apply(x)  // acc to implementation it is fx.apply(x)
   Hence proved
+----------------------------------------------------------------------------------
+  2nd Law
+  attempt.flatMap(unit) = attempt
+  Success(x).flatMap(x => Attempt(x)) = Attempt(x)
+  but this expression Success(x).flatMap(x => Attempt(x)) is equivalent to
+  fx.apply(x) and that will return Attempt(x)
+  Hence Proved
+
+  --------------------------------------------------------------------------------
+  3rd Law
+
+  attempt.flatMap(f).flatMap(g) == attempt.flatMap(x => f(x).flatMap(g))
+  Lets proof it
+
+  Fail(e).flatMap(f).flatMap(g) =Fail(e)
+  now lets evaluate on right hand side
+
+  attempt.flatMap(x => f(x).flatMap(g))
+  Fail(e).flatMap(x => f(x).flatMap(g))= Fail(e)
+
+  Fail satisfies the associativity law
+  
+
+
 
    */
 
