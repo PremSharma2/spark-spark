@@ -106,21 +106,27 @@ imp point is here composite function= f.flatMap(g)
 so lets proof it
 Some(v).flatMap(f).flatMAp(g) = f.apply(v).flatMap(g)
 here as we know that
-Some(v).flatMap(f) = f.apply(v)
-so Some(v).flatMap(f).flatMAp(g) = f.apply(v).flatMap(g)
+Some(v).flatMap(f) = f.apply(v) // thats what Some case class say in its impl
+so  we can write this way
+Some(v).flatMap(f).flatMAp(g) = f.apply(v).flatMap(g)
+here Some(v).flatMap(f)= f.apply(v)
 now here (f.apply(v).flatMap(g)) it is composite function to Option beacuse
 here we have merged two functions
-as we have proved earlier
-Some(v).flatMap(x => f.apply(x).flatMap(g)) = f.apply(v).flatMap(g)
 
-so f.apply(v).flatMap(g) this denotes to
-Some(v).flatMap(compositefunction named g)
-so
-Some(v).flatMap(x => f.apply(x).flatMap(g))
-so it means that will apply composite function with value inside i.e v
-compositefunction = x => f.apply(x).flatMap(g)
-now this will lead the same result
-Some(v).flatMap(x => f.apply(x).flatMap(g)) which f.apply(v).flatMap(g) will give
+now lets evaluate  it from Right hand side and try to proof both evaluate same ans
+We can write this
+ x => f.apply(x).flatMap(g) == f.apply(v).flatMap(g)
+because both are same thing in terms that both are composite function and both does same work
+because we are applying the composite function on value contained in option by flatMapping it
+Some(v).flatMap(x => f.apply(x).flatMap(g)) = f.apply(v).flatMap(g)
+so we can say now
+Some(v).flatMap(compositeFunction)= compositeFunction(x)
+as per standard definition of option case class
+
+Hence both equations on RHS and LHS are reulting same vaue
+i.e the compositeFunction= x => f.apply(x).flatMap(g) alias  f.apply(v).flatMap(g)
+
+Hence proved
 
 
    */

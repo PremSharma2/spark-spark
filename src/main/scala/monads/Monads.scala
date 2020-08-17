@@ -2,6 +2,9 @@ package monads
 
 object Monads extends App {
 // Our own Try monad
+  // here Attempt is a Functor or container here because it contains the Success and Failue
+  // Success and Failure are also functors or containers bcz they contain a value here
+  //Here Attempt is a contract or interface
   trait Attempt[+A]{
     def flatMap[B](fx: A=> Attempt[B]): Attempt[B]
   }
@@ -9,7 +12,7 @@ object Monads extends App {
   object Attempt{
     def apply[A](a: => A): Attempt[A]=
       try{
-        Success(a)
+        Success.apply(a)
       }catch {
         case e: Throwable => Failure(e)
       }
@@ -54,10 +57,31 @@ object Monads extends App {
   Fail(e).flatMap(x => f(x).flatMap(g))= Fail(e)
 
   Fail satisfies the associativity law
-  
 
+  now lets take a look for Success
+
+ Success(x).flatMap(f).flatMap(g)
+ now we can write this as beacuse Success(x).flatMap(f)= f(x) as we see the Succses flatMap impl
+ so result of above operation is f(x).flatMap(g) i.e
+Success(x).flatMap(f).flatMap(g)= f(x).flatMap(g)
+
+now lets evaluate on the Right hand side of equation and will
+ try to proof both calculates same result
+
+Success(x).flatMap(x => f(x).flatmap(g))
+but as we know already we can write this is as
+x => f(x).flatmap(g)= f(v).flatMap(g)
+so Success(x).flatMap(x => f(x).flatmap(g))=  f(v).flatMap(g)
+if f(x) this guy does not throw an exception
+hence proved because both equations LHS and RHS gives the same result
 
 
    */
+  // lets test our monad
+
+  val attempt: Attempt[Nothing] = Attempt{
+    throw new RuntimeException("My own monad, yes!")
+  }
+println(attempt)
 
 }
