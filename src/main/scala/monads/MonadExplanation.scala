@@ -2,12 +2,14 @@ package monads
 
 object MonadExplanation  extends App{
 /*
-Monads are kind of Abstract type which have some fundamentamental operations
+Monads are kind of Abstract type which have some fundamental operations
 Like mentioned below
 All operations must satisfy the monad laws
 left identity
-if you built a basic monad from an element and you flatmap it should give you the function you used
+if you built a basic monad from an element and you flatmap
+it should give you the function you used
 in flatMap
+here unit(x) is equal MonadCompanionObject.apply()
 unit(x).flatmap(fx) ==f(x)
 ------------------------------------------------------------------
 val instance=Some(x)

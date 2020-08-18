@@ -1,3 +1,5 @@
+package codingChallenge
+
 import scala.math.min
 /*
 Enumerations are useful tool for creating groups of constants, such as Numeric Constants or Customized Object Constants ,
@@ -16,13 +18,16 @@ You can also use the following approach of using a Scala trait to create the equ
 //And if you want to perform some action on these constants you can define that action in that trait
 // IT is enum comparing all possible values as key value pair and getting the value of corresponding enum key
 sealed trait Item {
-  val price: Double = this match {
+  def  price: Double = this match {
     case Apple => 1
     case Milk   => 1.3
     case Bread  => 0.8
     case Soup   => 0.65
   }
 }
+
+// changing to PArtial Function
+
 /*
 Because of these features, case objects are primarily used in two places (instead of regular objects):
 

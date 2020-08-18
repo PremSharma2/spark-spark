@@ -16,6 +16,7 @@ object MonadExercise extends App {
     // now fx.apply(value) it will not be evaluated becuase here input to fx is call by name
   def flatMap[B] (fx: (=> A)=> Lazy[B]): Lazy[B] = fx.apply(internalValue)
     def use= internalValue
+    def map [B] (fx: (A=>B) ): Lazy[B] = flatMap(x=> Lazy(fx(x)))
   }
   object  Lazy{
     def apply [A](value: => A): Lazy[A] = new Lazy(value)

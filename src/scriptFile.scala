@@ -1,1 +1,0 @@
-https://www.slideshare.net/databricks/physical-plans-in-spark-sql
