@@ -34,7 +34,7 @@ the key/value pairs that make up the map
     }
 
   }
-  val host = config.get("host")
+  val host: Option[String] = config.get("host")
   val port = config.get("port")
   /*
      *
@@ -47,12 +47,14 @@ the key/value pairs that make up the map
      *
      */
 
-  val connection = host.flatMap(h => port.flatMap(p => Connection.apply(h, p)))
-    host.flatMap{
+  val connection: Option[Connection] = host.flatMap(h => port.
+    flatMap(p => Connection.apply(h, p)))
+
+  val conn: Option[Connection] =  host.flatMap{
       host => port.flatMap(port => Connection(host,port))
 
     }
-  val test   = host.flatMap(h => port.map(p => Connection.apply(h, p))).flatten
+  //val test   = host.flatMap(h => port.map(p => Connection.apply(h, p))).flatten
   //or we can do this way
   val host1=host.map(host => host)
   val port1=port.map(port => port)
@@ -61,9 +63,9 @@ the key/value pairs that make up the map
      /**
      * if (c !=null)
      *  return c.connect
-     *  return null
+     *  return None
      */
-  val connectionStatus = connection.map(c => c.connect)
+  val connectionStatus: Option[String] = connection.map(c => c.connect)
   //if (connectionStatus==null) println(None) else (Some(connectionStatus.get))
   println(connectionStatus)
   // if (status !=null)
@@ -75,10 +77,17 @@ the key/value pairs that make up the map
       map(connection => connection.connect))
     .foreach(println)
 
-  val forConnectionStatus = for {
-    host <- config.get("host")
-    port <- config.get("port")
+// as we can see we are using the composite Function here so we can decompose
+// it further like this  x => f(x).f(y).f(z)
+ val compositeFunction: String => Option[String] = host => config.get("port").
+    flatMap(port => Connection.apply(host, port)).
+    map(connection => connection.connect)
+  val result: Option[String] =config.get("host") flatMap compositeFunction
+  // but if you dont want composite function usage then for Comprehension is good
+  val forConnectionStatus: Unit = for {
+    host: String <- config.get("host")
+    port: String <- config.get("port")
     connection <- Connection(host, port)
-  } yield connection.connect
+  }yield  connection.connect
 
 }
