@@ -35,7 +35,7 @@ imp point is here composite function= f.flatMap(g)
 
 // Proof  of all three laws using List
   /*
-  First LAw : left identity
+  First Law : left identity
 
   List.apply(x).flatMap(f)= f(x) ++ Nil.flatMap(f)
   that will be equal to
@@ -48,10 +48,11 @@ imp point is here composite function= f.flatMap(g)
   Second Law right identity
   list.flatMap(x => List(x))= list
   hence proved
-
+-----------------------------------------------------
 
   ThirdLaw: associativity
-  [a,b,c].flatMap(f).flatMap(g) =
+  [a,b,c].flatMap(f).flatMap(g) = [a,b,c].flatMap(x=> f(x).flatMap(g))
+  Lets take RHS and decompose it first
   when we decompose it will look like this taking the refrence of flatMap
    flatmapImpl :
       fx.apply(this.head) ++ this.tail.flatMap(fx)
@@ -59,14 +60,18 @@ imp point is here composite function= f.flatMap(g)
   (f(a) ++ f(b) ++ f(c)).flatMap(g)
   but if we further decompose it
   f(a).flatMap(g) ++ f(b).flatMap(g) ++ f(c).flatMap(g)
-  further In the whole above expression because all three components are similar we can write that
+  further In the whole above expression because
+  all three components are similar we can write that
   it is like now over the list we apply flatmap
   and in flatmap we apply the function on each element
   and as we know that f returns list so we applied flatMap over it
   I mean it is same Like  f(a).flatMap(g) ++ f(b).flatMap(g) ++ f(c).flatMap(g)
-  but much short and nicer way to write
+  Now if you see here the pattern with naked eye
+  f(a).flatMap(g)....... and so on
+  we are trying to apply a sought of composite function on each element
+  of List while flatMapping it so we can write
   [a,b,c].flatMap(f(_).flatMap(g))
-  but this is we also    can write  as well like that
+  so it can be written as follows
   [a,b,c].flatMap(x=> f(x).flatMap(g))
   hence proved because as we know the composing the functions looks like that
   x => function1(function2(x))
@@ -76,13 +81,14 @@ imp point is here composite function= f.flatMap(g)
   Option(x).flatMap(f)= f(x)
   Some(x).flatMap(f) = f.apply(x)
  here  Some(x).flatMap(f) this operation will result Some(x)
- and f.apply(x)= let say f=  x=> Some(x)
+ and f.apply(x)= let say f =  x=> Some(x)
   hence proved
-
+  RHS=LHS
+-----------------------------------------------------------------------------
   2 Law of
   val opt=Some(5)
   opt.flatMap(x=>Option(x)) = opt
-  Some(v).flatMAp(x=>xOption(x)) which will be equal to Option(v)
+  Some(v).flatMap(x=>Option(x)) which will be equal to Option(v)
   and which in turn equal to Some(v) that value we started with hence this points to same refrence
   we started with i.e opt
   Hence proved

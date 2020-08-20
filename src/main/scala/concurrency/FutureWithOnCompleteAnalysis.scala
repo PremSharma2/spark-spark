@@ -2,8 +2,8 @@ package concurrency
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
-object FutureAndPromosies  extends App {
+import scala.util.{Failure, Success, Try}
+object FutureWithOnCompleteAnalysis  extends App {
 
 def calculateMeaningOfLife()={
   Thread.sleep(2000)
@@ -25,6 +25,12 @@ println(aFuture.value) //it returns an option of try Option[Try[Int]]
   val futureResult: Unit =aFuture.onComplete{
     case  Success(value) => println(s"Thread is completed with the value $value")
     case Failure(exception) => println(s"I have failed with exception $exception")
+  }
+  aFuture onComplete future
+  val future: PartialFunction[Try[Int], Unit] = {
+    case  Success(value) => println(s"Thread is completed with the value $value")
+    case Failure(exception) => println(s"I have failed with exception $exception")
+
   }
   Thread.sleep(2000)
 }

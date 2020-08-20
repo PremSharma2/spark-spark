@@ -28,14 +28,14 @@ object Map_FlatMap_Filter_for  extends App{
   val numbers=List(1,2,3,4)
   val chars=List('a','b','c','d')
   //iteration logic 
-  val combinations= numbers.flatMap(n => chars.map(c => ""+c + n))
+  val combinations: Seq[String] = numbers.flatMap(n => chars.map(c => ""+c + n))
   
   println(combinations)
-  val forcomprehension= for{
-    
-    n <- numbers if n%2 ==0
-    c <- chars
-    
+  val forcomprehension: Seq[String] = for{
+
+    n: Int <- numbers if n%2 ==0
+    c: Char <- chars
+
   }yield "" + c + n
   println(forcomprehension)
   

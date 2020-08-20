@@ -1,7 +1,7 @@
 package monads
 
 object Monads extends App {
-// Our own Try monad
+// Our own Try monad As we know that Monad is an abstract type hence it will be trait contract
   // here Attempt is a Functor or container here because it contains the Success and Failue
   // Success and Failure are also functors or containers bcz they contain a value here
   //Here Attempt is a contract or interface
@@ -10,8 +10,11 @@ object Monads extends App {
   }
 
   object Attempt{
+    // here we are using callByNAme expression because apply will not immediately fail
+    // if dependency is null
     def apply[A](a: => A): Attempt[A]=
       try{
+        // a will be evaluated here
         Success.apply(a)
       }catch {
         case e: Throwable => Failure(e)

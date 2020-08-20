@@ -56,10 +56,11 @@ the key/value pairs that make up the map
     }
   //val test   = host.flatMap(h => port.map(p => Connection.apply(h, p))).flatten
   //or we can do this way
+  /*
   val host1=host.map(host => host)
   val port1=port.map(port => port)
   val conncetion=Connection.apply(host1.get, port1.get)
-  
+  */
      /**
      * if (c !=null)
      *  return c.connect
