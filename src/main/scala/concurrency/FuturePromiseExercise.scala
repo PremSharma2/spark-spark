@@ -93,7 +93,29 @@ object FuturePromiseExercise  extends App {
     }
     // we can read this like this the future task result i.e future object
     // with this promise try to fulfill the promise
-    //fa.onComplete(result => tryComplete(promise, result))
+    fa.onComplete(result => tryComplete(promise, result))
+    // or we can do this
+    /*
+    Tries to complete the promise with either a value or the exception.
+    Note: Using this method may result in non-deterministic concurrent programs.
+
+
+     */
+    fb.onComplete(result => tryComplete(promise, result))
+    promise.future
+  }
+
+  def mostOptimizedSafeImpl[A](fa: Future[A], fb: Future[A]): Future[A] = {
+    // here promise is a controller for fa here basically
+    val promise = Promise[A]
+    /*
+    Tries to complete the promise with either a value or the exception.
+    Note: Using this method may result in non-deterministic concurrent programs.
+     */
+
+    // we can read this like this the future task result i.e future object
+    // with this promise try to fulfill the promise
+    fa.onComplete(promise.tryComplete(_))
     // or we can do this
     /*
     Tries to complete the promise with either a value or the exception.
@@ -101,8 +123,8 @@ object FuturePromiseExercise  extends App {
 *  @return    If the promise has already been completed returns `false`, or `true` otherwise.
 
      */
-    fa.onComplete(promise.tryComplete(_))
     fb.onComplete(promise.tryComplete(_))
     promise.future
   }
+
 }
