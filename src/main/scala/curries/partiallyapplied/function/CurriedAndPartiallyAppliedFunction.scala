@@ -42,6 +42,7 @@ object CurriedAndPartiallyAppliedFunction extends App {
   val add7_3: Int => Int = curriedMethod(7) _ // ETA
   //y => curriedAddMEthod(x,y)
   //
+
   val add7_4: Int => Int = curriedMethod(7)(_) // same ETA but alternative syntax
   // same ETA  expansion of normal methods we have curried the function calls of normal method
   val add7_5: Int => Int = simpleAdd(7, _: Int)

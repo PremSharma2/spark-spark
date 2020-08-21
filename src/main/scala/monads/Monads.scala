@@ -5,6 +5,10 @@ object Monads extends App {
   // here Attempt is a Functor or container here because it contains the Success and Failue
   // Success and Failure are also functors or containers bcz they contain a value here
   //Here Attempt is a contract or interface
+  /*
+  Informally, a monad is anything with a constructor and a flatMap method. All
+of the functors we saw in the last chapter are also monads
+   */
   trait Attempt[+A]{
     def flatMap[B](fx: A=> Attempt[B]): Attempt[B]
   }

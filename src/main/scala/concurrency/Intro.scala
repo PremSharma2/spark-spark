@@ -12,6 +12,7 @@ object Intro  extends  App {
   })
 
   aThread.start()
+
   val runnable: () => Unit = () => (1 to 5) .foreach(_ => println("Hello"))
 //val aThreadHello= new Thread(runnable)
   val pool=Executors.newFixedThreadPool(2)

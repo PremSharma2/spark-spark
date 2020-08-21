@@ -91,7 +91,9 @@ object FuturePromiseExercise  extends App {
         case _ =>
       }
     }
-    fa.onComplete(result => tryComplete(promise, result))
+    // we can read this like this the future task result i.e future object
+    // with this promise try to fulfill the promise
+    //fa.onComplete(result => tryComplete(promise, result))
     // or we can do this
     /*
     Tries to complete the promise with either a value or the exception.
@@ -99,6 +101,7 @@ object FuturePromiseExercise  extends App {
 *  @return    If the promise has already been completed returns `false`, or `true` otherwise.
 
      */
+    fa.onComplete(promise.tryComplete(_))
     fb.onComplete(promise.tryComplete(_))
     promise.future
   }
