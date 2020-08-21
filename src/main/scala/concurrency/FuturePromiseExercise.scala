@@ -72,7 +72,7 @@ object FuturePromiseExercise  extends App {
   }
 
 // refactored Impls for safe
-  def bestsafeImpl[A](fa: Future[A], fb: Future[A]): Future[A] = {
+  def modifiedSafeImpl[A](fa: Future[A], fb: Future[A]): Future[A] = {
     // here promise is a controller for fa here basically
     val promise = Promise[A]
     /*
