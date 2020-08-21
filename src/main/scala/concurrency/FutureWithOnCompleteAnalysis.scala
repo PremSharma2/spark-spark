@@ -15,10 +15,21 @@ def calculateMeaningOfLife()={
     It handles the Thread Execution in scala For this Future Task we created or Future Object
 
    */
-  //  def apply[T](body: =>T)(implicit @deprecatedName('execctx) executor: ExecutionContext): Future[T] = impl.Future(body)
+  //  def apply[T](body: =>T)(implicit @deprecatedName('execctx) executor: ExecutionContext):
+  //  Future[T] = impl.Future(body)
+  /*
+  This is Future.apply method body
+  As we can see that this callByName expression is evaluated only by
+  Thread executor hence this expression is executed within the thread
+
+  val runnable = new PromiseCompletingRunnable(body)
+    executor.prepare.execute(runnable)
+    runnable.promise.future
+   */
 val aFuture: Future[Int] = Future.apply{
   calculateMeaningOfLife
 }
+  // here now it will get executed bcz value is callByname expression calculateMeaningOfLife
 println(aFuture.value) //it returns an option of try Option[Try[Int]]
   println("Waiting for the Future ")
   // Here we reomved t => t match {} because it is a partial functionso we can write this way

@@ -12,18 +12,13 @@ object FuturePromiseExercise  extends App {
   }
 
   // running two future task in sequence
-  def inSequence[A, B](firstFuture: Future[A], secondFutureTask: Future[B]): Future[B] =
-    firstFuture.flatMap(_ => secondFutureTask)
+  def inSequence[A, B](firstFuture: Future[A], secondFuture: Future[B]): Future[B] =
+    firstFuture.flatMap(_ => secondFuture)
 
-
-  val future: PartialFunction[Try[Int], Unit] = {
-    case  Success(value) => println(s"Thread is completed with the value $value")
-    case Failure(exception) => println(s"I have failed with exception $exception")
-
-  }
   // implement new future with a first value of two futures
   def first[A](fa: Future[A], fb: Future[A]): Future[A] = {
 // here promise is a controller for fa here basically
+    // i.e it is fot Type[A]
   val promise = Promise[A]
     fa.onComplete{
       case  Success(value) => promise.success(value)
@@ -104,8 +99,8 @@ object FuturePromiseExercise  extends App {
     fb.onComplete(result => tryComplete(promise, result))
     promise.future
   }
-
-  def mostOptimizedSafeImpl[A](fa: Future[A], fb: Future[A]): Future[A] = {
+// same thing above we did but with inbuilt scala concurrent api
+  def mostOptimizedFirstImpl[A](fa: Future[A], fb: Future[A]): Future[A] = {
     // here promise is a controller for fa here basically
     val promise = Promise[A]
     /*
@@ -118,13 +113,51 @@ object FuturePromiseExercise  extends App {
     fa.onComplete(promise.tryComplete(_))
     // or we can do this
     /*
-    Tries to complete the promise with either a value or the exception.
+    promise.tryComplete(_) this function will
+    Try to complete the promise with either a value or the exception.
     Note: Using this method may result in non-deterministic concurrent programs.
-*  @return    If the promise has already been completed returns `false`, or `true` otherwise.
+*  @return If the promise has already been completed returns `false`, or `true` otherwise.
 
      */
     fb.onComplete(promise.tryComplete(_))
     promise.future
   }
+  // This will return the last promised future out of the two
+ def last[A](fa: Future[A], fb: Future[A]): Future[A] ={
+   // initially both the threads try to fulfill the bothPromise
+   // but whoever finishes first will fulfill first hence second
+   // one cant finish the same promise
+   // because same promise cant be fulfilled twice as we discussed earlier
+   // so for second thread or the remaining thread can fulfill the second promise
 
+
+val bothPromise= Promise[A]
+   val lastPromise= Promise[A]
+// i am saying that if for this Future Task this promise is already fulfilled
+   // by another Future Task
+   // then this Future task should complete another promise
+
+   val checkAndComplete: Try[A] => Any = (result: Try[A]) => {
+     if(!bothPromise.tryComplete(result))
+       lastPromise.complete(result)
+   }
+   fa.onComplete(checkAndComplete)
+   fb.onComplete(checkAndComplete)
+lastPromise.future
+ }
+
+  val fastFuture = Future.apply{
+    Thread.sleep(100)
+    42
+  }
+  val slowFuture = Future.apply{
+    Thread.sleep(200)
+    62
+  }
+
+ val result: Future[Int] =mostOptimizedFirstImpl(fastFuture,slowFuture)
+
+  result.foreach(println)
+
+  Thread.sleep(1000)
 }

@@ -4,7 +4,7 @@ import scala.concurrent.{Await, Future, Promise}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Success
-object FutureWithPromise extends App {
+object FutureWithAwaitExercise extends App {
 
 case class User(name:String)
   case class Transaction(sender:String, receiver:String,amount:Double, status:String)
@@ -25,8 +25,8 @@ case class User(name:String)
       //create a transaction for the user
       //wait for the transaction to finish
       val transactionStatusFuture: Future[String] = for{
-        user <- fetchUser(userName)
-        transaction <- createTransaction(user,merchantName,costOfItem)
+        user: User <- fetchUser(userName)
+        transaction: Transaction <- createTransaction(user,merchantName,costOfItem)
       } yield  transaction.status
       /*
 
@@ -40,27 +40,5 @@ case class User(name:String)
   }
   val function: (String, Double) => String =BankingUtils.purchase("Prem",_: String,_: Double)
 println(BankingUtils.purchase("Prem","Applestore= glasgow",750))
-  val promise= Promise[Int]() // promise is controller over future
-  // i.e promise has a member future i.e promise.
-  // future which hold the future object so future is managed by promise
-  val future: Future[Int] = promise.future
-  /*
-  thread1 - consumer thread
-   */
-future.onComplete{
-  case  Success(value) => println(s"This is consumer Thread  with the value $value")
 
-}
-
-  // thread producer
-  val aThread= new Thread(new Runnable {
-    override def run(): Unit = {
-      println("producer Thread")
-      //this will force future object or task to complete with the value 42
-      promise.success(42)
-      println("done")
-    }
-  })
-  aThread.start()
-  Thread.sleep(1000)
 }
