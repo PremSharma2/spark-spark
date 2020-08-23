@@ -1,4 +1,4 @@
-package implicitObject
+package Implicits
 
 /*
  * Assume that you were given a Donut type in a library or dependency and as such do not have access to modify the Donut source code.

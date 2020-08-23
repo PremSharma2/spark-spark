@@ -33,6 +33,7 @@ object DataQualityCheck extends App {
     .when(col("gender") === "F","Female")
     .otherwise("Unknown").alias("new_gender")).show(false)
   val columns=df2.columns
+  //[col1,col2,col3]
   val columnstoBeSelected: Array[Column] =columns map (column=> count(when(col(column).isNull,column)).as(column))
   df2.select(columnstoBeSelected:_*)
   df2.select(columns map (column => count(when(col(column).isNull,column)).as(column)):_*) show false

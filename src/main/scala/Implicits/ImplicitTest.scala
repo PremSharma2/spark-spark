@@ -1,4 +1,4 @@
-package implicitObject
+package Implicits
 
 import DonutImplicits._
 object ImplicitTest extends App {

@@ -3,7 +3,7 @@ import org.apache.spark.sql.catalyst.expressions.Second
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Random, Success, Try}
 
 object FuturePromiseExercise  extends App {
 
@@ -138,7 +138,8 @@ val bothPromise= Promise[A]
    // then this Future task should complete another promise
 
    val checkAndComplete: Try[A] => Any = (result: Try[A]) => {
-     if(!bothPromise.tryComplete(result))
+     val checkIfPromissedAlreadyFullfilled= !bothPromise.tryComplete(result)
+       if(checkIfPromissedAlreadyFullfilled)
        lastPromise.complete(result)
    }
    fa.onComplete(checkAndComplete)
@@ -146,18 +147,44 @@ val bothPromise= Promise[A]
 lastPromise.future
  }
 
-  val fastFuture = Future.apply{
+  def retryUntil[A] (action: () => Future[A] , predicate : A => Boolean) : Future[A]={
+    action.apply().
+      filter(predicate).
+      recoverWith{
+        case _ => retryUntil(action,predicate)
+      }
+  }
+
+  val fastFuture: Future[Int] = Future.apply{
     Thread.sleep(100)
     42
   }
-  val slowFuture = Future.apply{
+  val slowFuture: Future[Int] = Future.apply{
     Thread.sleep(200)
     62
   }
-
- val result: Future[Int] =mostOptimizedFirstImpl(fastFuture,slowFuture)
-
+  val result: Future[Int] =mostOptimizedFirstImpl(fastFuture,slowFuture)
+  val result1: Future[Int] =last(fastFuture,slowFuture)
   result.foreach(println)
+  result1.foreach(println)
+
+  val random= new Random()
+  val action: () => Future[Int] = () =>  Future.apply{
+    Thread.sleep(100)
+    val nextValue= random.nextInt(100)
+    println("Generated  Next Value : By Future task->" + nextValue )
+    nextValue
+  }
+  val predicate: Int => Boolean = (x:Int)=> x<10
+  val retryResult: Future[Int] =retryUntil(action, predicate)
+  retryResult.foreach(result => println("After Lots of Retry We got the Result As Promised" + "\t" + result))
+ // Thread.sleep(1000)
+
+
+
+
 
   Thread.sleep(1000)
+
+
 }
