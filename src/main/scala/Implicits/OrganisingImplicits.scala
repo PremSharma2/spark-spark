@@ -2,8 +2,8 @@ package Implicits
 
 object OrganisingImplicits  extends App {
 //implicit val reversedOrdering :Ordering[Int] = Ordering.fromLessThan(_ > _)
-//implicit val alphabeticOrdering :Ordering[Person] = Ordering.fromLessThan(
- // (a,b) => a.name.compareTo(b.name) < 0)
+implicit val ageOrdering :Ordering[Person] = Ordering.fromLessThan(
+  (a,b) => a.age.compareTo(b.age) < 0)
   implicit def normalOrdering :Ordering[Int] = Ordering.fromLessThan(_ < _)
   println(List(1,2,3).sorted)
 /*
@@ -43,5 +43,23 @@ potential implicit values are :
   and at last in all the types involved in method signature
   i.e A and B [B >: A] or any of there Super Type
    */
+  //Best Practices
+  /*
+  If there is only one good value which will be used most of the cases
+  then we should define that in the Companion Object of the Entity or case class
+  and remaining should be define in local scope or Normal Scope
+  But we if have Multiple good implicit values then we should define then in a diffrent pacakge
+  or different object and should import them
+  i.e as follows or we can put them in different trait as well
 
+   */
+
+object AlphabeticNameOrdering{
+  implicit val alphabeticOrdering :Ordering[Person] = Ordering.fromLessThan(
+    (a,b) => a.name.compareTo(b.name) < 0)
+}
+  object AgeOrdering{
+    implicit val ageOrdering :Ordering[Person] = Ordering.fromLessThan(
+      (a,b) => a.age.compareTo(b.age) < 0)
+  }
 }
