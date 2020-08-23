@@ -30,11 +30,12 @@ potential implicit values are :
   println(personList.sorted)
   /*
   Implicit Scope
-  -Normal Scope =Local Scope i.e locally will be highest priorty
-  - imported Scope
-  - companions of all type involved in method signature
+ a - Normal Scope =Local Scope i.e locally will be highest priorty
+ b - imported Scope
+ c - companions of all type involved in method signature
   for eg
-  Precedence of Search: for compiler
+  Precedence of Search: for compiler i.e a,b and c
+  for c here is the Explanation:
   sorted[B >: A](implicit ord: Ordering[B]): List
   in this Compiler will look into the List trait
   and then Ordering[B] companion object
