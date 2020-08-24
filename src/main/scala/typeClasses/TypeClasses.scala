@@ -1,12 +1,12 @@
 package typeClasses
 
 object TypeClasses  extends App {
-
+// to render html
   trait HtmlWritable{
     def toHtml:String
   }
 case class User(name:String, age:Int , email:String) extends HtmlWritable {
-  override def toHtml: String = s"<div> $this.name {$this.age yo} <a href = $this.email /> </div>"
+  override def toHtml: String = s"<div> $name {$age} <a href = $email /> </div>"
 }
   val user=User("Prem", 34, "prem.kaushik@outlook.com")
   println(user.toHtml)
@@ -27,8 +27,8 @@ case class User(name:String, age:Int , email:String) extends HtmlWritable {
 
   object HtmlSerializablePM{
     def serializableToHtml(value :Any) = value match{
-      case User(n,a,e) => _
-      case _ => _
+      case User(n,a,e) =>
+      case _ =>
     }
   }
   // Better DEsign than last two
@@ -36,9 +36,11 @@ case class User(name:String, age:Int , email:String) extends HtmlWritable {
   Advantages with this approach
   We can define teh serializers for the other types
   We can define Multiple Serilazers for the same type as well
-  Here in scala this trait HtmlSerliazer[T] is alled Type Class
-  because it defines the certain operations whcih can be applied
+  Here in scala this trait HtmlSerliazer[T] is called Type Class
+  because it defines the certain operations which can be applied
   to Type passed to it
+  And these all implementations of this trait are type class instances
+  that's why we make then singleton object
    */
   trait HtmlSerliazer[T]{
     def serialize(value : T):String
@@ -56,4 +58,5 @@ case class User(name:String, age:Int , email:String) extends HtmlWritable {
     override def serialize(user: User): String =
       s"<div> $user.name /> </div>"
   }
+  println(PartialUserSerializer.serialize(user))
 }
