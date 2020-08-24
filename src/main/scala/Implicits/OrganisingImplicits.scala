@@ -2,8 +2,7 @@ package Implicits
 
 object OrganisingImplicits  extends App {
 //implicit val reversedOrdering :Ordering[Int] = Ordering.fromLessThan(_ > _)
-implicit val ageOrdering :Ordering[Person] = Ordering.fromLessThan(
-  (a,b) => a.age.compareTo(b.age) < 0)
+
   implicit def normalOrdering :Ordering[Int] = Ordering.fromLessThan(_ < _)
   println(List(1,2,3).sorted)
 /*
@@ -14,20 +13,25 @@ potential implicit values are :
 
  */
 //Exercise
+implicit val ageOrdering :Ordering[Person] = Ordering.fromLessThan(
+  (a,b) => a.age.compareTo(b.age) < 0)
   case class Person(name:String, age:Int)
   //override def apply[A](xs: A*): List[A]
   val personList= List.apply(
-    Person("Prem",34),
-    Person("Veeru",33),
-    Person("Gana",5),
-    Person("Chaitanya",2)
+    Person("Amy",34),
+    Person("John",33),
+    Person("Steve",5),
+    Person("Bold",2)
   )
+  /*
   object Person{
     implicit val alphabeticOrdering :Ordering[Person] = Ordering.fromLessThan(
       (a,b) => a.name.compareTo(b.name) < 0)
   }
+  */
+
 //def sorted[B >: A](implicit ord: Ordering[B]): List
-  println(personList.sorted)
+  //println(personList.sorted)
   /*
   Implicit Scope
  a - Normal Scope =Local Scope i.e locally will be highest priorty
@@ -50,10 +54,10 @@ potential implicit values are :
   and remaining should be define in local scope or Normal Scope
   But we if have Multiple good implicit values then we should define then in a diffrent pacakge
   or different object and should import them
-  i.e as follows or we can put them in different trait as well
+  i.e as follows or we can put them in different Object as well
 
    */
-
+/*
 object AlphabeticNameOrdering{
   implicit val alphabeticOrdering :Ordering[Person] = Ordering.fromLessThan(
     (a,b) => a.name.compareTo(b.name) < 0)
@@ -62,4 +66,9 @@ object AlphabeticNameOrdering{
     implicit val ageOrdering :Ordering[Person] = Ordering.fromLessThan(
       (a,b) => a.age.compareTo(b.age) < 0)
   }
+
+ */
+
+  println(personList.sorted)
+
 }
