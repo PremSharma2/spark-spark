@@ -85,6 +85,12 @@ the key/value pairs that make up the map
     map(connection => connection.connect)
   val result: Option[String] =config.get("host") flatMap compositeFunction
   // but if you dont want composite function usage then for Comprehension is good
+  // this is transformed into this
+  /*
+   val connection: Option[Connection] =
+     host.flatMap(h => port.
+    flatMap(p => Connection.apply(h, p)))
+   */
   val forConnectionStatus: Unit = for {
     host: String <- config.get("host")
     port: String <- config.get("port")

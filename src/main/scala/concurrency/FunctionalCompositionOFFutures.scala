@@ -12,10 +12,10 @@ object FunctionalCompositionOFFutures  extends  App {
   val marksBestFriend: Future[Profile] = mark.flatMap(profile => SocialNetwork.fetchBestFriend(profile))
   //val result: Future[Future[Profile]] = mark.map(profile => SocialNetwork.fetchBestFriend(profile))
   val zuckBestFriendRestricted= marksBestFriend.filter(profile => profile.name.startsWith("z"))
-  for{
+ for{
     mark: Profile <- SocialNetwork.toFetchProfile("fb.id.1.zuck")
     bill: Profile <- SocialNetwork.fetchBestFriend(mark)
-  } mark poke bill
+  }  mark poke bill
 Thread.sleep(1000)
   val recoverPArtialFunction: PartialFunction[Throwable, Unit] = {
     case  e: Throwable => Profile("fb.id.0-dummy","Foreveralone")
