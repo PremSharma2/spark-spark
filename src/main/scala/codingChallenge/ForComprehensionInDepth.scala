@@ -1,5 +1,8 @@
 package codingChallenge
 
+import java.time.ZonedDateTime
+
+import scala.collection.SeqView
 import scala.io.Source
 
 object ForComprehensionInDepth  extends App {
@@ -160,10 +163,37 @@ println(result2)
    */
 
   for{
-    line <- dataSeq
-    fields = line.split(",")
-    if(fields.apply(2).equals("SALESMAN"))
+    line <- dataSeq // generateor
+    fields = line.split(",") // assignent
+    if(fields.apply(2).equals("SALESMAN")) // if filter
   } println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
 //
+val monthlyConsumptionAmount = Seq(437.8,3339.5,0.0,0.0,0.0,0.0,75.0,99.0,0.0,20.0,66.0)
+  val monthNames: Array[String] = Array("Jan", "Feb", "Mar", "Apr", "May",
+    "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+  def aggregateMonthlyConsumption(snapshots: Seq[(ZonedDateTime, Double)]): Seq[Double] = {
+    val out: Seq[Double] = for {
+      i <- 1 to 12
+      snapShotView= snapshots.view
+      monthWiseTotal: Double = snapShotView .
+        withFilter { case (d, _) => d.getMonthValue() == i } .
+        map ( t=> t._2).sum
+    } yield monthWiseTotal
+    println(out)
+    out
+  }
+
+  val forresult1: Unit =for {
+    (xs, i) <- monthlyConsumptionAmount.view.zipWithIndex
+  } println(s"Energy use for ${monthNames(i)}: ${"%.2f".format(xs)}")
+    //yield monthNames(i) ->  "%.2f".format(xs)
+
+
+    val forresult: SeqView[(String, String), Seq[_]] =for {
+      (xs, i) <- monthlyConsumptionAmount.view.zipWithIndex
+    }
+     yield monthNames(i) ->  "%.2f".format(xs)
+     // println(s"Energy use for ${monthNames(i)}: ${"%.2f".format(xs)}")
 
 }
