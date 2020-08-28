@@ -1,4 +1,4 @@
-package lambda
+package collections.basic.operationAndTransformation
 
 object TupleAndMapExercise extends App {
   

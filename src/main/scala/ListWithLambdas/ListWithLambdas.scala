@@ -1,4 +1,4 @@
-package lambda
+package ListWithLambdas
 
 import scala.annotation.tailrec
 

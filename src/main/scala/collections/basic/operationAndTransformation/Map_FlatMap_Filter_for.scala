@@ -1,4 +1,4 @@
-package lambda
+package collections.basic.operationAndTransformation
 
 object Map_FlatMap_Filter_for  extends App{
   
