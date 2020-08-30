@@ -139,6 +139,36 @@ Hence proved
 
    */
 
+//Monads 3rd law  associativity explanation by real example
 
+val numbers= List(1,2,3)
+  val incrementer= (x:Int)=> List(x,x+1)
+  // input to doubler is List(1,2)
+  val doubler = (x:Int)=> List(x,x*2)
+  // now if you apply both transformations incrementer doubler
+  // to the Container/Monad  List(1,2,3)
+ println(numbers.flatMap(incrementer).flatMap(doubler))
+  //o/p is List(1, 2, 2,4,   2, 4,3, 6,     3,6, 4, 8)
+  /*
+  LEts decompose this output
+   1, 2, 2,4 -list 1 - this is produced by 1 of orginal list numbers
+   2, 4,3, 6 - list2  - this is produced by 2  of orginal list numbers
+   3,6, 4, 8 - list3  - this is produced by 3  of orginal list numbers
 
+   List(increment(1).flatMap(doubler)-- Seq(1,2,2,4)
+        increment(2).flatMap(doubler)--  2, 4,3, 6
+        increment(3).flatMap(doubler)--  3,6, 4, 8
+        so it looks like here that for each element present in numbers we are applying monadic trasformation
+      x=>increment(x).flatMap(doubler)
+      i.e ETW pattern is here
+      numbers.flatMap(x=>increment(x).flatMap(doubler))
+      we are applying transformation in cascading manner
+      hence x=>incrementer(x).flatMap(doubler) we can consider it as transformation function
+      which transforming function flatmap takes as input to implement ETW
+// o.flatMap(f).flatMap(g) == o.flatMap( x=> f.apply(x).flatMap(g))
+Hence proved
+   */
+println(numbers.flatMap(x=>incrementer(x).flatMap(doubler)))
+  //o.flatMap(f).flatMap(g) == o.flatMap( x=> f.apply(x).flatMap(g)) hence proved the 3rd law
+  println(numbers.flatMap(incrementer).flatMap(doubler) == numbers.flatMap(x=>incrementer(x).flatMap(doubler)))
 }

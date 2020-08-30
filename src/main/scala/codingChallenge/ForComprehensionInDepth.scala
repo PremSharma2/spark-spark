@@ -109,7 +109,7 @@ for ( seq ) yield { expr }
 in the absence of yield for comprehension behaves like forEach control abstraction
 because forEach returns the unit where as when yield comes it becomes like
 we applying map function after each iteration
-IT WILL be liek seq.flatmap(s => _).map
+IT WILL be like seq.flatmap(s => _).map
    */
 
 

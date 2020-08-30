@@ -62,9 +62,27 @@ object CustomMonadRealWorldUSeCase extends App {
   // As this is monad so we have to take advantage of Monade flatMap method
   // Because ETW pattern best impl is done by monad flatMap transformer
 // ist step of ETW fetch the value or Extract the value
-val vatInclPrice = getUSer(myURL).
+val vatInclPrice: Future[Double] = getUSer(myURL).
   // 2nd step transform it with monadic transformer
   flatMap(user => getLAstOrder(user.id)).
-  // 3rd step is to use that o/p container wrapped  value    again  using map
+  // 3rd step is to use that o/p (container wrapped  value)    again  using map
+    // i.e we want to map the values
   map(_.price*1.19)
+
+  // now using for Comprehension
+  val userContainer: Future[User] =getUSer(myURL)
+  val vatInclusive: Future[Double] = for{
+    user <- userContainer
+    product <- getLAstOrder(user.id)
+
+  } yield product.price*1.19
+
+  // double for loops
+  val numbers= List(1,2,3)
+  val chars= List('a','b','c')
+  // here one imp thing to be noted here is that
+  // we cant use flatMap inside FlatMap because flatmanp is the only function which is used to implement
+  // ETW pattern so flatMap inside flatmap does not make any sense
+  // so we can only use map
+  val checkerBoard: Seq[(Int, Char)] = numbers.flatMap(num=> chars.map(char => (num,char)))
 }

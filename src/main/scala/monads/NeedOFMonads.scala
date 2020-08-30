@@ -1,11 +1,9 @@
 package monads
 
 object NeedOFMonads extends App {
-  case class SafeValueContainer[+T](private val internalValue:T)
   // this constructor are called  pure or unit in scala because they take one value
   //  and  wrap them in container
-
-   {
+  case class SafeValueContainer[+T](private val internalValue:T){
     def get:T = synchronized{
       internalValue
     }
@@ -19,7 +17,7 @@ object NeedOFMonads extends App {
     def transform [S] (fx : T => SafeValueContainer[S]) : SafeValueContainer[S] = synchronized{
       fx.apply(internalValue)
     }
-     def flatMap [S] (fx : T => SafeValueContainer[S]) : SafeValueContainer[S] = synchronized{
+     def flatmap [S](fx : T => SafeValueContainer[S]) : SafeValueContainer[S] = synchronized{
        fx.apply(internalValue)
      }
   }
@@ -30,18 +28,18 @@ object NeedOFMonads extends App {
   // now scenerio is we want to process the string is Wrapped in the SafeValue wrapper
   // to process that we need to extract it from the wrapper
   // so i am gonna call the extractor of wrapper
-  val wrappedString= safeStringContainer.get
+  val wrappedString: String = safeStringContainer.get
   // now we are going to transform it
   val upperString= wrappedString.toUpperCase
   // no we need to wrap it again in the container so that someone can again access it
-  val upperSafeString= giveMeSafeValue(upperSafeString)
+  val upperSafeString= giveMeSafeValue(upperString)
   // this pattern is called ETW (Extract Transform and Wrap)
   // So we can modify this code as we are doing ETW in three diffrent stages
   // we can define a method which will do the ETW in single shot
   //---------------Etw pattern now with Transformer which implement ETW in single shot--------------
 
  val etwpatternOutput = safeStringContainer.transform(string => SafeValueContainer(string.toUpperCase))
+  println(etwpatternOutput)
 // now as we have modified the SafeValueContainer this satisfies the Monads condition so it is monad
-val fx: String => SafeValueContainer[String]= str =>  SafeValueContainer(str.toUpperCase)
-  val newETWpatternoutout= safeStringContainer.flatMap(fx)
+println(safeStringContainer.flatmap(string => SafeValueContainer(string.toUpperCase)))
 }
