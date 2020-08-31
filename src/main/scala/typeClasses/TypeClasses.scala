@@ -1,11 +1,12 @@
 package typeClasses
 
 object TypeClasses  extends App {
-// to render html
-  trait HtmlWritable{
+// DDesign to Serialize domain objects to render html
+  trait HtmlSerializable{
     def toHtml:String
   }
-case class User(name:String, age:Int , email:String) extends HtmlWritable {
+  // This is the POJO we want to map that HTML object
+case class User(name:String, age:Int , email:String) extends HtmlSerializable {
   override def toHtml: String = s"<div> $name {$age} <a href = $email /> </div>"
 }
   val user=User("Prem", 34, "prem.kaushik@outlook.com")
@@ -34,9 +35,9 @@ case class User(name:String, age:Int , email:String) extends HtmlWritable {
   // Better DEsign than last two
   /*
   Advantages with this approach
-  We can define teh serializers for the other types
-  We can define Multiple Serilazers for the same type as well
-  Here in scala this trait HtmlSerliazer[T] is called Type Class
+  We can define teh serializers for the generic types
+  We can define Multiple Serializers for the same type as well
+  Here in scala this trait HtmlSerializer[T] is called Type Class
   because it defines the certain operations which can be applied
   to Type passed to it
   And these all implementations of this trait are type class instances
