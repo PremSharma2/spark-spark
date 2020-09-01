@@ -2,14 +2,14 @@ package typeClasses
 
 object PimpMyLibraryExercise extends App {
   //Exercise 1
-// implicit && value class
+// implicit && value class  this represent the implicit conversion
   implicit class RichString(value : String){
   def asInt:Int = Integer.valueOf(this.value) // here this expression returns java.lang.Int which scala convert
   //to Int
  def encrypt(cypherDistance:Int):String = this.value.map(char => (char + cypherDistance).asInstanceOf[Char] )
   }
 
-
+// these all are implicit conversions
   println("3".asInt + 4)
   println("Prem".encrypt(2))
 
@@ -52,6 +52,7 @@ object PimpMyLibraryExercise extends App {
 // Doing implicit conversions or pimping is not encouraged via method in scala i.e method implicit conversion
   // is not encouraged lets proof it why?
   implicit def intToBoolean(i:Int):Boolean= i==1
+  val conditionedValue1= if (3) "OK" else "Something Wrong"
 val conditionedValue= if (3) "OK" else "Something Wrong"
   println(conditionedValue)
 }

@@ -57,7 +57,7 @@ So, User and Tweet takes tiny types instead of Int or String values directly.
   // or one more example of scala implicit class and pimping is scala duration
 
   import scala.concurrent.duration._
-  3.seconds
+  val seconds: FiniteDuration =3.seconds
 
   // One imp point compiler does not do implicit searches
   implicit class RicherInt(richInt:RichInt){

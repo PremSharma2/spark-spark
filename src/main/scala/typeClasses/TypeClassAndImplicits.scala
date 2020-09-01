@@ -29,9 +29,16 @@ object TypeClassAndImplicits  extends App {
     override def serialize(user: User): String =
       s"<div> $user.name {$user.age yo} <a href = $user.email /> </div>"
   }
+
+  object PartialUserSerializer extends HtmlSerializer[User] {
+    override def serialize(user: User): String =
+      s"<div> $user.name /> </div>"
+  }
   case class User(name:String, age:Int , email:String)
   println(HtmlSerializer.serialize(42)(IntSerializer))
   println(HtmlSerializer.serialize(42))
   val user=User("Prem", 34, "prem.kaushik@outlook.com")
 println(HtmlSerializer.apply[User].serialize(user))
+
+  // Exercise
 }
