@@ -1,6 +1,6 @@
-package typeClasses
+package ImplicitsAndTypeClasses
 
-import typeClasses.TypeClasses.User
+import ImplicitsAndTypeClasses.TypeClasses.User
 
 object TypeClassExercise  extends App {
   trait Equal[T]{

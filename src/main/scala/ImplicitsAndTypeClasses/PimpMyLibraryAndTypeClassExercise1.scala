@@ -1,4 +1,4 @@
-package typeClasses
+package ImplicitsAndTypeClasses
 
 object PimpMyLibraryAndTypeClassExercise1 extends App {
 // implementing full fledged type class pattern with type enrichment or pimping

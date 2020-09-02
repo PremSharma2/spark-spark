@@ -1,4 +1,4 @@
-package typeClasses
+package ImplicitsAndTypeClasses
 
 //Exercise number 2
 // Types classes along with the implicits

@@ -1,4 +1,4 @@
-package typeClasses
+package ImplicitsAndTypeClasses
 
 object PimpMyLibraryExercise extends App {
   //Exercise 1

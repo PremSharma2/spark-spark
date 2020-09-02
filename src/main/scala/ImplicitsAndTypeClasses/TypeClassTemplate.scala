@@ -1,4 +1,4 @@
-package typeClasses
+package ImplicitsAndTypeClasses
 // this is the absolutely correct design for type class
 trait TypeClassTemplate [T]{
 

@@ -1,4 +1,4 @@
-package Implicits
+package ImplicitsAndTypeClasses
 
 object BestPracticesForDiffrentOrdering  extends App {
 

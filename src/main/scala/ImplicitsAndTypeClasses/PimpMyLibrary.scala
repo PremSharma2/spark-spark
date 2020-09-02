@@ -1,4 +1,4 @@
-package typeClasses
+package ImplicitsAndTypeClasses
 // implcit classes are used to implement this pimp my library feature
 object PimpMyLibrary  extends App {
   // implicit class takes only one argument and this is also value class

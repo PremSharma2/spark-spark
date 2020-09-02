@@ -1,4 +1,4 @@
-package Implicits
+package ImplicitsAndTypeClasses
 
 object ImplicitIntro extends  App {
 // Here "Prem " -> this expression is "Prem" first get converted into AroowAsosc

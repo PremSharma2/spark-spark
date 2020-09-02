@@ -1,4 +1,4 @@
-package typeClasses
+package ImplicitsAndTypeClasses
 
 object TypeClasses  extends App {
 // DDesign to Serialize domain objects to render html

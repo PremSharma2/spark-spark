@@ -1,4 +1,4 @@
-package Implicits
+package ImplicitsAndTypeClasses
 
 object OrganisingImplicits  extends App {
 //implicit val reversedOrdering :Ordering[Int] = Ordering.fromLessThan(_ > _)

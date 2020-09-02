@@ -1,4 +1,4 @@
-package Implicits
+package ImplicitsAndTypeClasses
 
 object ImplicitExercise extends App {
 

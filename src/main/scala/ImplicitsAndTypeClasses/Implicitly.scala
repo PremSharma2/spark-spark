@@ -1,4 +1,4 @@
-package typeClasses
+package ImplicitsAndTypeClasses
 
 object Implicitly extends App {
 

@@ -1,6 +1,4 @@
-package Implicits
-
-
+package ImplicitsAndTypeClasses
 
 object OrderingInCompanionObject  extends App {
 

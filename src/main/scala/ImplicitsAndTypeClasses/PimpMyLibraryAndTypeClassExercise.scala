@@ -1,6 +1,6 @@
-package typeClasses
+package ImplicitsAndTypeClasses
 
-import typeClasses.TypeClassAndImplicits.{HtmlSerializer, PartialUserSerializer, User}
+import ImplicitsAndTypeClasses.TypeClassAndImplicits.{HtmlSerializer, PartialUserSerializer, User}
 
 
 
