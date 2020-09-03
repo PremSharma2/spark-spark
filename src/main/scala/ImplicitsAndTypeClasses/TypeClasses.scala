@@ -1,7 +1,7 @@
 package ImplicitsAndTypeClasses
 
 object TypeClasses  extends App {
-// DDesign to Serialize domain objects to render html
+// Design to Serialize domain objects to render html
   trait HtmlSerializable{
     def serializeToHtml:String
   }
