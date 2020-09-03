@@ -5,8 +5,8 @@ import ImplicitsAndTypeClasses.TypeClassAndImplicits.{HtmlSerializer, PartialUse
 
 
 object PimpMyLibraryAndTypeClassExercise  extends App {
-// exercise of Type class and PimpMylibrary mixuture
-  // this is an imlicit value class
+// exercise of Type class pattern and PimpMylibrary mixuture
+  // this is an implicit value class for implicit conversion
   implicit class HTMLEnrichment[T](value:T){
   def toHtml(implicit serializer:HtmlSerializer[T]) :String = serializer.serialize(value)
 }
@@ -32,10 +32,11 @@ println(user.toHtml(UserSerializer)) // compiler rewrite this as new HTMLEnrichm
   }
   println(user.toHtml(PartialUserSerializer))
   /*
-  Hence type class pattern has three main components to Enhencing a type with type class
+  Hence type class pattern has three main components to Enhancing a type with type class
   1: type class itself   (trait HtmlSerializer[T])
   2: type class instances (some of which are implicits objects)
-  3: conversion with implicit value classes  (implicit class HTMLEnrichment[T](value:T))
+  3: implicit conversion with implicit value classes  (implicit class HTMLEnrichment[T](value:T))
+  Which will convert the your Data object to Serialized object implicitly
    */
 
   /*

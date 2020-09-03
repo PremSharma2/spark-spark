@@ -1,6 +1,6 @@
 package ImplicitsAndTypeClasses
 
-object PimpMyLibraryAndTypeClassExercise1 extends App {
+object PimpMyLibraryAndEqualityTypeClassExercise1 extends App {
 // implementing full fledged type class pattern with type enrichment or pimping
   // i.e with type conversion also
   trait Equal[T]{

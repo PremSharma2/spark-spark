@@ -9,7 +9,7 @@ object TypeClassExercise  extends App {
   //Companion object for equal
   object Equal{
     // this takes an type class instance
-    // we ca read like this use this equalizer on these values of Type T
+    // we ca read like this use this equalizer/Type class instance on these values of Type T
     def apply[T](a:T,b:T)(implicit equalizer:Equal[T]) :Boolean= equalizer.apply(a,b)
   }
   // This is Type Class instance

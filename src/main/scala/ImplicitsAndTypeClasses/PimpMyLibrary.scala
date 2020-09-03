@@ -20,10 +20,10 @@ object PimpMyLibrary  extends App {
    like classes Int, Boolean,  Double, etc.
    Use cases where you would want to and where you could apply value classes is for tiny types.
     Let’s look at a couple of examples of how that can be applied.
-      case class UserId(id: Int)
-case class Username(name: String)
-case class TweetId(id: Int)
-case class TweetContent(content: String)
+      case class UserId(val id: Int) extends AnyVal
+case class Username(name: String) extends AnyVal
+case class TweetId(id: Int) extends AnyVal
+case class TweetContent(content: String) extends AnyVal
 case class User(id: UserId, name: Username)
 case class Tweet(id: TweetId, content: TweetContent)
 
