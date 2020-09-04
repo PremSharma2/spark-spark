@@ -43,7 +43,7 @@ So, User and Tweet takes tiny types instead of Int or String values directly.
   println(new RichInt(2).squareRoot)
   // but as this is an implicit class we also can write that as follows
    println(42.isEven)
-  // This is called type enrichment or pimping
+  // This is called type enrichment or pimping or implicit conversion
   // here compiler rewrite the code like this   new RichInt(2).isEven
 
 

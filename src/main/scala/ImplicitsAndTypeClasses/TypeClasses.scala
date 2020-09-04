@@ -19,12 +19,14 @@ case class User(name:String, age:Int , email:String) extends HtmlSerializable {
 
   // Design number 2
   /*
+  Here we are trying to make this pattern general purpose for every types
+  we mae on companion object
   In this design we will pattern match the Instances
   so that it can be reused for other Types of instances
   DisAdvantages:
   We lost the type safety
   No use of Generic i.e this impl is not generic
-  We need to modify the code everytime we add new match
+  We need to modify the code every time we add new match
    */
 
   object HtmlSerializablePM{
@@ -33,16 +35,18 @@ case class User(name:String, age:Int , email:String) extends HtmlSerializable {
       case _ =>
     }
   }
-  // Better DEsign than last two
+
   /*
+    Better Design than last two
   Advantages with this approach
   We can define the  serializers for the generic types
   We can define Multiple Serializers for the same type as well
   Here in scala this trait HtmlSerializer[T] is called Type Class
   because it defines the certain operations which can be applied
-  to Type passed to it
+  to Type value  passed to it i.e T here
   And these all implementations of this trait are type class instances
   that's why we make then singleton object
+  This is called type class pattern
    */
   trait HtmlSerliazer[T]{
     def serialize(value : T):String

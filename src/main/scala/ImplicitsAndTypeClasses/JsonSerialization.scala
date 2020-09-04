@@ -4,7 +4,7 @@ import java.util.Date
 
 object JsonSerialization extends App {
 /*
-Serialize thse case classes
+Serialize these case classes
  */
   case class User(name:String, age:Int , email:String)
   case class Post(content:String, createdAt:Date )

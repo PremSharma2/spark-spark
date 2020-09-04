@@ -6,7 +6,8 @@ import ImplicitsAndTypeClasses.TypeClassAndImplicits.{HtmlSerializer, PartialUse
 
 object PimpMyLibraryAndTypeClassExercise  extends App {
 // exercise of Type class pattern and PimpMylibrary mixuture
-  // this is an implicit value class for implicit conversion
+  // this is an implicit value class for implicit conversion it will covert Buisness DO to HTML
+  // serializable form
   implicit class HTMLEnrichment[T](value:T){
   def toHtml(implicit serializer:HtmlSerializer[T]) :String = serializer.serialize(value)
 }

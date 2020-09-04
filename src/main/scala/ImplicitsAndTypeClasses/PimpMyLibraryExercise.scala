@@ -6,7 +6,9 @@ object PimpMyLibraryExercise extends App {
   implicit class RichString(value : String){
   def asInt:Int = Integer.valueOf(this.value) // here this expression returns java.lang.Int which scala convert
   //to Int
-    // Here in short we are trying to convert the String to Encrypted String i.e implicit conversion
+    // Here in short we are trying to convert the String to Encrypted String
+    // i.e implicit conversion
+    // here we can also use type enrichment
  def encrypt(cypherDistance:Int):String = this.value.map(char => (char + cypherDistance).asInstanceOf[Char] )
   }
 

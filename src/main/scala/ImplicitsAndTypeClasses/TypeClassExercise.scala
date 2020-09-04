@@ -1,7 +1,8 @@
 package ImplicitsAndTypeClasses
 
 import ImplicitsAndTypeClasses.TypeClasses.User
-
+//We want to build one equalizer api whcich checks the equality of objects of same type
+// this can be also a good use case  of type class pattern
 object TypeClassExercise  extends App {
   trait Equal[T]{
     def apply(a:T,b:T):Boolean
