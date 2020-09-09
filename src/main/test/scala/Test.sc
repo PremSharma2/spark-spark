@@ -1,4 +1,4 @@
-import scala.collection.SeqView
+import scala.collection.{SeqView, immutable}
 
 val l = List(1,2,3,4)
 val l1 = List(5,6,7,8)
@@ -38,3 +38,9 @@ val feedback: SeqView[Map[String, String], Seq[_]] = {
        } yield
     Map(s"Energy use for ${monthNames(i)}:" -> s"${"%.2f".format(xs)}")
 }
+
+val m = Map("a" -> "1", "b" -> "2")
+
+val incM: immutable.Iterable[String] = m map {case (key, value) => "\"" + key + "\":" + value}
+println(incM)
+println(incM.mkString("{",",","}"))

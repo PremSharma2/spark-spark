@@ -12,27 +12,27 @@ object JsonSerializationWithSyntacticSugar extends App {
   case class Feed(user: User, posts: List[Post])
 
   sealed trait JSONValue {
-    def toJsonstring: String
+    def toJSONString: String
   }
 
   final case class JsonDataObject(keyValuePair: Map[String, JSONValue]) extends JSONValue {
-    override def toJsonstring: String = keyValuePair.map {
-      case (key, value) => "\"" + key + "\":" + value.toJsonstring
+    override def toJSONString: String = keyValuePair.map {
+      case (key, value) => "\"" + key + "\":" + value.toJSONString
     } // so for every lement in this iterable we are calling mkString
       .mkString("{", ",", "}")
   }
 
   final case class JsonString(values: String) extends JSONValue {
-    override def toJsonstring: String = "\"" + values + "\""
+    override def toJSONString: String = "\"" + values + "\""
   }
 
   final case class JsonNumber(values: Int) extends JSONValue {
-    override def toJsonstring: String = values.toString
+    override def toJSONString: String = values.toString
   }
 
   // This is special because it contains List of other JSONValue(other intermediate data types)
   final case class JsonArray(values: List[JSONValue]) extends JSONValue {
-    override def toJsonstring: String = values.map(_.toJsonstring).mkString("[", ",", "]")
+    override def toJSONString: String = values.map(_.toJSONString).mkString("[", ",", "]")
   }
 
   // here we are populating JsonDataObject from our application DO
@@ -43,7 +43,7 @@ object JsonSerializationWithSyntacticSugar extends App {
         JsonNumber(453)))
     )
   }
-  println(jsonData.toJsonstring)
+  println(jsonData.toJSONString)
 
   trait JsonFormatConverter[T] {
     def convert(value: T): JSONValue
@@ -87,7 +87,7 @@ object JsonSerializationWithSyntacticSugar extends App {
   // Custom object goes as Key,value pair
   implicit object FeedConverter extends JsonFormatConverter[Feed] {
     override def convert(feed: Feed): JSONValue = {
-      // List of key value pair
+      // List of key value pair we will get here the post json
       val jsonValuelist: List[JSONValue] = feed.posts.map(_.toJSON).toList
       JsonDataObject(Map(
         "user:" -> feed.user.toJSON,
@@ -105,5 +105,5 @@ object JsonSerializationWithSyntacticSugar extends App {
     Post("Hello- Scala", now),
     Post("Look at the cute puppy", now)
   ))
-  println(feed.toJSON.toJsonstring)
+  println(feed.toJSON.toJSONString)
 }
