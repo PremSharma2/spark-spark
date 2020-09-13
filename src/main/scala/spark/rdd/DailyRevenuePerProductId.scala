@@ -3,6 +3,7 @@ package spark.rdd
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 object DailyRevenuePerProductId extends App{
   
@@ -17,8 +18,8 @@ object DailyRevenuePerProductId extends App{
 
   val sparksession: SparkSession = SparkSession.builder.master("local").config(spark).getOrCreate()
   val sparkContext = sparksession.sparkContext
-  val ordersRDD = sparkContext.textFile("D:/Spark_VM/data-set/data/retail_db/orders", 2)
-   val orderItems = sparkContext.textFile("D:/Spark_VM/data-set/data/retail_db/order_items", 2)
+  val ordersRDD = sparkContext.textFile("C:\\prem\\prem\\Data\\Spark_VM\\orders", 2)
+   val orderItems = sparkContext.textFile("C:\\prem\\prem\\Data\\Spark_VM\\data-set\\data\\retail_db\\order_items", 2)
   val ordersRDDFiltered= ordersRDD.filter(order => order.split(",")(3) == "COMPLETE" || order.split(",")(3)=="CLOSED")
 
   ordersRDDFiltered.take(10).foreach(println)
@@ -31,7 +32,7 @@ object DailyRevenuePerProductId extends App{
       }
   }
   //(ordreItemOrderId,(productId,OrdreItemsubtotal))
-  val orderItemsMap= orderItems.map{
+  val orderItemsMap: RDD[(Int, (Int, Float))] = orderItems.map{
     orderitem: String =>
       {
         val oi = orderitem.split(",")

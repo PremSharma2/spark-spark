@@ -27,11 +27,13 @@ object VarianceExercise  extends App{
   //Covariant API Implementation
   class CParking[+T](vehicles :List[T])   {
     // we need to do the hecking of compiler to avoid Second ThumB Rule for variance
+   // def park [S>:T] (vehicle:S):T= ???
     def park [S>:T] (vehicle:S):CParking[S]= ???
     def impound [S>:T] (vehicles:List[S]):CParking[S]= ???
     def checkVehicles(conditions:String):List[T] = ???
     def flatMap[S](f : T => CParking[S]): CParking[S] = ???
-    //def flatMap(f : T => CParking[T]): CParking[T] = ???
+    // Due to double Varience function input has become covariant and its o/p has become contravariant
+    def transform [S>:T](function : T => S): CParking[T] = ???
   }
   //Contravariant implementation
   

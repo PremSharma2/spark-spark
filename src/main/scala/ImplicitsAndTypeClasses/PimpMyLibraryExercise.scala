@@ -62,5 +62,6 @@ object PimpMyLibraryExercise extends App {
   implicit def intToBoolean(i:Int):Boolean= i==1
   val conditionedValue1= if (3) "OK" else "Something Wrong"
 val conditionedValue= if (3) "OK" else "Something Wrong"
+  val condition: Boolean = 3
   println(conditionedValue)
 }

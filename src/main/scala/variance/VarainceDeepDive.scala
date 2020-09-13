@@ -10,7 +10,8 @@ object VarainceDeepDive extends App {
   class Crocodile extends Animal
   class Cat extends Animal
   //what is varaince ?
-  //problem of inheritance - type substitution of Generics
+  //problem of inheritance - type substitution of Generics types
+  // like we substitute in inheritance when A extends B  , where B is super class
   //Its all about substituting the Type of Generic Class or FuntionParameter at Run Time
   /*
    * Variance defines Inheritance relationships of Parameterized Types. Variance is all about Sub-Typing.
@@ -27,7 +28,7 @@ object VarainceDeepDive extends App {
 
 
     Covariant in Scala
-     If “S” is subtype of “T” then List[S] is is a subtype of List[T].
+     If “S” is subtype of “T”  i.e S -> T , then List[S] is is a subtype of List[T].
      This kind of Inheritance Relationship between two Parameterized Types is known as “Covariant”
      
      Contravariant in Scala
@@ -55,7 +56,8 @@ class SubType extends Type[Int]{
   }
 }
 
-** Here as we can see that we have declared Int but we are passing AnyVal so it is valid,because t is at contravarient position
+** Here as we can see that we have declared Int but we are passing AnyVal so it is valid,
+* because t is at contravarient position
 
 object ScalaContravarianceTest {
 
@@ -77,10 +79,10 @@ object ScalaContravarianceTest {
   class Kitty extends Cat
   class Cage[T]
   class CCage[+T]
-  val covariantCage: CCage[Animal] = new CCage[Cat]
+  val covariantCage: CCage[Animal] = new CCage[Cat] //this proves the covariant relationship
   class XCage[-T]
 
-  val contraVariantCage: XCage[Cat] = new XCage[Animal]
+  val contraVariantCage: XCage[Cat] = new XCage[Animal]  //this proves the contravariant relationship
 /*
 The compiler checks each use of each of the class’s type parameters. Type parameters annotated with +
 may only be used in positive positions,
@@ -122,12 +124,15 @@ A type parameter with no variance annotation may be used in any position,
     *
     * because if somehow compiler pass this code then i can write
     * val cage:CoVariantVariableCage[Animal]= new CoVariantVariableCage[Cat](new Cat)
-    * that is fine ,now cage is of animal so i can put another animal inside cage:CoVariantVariableCage[Animal] as this var you can change the reference variable
-    * and we changed the attribute of CoVariantVariableCage
+    * that is fine ,now cage is of animal so
+    * i can put another animal inside cage:CoVariantVariableCage[Animal]
+    * as this animal attribute is var you can change the reference variable animal
+    * and we changed the reference of attribute named animal  of CoVariantVariableCage
     *
     * cage.animal=new Crocodile
     * that in theory is fine because we have not violated the first thumb rule 
-    * problem here is that the you have instantiated with specific type and you are passing Generic type that is also logically wrong
+    * problem here is that the you have instantiated with specific type and
+    * you are passing Generic type that is also logically wrong
     */
    //Lets take another example
    /*
@@ -138,7 +143,7 @@ A type parameter with no variance annotation may be used in any position,
     * 
     * Reason:
     * because if somehow compiler pass this code then i can write
-    * val cage:ContraVariantVariableCage[Cat]= new ContraVariantVariableCage[Animal](new Cat)
+    * val cage:ContraVariantVariableCage[Cat]= new ContraVariantVariableCage[Animal](new Crocodile)
     * 
     * Hence after looking into the last two examples we can come to conclusion is that only acceptable type for var is at Invariant Position
     * 
@@ -184,11 +189,13 @@ A type parameter with no variance annotation may be used in any position,
 //accCage.addAnimal(new Dog)
   
   
-  ///We want to Build A Covariant Collection i.e Collection of All kinds then we need to break the Rule for that we will heck the compiler
+  ///We want to Build A Covariant Collection i.e
+  // Collection of All kinds then we need to break the Rule for that we will heck the compiler
   class MyList[+A] {
     // We need to make the changes in order to built a covariant list otherwise it will throw an error
     //of contravariant position
-    //we hack the compiler and told him this will accept the argument B which is super type of A and we will add that element into collection
+    //we hack the compiler and told him this will accept the argument
+    // B which is super type of A and we will add that element into collection
     //and will return collection of that type i.e B
     //this is basically widening the type
     def add[B >: A](element: B): MyList[B] = new MyList[B]
@@ -216,18 +223,24 @@ A type parameter with no variance annotation may be used in any position,
       * def get(isItAPuppy: Boolean):Animal=new Cat
       * }
       *if we have allowed contravariant as return type then type safety rule violates for eg:
-      * val dogShop:PetShop[Dog]=catShop
-      * this is looks perfect bcz catShop IS petShop[animal] of animal and  PetShop is contravariant and catshop is super type of dogshop
-      * now dog shop is equal to catShop,Which is illogical hence we cannot have Contravariant in Return Position
+      * val dogShop:PetShop[Dog]=catShop // or catShop is equal to petShop[Animal]
+      * this is looks perfect bcz catShop IS petShop[Animal] of Animal
+      this is perfect in terms contravariant relationship or contravariant type substitution
+       PetShop[-T] is contravariant and catshop is super type of dogshop
+      * now dog shop is equal to catShop,Which is illogical here because API is expecting Dog
+      and it is coming out Cat
+      we cannot have Contravariant in Return Position
       * dogShop.get(true)
       * but this will return me an EVIL CAT!!! which is logically wrong how can PetShop[Dog] return an Cat
-      * That is why scala made second golden thumb rule ,And MoreOver this is logically wrong so compiler will thow an error
+      * That is why scala made second golden thumb rule ,
+      And MoreOver this is logically wrong so compiler will throw an error
       */
     //}
     //Solution of above problem is to hack the Compiler and make the return type like it is covariant
     def get[S <: T](isItAPuppy: Boolean, defaultAnimal: S): S = defaultAnimal
   }
   val shop: PetShop[Dog] = new PetShop[Animal]
+  // This is true acc to contravariant
   class RoteWoiler extends Dog
   val bigFurry=shop.get(true, new RoteWoiler)
   //val animal=shop.get(false, new Cat)

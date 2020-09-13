@@ -20,38 +20,43 @@ object CombineByKey extends App {
   }
 
   val sparkContext = sparksession.sparkContext
-  type ScoreCollector = (Int, Double)
-  type PersonScores = (String, (Int, Double))
+  val studentRDD = sparkContext.parallelize(Array(
+    ("Joseph", "Maths", 83), ("Joseph", "Physics", 74), ("Joseph", "Chemistry", 91),
+    ("Joseph", "Biology", 82), ("Jimmy", "Maths", 69), ("Jimmy", "Physics", 62),
+    ("Jimmy", "Chemistry", 97), ("Jimmy", "Biology", 80), ("Tina", "Maths", 78),
+    ("Tina", "Physics", 73), ("Tina", "Chemistry", 68), ("Tina", "Biology", 87),
+    ("Thomas", "Maths", 87), ("Thomas", "Physics", 93), ("Thomas", "Chemistry", 91),
+    ("Thomas", "Biology", 74), ("Cory", "Maths", 56), ("Cory", "Physics", 65),
+    ("Cory", "Chemistry", 71), ("Cory", "Biology", 68), ("Jackeline", "Maths", 86),
+    ("Jackeline", "Physics", 62), ("Jackeline", "Chemistry", 75), ("Jackeline", "Biology", 83),
+    ("Juan", "Maths", 63), ("Juan", "Physics", 69), ("Juan", "Chemistry", 64),
+    ("Juan", "Biology", 60)), 3)
 
-  val initialScores = Array(("Fred", 88.0), ("Fred", 95.0), ("Fred", 91.0), ("Wilma", 93.0), ("Wilma", 95.0), ("Wilma", 98.0))
+  //Defining createCombiner, mergeValue and mergeCombiner functions
+  def createCombiner = (tuple: (String, Int)) =>
+    (tuple._2.toDouble, 1)
 
-  val wilmaAndFredScores = sparkContext.parallelize(initialScores).cache()
+  def mergeValue = (accumulator: (Double, Int), element: (String, Int)) =>
+    (accumulator._1 + element._2, accumulator._2 + 1)
 
-  val createScoreCombiner = (score: Double) => (1, score)
+  def mergeCombiner = (accumulator1: (Double, Int), accumulator2: (Double, Int)) =>
+    (accumulator1._1 + accumulator2._1, accumulator1._2 + accumulator2._2)
 
-  val scoreCombiner: ((Int, Double), Double) => (Int, Double) =
-    (mergingAccumlatorWithintheSamePartition: (Int, Double), score: Double) => {
 
-      (mergingAccumlatorWithintheSamePartition._1 + 1, mergingAccumlatorWithintheSamePartition._2 + score)
-    }
+  // use combineByKey for finding percentage
+  val combRDD = studentRDD.map(t => (t._1, (t._2, t._3)))
+    .combineByKey(createCombiner, mergeValue, mergeCombiner)
+    .map(e => (e._1, e._2._1/e._2._2))
 
-  val scoreMerger = (accumlatorofPartition1: ScoreCollector, accumlatorofPartition2: ScoreCollector) => {
-    val (numScores1, totalScore1) = accumlatorofPartition1
-    val (numScores2, totalScore2) = accumlatorofPartition2
-    (numScores1 + numScores2, totalScore1 + totalScore2)
-  }
-  val scores = wilmaAndFredScores.combineByKey(createScoreCombiner, scoreCombiner, scoreMerger)
+  //Check the Outout
+  combRDD.collect foreach println
 
-  val averagingFunction: ((String, (Int, Double))) => (String, Double) = personScore => {
-    (personScore._1, personScore._2._2 / personScore._2._1)
-  }
-
-  val averageScores = scores.map(averagingFunction).collectAsMap()
-
-  println("Average Scores using CombingByKey")
-  averageScores.foreach((ps) => {
-    val (name, average) = ps
-    println(name + "'s average score : " + average)
-  })
-
+  // Output
+  // (Tina,76.5)
+  // (Thomas,86.25)
+  // (Jackeline,76.5)
+  // (Joseph,82.5)
+  // (Juan,64.0)
+  // (Jimmy,77.0)
+  // (Cory,65.0)
 }
