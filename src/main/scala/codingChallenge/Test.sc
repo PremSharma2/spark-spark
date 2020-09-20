@@ -11,3 +11,21 @@ s.filter(x => s1.apply(x))
 var x,y,z = (1,2,3)
 println(x,y,z)
 println(l.mkString("[",",","]"))
+
+val i = 102119
+var rem = -1
+var num = i
+var lstBuffer = scala.collection.mutable.ListBuffer[(Int,Int)]()
+while(num > 0) {
+  rem = num % 10
+  if (!lstBuffer.exists(t => t._1 == rem)) {
+    lstBuffer.append((rem, 1))
+  } else {
+    var cnt = lstBuffer.filter(t => t._1 == rem).head._2
+    lstBuffer -= ((rem, cnt))
+    cnt += 1
+    lstBuffer.append((rem, cnt))
+  }
+}
+
+println(lstBuffer.toList.head)

@@ -3,9 +3,10 @@ package spark.rdd
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.{ Row, SparkSession }
-import org.apache.spark.sql.types.{ IntegerType, StringType, StructField, StructType }
+import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
 import org.apache.spark.sql.functions.udf
 import org.apache.spark.sql.functions.col
 object PairRDDOperations extends App {
@@ -30,19 +31,20 @@ object PairRDDOperations extends App {
      2,2,1073,1,199.99,199.99
    */
   orderItems.take(2).foreach(println)
-  val orderMap = ordersrdd.map {
+  val orderMap: RDD[(String, String)] = ordersrdd.map {
     order => (order.split(",")(3), "") 
   }
   println(orderMap.countByKey())
   //find out txn of max revenue among all txn in orderItem dataset
   //we need to reduce all the values to single value i.e single max txn
-  val orderItemsRevenue = orderItems.map {
+  val orderItemsRevenue: RDD[Float] = orderItems.map {
     oi => oi.split(",")(4).toFloat
   }
   
   //def reduce(f: (Float, Float) => Float): Float
   /*
-   * this reduce function works on each partition and finally on all partition values to give final reduced output
+   * this reduce function works on each partition and finally on
+   *  all partition values to give final reduced output
    */
   val orderItemsMaxRevenue = orderItemsRevenue.reduce {
     (accumlator, revenue) => if (accumlator < revenue) revenue else accumlator
@@ -51,7 +53,7 @@ object PairRDDOperations extends App {
 
   // Get revenue Per Order Id
  //1,1,957,1,299.98,299.98l
-  val orderItemMap = orderItems.map {
+  val orderItemMap: RDD[(Int, Float)] = orderItems.map {
     orderitem => (orderitem.split(",")(1).toInt, orderitem.split(",")(4).toFloat)
   }
 
@@ -79,15 +81,15 @@ object PairRDDOperations extends App {
 
   // Get data in descending order by order_item_sub_total_Item for each order_id
   //we need flattend result
-  val sorteddata = order_sub_total_Item_group.flatMap {
+  val sorteddata: RDD[(Int, Float)] = order_sub_total_Item_group.flatMap {
 
     (tuple) => tuple._2.toList.sortBy(o => -o).map(order_item_sub_total_Item => (tuple._1, order_item_sub_total_Item))
       
   }
   sorteddata.take(10).foreach(println)
   println(sorteddata.toDebugString)
-  //revenue per Order
-  val revenuePerOrderId = orderItemMap.reduceByKey {
+  // total revenue per Order
+  val revenuePerOrderId: RDD[(Int, Float)] = orderItemMap.reduceByKey {
     (total, revenue) => total + revenue
   }
   // min revenue  Orders

@@ -38,7 +38,7 @@ object VarianceExercise  extends App{
   //Contravariant implementation
   
   class XParking[-T] (vehicles :List[T]){
-     def park(vehicle:T):XParking[T]= ???
+     def park (vehicle:T):XParking[T]= ???
      def impound (vehicles:List[T]):XParking[T]= ???
      // we need to do the hecking of compiler to avoid Third ThumB Rule for variance
      def checkVehicles [S<:T](conditions:String):List[S] = ???
@@ -54,9 +54,11 @@ object VarianceExercise  extends App{
       *
       * this is basically nothing but (f: Function1[T,XParking[S]]
       * and Function1 is at contravariant position on its input params because of second thumb rule
-      * by API specification for Function1 in scala api docs (T is contravariant and XParking[S] is covariant position)
+      * by API specification for Function1 in scala api docs (T is contravariant and XParking[S]
+      * is covariant position)
       * But Problem here is that T has become double contravariant that eventually will be equal to  covariant
-      * Double Contravariant hence this position is becomes Covariant so this is Covariant Position now not contravariant
+      * Double Contravariant hence this position is becomes Covariant
+      *  so this is Covariant Position now not contravariant
       * we need to make changes with respect to T
       */
      def flatMap [R<:T,S](f : R => XParking[S]): XParking[S] = ???
@@ -67,7 +69,7 @@ object VarianceExercise  extends App{
   //IList[T] is invariant,So We are making Invariant List to covariant
   
    //Covariant Implementation
-  class CParking2[+T](vehicles :IList[T])   {
+  class CParking2[+T]( vehicles :IList[T])   {
     // we need to do the hacking of compiler to avoid second ThumB Rule for variance i.e to make the method argument is at
      // contravariant position
     def park [S>:T] (vehicle:S):CParking2[S]= ???
@@ -76,7 +78,8 @@ object VarianceExercise  extends App{
          you cannot supply an invariant parameter 
          with a covariant value
      */
-    //covariant type T occurs in invariant position in type com.scala.variance.VarianceExercise.IList[T] of value vehicles
+    //covariant type T occurs in invariant position in
+    // type com.scala.variance.VarianceExercise.IList[T] of value vehicles
      //def impound  (vehicles:IList[T]):CParking2[T]= ???
     def impound [S>:T] (vehicles:IList[S]):CParking2[S]= ???
     //covariant type T occurs in invariant position in type (conditions: String)
@@ -86,17 +89,19 @@ object VarianceExercise  extends App{
     // def checkVehicles [S<:T](conditions:String):IList[S] = ???
 
    //  def checkVehicles (conditions:String):IList[T] = ???
+    // Note : Scala smartly converted this Covariant   position into Contravariant to fix this Invariant List
   }
   //Contravariant monadic  implementation
   
-  class XParking2[-T] (vehicles :IList[T]){
+  class XParking2[-T] ( vehicles :IList[T]){
      def park(vehicle:T):XParking2[T]= ???
      /*
      def impound (vehicles:IList[T]):XParking2[S]= ???
-      *Error: contravariant type T occurs in invariant position in type com.scala.variance.VarianceExercise.IList[T] of value vehicles
+      *Error: contravariant type T occurs in invariant position
+       in type com.scala.variance.VarianceExercise.IList[T] of value vehicles
       * Reason: you cannot supply an invariant parameter
          with a contravariant type value
-         This IList is invarient and you are supplying the contravarient type
+         This IList is invariant and you are supplying the contravariant type
          Hence this is wrong
          *
          *
@@ -111,14 +116,7 @@ object VarianceExercise  extends App{
          Note : Scala smartly converted this Contravariant  position into Covariant
       */
      def impound [S<:T](vehicles:IList[S]):XParking2[S]= ???
-      /*
-       def impound (vehicles:IList[T]):XParking2[T]= ???
-       Contravariant type T occurs in invariant position in type VarianceExercise.IList[T] of value vehicles
-       */
-     // we need to do the hecking of compiler to avoid Second ThumB Rule for variance
-     //if we use S>:T then 
-     //contravariant type T occurs in covariant position in type >: T of type S hence it is covariant position
-    //  Note : Scala smartly converted this Contravariant  position into Covariant
+
      def checkVehicles [S<:T](conditions:String):IList[S] = ???
   }
 }

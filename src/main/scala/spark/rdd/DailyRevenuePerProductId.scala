@@ -24,7 +24,7 @@ object DailyRevenuePerProductId extends App{
 
   ordersRDDFiltered.take(10).foreach(println)
   //(OrdreId,OrderDate)
-  val ordresMap=ordersRDDFiltered.map{
+  val ordresMap: RDD[(Int, String)] =ordersRDDFiltered.map{
     order: String =>
       {
         val o = order.split(",")

@@ -1,6 +1,7 @@
 package monads
 
-object MonadExplanation  extends App{
+object
+MonadExplanation  extends App{
 /*
 Monads are kind of Abstract type which have some fundamental operations
 Like mentioned below

@@ -61,7 +61,7 @@ for (i <- 1 to 5) println(i)
 // or we can write this
   val seq= List("India", "USA", "China", "Japan")
 
-  for{
+  val unit: Unit =for{
      element <-seq
 
   } println(element)
