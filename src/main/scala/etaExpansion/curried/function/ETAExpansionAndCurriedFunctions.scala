@@ -1,6 +1,6 @@
-package curries.partiallyapplied.function
+package etaExpansion.curried.function
 
-object CurriedAndPartiallyAppliedFunction extends App {
+object ETAExpansionAndCurriedFunctions extends App {
   // This is called currying or series of Function Calls in Scala
   val superAddition: Int => (Int => Int) = (x) => (y) => x + y
 

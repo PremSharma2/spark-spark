@@ -32,15 +32,8 @@ object HofAndCurries extends App {
 
   println(nTimes(plusOne, 10, 1))
   // curried approach
-  
-  //increment10 = ntb(plusone,10)= x => plusone(plusOne.......(x))
-  // it will return lambda nor the value  it is better approach
+
   /*
-   * this is curring the application of this function n number of times 
-   * ntb(plusOne,2)
-   * = ntb(plusOne,1)(plusOne.apply(x))
-   * =ntb(plusOne,0)((plusOne.apply(x))
-   * = (f(f(x))
    *
    * All that the theory of currying means is that a function that takes multiple arguments
    *  can be translated into a series of function calls in a cascading manner
@@ -60,16 +53,55 @@ object HofAndCurries extends App {
    * ntb(f,4)	= x => f(f(f(f(x))))
    * x => f(f(f(f(x)))) hence this is the output of this function ntb(f,4)
    */
-  def nTimesBetter(f: Int => Int, n: Int): (Int => Int) = {
-    if (n <= 0) (x: Int) => x
-    /*plusOne(f(x))
-     * plusOne(plusOne.........(plusOne)f((x))
+  /*
+        ntimes Better Explanation
+        break down of All recursion calls in stack
+     * nTimesBetter(f,4) = x => nTimesBetter(f,3).apply(f.apply(x)) // First stack of recursion
+     * nTimesBetter(f,3) = x => nTimesBetter(f,2).apply(f.apply(x))//2nd
+     * nTimesBetter(f,2) = x => nTimesBetter(f,1).apply(f.apply(x))//3rd
+     * nTimesBetter(f,1) = x => nTimesBetter(f,0).apply(f.apply(x))//4th
+     * nTimesBetter(f,0) = (x: Int) => x  it will return identity function and
+     now recursion traces back
+      Now When Lets Evaluate How recursion Trace Back
+      Identity Function is the Retun value returned to caller i.e 4th Postion
+      so it ill be like
+
+      now at 4th postion identity Function applied f.apply(f.apply(x)) = f.apply(x)
+      i.e when u apply identity function to f.apply(x) this input which is function
+       fIdentity.apply(f.apply(x)) then it will Return f.apply(x) bcz o/p of identity function is i/p
+       applied to it hence it will look like this
+       fx: x => f(x) this will be the returned value
+       ---------------------------------------------
+     Now lets evaluate the 3rd Position
+     nTimesBetter(f,1) value returned to this call is  fx: x => f(x)  which is an function
+        So the value calculated at trace back recursion at 3rd position
+        fx is nothing but f applied to input
+        and input is f.apply(x)
+        so it will become like this
+    fy:    x=>  f.apply(f.apply(x))
+         fy is nothing but f applied twice to input
+----------------------------------------------------------
+       Now lets evaluate the 2nd Position
+         f(f(f(x)))
+        fz: x=>   f(f(f(x)))
+         it will be returned
+         fz is nothing but f applied 3rice to input
+
+         -----------------------------------------
+         Now Lets Evaluate at 1 position
+            f(f(f(f(x))))
+           But if You look closely fx fy fz functions are nothing they are just
+           currying of f function which is original function so i can write
+           ntb(f,4)	= x => f(f(f(f(x))))
+      or----------------------------------------------------------------
      * f: (Int => Int) => f => f=> f=> f=>......f=> Int
      * i.e ntb(f,4)	= x => f(f(f(f(x))))
      * x => plusOne.apply(plusOne.apply(plusOne.apply(plusOne.apply(x)))) this lambda is return type
      * increment2=ntb(plusOne,2) = x => plusOne(plusOne(x))
      *
      */
+  def nTimesBetter(f: Int => Int, n: Int): (Int => Int) = {
+    if (n <= 0) (x: Int) => x // This is called Identity Function
     //else (x:Int) => nTimesBetter(f, n-1).apply(f.apply(x))
     else (x: Int) => nTimesBetter(f, n - 1)(f(x))
   }
