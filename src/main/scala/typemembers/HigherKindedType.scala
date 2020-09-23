@@ -52,14 +52,49 @@ object HigherKindedType  extends App {
   // then this can be only Possible With higherKinded Types
   //F[_] this here Represents that it will accept any Kind of Monad so all kinds of monads will be present
   // i.e List,future,Option etc etc...
-  trait SuperMonad[F[_],A]{
-    def flatMap[B](fx: A => F[B]):F[B]
+  // Here [Monad[_],A] here it represent that this SuperMonad will take input as Monad and A is the type of Monad
+  trait SuperMonad[Monad[_],A]{ // it is also a Type class over HigherKinded Type
+    def flatMap[B](fx: A => Monad[B]):Monad[B]
+    def map[B](fx: A => B):Monad[B]
   }
   // Its like abstraction Of List of integers
-  class MonadList extends SuperMonad[List,Int] {
-    override def flatMap[B](fx: Int => List[B]): List[B] = ???
+  //This API is to Handle ListMonad
+  //This is basically Wrapper over List Monad or any kind of Monad
+ implicit class MonadicList[A](list:List[A]) extends SuperMonad[List,A] {
+    override def flatMap[B](fx: A => List[B]): List[B] = list.flatMap(fx)
+
+    override def map[B](fx: A => B): List[B] = list.map(fx)
   }
-  val monadList= new MonadList
-  monadList.flatMap(x => List(x,x+1))
+// Another Type Of monad i.e Option Monad will reuse the same same Wrapper
+implicit  class OptionMonad1[A](option:Option[A]) extends SuperMonad[Option,A] {
+    override def flatMap[B](fx: A => Option[B]): Option[B] = option.flatMap(fx)
+
+    override def map[B](fx: A => B): Option[B] = option.map(fx)
+  }
+  val monadList= new MonadicList(List(1,2,3))
+  val result: Seq[Int] =monadList.flatMap(x => List(x,x+1))
+  val result1: Seq[Int] =monadList.map( _+1 )
  // monadList.flatMap(List(_+1))
+  // now as we are building a common API for all types of monads
+// here we will add type for Monad also
+  // We can read like this as well as
+  // ma is Container of Monad of type A
+  // To handle Monad of diffrent kind we added type for Monad F[_]
+  // output of this method is F[(A,B)] which is ListMonad of (Int,String) i.e tuple
+  def multiply[F[_],A,B](implicit ma:SuperMonad[F,A],mb:SuperMonad[F,B]):F[(A,B)] = {
+    for{
+      a <- ma
+      b <- mb
+    } yield (a,b)
+    /*
+    compiler will trasnsform this For comprehension into map and flatmap
+    ma.flatMap(a=> mb.map(b => (a,b)))
+    so when we call ma.flatMap(fx) where fx= a=> mb.map(b => (a,b))
+     inside flatMap we will call a.flatMap which will give a the original value
+     */
+  }
+  // Lets Test This For ListMonad container We created to Handle ListMonad
+ println(multiply(monadList,new MonadicList[String](List("a","b","c")) ))
+  println(multiply(new OptionMonad1[Int](Some(1)),new OptionMonad1[String](Some("Scala"))))
+  println(multiply(List(1,2,3),List("a,b,c")))
 }

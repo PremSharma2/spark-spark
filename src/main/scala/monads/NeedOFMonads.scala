@@ -37,7 +37,8 @@ object NeedOFMonads extends App {
   // So we can modify this code as we are doing ETW in three diffrent stages
   // we can define a method which will do the ETW in single shot
   //---------------Etw pattern now with Transformer which implement ETW in single shot--------------
-
+// scala will extract the value form Container and will apply the transforming function to this Value
+  // And then Wrap it again in Container
  val etwpatternOutput = safeStringContainer.transform(string => SafeValueContainer(string.toUpperCase))
   println(etwpatternOutput)
 // now as we have modified the SafeValueContainer this satisfies the Monads condition so it is monad
