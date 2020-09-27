@@ -8,7 +8,7 @@ object Expressions extends App {
   println(x==1)// Boolean Expression
   // false scenerio boolean expression
   println(!(1==x)) // Boolean Expression
-  //assignment and declaration of an variable in scala
+  //assignment and declaration of an variable in scala they both goes hand in hand
   var a:Int=3
   //Side effect in variable
   a+=3
@@ -27,7 +27,6 @@ object Expressions extends App {
   val conditionalExpressionOutput: Int =if (aCondition) 5 else 3
   println(conditionalExpressionOutput)
   
- 
 
   /*var i=0
   while(i<10){

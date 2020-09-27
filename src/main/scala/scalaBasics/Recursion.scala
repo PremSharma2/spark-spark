@@ -25,9 +25,9 @@ object Recursion extends App {
 
   def anotherFactorial(n: Int): BigInt = {
     @tailrec
-    def factHelper(x: Int, accumlator: BigInt): BigInt = {
-      if (x <= 1) accumlator 
-      else factHelper(x - 1, x * accumlator)
+    def factHelper(n: Int, accumulator: BigInt): BigInt = {
+      if (n <= 1) accumulator
+      else factHelper(n - 1, n * accumulator)
     }
     factHelper(n, 1)
 
@@ -52,22 +52,22 @@ object Recursion extends App {
   The recursive call should be the last thing to do i the function no pending computation is there
    */
   @tailrec
-  def concatStringTailRecur(aString: String, n: Int, accumlator: String): String = {
-    if (n <= 0) accumlator else concatStringTailRecur(aString, n - 1, aString + accumlator)
+  def concatStringTailRecur(aString: String, n: Int, accumulator: String): String = {
+    if (n <= 0) accumulator else concatStringTailRecur(aString, n - 1, aString + accumulator)
 
   }
 
   def isPrime(n: Int): Boolean = {
     @tailrec
-    def isPrimeTailRec(t: Int, isStillPrimeAccumlator: Boolean): Boolean =
+    def isPrimeTailRec(t: Int, isNumberPrime: Boolean): Boolean =
       // if accumulator value is false then we will return false value
-      if (!isStillPrimeAccumlator) false
+      if (!isNumberPrime) false
       else if (t <= 1) true
       else {
         var conditionalExpression = n % t != 0
         // if any of these flag is false accumulator value will be false here
-       var accumulatedValue: Boolean =  (conditionalExpression && isStillPrimeAccumlator)
-        isPrimeTailRec(t - 1, accumulatedValue)
+       var accumulator: Boolean =  (conditionalExpression && isNumberPrime)
+        isPrimeTailRec(t - 1, accumulator)
       }
      isPrimeTailRec(n/2, true)
   }

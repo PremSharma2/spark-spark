@@ -6,7 +6,7 @@ import org.apache.spark.sql.functions.{col, when}
 class PrimeTimeEvaluator {
 
 
-  def addPrimeTime(movieDataframe: DataFrame): Unit = {
+  def addPrimeTime(movieDataframe: DataFrame): DataFrame = {
 
     movieDataframe.show()
     /**
@@ -61,7 +61,7 @@ class PrimeTimeEvaluator {
     renamedColumns = df_prime.columns.map(c => col(c).as(c.replaceFirst("orig_", "")))
     df_prime = df_prime.select(renamedColumns: _*)
 
-    df_prime.show()
+    df_prime
   }
 
 

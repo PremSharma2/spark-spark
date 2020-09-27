@@ -30,9 +30,9 @@ object InheritanceInScala extends App {
 
   }
   // or we can override class feilds in this way
-
+//here it is clear that def can be over ridden as val
   class Bird(override val creatureType: String) extends Animal {
-    override def eat = {
+    override val eat = {
       super.eat
       println("quaw--quaw")
     }

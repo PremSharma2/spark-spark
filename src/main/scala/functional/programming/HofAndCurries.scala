@@ -98,12 +98,32 @@ object HofAndCurries extends App {
      * i.e ntb(f,4)	= x => f(f(f(f(x))))
      * x => plusOne.apply(plusOne.apply(plusOne.apply(plusOne.apply(x)))) this lambda is return type
      * increment2=ntb(plusOne,2) = x => plusOne(plusOne(x))
+     Important Note
+     when we write
+     f4= nTimesBetter(f,4)
+     then compiler will return like this
+     val f4Alt= (x:Int) => nTimesBetter(f,3)(f(x))
+     new Function1[Int,Int]{
+     apply(x){
+           nTimesBetter(f,3).apply(f(x))
+     }
+     }
+     but when we make a call f4alt(5)
+     then all function objects are created
      *
      */
   def nTimesBetter(f: Int => Int, n: Int): (Int => Int) = {
     if (n <= 0) (x: Int) => x // This is called Identity Function
     //else (x:Int) => nTimesBetter(f, n-1).apply(f.apply(x))
     else (x: Int) => nTimesBetter(f, n - 1)(f(x))
+  }
+
+  def nTimesOriginal(function1: Function1[Int,Int], n:Int): Function1[Int,Int] ={
+    if (n <= 0)
+      new Function[Int,Int] { override def apply(x: Int): Int = x}// Identity function /JVM object
+    else
+      new Function[Int,Int] { override def apply(x: Int): Int = nTimesOriginal(function1,n-1).
+        apply(function1.apply(x))}
   }
 //Function[Int, Int] here fx is Function[Int, Int] and its function type is (Int, Int) => Int
   /*

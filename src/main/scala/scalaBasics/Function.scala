@@ -20,7 +20,7 @@ object Function extends App {
   }
 
  // println(aFunction("hello", 3))
-
+// its is a getter function
   def parameterLessFunction(): Int = 42
   //we can call paramless function with their names only
 
@@ -54,7 +54,10 @@ object Function extends App {
     @tailrec
     def isPrimeUntil(t: Int): Boolean =
       if (t <= 1) true
-    else n % t != 0 && isPrimeUntil(t - 1)
+    else {
+        val accumlator: Boolean = n % t != 0
+      accumlator  && isPrimeUntil(t - 1)
+      }
        
       
      isPrimeUntil(n / 2)
