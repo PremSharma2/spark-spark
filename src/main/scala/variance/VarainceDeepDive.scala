@@ -36,22 +36,22 @@ object VarainceDeepDive extends App {
 
     This kind of Inheritance Relationship between two Parameterized Types is known as “Contravariant”
     
-    abstract class Type [-T]{
+    abstract class Context [-T]{
   def typeName : Unit
 }
 
-class SuperType extends Type[AnyVal]{
+class SuperType extends Context[AnyVal]{
   override def typeName: Unit = {
     println("SuperType")
   }
 }
-class SubType extends Type[Int]{
+class SubType extends Context[Int]{
   override def typeName: Unit = {
     println("SubType")
   }
   
   class TypeCarer{
-  def display(t: Type[Int]){
+  def display(t: Context[Int]){
     t.typeName
   }
 }
@@ -62,8 +62,8 @@ class SubType extends Type[Int]{
 object ScalaContravarianceTest {
 
   def main(args: Array[String]) {
-    val superType = new SuperType this is Type[AnyVal] Type
-    val subType = new SubType   this is Type[Int]
+    val superType = new SuperType this is Context[AnyVal] Type
+    val subType = new SubType   this is Context[Int]
 
     val typeCarer = new TypeCarer
 
@@ -95,6 +95,7 @@ A type parameter with no variance annotation may be used in any position,
   class CovariantCage[+T](val animal: T)
   class MyCage(animal:Animal) extends CovariantCage[Animal](animal)
    val catCage:CovariantCage[Animal]=new CovariantCage[Cat](new Cat)
+   val mycage: MyCage = new MyCage(new Cat)
   //Golden First Thumb Rule for constructor Argument is 
   // (val aanimal:T) this means that this class will only accept Covarient Types at this position
 
@@ -109,10 +110,12 @@ A type parameter with no variance annotation may be used in any position,
    *
    *
    * val catcage:ContraVariantCage[Cat]=new ContraVariantCage[Animal](new CrocoDile)
-   * the problem here is that we wanted a specific cage i.e cat cage and we are filling with some other types of animal
+   * the problem here is that we wanted a specific cage
+   * i.e cat cage and we are filling with some other types of animal
    * although it can accept animals so this is logically wrong compiler is not allowing illogical argument
    * i.e After Declaring it Type[Cat] how can we put CrocoDile in it it is logically Wrong
-   *
+   * so correct will be like this
+   * val catcage:ContraVariantCage[Cat]=new ContraVariantCage[Animal](new Cat)
    */
    //--------------------USE OF VAR INSTEAD OF VAL-------------------------------------------------------------------------------
    /*
@@ -182,7 +185,7 @@ A type parameter with no variance annotation may be used in any position,
     def addAnimal(animal: T) = true
   }
   val accCage: AnotherContravariantCage[Cat] = new AnotherContravariantCage[Animal]
-
+// this type restriction enforce you to put cat types only in cat cage
   accCage.addAnimal(new Cat)
   accCage.addAnimal(new Kitty)
   //we cannot add this one
@@ -200,9 +203,9 @@ A type parameter with no variance annotation may be used in any position,
     //this is basically widening the type
     def add[B >: A](element: B): MyList[B] = new MyList[B]
   }
-  val emptyList1: MyList[Animal] = new MyList[Cat]
-  val emptyList: MyList[Cat] = new MyList[Kitty]
-  val animals: MyList[Cat] = emptyList.add(new Kitty)
+  val emptyList: MyList[Animal] = new MyList[Cat]
+  val emptyList1: MyList[Cat] = new MyList[Kitty]
+  val animals: MyList[Cat] = emptyList1.add(new Kitty)
   val moreAnimals: MyList[Cat] = animals.add(new Cat)
   val evenMoreAnimal: MyList[Animal] = moreAnimals.add(new Dog)
 
@@ -239,6 +242,8 @@ A type parameter with no variance annotation may be used in any position,
     //Solution of above problem is to hack the Compiler and make the return type like it is covariant
     def get[S <: T](isItAPuppy: Boolean, defaultAnimal: S): S = defaultAnimal
   }
+  // This is again we enforced type restriction that
+  // return type of Petshop[dog] will be Dog
   val shop: PetShop[Dog] = new PetShop[Animal]
   // This is true acc to contravariant
   class RoteWoiler extends Dog

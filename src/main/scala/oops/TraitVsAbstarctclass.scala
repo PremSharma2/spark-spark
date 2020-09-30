@@ -2,13 +2,14 @@ package oops
 
 object TraitVsAbstarctclass  extends App{
   
-  //You want to create a base class that requires constructor arguments then go for Abstract Class
+  //You want to create a base class in your type hierarchy that requires constructor arguments
+  // then go for Abstract Class
   //The above reason is pretty straightforward - trait doesn’t allow for constructor arguments.
   //Therefore, if you want to do something like the next example, you will have to use abstract class.
   abstract class Animal ( name: String) { // trait doesn't allow this
   var age: Int = 0 // concrete
   val hello: String // abstract
-  val greeting: String = s"I like to play with you!" // concrete
+  def greeting: String = s"I like to play with you!" // concrete
   def sayHello:Unit =  println(hello) 
   override def toString = s"$hello, $greeting"
 }
@@ -27,7 +28,9 @@ class Dog (name: String) extends Animal (name) {
  * 
  * 
  * //You want to create a base class that requires constructor arguments.then go for abstract class else trait
-  //we can say that Scala trait is a partially implemented interface. We can use it to share fields and interfaces between classes
+  //we can say that Scala trait is a partially implemented interface.
+  We can use it to share fields and interfaces between classes
+ */
   // traits vs abstract class: traits and abstract class both can have the abstract and non abstract methods and fields
   //traits do not have constructor parameter
   // multiple traits may be inherited by the same class
@@ -38,12 +41,9 @@ class Dog (name: String) extends Animal (name) {
   //begin your trait with a this: BaseType => declaration, as shown here:
 
 /*trait MyTrait {
-  this: BaseType =>
+  this: selfType =>
   
 }*/
- * 
- * 
- */
 
 trait Angry {
   var isAngry: Boolean

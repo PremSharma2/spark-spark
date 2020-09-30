@@ -18,18 +18,21 @@ object MethodNotations extends App {
   val mary = new Person("mary", "Inception")
   println(mary.likes("Inception"))
   //Infix notation
-  //this is called infixnotation or operator notation or syntactic sugar and it only works with method having single parameter
+  //this is called infixnotation or
+  // operator notation or syntactic sugar and
+  // it only works with method having single parameter
   println(mary likes "Inception")
 
   val tom = new Person("Tom", "FightClub")
   println(mary hangoutWith tom)
   // all operators in scala are methods
-  // scala supports immutability i.e simple mathematics scala supports z=x+y and z is always new value
+  // scala supports immutability i.e simple mathematics
+  // scala supports z=x+y and z is always new value
   val a= 1.+(2)
   println(a)
   
   //uniary_ prefix operations in scala
-  val x = -1 // equivalet with 1.uniary_-
+  val x: Int = -1 // equivalet with 1.uniary_-
   val y = 1.unary_-
   val z= 1.unary_+
   //uniary_ prefix only works with - + ~ !

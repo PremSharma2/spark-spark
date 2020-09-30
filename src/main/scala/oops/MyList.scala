@@ -25,15 +25,15 @@ trait MyList {
   def add(element:Int) :MyList = new Node(element,EmptyNode)
   def printElements :String =""
 }
-class Node( h: Int, t: MyList) extends MyList {
+class Node(h: Int, tl: MyList) extends MyList {
   def head: Int = return h
-  def tail: MyList =  return t
+  def tail: MyList =  return tl
   def isEmpty :Boolean = return false
   def add(element:Int):MyList = new Node(element,this)
   def printElements :String ={
-    if(t.isEmpty) "" + h
+    if(tl.isEmpty) "" + h
     else {
-      h + "" + t.printElements
+      h + "" + tl.printElements
     }
   }
 }
@@ -44,7 +44,7 @@ object ListTest extends App{
   println(list.head)
   println(list.tail)
   println(list)
-  val newlist=list.add(2)
+  val newlist: MyList =list.add(2)
   println(newlist)
   val linkedlist=new Node(1,new Node(2,new Node(3,EmptyNode)))
   println(linkedlist.head)

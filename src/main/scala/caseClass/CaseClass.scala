@@ -6,6 +6,7 @@ object CaseClass extends App {
     a new instance of the class.
   • Accessor methods are generated for the constructor parameters because case class
     constructor parameters are val by default. Mutator methods are also generated for
+    i.e case class Person(val name:String,val age:Int) like that
     parameters declared as var.
   • A good, default toString method is generated.
   • An unapply method is generated, making it easy to use case classes in match ex‐

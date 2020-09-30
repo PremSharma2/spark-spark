@@ -1,4 +1,9 @@
 package codingChallenge
+
+import scala.collection.BitSet.empty.until
+import scala.collection.immutable.BitSet.empty.until
+import scala.collection.mutable.ListBuffer
+
 /*
 Say you have an data array of stocks
 for which the ith element is the price of a given stock on day i. i.e index of array is day
@@ -23,15 +28,15 @@ for (i <- 0 until stockData.length - 1; j <- i + 1 until stockData.length) {
         if (profit > maxprofit) maxprofit = profit
       }
  */
-object BestTimeToBuyStock {
+object BestTimeToBuyStock extends App {
   import scala.collection.JavaConversions._
 
-    def maxProfit(stockData: Array[Int]): Int = {
+    def stockProfit(stockData: Array[Int]): Int = {
       var maxprofit: Int = 0
       for  {
         i <- 0 until stockData.length - 1
         j <- i + 1 until stockData.length
-        if(stockData(j) - stockData(i)> maxprofit)
+        if(stockData(j) - stockData(i)> maxprofit)// with filter
        maxprofit = stockData(j) - stockData(i)
       } maxprofit
       maxprofit
@@ -42,6 +47,7 @@ object BestTimeToBuyStock {
     def maxProfit1(prices: Seq[Int]): Int = {
       var minprice: Int = java.lang.Integer.MAX_VALUE
       var maxprofit: Int = 0
+      val seq =0 to prices.length
       for (i <- 0 until prices.length) {
         if (prices(i) < minprice) minprice = prices(i)
         else if (prices(i) - minprice > maxprofit)
@@ -51,18 +57,23 @@ object BestTimeToBuyStock {
     }
 
   def climbStairs(n: Int): Int = {
-    def climb(i: Int, n: Int): Int = {
-      if (i > n) {
-        0
-      }
-      if (i == n) {
-        1
-      }
-      climb(i + 1, n) + climb(i + 2, n)
+    if (n==1) return 1
+    val dp = new Array[Int](n + 1)
+    dp(1) = 1
+    dp(2) = 2
+    var i = 3
+    while ( {
+      i <= n
+    }) {
+      dp(i) = dp(i - 1) + dp(i - 2)
+
+      i += 1
     }
-    climb(0, n)
+    dp(n)
   }
 
 
+println(maxProfit1(Seq(1,2,3,4,5)))
+  println(climbStairs(3))
 
 }

@@ -11,7 +11,7 @@ object ScalaObjects extends App {
     // all factory goes here
     val N_EYES = 2
     def vanFly(): Boolean = true
-    //factory method 
+    //factory method for Person class
     def apply(mother:Person, father:Person):Person= new Person("Bobie")
   }
   class Person(name:String) {
