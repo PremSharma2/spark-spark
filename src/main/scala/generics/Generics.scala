@@ -43,6 +43,9 @@ trait MyGenericList[+A] {
   def head: Nothing = throw new NoSuchElementException
   def tail: MyGenericList[Nothing] = throw new NoSuchElementException
   def isEmpty: Boolean = true
+  //Here also we enforced type restriction at compile time that element being aded must be
+  // of type Nothing i.e both should have same type
+  // but herecatch is that Nothing is sub type of Everything and we wnat to make it covarient list
   def add[B >: Nothing](element: B): MyGenericList[B] = new ListNode(element, EmptyList)
   def printElements: String = ""
   def map[B](transformer: MyTransformer[Nothing, B]): MyGenericList[B] = EmptyList
@@ -50,15 +53,15 @@ trait MyGenericList[+A] {
   def filter(predicate: MyPredicate[Nothing]): MyGenericList[Nothing] = EmptyList
   def ++[B >: Nothing](list: MyGenericList[B]): MyGenericList[B] = list
 }
-class ListNode[+A](Head: A, Tail: MyGenericList[A]) extends MyGenericList[A] {
+class ListNode[+A](Head: A, nodeTail: MyGenericList[A]) extends MyGenericList[A] {
   def head: A = return Head
-  def tail: MyGenericList[A] = return Tail
+  def tail: MyGenericList[A] = return nodeTail
   def isEmpty: Boolean = return false
   def add[B >: A](element: B): MyGenericList[B] = new ListNode(element, this)
   def printElements: String = {
-    if (Tail.isEmpty) "" + Head
+    if (nodeTail.isEmpty) "" + Head
     else {
-      Head + "" + Tail.printElements
+      Head + "," + nodeTail.printElements
     }
   }
 
@@ -74,9 +77,9 @@ class ListNode[+A](Head: A, Tail: MyGenericList[A]) extends MyGenericList[A] {
 
 
   def filter(predicate: MyPredicate[A]): MyGenericList[A] = {
-    if (predicate.test(this.Head)) new ListNode(this.Head, this.Tail.filter(predicate))
+    if (predicate.test(this.Head)) new ListNode(this.Head, this.nodeTail.filter(predicate))
     else
-      Tail.filter(predicate)
+      nodeTail.filter(predicate)
   }
 
   /*
@@ -92,7 +95,7 @@ class ListNode[+A](Head: A, Tail: MyGenericList[A]) extends MyGenericList[A] {
    *
    */
   def map[B](transformer: MyTransformer[A, B]): MyGenericList[B] = {
-    new ListNode(transformer.transform(this.Head), Tail.map(transformer))
+    new ListNode(transformer.transform(this.Head), nodeTail.map(transformer))
   }
 
   /*
@@ -104,11 +107,11 @@ class ListNode[+A](Head: A, Tail: MyGenericList[A]) extends MyGenericList[A] {
    * =new Node(1,new Node(2,new Node(3,new Node(4,new Node(5,Empty)))))
    *
    */
-  def ++[B >: A](list: MyGenericList[B]): MyGenericList[B] = new ListNode(Head, this.Tail ++ list)
+  def ++[B >: A](list: MyGenericList[B]): MyGenericList[B] = new ListNode(Head, this.nodeTail ++ list)
 
   /*for eg here let say transformer take int and returns List[Int] i.e a role of flatmap it flatens
    * [1,2].flatMap (n => [n,n+1])
-   * head.transform(1)= [1,2]
+   * this.head.transform(1)= [1,2]
    * [1,2] ++ [2].flatmap(n => [n,n+1])
    * [1,2] ++ [2,3]
    * [1,2] ++ [2,3] ++ Empty.flatMap(n => [n,n+1])
@@ -121,7 +124,7 @@ class ListNode[+A](Head: A, Tail: MyGenericList[A]) extends MyGenericList[A] {
    */
 
   def flatMap[B](transformer: MyTransformer[A, MyGenericList[B]]): MyGenericList[B] = {
-    transformer.transform(this.Head) ++ this.Tail.flatMap(transformer)
+    transformer.transform(this.Head) ++ this.nodeTail.flatMap(transformer)
   }
 }
 

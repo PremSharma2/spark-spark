@@ -10,13 +10,13 @@ object AnonymousFunction extends App {
   // anonymous function can be replaced with lambdas or lambda
   //(x) => x * 2 this is apply method implementation
   //val doubler : Function1[Int, Int]
-  val doubler: (Int => Int) = (x: Int) => x * 2
+  val doubler: (Int => Int) = (x) => x * 2
   //or Function1[Int, Int]
-  val product: (Int => Int) = (x:Int) => x * 2
+  val product: (Int => Int) = (x) => x * 2
   //multiple params lamda
   //Function2[Int, Int,Int]
   val adder: (Int, Int) => Int = (a, b) => a + b
-  //no params lamda
+  //no params lamda or zero lambda
   val justDoSomething: (() => Int) = () => 3
 
   println(justDoSomething)
@@ -24,7 +24,7 @@ object AnonymousFunction extends App {
   // curlybraces with lambdas or syntacticsugar
 
   val stringtoInt :(String => Int) = { 
-    (str: String) => str.toInt
+    (str) => str.toInt
 
   }
 
@@ -33,5 +33,12 @@ object AnonymousFunction extends App {
   val niceAdder: (Int, Int) => Int = _ + _ // equivalent to (a,b)=> a+b
   //lambda with curried function
 //val superAdd: Function1[Int, Function[Int, Int]]
-  val superAdd :(Int =>Int=>Int)= (x: Int) => (y: Int) => (x + y)
+  /*
+  val specialFunction: Function1[Int, Function[Int, Int]] = new Function1[Int, Function[Int, Int]] {
+      override def apply(x: Int): Function1[Int, Int] = new Function1[Int, Int] {
+      override def apply(y: Int): Int = x + y
+    }
+    or this can be replaced by lambda this way
+   */
+  val superAdd :(Int =>Int=>Int)= (x) => (y) => (x + y)
 }

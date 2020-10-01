@@ -62,9 +62,12 @@ object FrogRiverOne  extends App {
 
     findTime(0, A.toList)
   }
+// ---------------------Frog jump------------------------------------------------
+
 
   val ar1 = Array(1, 3, 1, 4, 2, 3, 5, 4)
   val ar2 = Array(4,3,2,1,5,4,3,2,1,6)
+
   solution(5, ar1)
   solution(6, ar2)
 }

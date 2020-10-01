@@ -37,7 +37,7 @@ object HofAndCurries extends App {
    *
    * All that the theory of currying means is that a function that takes multiple arguments
    *  can be translated into a series of function calls in a cascading manner
-   *  that each take a single argument.
+   *  that each take a single argument or input .
    * Hence output of this operation will be a curried function
    * Here in Recursion each stack frame will return function when recursion traces back
    * In pseudocode , this means that an expression like this:
@@ -61,10 +61,12 @@ object HofAndCurries extends App {
      * nTimesBetter(f,2) = x => nTimesBetter(f,1).apply(f.apply(x))//3rd
      * nTimesBetter(f,1) = x => nTimesBetter(f,0).apply(f.apply(x))//4th
      * nTimesBetter(f,0) = (x: Int) => x  it will return identity function and
+
+
      now recursion traces back
       Now When Lets Evaluate How recursion Trace Back
-      Identity Function is the Retun value returned to caller i.e 4th Postion
-      so it ill be like
+      Identity Function is the Return value returned to caller i.e 4th Position
+      so it will be like
 
       now at 4th postion identity Function applied f.apply(f.apply(x)) = f.apply(x)
       i.e when u apply identity function to f.apply(x) this input which is function
@@ -125,9 +127,11 @@ object HofAndCurries extends App {
       new Function[Int,Int] { override def apply(x: Int): Int = nTimesOriginal(function1,n-1).
         apply(function1.apply(x))}
   }
-//Function[Int, Int] here fx is Function[Int, Int] and its function type is (Int, Int) => Int
+//Function[Int, Int] here fx is Function[Int, Int] and its
+// function type is (Int, Int) => Int
   /*
-  Here we passed an function as input param and then it got converted into series of function calls
+  Here we passed an function as input param and
+   then it got converted into series of function calls
    */
   def toCurry(fx: (Int, Int) => Int): (Int => Int => Int) =
   //result = f(x)(y)(z)
@@ -136,6 +140,19 @@ object HofAndCurries extends App {
 
     x => y => fx(x, y)
 
+
+//   Crrying small exercise
+  /*
+ Given two functions f1 and f2, implement f3 by composing f1 and f2
+val f3: (Int, Int) => String = ???
+   */
+
+  val f1: (Int, Int) => Int = (a, b) => a + b
+  val f2: Int => String = _.toString
+  val f3: (Int, Int) => String = (x,y) => f2 (f1(x,y))
+
+
+// This one is curried to normal i.e revrese
   def fromCurry(function: (Int => Int => Int)): (Int, Int) => Int =
     // it is equivalent to x,y=> x+y
    // (x,y) => function.apply(x).apply(y)
@@ -159,9 +176,9 @@ object HofAndCurries extends App {
   println(plus10.getClass.getName)
   println(plus10.apply(1))
   // curried function
-  val superAddition: Int => (Int => Int) = (x) => (y) => x + y
+  val superAddition: Int => Int => Int = (x) => (y) => x + y
   val adder : (Int,Int) => Int  = (x,y) => x+y
-  val superAdder :(Int => Int => Int)  = toCurry(adder )
+  val superAdder :Int => Int => Int = toCurry(adder )
   // x => y => fx(x, y)
   //or
   // x => y => fx(x) fx(y)
