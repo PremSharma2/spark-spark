@@ -1,5 +1,6 @@
 package option
 
+import java.io
 import java.util.Random
 /*
  * use of options and handling failures
@@ -26,6 +27,8 @@ object Options extends App {
   def betterUnsafeMethod(): Option[String] = None
   def betterBackUpMethod(): Option[String] = Some("Valid result")
   val betterchianedResult: Option[String] = betterUnsafeMethod orElse betterBackUpMethod
+    val betterSafeFunction: () => Option[String] = betterBackUpMethod _
+   val betterResult= betterUnsafeMethod getOrElse betterSafeFunction
   val getOrelse=betterUnsafeMethod() getOrElse("Backup-Result-GetOrElse")
   println(betterUnsafeMethod() getOrElse("Backup-Result-GetOrElse"))
   println(betterUnsafeMethod())
@@ -40,5 +43,6 @@ object Options extends App {
   println(myfirstOption.filter(x => x > 2))
   println(myfirstOption.flatMap(x => Option(x * 10)))
   val emptyOption : Option[Int] = Some(0)
+  // As Option is monad so it implements ETW pattern
   println(noOption.flatMap(x => Option(x * 10)))
 }

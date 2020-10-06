@@ -65,7 +65,7 @@ for (i <- 1 to 5) println(i)
      element <-seq
 
   } println(element)
-  // or we can use partial function inside the body of for comprehension
+  // or we can use pattern match for every iteration
   val result =for (country <- List("India", "USA", "China", "Japan"))  {
     country match {
       case "India" => println("Delhi")
@@ -74,7 +74,7 @@ for (i <- 1 to 5) println(i)
       case _       => println("I don't know")
     }
   }
-  // or
+  // or for pattern match on every iteration this is the correct syntax
   for(element <-seq)  element match {
     case "India" => println("Delhi")
     case "USA"   => println("Washington D.C.")
@@ -123,9 +123,9 @@ IT WILL be liek seq.flatmap(s => _).map
   }
 
 // here As we can see yield  is working as we are applying the map function to each single element
-  // of Seq and transforming that into another Seq[Any]
-  // specility of yield is that it will return a value for those pattren which are not matched also
-    // we say some default values will be returned
+  // of Seq and transforming that into another Seq[String]
+  // speciality of yield is that it will return a value for those pattern which are not matched also
+    // we say some default values will be returned This one is correct syntax for pattern match on every iteration
 
   val result2: Seq[String] =for (country <- List("India", "USA", "China", "Japan")) yield {
     country match {
@@ -162,26 +162,37 @@ println(result2)
      fields = line.split(",")
    */
 
-  for{
+  val myresult: Seq[String] =for{
+    line <- dataSeq // generator and it control the number of iterations
+    // for each record perform these operations
+    record: Array[String] = line.split(",") // assignment
+    if(record.apply(2).equals("SALESMAN")) // if filter i.e using this we will filter the current iteration of record
+  } yield (record.apply(0) + "----"+ record.apply(1)+ "----"+ record.apply(2))
+
+  // or for complex map and flatmap combination we can use this approach as well
+  val resultn: Seq[Long] =for{
     line <- dataSeq // generateor
-    fields = line.split(",") // assignent
-    if(fields.apply(2).equals("SALESMAN")) // if filter
-  } println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
+    fields = line.split(",").toList.  // assignent
+      filter(_.equals("SALESMAN")).  // filter
+         map(_.apply(2).toLong).sum
+
+
+  } yield fields
 //
 val monthlyConsumptionAmount = Seq(437.8,3339.5,0.0,0.0,0.0,0.0,75.0,99.0,0.0,20.0,66.0)
   val monthNames: Array[String] = Array("Jan", "Feb", "Mar", "Apr", "May",
     "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
   def aggregateMonthlyConsumption(snapshots: Seq[(ZonedDateTime, Double)]): Seq[Double] = {
-    val out: Seq[Double] = for {
+    val netResult: Seq[Double] = for {
       i <- 1 to 12
-      snapShotView= snapshots.view
+      snapShotView = snapshots.view
       monthWiseTotal: Double = snapShotView .
         withFilter { case (d, _) => d.getMonthValue() == i } .
         map ( t=> t._2).sum
     } yield monthWiseTotal
-    println(out)
-    out
+    println(netResult)
+    netResult
   }
 
   val forresult1: Unit =for {

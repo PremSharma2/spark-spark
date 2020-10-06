@@ -10,7 +10,7 @@ left identity
 if you built a basic monad from an element and you flatmap
 it should give you the function you used
 in flatMap
-here unit(x) is equal MonadCompanionObject.apply()
+here unit(x) is equal MonadCompanionObject.apply(x)
 unit(x).flatmap(fx) ==f(x)
 ------------------------------------------------------------------
 val instance=Some(x)

@@ -3,7 +3,7 @@ package codingChallenge
 import java.time.ZonedDateTime
 
 //import codingChallenge.RoughTest.{i, map}
-import option.OptionExercise.{Connection, config}
+import option.OptionExercise.{Connection, serverConfig}
 
 import scala.collection.SeqView
 import scala.concurrent.Future
@@ -53,8 +53,8 @@ object RoughTest  extends App{
 
    */
   val forConnectionStatus: Unit = for {
-    h: String <- config.get("host")
-    p: String <- config.get("port")
+    h: String <- serverConfig.get("host")
+    p: String <- serverConfig.get("port")
     connection <- Connection(h, p)
   }yield  connection.connect
 

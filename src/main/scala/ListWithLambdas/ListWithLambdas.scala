@@ -74,7 +74,7 @@ case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
   def printListElements: String = {
     if (t.isEmptyList) "" + h
     else {
-      h + "" + t.printListElements
+      h + "," + t.printListElements
     }
   }
 
@@ -227,7 +227,7 @@ trait Function1[ -T1,+R]
   *
   */
   def fold[B](start: B)(operator: (B, A) => B): B = {
-    val accumulator = operator.apply(start, h)
+    val accumulator = operator.apply(start, this.h)
     t.fold(accumulator)(operator)
   }
 }
@@ -242,10 +242,10 @@ object Listest extends App {
   println(listOfString.toString())
   println(listOfIntegers.map((elem => elem * 2)).toString())
 
-  println(listOfIntegers.filter((elem: Int) => elem % 2 == 0).toString())
+  println(listOfIntegers.filter(elem => elem % 2 == 0).toString())
 
   println((listOfIntegers + anotherListOfIntegers).toString())
-  println(listOfIntegers.flatMap((elem) => new Node(elem, new Node(elem + 1, EmptyList))).toString())
+  println(listOfIntegers.flatMap(elem => new Node(elem, new Node(elem + 1, EmptyList))).toString())
   listOfIntegers.foreach(elem => println(elem))
 
   println(clonelistOfIntegers.sort((x, y) => x - y))

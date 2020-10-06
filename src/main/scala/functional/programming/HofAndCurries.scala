@@ -70,12 +70,14 @@ object HofAndCurries extends App {
 
       now at 4th postion identity Function applied f.apply(f.apply(x)) = f.apply(x)
       i.e when u apply identity function to f.apply(x) this input which is function
-       fIdentity.apply(f.apply(x)) then it will Return f.apply(x) bcz o/p of identity function is i/p
+       fIdentity.apply(f.apply(x)) then it will Return f.apply(x)
+       bcz o/p of identity function is i/p
        applied to it hence it will look like this
        fx: x => f(x) this will be the returned value
        ---------------------------------------------
      Now lets evaluate the 3rd Position
-     nTimesBetter(f,1) value returned to this call is  fx: x => f(x)  which is an function
+     nTimesBetter(f,1) value returned to this call is  fx: x => f(x)
+     which is an function
         So the value calculated at trace back recursion at 3rd position
         fx is nothing but f applied to input
         and input is f.apply(x)
@@ -132,6 +134,7 @@ object HofAndCurries extends App {
   /*
   Here we passed an function as input param and
    then it got converted into series of function calls
+   Here we are converting a def into curried function
    */
   def toCurry(fx: (Int, Int) => Int): (Int => Int => Int) =
   //result = f(x)(y)(z)
@@ -141,21 +144,13 @@ object HofAndCurries extends App {
     x => y => fx(x, y)
 
 
-//   Crrying small exercise
-  /*
- Given two functions f1 and f2, implement f3 by composing f1 and f2
-val f3: (Int, Int) => String = ???
-   */
-
-  val f1: (Int, Int) => Int = (a, b) => a + b
-  val f2: Int => String = _.toString
-  val f3: (Int, Int) => String = (x,y) => f2 (f1(x,y))
-
 
 // This one is curried to normal i.e revrese
   def fromCurry(function: (Int => Int => Int)): (Int, Int) => Int =
     // it is equivalent to x,y=> x+y
    // (x,y) => function.apply(x).apply(y)
+  // function: x=> y => x+y
+  // x,y => function(x).apply(y)
      (x, y) => function(x)(y)
 
   /*def compose(function1: Int => Int, function2: Int => Int): Int => Int =
@@ -168,6 +163,18 @@ val f3: (Int, Int) => String = ???
      // x => functions.apply(g.apply(x))
       x => function1(function2(x))
 
+
+
+  //   Composing small exercise
+  /*
+ Given two functions f1 and f2, implement f3 by composing f1 and f2
+val f3: (Int, Int) => String = ???
+   */
+
+  val f1: (Int, Int) => Int = (a, b) => a + b
+  val f2: Int => String = _.toString
+  val f3: (Int, Int) => String = (x,y) => f2 (f1(x,y))
+
   def andThen [A,B,C](function: A => B, function1: B => C): A => C =
     x => function1(function(x))
 // plus10 is series of function calls
@@ -178,10 +185,11 @@ val f3: (Int, Int) => String = ???
   // curried function
   val superAddition: Int => Int => Int = (x) => (y) => x + y
   val adder : (Int,Int) => Int  = (x,y) => x+y
+  // here we converted adder function which is normal function to curried function
   val superAdder :Int => Int => Int = toCurry(adder )
   // x => y => fx(x, y)
   //or
-  // x => y => fx(x) fx(y)
+  // x => y => fx(x).apply(y)
   println(superAdder.apply(2).apply(4))
   val simpleAdder : (Int, Int) => Int= fromCurry(superAdder)
   //(x,y) => function.apply(x).apply(y)

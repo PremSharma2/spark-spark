@@ -18,7 +18,7 @@ the key/value pairs that make up the map
    *
    *
    */
-  val config: Map[String, String] = Map.apply(
+  val serverConfig: Map[String, String] = Map.apply(
 
     "host" -> "176.45.36.1",
     "port" -> "2020")
@@ -34,15 +34,17 @@ the key/value pairs that make up the map
     }
 
   }
-  val host: Option[String] = config.get("host")
-  val port = config.get("port")
+  val host: Option[String] = serverConfig.get("host")
+  val port = serverConfig.get("port")
   /*
      *
      * if (h !=null)
      * if( p !=null)
      * return Connection.apply(h,p) i.e Option[Connection]
      * return null
-     *
+     *it is an ETW pattern over Option monad
+     * i.e we need to extract it and transform it into another form
+     * and put it back into Context or monad called Option
      * this should be replaced by functional style of programming
      *
      */
@@ -61,7 +63,9 @@ the key/value pairs that make up the map
   val port1=port.map(port => port)
   val conncetion=Connection.apply(host1.get, port1.get)
   */
-     /**
+     /** Here Option[connection]
+      * is monad as well as Data type With map Function
+      * so idea here is not to transform just get the type
      * if (c !=null)
      *  return c.connect
      *  return None
@@ -72,18 +76,18 @@ the key/value pairs that make up the map
   // if (status !=null)
   //println(status)
   connectionStatus.foreach(println)
-  config.get("host").
-    flatMap(host => config.get("port").
+  serverConfig.get("host").
+    flatMap(host => serverConfig.get("port").
       flatMap(port => Connection.apply(host, port)).
       map(connection => connection.connect))
     .foreach(println)
 
 // as we can see we are using the composite Function here so we can decompose
-// it further like this  x => f(x).f(y).f(z)
- val compositeFunction: String => Option[String] = host => config.get("port").
+// it further like this  x => f(x).flatmap(g(x,y).map(h(z))
+ val compositeFunction: String => Option[String] = host => serverConfig.get("port").
     flatMap(port => Connection.apply(host, port)).
     map(connection => connection.connect)
-  val result: Option[String] =config.get("host") flatMap compositeFunction
+  val result: Option[String] =serverConfig.get("host") flatMap compositeFunction
   // but if you dont want composite function usage then for Comprehension is good
   // this is transformed into this
   /*
@@ -92,8 +96,8 @@ the key/value pairs that make up the map
     flatMap(p => Connection.apply(h, p)))
    */
   val forConnectionStatus: Unit = for {
-    host: String <- config.get("host")
-    port: String <- config.get("port")
+    host: String <- serverConfig.get("host")
+    port: String <- serverConfig.get("port")
     connection <- Connection(host, port)
   }yield  connection.connect
 
