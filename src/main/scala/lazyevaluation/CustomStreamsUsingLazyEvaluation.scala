@@ -6,7 +6,7 @@ import scala.annotation.tailrec
 
 object CustomStreamsUsingLazyEvaluation extends App {
 
-  abstract class MyStream[+A] {
+ trait MyStream[+A] {
     def head: A
 
     def tail: MyStream[A]
@@ -17,6 +17,7 @@ object CustomStreamsUsingLazyEvaluation extends App {
 
 
     def #::[B >: A](element: B): MyStream[B]
+   // here also another stream is of type Call by name
 
     def ++[B >: A](anotherStream: => MyStream[B]): MyStream[B]
 
@@ -80,7 +81,8 @@ object CustomStreamsUsingLazyEvaluation extends App {
     val s=new Node(EmptyStream)
     // here s is an expression which will be evaluated later
     val prepended=1 #:: s= new Cons(1,s)
-    here s will be evaluated later bcz its lazy,so s remains unevaluated when prepend operator acts
+    here s will be evaluated later bcz its lazy,
+    so s remains unevaluated when prepend operator acts
     i.e until some one access (lazy val tail) it will not evaluated
 null  i.e call by need
 
@@ -89,15 +91,22 @@ null  i.e call by need
     override def #::[B >: A](element: B): MyStream[B] = new Node[B](element, this)
 
     /*
-    (lazy val lazytail=tail ++ anotherStream) this expression will remain unevaluated because it tail is lazy and byName
+    (lazy val lazytail=tail ++ anotherStream) this expression
+    will remain unevaluated because it tail is lazy and byName
     here lazytail will be evaluated later bcz its lazy,
     so s remains unevaluated when prepend operator acts
+    as soon as you go ahead with tail it will start evaluating
+    the expression lazilyEvaluatedTail =tail ++ anotherStream
+    will get evaluated to evaluate tail of  val lazystream=new Node[B](head, tail ++ anotherStream) Stream
+    FOR EXAMPLE: -> lazystream.tail
+    that means this head, tail ++ anotherStream thi recursive call to ++ function
+    will only be made on demand
     i.e until some one access (lazy val tail) it will not evaluated
   i.e call by need
      */
 // here we changed (anotherStream:  MyStream[B]) to (anotherStream: => MyStream[B])
     // because it was eagerly evaluating so stack was blowing
-    // so we masde this callybyname so that it will x
+    // so we made this callybyname so that it will x
     override def ++ [B >: A](anotherStream: => MyStream[B]): MyStream[B] =
       new Node[B](head, tail ++ anotherStream)
 
@@ -118,7 +127,8 @@ null  i.e call by need
    lazyTail= tail.map(fx) this expression will be evaluated by need,
    So map preserves the lazy evaluation
     Lets understand with this example to understand
-    lazyTail represents here Lazy evaluated EmptyStream reference which is at present not evaluated
+    lazyTail represents here Lazy evaluated EmptyStream
+    reference which is at present not evaluated
     val s=new Node(1,lazyTail)
     so output of map operation will be
     mapped= s.map(_+1)= new Node(2,lazyTail)
@@ -145,12 +155,15 @@ null  i.e call by need
       // lazyTail=tail.take(n - 1) is lazyTail so it will become like this
       // stream=Node[A](0, lazyTail)
       // so when someone call stream.lazyTail then only tail will get evaluated
-      // here this.tail.take(n - 1) we are trying to acccess tail here but still this postion is lazy
+      // here this.tail.take(n - 1) we are trying to acccess tail here
+      // but still this postion is lazy
       // hence until unless foreach is not called it will not get evualted because
       // foreach arguments are eagerly eveluated
       // take(n-1) as this expression is lazy so it will be evaluated
       // here tail.take(n-1) this is an expression
       //startFrom0.take(5).forEach(println)
+        // startFrom0.take(5) =  new Node[A](0, tail.take(5- 1))
+        // when u call  Node[A](0, tail.take(n - 1)).forEach then tail gets evaluated
       //Here when first time foreach is called the first tail is evaluated
       // and so on as we call foreach
       else new Node[A](this.head, this.tail.take(n - 1))
@@ -168,6 +181,10 @@ null  i.e call by need
     //i.e it will not piled up the function calls in stack like we do while looping using recursion
     //MyStream.from(accumulator)(fx) thi is the callByname expression its output is tail
     // so when someone uses node.tail then it will get evaluated
+    // initilly it will return
+    // lazystream=  new Node[A](start, MyStream.from(accumulator)(fx))
+    //MyStream.from(accumulator)(fx) :-> this is callbyname expression
+    // when you call lazystream.tail then it will get evaluated
     def from[A](start: A)(fx: A => A): MyStream[A] = {
       var accumulator = fx.apply(start)
       new Node[A](start, MyStream.from(accumulator)(fx))
@@ -177,8 +194,8 @@ null  i.e call by need
   val naturals: MyStream[Int] = MyStream.from(1)(_ + 1)
   println(naturals)
   println(naturals.head)
-  // now tail will get evaluated here o.e the expression callbyname
-  // MyStream.from(accumulator)(fx) will be evluated
+  // now tail will get evaluated here i.e the expression callbyname :->
+  // MyStream.from(accumulator)(fx) will be evaluated
   println(naturals tail)
   println(naturals.tail.head)
   println(naturals.tail.tail.head)
@@ -188,11 +205,13 @@ null  i.e call by need
   //now inside take method when take try to access the startFrom0Naturals tail
   //new Node [A](start, MyStream.from(accumulator)(fx)) then from gets executed to evaluate the lazy tail
   // so take is evaluating the lazy tail and creating a stream it gets evluated till take(n-1)
-  print(startFrom0Naturals.take(5))
+  println("finished startFrom0Naturals stream : " + startFrom0Naturals)
+  print(startFrom0Naturals.take(2))
 
-  //Here When We call take on o/p of map then tail is get eveluated so we are calling take for each tail
+  //Here When We call take on o/p of map then tail is get eveluated
+  // so we are calling take for each tail
   // so what foreach will do fx.apply(head) here fx is println
-  //      tail.forEach(fx) it will evaluate all tails of Stream and print the head
+  //      tail.forEach(println(head)) it will evaluate all tails of Stream and print the head
   // so its is printing the new head and accessing the next  tail
   startFrom0Naturals.take(7).forEach(println)
 
@@ -204,15 +223,28 @@ null  i.e call by need
   // of each node tail expression will get evaluated for each call
 
   // Here For take method double recursion is there because startFrom0.map(_ * 2) expression gives
-  // lazy stream mappedLazyStream which is still needs to be evaluated so when we call take over this stream
+  // startFrom0.map(_ * 2)=  new Node( fx(head)==2 , tail.map(fx)) = mappedLazyStream
+  // lazy stream mappedLazyStream which is still needs to be evaluated
+  // so when we call take over this stream
   // then take   will do fx.apply(this.head) i.e transform the calling stream head
   // using map transformer function fx so now map function recursion is getting executed
   // as we are accessing  mappedLazyStream tail in take method it will invoke the tail expression of mappedLazyStream
   //  it will evaluate all tails of Stream beacuse mappedLazyStream=new Node(head,lazytail)
   //   so in map method its is transforming  the new head and accessing the next  tail
+  // Actually if we can see via naked eye that then it can be visible clearly that
+  // tail is accessed in toList here i.e take and map function get evaluated here
+  // mappedLazyStream.take(2) = new Node(transformedhead, tail.take(n-1)) = takenLazystream
+  // when we call takenLazystream.toList that will evaluate the tail hence then takenLazystream tail
+  // gets evaluated and then mappedLazyStream tail gets evauated
+  // here inside take mappedLazystream tail gets evaluated
   val mappedLazyStream: MyStream[Int] = startFrom0Naturals.map(_ * 2)
+  //new Node( fx(head)==2 , tail.map(fx)) = mappedLazyStream
   val takenStream: MyStream[Int] =mappedLazyStream.take(10)
+  // new Node(mappedLazyStreamHead, tail.take(n-1)) = takenLazystream
   val streamToList: Seq[Int] =takenStream.toList()
+  // So when we call toList() or foreach then tail i.e (tail.take(n-1))) of takenLazystream
+  // gets evaluated inside that
+  // tail is also a lazy expression it will get evaluated first we got this from mappedLazy stream
   println(streamToList)
 val flatMappedStream=startFrom0Naturals.flatMap(x => new Node[Int](x, new Node[Int](x+1,EmptyStream)))
 // here in case of flat map we have the implementation like this
@@ -231,6 +263,12 @@ println(flatMappedStream)
   val streamtoList: Seq[Int] = flatMappedTakenStream.toList()
   println(streamtoList)
   val filteredStream: MyStream[Int] =startFrom0Naturals.filter(_ <10)
+  // filteredStream=new Node[A](head, tail.filter(predicate)) = filteredStream
+  // now when we will call filteredStream.tail the expression gets executed
+  //  tail.filter(predicate)  first tail is evaluated for the current stream
+  // because that is also lazy and after that tail.filter(predicate)
+  // this expression gets executed on demand
+  // as you ask filteredStream.tail it will only gets executed
   // every this will be elauated here
   val filteredTakenStreamList=filteredStream.take(8).toList()
   // this will also blow up same reason as for the flatmap we discussed take is manadatory

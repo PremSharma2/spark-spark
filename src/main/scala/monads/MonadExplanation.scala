@@ -90,7 +90,8 @@ imp point is here composite function= f.flatMap(g)
   val opt=Some(5)
   opt.flatMap(x=>Option(x)) = opt
   Some(v).flatMap(x=>Option(x)) which will be equal to Option(v)
-  and which in turn equal to Some(v) that value we started with hence this points to same refrence
+  and which in turn equal to Some(v) that value
+  we started with hence this points to same reference
   we started with i.e opt
   Hence proved
   -------------------------------------------------------------------------
@@ -98,7 +99,7 @@ imp point is here composite function= f.flatMap(g)
   If we want to compose an option by flatMapping it with two functions
   in sequence that should be the same as flatMapping the same option with composite function =
    x=> f.apply(x).flatMap(g)
-   here we have flatMapped the option with composing function x=> f.apply(x).flatMap(g)
+   here we have flatMapped the option with composing function : x=> f.apply(x).flatMap(g)
   which for the x element contain within the option it apply f(x).flatMap(g)
 
   o.flatMap(f).flatMap(g) == o.flatMap( x=> f.apply(x).flatMap(g))
@@ -143,6 +144,7 @@ Hence proved
 //Monads 3rd law  associativity explanation by real example
 
 val numbers= List(1,2,3)
+  // as list is monad hence flatmap is transformer function which implements ETW
   val incrementer= (x:Int)=> List(x,x+1)
   // input to doubler is List(1,2)
   val doubler = (x:Int)=> List(x,x*2)
@@ -159,7 +161,8 @@ val numbers= List(1,2,3)
    List(increment(1).flatMap(doubler)-- Seq(1,2,2,4)
         increment(2).flatMap(doubler)--  2, 4,3, 6
         increment(3).flatMap(doubler)--  3,6, 4, 8
-        so it looks like here that for each element present in numbers we are applying monadic trasformation
+        so it looks like here that for
+        each element present in numbers we are applying monadic transformation
       x=>increment(x).flatMap(doubler)
       i.e ETW pattern is here
       numbers.flatMap(x=>increment(x).flatMap(doubler))

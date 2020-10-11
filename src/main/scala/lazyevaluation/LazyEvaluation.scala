@@ -21,7 +21,8 @@ object LazyEvaluation extends App {
   //More examples
   /*
  Side  effect if it modifies a mutable data structure or variable, uses IO,
-  throws an exception or halts an error; all of these things are considered side effects.
+  throws an exception or halts an error;
+   all of these things are considered side effects.
   The reason why side effects are bad is because, if you had them,
   a function can be unpredictable depending on the state of the system;
   when a function has no side effects we can execute it anytime,
@@ -46,8 +47,8 @@ object LazyEvaluation extends App {
   //Here we have make it lazy val so it will be evaluated only once
   def byNameModified(n: => Int): Int = {
     // now it will be evaluated once here because its lazy and this function has local side effect
-    lazy val t = n
-    t + t + t + 1
+    lazy val lazyExpression = n
+    lazyExpression + lazyExpression + lazyExpression + 1
   }
 
   def retriveMagicValue: Int = {
@@ -74,9 +75,9 @@ object LazyEvaluation extends App {
   }
 
   val numbers = List(1, 25, 40, 5, 23)
-  //val lt30=numbers.filter(lessThan30)
-  //val gt20=lt30.filter(greaterThan20)
-  // println(gt20)
+  val lt30=numbers.filter(lessThan30 _)
+  val gt20=lt30.filter(greaterThan20 _)
+   println(gt20)
   // Filtering With Lazy vals
   // withFilter works with lazy values
   //def withFilter(p: (A) ⇒ Boolean): FilterMonadic[A, Repr]

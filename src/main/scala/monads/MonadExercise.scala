@@ -3,7 +3,7 @@ package monads
 object MonadExercise extends App {
 
   /*
-  Here Lazy monad or LAzy functor means the value contained by monad will be lazy evaluated
+  Here Lazy monad or Lazy Monad means the value contained by monad will be lazy evaluated
   i.e we will use callByName expression
   Hence so forth we ned to make changes in map and flatMap functions of Monad
   implement a Lazy[T] monad = computation will only be executed when its needed
@@ -14,11 +14,11 @@ object MonadExercise extends App {
 
   class Lazy[+A](value : => A){
     private lazy val internalValue: A =value
-    //here we have changed the Functpe A to =>A i.e input to function is also callbyname
+    //here we have changed the Func type A to =>A i.e input to function is also callbyname
     // expression i.e fx: (=> A)=> Lazy[B]
     // now fx.apply(value) it will not be evaluated becuase here input to fx is call by name
   def flatMap[B] (fx: (=> A)=> Lazy[B]): Lazy[B] = fx.apply(internalValue)
-    def use= internalValue
+    def getValueFromContainer= internalValue
     def map [B] (fx: (A=>B) ): Lazy[B] = flatMap(x=> Lazy.apply(fx(x)))
   }
   object  Lazy{
@@ -29,11 +29,11 @@ val lazyInstance: Lazy[Int] = Lazy.apply{
   println("Today i dont feel like to do anything")
   42
 }
-
+ // here x => Lazy.apply(10*x) is used to implement ETW pattern
     val flatMapppedInstance: Lazy[Int] = lazyInstance.flatMap(x => Lazy.apply(10*x))
 
-println(flatMapppedInstance.use)
-  println(flatMapppedInstance.use)
+println(flatMapppedInstance.getValueFromContainer)
+  println(flatMapppedInstance.getValueFromContainer)
   /*
   Lets proof all the monad laws:
   1 law : => Left Identity

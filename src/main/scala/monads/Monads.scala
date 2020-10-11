@@ -1,9 +1,13 @@
 package monads
 
 object Monads extends App {
-// Our own Try monad As we know that Monad is an abstract type hence it will be trait contract
-  // here Attempt is a Functor or container here because it contains the Success and Failue
-  // Success and Failure are also functors or containers bcz they contain a value here
+// Our own Try monad As we know that
+// Monad is an abstract type hence it will be trait contract
+  // so it will have these two functions
+  //def unit (value :A): MonadTemplate[A]// it is like apply method
+  //def flatMap[B](fx: A=>MonadTemplate[B]): MonadTemplate[B]
+  // here Attempt is a container as well as monad
+  // Success and Failure are also  containers and monads  bcz they contain a value here
   //Here Attempt is a contract or interface
   /*
   Informally, a monad is anything with a constructor and a flatMap method. All
@@ -12,13 +16,14 @@ of the functors we saw in the last chapter are also monads
   trait Attempt[+A]{
     def flatMap[B](fx: A=> Attempt[B]): Attempt[B]
   }
-
+//companion object
   object Attempt{
     // here we are using callByNAme expression because apply will not immediately fail
     // if dependency is null
     def apply[A](a: => A): Attempt[A]=
       try{
         // a will be evaluated here
+        //i.e business logic gets evaluated here if it success then Success Container
         Success.apply(a)
       }catch {
         case e: Throwable => Failure(e)
@@ -68,7 +73,8 @@ of the functors we saw in the last chapter are also monads
   now lets take a look for Success
 
  Success(x).flatMap(f).flatMap(g)
- now we can write this as beacuse Success(x).flatMap(f)= f(x) as we see the Succses flatMap impl
+ now we can write this as beacuse Success(x).flatMap(f)= f(x)
+ as we see the Succses flatMap impl
  so result of above operation is f(x).flatMap(g) i.e
 Success(x).flatMap(f).flatMap(g)= f(x).flatMap(g)
 

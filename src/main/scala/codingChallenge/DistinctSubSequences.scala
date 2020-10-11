@@ -14,9 +14,7 @@ object DistinctSubSequences  extends App {
     }
     val key = Tuple2[Integer, Integer](i, j)
     // call is already cached
-    if (memo contains(key)) {
-      this.memo.get(key)
-    }
+    if (memo contains(key)) memo(key)
     // required for both the cases
     var ans: Int = recurse(s, t, i + 1, j)
     // recursion call and add the result to "ans"

@@ -27,10 +27,14 @@ object NeedOFMonads extends App {
   val safeStringContainer:SafeValueContainer[String] = giveMeSafeValue("Scala is aweosome")
   // now scenerio is we want to process the string is Wrapped in the SafeValue wrapper
   // to process that we need to extract it from the wrapper
+  // three steps of ETW pattern here are ass follows:
+  //1
   // so i am gonna call the extractor of wrapper
   val wrappedString: String = safeStringContainer.get
+  //2
   // now we are going to transform it
   val upperString= wrappedString.toUpperCase
+  //3
   // no we need to wrap it again in the container so that someone can again access it
   val upperSafeString= giveMeSafeValue(upperString)
   // this pattern is called ETW (Extract Transform and Wrap)
