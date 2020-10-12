@@ -10,6 +10,7 @@ object FutureExercise extends App {
     }
 
   }
+  // all utility functionality goes here in singleton object
 object SocialNetwork{
   val names = Map(
 
@@ -30,7 +31,7 @@ object SocialNetwork{
   def fetchBestFriend(profile: Profile) : Future[Profile] = Future{
 
     Thread.sleep(random.nextInt(300))
-    val bestFriendId=   friends.apply(profile.id)
+    val bestFriendId: String =   friends.apply(profile.id)
     Profile(bestFriendId,names.apply(bestFriendId))
   }
 }
@@ -38,7 +39,7 @@ val mark: Future[Profile] = SocialNetwork.toFetchProfile("fb.id.1.zuck")
 
   val result: Unit =mark onComplete{
     case Success(markProfile) => {
-      val bill = SocialNetwork.fetchBestFriend(markProfile)
+      val bill: Future[Profile] = SocialNetwork.fetchBestFriend(markProfile)
       bill onComplete {
         case Success(billProfile) => markProfile.poke(billProfile)
         case Failure(exception)   => exception.printStackTrace()

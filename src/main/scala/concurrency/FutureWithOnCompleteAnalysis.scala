@@ -30,15 +30,16 @@ val aFuture: Future[Int] = Future.apply{
   calculateMeaningOfLife
 }
   // here now it will get executed bcz value is callByname expression calculateMeaningOfLife
-println(aFuture.value) //it returns an option of try Option[Try[Int]]
-  println("Waiting for the Future ")
+   println(aFuture.value) //it returns an option of try Option[Try[Int]]
+   println("Waiting for the Future ")
   // Here we reomved t => t match {} because it is a partial functionso we can write this way
   val futureResult: Unit =aFuture.onComplete{
     case  Success(value) => println(s"Thread is completed with the value $value")
-    case Failure(exception) => println(s"I have failed with exception $exception")
+    case  Failure(exception) => println(s"I have failed with exception $exception")
   }
-  aFuture onComplete future
-  val future: PartialFunction[Try[Int], Unit] = {
+  //or
+  aFuture onComplete futurePartialFunction
+  val futurePartialFunction: PartialFunction[Try[Int], Unit] = {
     case  Success(value) => println(s"Thread is completed with the value $value")
     case Failure(exception) => println(s"I have failed with exception $exception")
 

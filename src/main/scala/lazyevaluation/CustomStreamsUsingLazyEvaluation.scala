@@ -269,7 +269,7 @@ println(flatMappedStream)
   // because that is also lazy and after that tail.filter(predicate)
   // this expression gets executed on demand
   // as you ask filteredStream.tail it will only gets executed
-  // every this will be elauated here
+  //inside take it will be evaluated this i.e this: -> tail.filter(predicate)
   val filteredTakenStreamList=filteredStream.take(8).toList()
   // this will also blow up same reason as for the flatmap we discussed take is manadatory
   //startFrom0Naturals.forEach(println)

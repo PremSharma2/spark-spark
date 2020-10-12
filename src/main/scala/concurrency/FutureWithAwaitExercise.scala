@@ -1,9 +1,8 @@
 package concurrency
 
-import scala.concurrent.{Await, Future, Promise}
-import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Success
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 object FutureWithAwaitExercise extends App {
 
 case class User(name:String)
@@ -12,7 +11,9 @@ case class User(name:String)
   object BankingUtils{
     val name ="Rock the JVM"
     def fetchUser(name:String): Future[User] = Future.apply{
+      // fetch the user from the database i.e make a call to database
       Thread.sleep(500)
+      // object returned form database
       User(name)
 
     }

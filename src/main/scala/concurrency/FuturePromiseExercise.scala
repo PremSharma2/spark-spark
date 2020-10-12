@@ -1,6 +1,4 @@
 package concurrency
-import org.apache.spark.sql.catalyst.expressions.Second
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
 import scala.util.{Failure, Random, Success, Try}
@@ -11,15 +9,25 @@ object FuturePromiseExercise  extends App {
     callByNameExpression
   }
 
-  // running two future task in sequence
+  // accessing two future task in sequence
   def inSequence[A, B](firstFuture: Future[A], secondFuture: Future[B]): Future[B] =
     firstFuture.flatMap(_ => secondFuture)
+// or
+/*
+  def f1 : Future[Unit] = ???
+  def f2 : Future[Unit] = ???
+  def f3 : Future[Unit] = ???
+  def f4 : Future[Unit] = ???
 
+  f1.flatMap(_ => f2.flatMap(_ => f3.flatMap(_=> f4)))
+
+ */
   // implement new future with a first value of two futures
   def first[A](fa: Future[A], fb: Future[A]): Future[A] = {
 // here promise is a controller for fa here basically
-    // i.e it is fot Type[A]
+    // i.e it is for Type[A]
   val promise = Promise[A]
+  // calling a call back function of scala concurrency
     fa.onComplete{
       case  Success(value) => promise.success(value)
       case Failure(exception) => promise.failure(exception)
@@ -42,7 +50,7 @@ object FuturePromiseExercise  extends App {
       case  Success(value) => try{
         promise.success(value)
       } catch{
-        case _ =>
+        case _ => " Promise fulfilled again you are asking to fullfill"
       }
       case  Failure(value) => try{
         promise.failure(value)
@@ -81,13 +89,22 @@ object FuturePromiseExercise  extends App {
         case _ =>
       }
       case  Failure(value) => try{
+        /*
+         promise.failure(value)
+        The throwable to complete the promise with.
+         If the throwable used to fail this promise is an error,
+         a control exception or an interrupted exception,
+        it will be wrapped as a cause within an ExecutionException which will fail the promise.
+       If the promise has already been fulfilled,
+         failed or has timed out, calling this method will throw an IllegalStateException.
+         */
         promise.failure(value)
       } catch{
-        case _ =>
+        case _ =>  "Exception Thrown From DataBase No Connection Fetched"
       }
     }
     // we can read this like this the future task result i.e future object
-    // with this promise try to fulfill the promise
+    // with this promise try to fulfill the promise with a promised value
     fa.onComplete(result => tryComplete(promise, result))
     // or we can do this
     /*
@@ -110,6 +127,9 @@ object FuturePromiseExercise  extends App {
 
     // we can read this like this the future task result i.e future object
     // with this promise try to fulfill the promise
+    //def tryComplete(result: Try[T]): Boolean
+    //Returns:
+    //If the promise has already been completed returns false, or true otherwise.
     fa.onComplete(promise.tryComplete(_))
     // or we can do this
     /*
@@ -119,7 +139,8 @@ object FuturePromiseExercise  extends App {
 *  @return If the promise has already been completed returns `false`, or `true` otherwise.
 
      */
-    fb.onComplete(promise.tryComplete(_))
+   val r: Unit = fb.onComplete(promise.tryComplete(_))
+    // returning the fulfilled promise future
     promise.future
   }
   // This will return the last promised future out of the two
@@ -140,6 +161,8 @@ val bothPromise= Promise[A]
    val checkAndComplete: Try[A] => Any = (result: Try[A]) => {
      val checkIfPromissedAlreadyFullfilled= !bothPromise.tryComplete(result)
        if(checkIfPromissedAlreadyFullfilled)
+         //def complete(result: Try[T]): this.type
+         //Completes the promise with either an exception or a value.
        lastPromise.complete(result)
    }
    fa.onComplete(checkAndComplete)
@@ -155,16 +178,32 @@ lastPromise.future
       }
   }
 
+  def retryDataBaseConnection[A](action: () => Future[A]) : Future[A]={
+    action.apply().
+      recoverWith{
+        case _ => retryDataBaseConnection(action)
+      }
+  }
+
+
   val fastFuture: Future[Int] = Future.apply{
+    println("-----------First Thread get Schduled------")
     Thread.sleep(100)
     42
   }
   val slowFuture: Future[Int] = Future.apply{
+    println("-----------Second Thread get Schduled------")
+
     Thread.sleep(200)
     62
   }
   val result: Future[Int] =mostOptimizedFirstImpl(fastFuture,slowFuture)
   val result1: Future[Int] =last(fastFuture,slowFuture)
+  /*
+  forEach:
+  Asynchronously processes the value in the future once the value becomes available.
+  Will not be called if the future fails.
+   */
   result.foreach(println)
   result1.foreach(println)
 

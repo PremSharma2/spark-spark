@@ -1,9 +1,8 @@
 package concurrency
-import scala.concurrent.ExecutionContext.Implicits.global
-import concurrency.FutureExercise.{Profile, SocialNetwork, mark}
+import concurrency.FutureExercise.{Profile, SocialNetwork}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
 
 object FunctionalCompositionOFFutures  extends  App {
   val mark: Future[Profile] = SocialNetwork.toFetchProfile("fb.id.1.zuck")
@@ -11,7 +10,10 @@ object FunctionalCompositionOFFutures  extends  App {
   val nameOnTheWall: Future[String] = mark.map(profile => profile.name)
   val marksBestFriend: Future[Profile] = mark.flatMap(profile => SocialNetwork.fetchBestFriend(profile))
   //val result: Future[Future[Profile]] = mark.map(profile => SocialNetwork.fetchBestFriend(profile))
-  val zuckBestFriendRestricted= marksBestFriend.filter(profile => profile.name.startsWith("z"))
+  val zuckBestFriendRestricted: Future[Profile] = marksBestFriend.
+                                            filter(profile => profile.name.startsWith("z"))
+  //-----------------------------------------------------------------------------------
+
  for{
     mark: Profile <- SocialNetwork.toFetchProfile("fb.id.1.zuck")
     bill: Profile <- SocialNetwork.fetchBestFriend(mark)
