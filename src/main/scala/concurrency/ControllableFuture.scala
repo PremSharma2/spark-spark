@@ -2,6 +2,26 @@ package concurrency
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
 object ControllableFuture  extends App {
+  /*
+  Idea behind Controllable Future
+
+  Promise allow completing Futures based on external events/triggers.
+
+Imagine you are using a service to which you post orders,
+those orders need a long time to execute so you will only get feedback
+(the result of the execution) much later.
+
+How would you handle that with Future only?
+You would need to constantly poll for the result (from the Future.apply body).
+
+Using a Promise, you could wait for the service to trigger a callback once done.
+ When that trigger happens, you can complete the Future using the Promise.
+ You complete the Future from outside of the Future.apply body,
+ that's what I meant above by external events/trigger.
+
+In other words, a Promise is a safe way to complete a Future from outside,
+and there's no other way to do it: the Promise API is essential.
+   */
 
   val future = Future{
     println("Thread is getting Executed ")

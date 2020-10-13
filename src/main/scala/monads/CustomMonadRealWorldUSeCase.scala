@@ -40,23 +40,24 @@ object CustomMonadRealWorldUSeCase extends App {
     User.apply("Prem")
   }
 
-// async call ot server
-  def getLAstOrder(userID:String):Future[Product] = Future.apply{
+// async call Rest Api
+  def getLastOrder(userID:String):Future[Product] = Future.apply{
     Product.apply("Nike-Tshirt", 99.99)
   }
   val myURL= "mystore.com/users/prem"
   // Now to solve this problem ETW patterns comes into picture
   // because first wee need to wait for the Result for this async call to user
+  // Once this thread is done call back method onComplete is invoked by Execution Context
   // and then we will extract the value form this and transform that value to anothet type
   // so this use case is best suited for ETW pattern
   //ETW implementation
   // For java F=Developers its look like calling listner to listen remote o/p
   getUSer(myURL).onComplete{
     case Success(User(id)) =>
-      val lastOrder= getLAstOrder(id)
+      val lastOrder: Future[Product] = getLastOrder(id)
       lastOrder.onComplete{
         case Success(Product(sku,price)) =>
-          val vatIncludedPrice= price*1.19
+          val vatIncludedPrice: Double = price*1.19
       }
   }
   // As this is monad so we have to take advantage of Monade flatMap method
@@ -64,7 +65,7 @@ object CustomMonadRealWorldUSeCase extends App {
 // ist step of ETW fetch the value or Extract the value
 val vatInclPrice: Future[Double] = getUSer(myURL).
   // 2nd step transform it with monadic transformer
-  flatMap(user => getLAstOrder(user.id)).
+  flatMap(user => getLastOrder(user.id)).
   // 3rd step is to use that o/p (container wrapped  value)    again  using map
     // i.e we want to map the values
   map(_.price*1.19)
@@ -73,7 +74,7 @@ val vatInclPrice: Future[Double] = getUSer(myURL).
   val userContainer: Future[User] =getUSer(myURL)
   val vatInclusive: Future[Double] = for{
     user <- userContainer
-    product <- getLAstOrder(user.id)
+    product <- getLastOrder(user.id)
 
   } yield product.price*1.19
 
