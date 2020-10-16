@@ -1,7 +1,5 @@
 package oops
 
-import scala.xml.Null
-
 object NullVsNothingVsNone  extends App{
 
   // The Null reference Type is of Null
@@ -18,14 +16,29 @@ object NullVsNothingVsNone  extends App{
   val noPerson : Person= ref
 
 
-  //----------------------------------------------------------------------------------------------
-  //3 Nil it represents Empty Collection i.e when head and tail is null then we can represent that
-  // null refrence to Nil
+  //----------------------------use of Nil in Seq------------------------------------------------------------------
+  //3 Nil it represents Empty Collection i.e
+  // when head and tail is null then we can represent that
+  // null refrence to Nil i.e both are same that Seq is null
+  //:ImpNote: when in traditional java we use if(list==null)
   // Nil is an singleton object that can be attributed to any EmptyList
   // Like we created a EmptyList, But Nil unlike Null has proper values
   // i.e proper attributes
   val anEmptyList: List[Int] = Nil
     println(Nil.length)
+
+ // ImpNote: when in traditional java we use if(list==null)
+  // it can be replaced by the
+  // list match
+// in traditiinal java we use like this
+  //if(anEmptyList==null)
+  // but in scala functional programming way we use like this
+// This is best practices while performing computation over List
+  anEmptyList match{
+    case  Nil => Nil
+    case _ =>   "call to  someMethod(anEmptyList)"
+
+  }
 
   //---------------------------------------------------------------------------------------------
   // 4 None which is subtype of Options

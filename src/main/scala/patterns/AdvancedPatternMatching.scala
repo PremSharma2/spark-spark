@@ -1,12 +1,13 @@
 package patterns
 
-object AdvancedPAtternMatching  extends App {
+object AdvancedPatternMatching  extends App {
 
   val numbers=List(1)
   val numbers1=List(1,2)
 
   val description= numbers match {
       // This is called :: Infix Pattern
+      // here tail is EmptyList
     case head ::  Nil => println(s"the only element is head $head ")
 
   }
@@ -30,8 +31,10 @@ object AdvancedPAtternMatching  extends App {
   val bob= new Person("bob",33)
 
   val greeting: String = bob match {
-      //Here compiler is looking for unapply method with name Person with return type Option[(String,Int)]
+      //Here compiler is looking for unapply method with name
+    // Person with return type Option[(String,Int)]
     case Person(name,age) => s"Hi my name is $name and my age is $age"
+    case _ => "Not matchable Person"
   }
 
   val legalStatus: String = bob.age match{
@@ -66,7 +69,7 @@ object AdvancedPAtternMatching  extends App {
   }
 // its like if if and else conditions implementation via pattern matching
   val matchpattern1: String = n match {
-    case singledigit(_) => s" is single Digit"
+    case singledigit(myflag) => s" is single Digit : and value returned from unapply is $myflag"
     case even(_) => s" is even number"
     case _ => "no prpoery"
   }
@@ -81,7 +84,8 @@ object AdvancedPAtternMatching  extends App {
   object singledigit1{
     def unapply(arg: Int): Boolean = arg > -10 && arg<10
   }
-// Here we have removed the argument parameter from pattern match because here return of unapply method
+// Here we have removed the argument parameter
+// from pattern match because here return of unapply method
   // is Boolean not the Option[Boolean]
   val matchWithOutOption=48
   val matchable2: String = matchWithOutOption match {

@@ -8,7 +8,9 @@ object SubArrayWithGivenSum extends App {
     seq.zipWithIndex.foreach { case (value, index) =>
       sumSoFar += value
       if (sumSoFar == sum) return (0, index)
-      else if (numberStore.contains(sumSoFar - sum)) return (numberStore(sumSoFar - sum) + 1 , index)
+      else if (numberStore.contains(sumSoFar - sum))
+        return (numberStore(sumSoFar - sum) + 1 , index)
+
       numberStore = numberStore + (sumSoFar -> index)
     }
     (-1, -1)

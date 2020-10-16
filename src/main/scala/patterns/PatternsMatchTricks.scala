@@ -15,8 +15,8 @@ object PatternsMatchTricks extends App {
   // this pattern for list is very imp
 
   def process(aList: List[Int]): String ={
-    val matchedresult =aList match {
-      case Nil => "List Is Empty"
+    val matchedresult: String =aList match {
+      case Nil => "List Is Empty we should return Nil from here rather string"
       case head::tail => s"list starts with $head,tail is $tail"
     }
     matchedresult
@@ -27,11 +27,12 @@ object PatternsMatchTricks extends App {
   }
   // case List(1,2,_) :+42 this patterns suggest that 42 sits at the End of the List
   val mustendWithMeaningOfLife= numbersList match {
-    case List(1,2,_) :+42 => "Thats right i have a meaning "
+    case List(1,2,_) :+42 => "List starts with 1 and ends with 42 "
   }
   //  case List(1,_*) :+42 it is a combination of var and infix pattern
   val mustEndWithMeaningOfLife = numbersList match {
-    case List(1,_*) :+42 => "I dont care the how long the list is I just want it should end with 42 "
+    case List(1,_*) :+42 => "I dont care the how long the list is" +
+      " I just want it should end with 42 "
   }
   // match a type not value in pattern match
 
@@ -49,7 +50,7 @@ object PatternsMatchTricks extends App {
   }
   // if you want to bind the bob to some parameter s that we can use later
 // person object is kept in p now so need create new object of person
-  val bobInfo1 = bob match {
+  val bobInfo1: String = bob match {
     case p @ Person(name, age) => s"$name info : ${requestMoreInfo(p) }"
 
   }
@@ -65,7 +66,8 @@ val ordinalNumber=aNumber match {
   case n if n%10==1 => n + "rd"
 }
 // alternative pattern i.e i
-  // if we want list should contain either of this value at particular position or that vale
+  // if we want list should contain either
+  // of this value at particular position or that value
 
   val myOptimalList= numbersList match {
     case List(1,_*) => "I like this List"
@@ -83,4 +85,28 @@ val ordinalNumber=aNumber match {
 
 
  */
+
+  //---------------pattern match Exercise List-----------------------------
+//Note: all Seq or List related exercise will be done via infix pattern
+
+  def incrementByOne(s: Seq[Int]): Seq[Int] = {
+   val result= s match {
+      case Nil => Nil
+      case _ => incrementRec(s.reverse).reverse
+    }
+    result
+  }
+
+  // Seq(3,2,1) - 4,2,1
+  //Seq(9, 9, 9) - (1,0,0,0)
+  def incrementRec(seq: Seq[Int]): Seq[Int] = {
+   val tempResult: Seq[Int] = seq match {
+      case Nil => Seq(1)
+      case head :: tail if head < 9 => Seq(head + 1) ++ tail
+      // Seq(4) ++ Seq(2,1)
+      case _ :: tail => Seq(0) ++ incrementRec(tail) // Seq(0) + Seq(0) + Seq(0) + Seq(1)
+    }
+    tempResult
+  }
 }
+

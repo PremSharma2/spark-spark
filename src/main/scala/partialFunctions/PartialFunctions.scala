@@ -1,9 +1,7 @@
 package partialFunctions
 
-import scala.util.Failure
-
 object PartialFunctions extends App {
-
+// ths function for all values of domain A
   val aFunction: Int => Int = (x: Int) => x + 1 //Function1[Int,Int]
 // a function which is applicable on certain set of inputs
   val aFussyFunction: Int => Int = (x: Int) =>
@@ -71,7 +69,7 @@ On the other hand a partial function from A to B is not defined for some inputs 
   val chainedfunction: PartialFunction[Int, Int] = {
     case 34 => 67
   }
- val shouldHandleAlldomainValues= newPartialFunction orElse chainedfunction
+ val shouldHandleAlldomainValues: PartialFunction[Int, Int] = newPartialFunction orElse chainedfunction
   println(shouldHandleAlldomainValues.apply(34))
   // Partial function extends Normal Function
   // Hence we can write Total Function with Single Argument or
@@ -99,10 +97,12 @@ On the other hand a partial function from A to B is not defined for some inputs 
     case 3 => 999
   }
   Here in the map we supplied the partial Function
-  Note:PArtial Function can only have one parameter Type
+  Note:Partial Function can only have one parameter Type
 
    */
   val partialList=List(3,9,99)
   println(partialList.map(newPartialFunction))
+
+
 
 }

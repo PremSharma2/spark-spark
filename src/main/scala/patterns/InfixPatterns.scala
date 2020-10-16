@@ -1,6 +1,6 @@
 package patterns
 
-import patterns.AdvancedPAtternMatching.Person
+import patterns.AdvancedPatternMatching.Person
 
 object InfixPatterns extends App {
 
@@ -40,7 +40,7 @@ an arbitrary number of values,
   val vararg= numbers match {
       //Here standard technique for unapply a list will not work
     // here bcz we don't know about the arguments
-      // Hence this will not be successful here
+      // Hence this will not be successful here if its MyList or if we dont give proper unapply method
     case List(1,_*) => s"starting with 1"
   }
 

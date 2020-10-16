@@ -1,14 +1,12 @@
 package partialFunctions
 
-import scala.annotation.tailrec
-
 object FunctionalCollection extends App {
 
   /*
     Exercise implement aFunctional Set
     (A => Boolean) it is same as Function1[A,Boolean]
     Hence Set is a function
-    Hence we can pass the refrence of Myset as input to any HOF
+    Hence we can pass the reference of MySet as input to any HOF(map, flatmap...etc)
      */
   trait MySet[A] extends (A => Boolean) {
     def apply(element: A): Boolean = contains(element)

@@ -18,7 +18,7 @@ object PartialFunctionExercise extends App {
   // chatbot
   val chatBot: PartialFunction[String, String] = {
     case "Hello" => "Hi My name is Prem"
-    case "Scala" => "Scla is ver good language"
+    case "Scala" => "Scala is ver good language"
     case "goodbye" => "never say good bye"
 
 
@@ -30,4 +30,26 @@ object PartialFunctionExercise extends App {
     case d: Int if d != 0 => 42 / d
   }
 println(divide2.isDefinedAt(0))
+
+
+  // -------------Partial Function Exercise-------------------------------------------------
+  /*
+  case class Memo[A, B](f: Function1[A, B]) extends Function1[A, B]
+
+
+  lazy val fibonacci: Memo[Int, Int] = Memo.apply(new PartialFunction[Int, Int] {
+    override def apply(v: Int): Int =
+      v match {
+        case 0 => 0
+        case  1 => 1
+        case _ =>   fibonacci(v - 1) + fibonacci(v - 2)
+      }
+
+
+    // isDefinedAt(v: BigInt) = true
+    override def isDefinedAt(v: Int): Boolean = true
+  })
+
+
+   */
 }
