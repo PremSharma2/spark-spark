@@ -108,5 +108,30 @@ val ordinalNumber=aNumber match {
     }
     tempResult
   }
+  // pattern match exercise
+
+  def listToString(list: List[String]): String = list match {
+    case head :: tail => head + " " + listToString(tail)
+    case Nil => ""
+  }
+  // pattern match Exercise 3: Largest size element in List
+
+  def max(xs: List[Int]): Option[Int] = xs match {
+    case Nil => None
+    case List(x: Int) => Some(x)
+    case firstHead :: secondElement :: tail => max( (if (firstHead > secondElement)
+                                              firstHead else secondElement) :: tail )
+  }
+
+
+  def sum(list: List[Int]): Int = list match {
+    case Nil => 0
+    case n :: rest => n + sum(rest)
+  }
+
+  def multiply(list: List[Int]): Int = list match {
+    case Nil => 1
+    case n :: rest => n * multiply(rest)
+  }
 }
 

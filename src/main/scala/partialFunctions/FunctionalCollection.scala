@@ -52,7 +52,8 @@ object FunctionalCollection extends App {
     override def &(anotherSet: MySet[A]): MySet[A] = this
 
     override def --(anotherSet: MySet[A]): MySet[A] = this
-// When you negate the EmptySet its output will be the EveryThing of Type A i.e all values of domain A
+// When you negate the EmptySet
+// its output will be the EveryThing of Type A i.e all values of domain A
     // thats why we gave here _ => true or true we have returend
     override def unary_! : MySet[A] = new PropertyBasedSet[A](_ => true)
   }
@@ -88,7 +89,7 @@ now recursion is tracing back
 
  */
 
-    override def ++ (anotherSet: MySet[A]): MySet[A] = {
+     override def ++ (anotherSet: MySet[A]): MySet[A] = {
       //this.tail ++ element + this.head
       var newSetAccumulator: MySet[A] = anotherSet + this.head
       this.tail ++ newSetAccumulator
@@ -171,16 +172,21 @@ and now recursion traces back
       if (head == element) tail
       else tail - element + head
 
-    override def &(anotherSet: MySet[A]): MySet[A] =
-    //filter(x => anotherSet.contains(x))
-    //filter(x => anotherSet.apply(x))
+    override def &(anotherSet: MySet[A]): MySet[A] = {
+      //filter(x => anotherSet.contains(x))
+      //filter(x => anotherSet.apply(x))
       // here anotherset is also a function so we can pass this as refrence
+      // it is like passing val anotherset : Function1= new Function1{
+      //  apply()
+   //}
+    //
       filter(anotherSet)
+    }
 
     override def --(anotherSet: MySet[A]): MySet[A] =
       filter(x => !anotherSet(x))
 
-    // unary_! is define to negate the current Set it will return the property Set
+    // unary_! is define to negate the current Set it will return the property based Set
     // this will return the exact opposite to current i.e all -ve numbers
     // because we have negate the current set
     override def unary_! : MySet[A] = new PropertyBasedSet[A](x => !this.contains(x))
@@ -188,12 +194,13 @@ and now recursion traces back
 
   //Property based sets are useful for defining infinite All inclusive sets
   // it could be infinite set
-  // all elements of Type A in All inclusive sets which satisfy the property
+  // all elements of Type A are in domain of set in All inclusive sets which satisfy the property
   //{ x in A | property(x)  } that means x which is of A type and satisfy this property
   // can only be added into this set this is canonical definition of Property based set
-  // PropertyBasedSet[A](property: A => Boolean) This is scala representaion of { x in A | property(x)  }
+  // PropertyBasedSet[A](property: A => Boolean) This is scala representation
+  // of { x in A | property(x)  }
   // Canonical defination of property bases set
-
+// This is infinite property based set this is replacement of AllinclusiveSet
   class PropertyBasedSet[A](property: A => Boolean) extends MySet[A] {
     // { x in A | property(x)  } in this method are verifying that this element is exist in this set or not
     // if it exist it has to satisfy the property
@@ -206,7 +213,8 @@ and now recursion traces back
     override def +(element: A): MySet[A] =
       new PropertyBasedSet[A](x => property(x) || x == element)
 
-    // Set{ x in A | property(x)  } ++ anotherSet => Set{ x in A | property(x) || anotherSet contains x }
+    // Set{ x in A | property(x)  } ++ anotherSet =>
+    // Set{ x in A | property(x) || anotherSet contains x }
     // Set{ x in A | property(x) || anotherSet contains x }
     // o/p is here is the new set with new customized property
     // Hence output will be new set which either satisfies the property or passed argument set
@@ -216,7 +224,7 @@ and now recursion traces back
       new PropertyBasedSet[A](x => property(x) || anotherSet.contains(x))
 //all inclusive set i.e all integers of domain Int we apply map function x=> _%3
     // now we dont know whether is is infinite set or finite set
-    // or whether it will satisfy the property
+    // and if its finite then we dont know or whether it will satisfy the property
     override def map[B](fx: A => B): MySet[B] = politlyFail
 
     override def flatMap[B](fx: A => MySet[B]): MySet[B] = politlyFail
@@ -235,6 +243,8 @@ and now recursion traces back
 
     // this is negate method it will return Property Based set
     // with opposite property thats how negate function works
+    // if the original set is infinite set of even numbers then new set will be odd
+    // numbered infinite set
     override def unary_! : MySet[A] = new PropertyBasedSet[A](x => !property(x))
 
     def politlyFail: Nothing = throw new IllegalArgumentException("Its really deep hole")
@@ -259,12 +269,12 @@ and now recursion traces back
     }
   }
 
-  val s = MySet(1, 2, 3)
+  val s: MySet[Int] = MySet(1, 2, 3)
   s forEach(println)
   s + 5 forEach(println)
   s + 5 ++ MySet(-1,-3) forEach(println)
    s + 5 ++ MySet(-1,-3) + 3 flatMap (x=> MySet(x,2*x)) forEach println
-  // s.unary_!  it will give property based set with property that validate oppsite nature set
+  // s.unary_!  it will give property based set with property that validate opposite nature set
   //new PropertyBasedSet[A](x => !property(x))
   // and apply calls contain property(element)
   // so we are trying to add  2 intoProperty based set using apply method that in turn will call

@@ -1,9 +1,8 @@
 package exception
 
-import scala.util.Success
-import scala.util.Failure
-import scala.util.Try
 import java.util.Random
+
+import scala.util.{Success, Try}
 object Try_And_Option_Exercise extends App {
 
   val aSuccess = Success(3)
@@ -38,7 +37,8 @@ object Try_And_Option_Exercise extends App {
     }
   }
 
-  val possibleConncetion: Try[Connection] = HttpConnectionService.getSafeServerConnection(hostName, port)
+  val possibleConncetion: Try[Connection] = HttpConnectionService.
+    getSafeServerConnection(hostName, port)
   
   /*
    * def flatMap[U](f: T => Try[U]): Try[U] =
@@ -50,7 +50,9 @@ object Try_And_Option_Exercise extends App {
     }
    * 
    */
-  val anotherhtml = possibleConncetion.map(connection => connection.getSafeServerContent("/home")).flatten
+  //here flatmap function:
+  // Maps the given function to the value from this Success or returns this if this is a Failure.
+  val anotherhtml: Try[String] = possibleConncetion.map(connection => connection.getSafeServerContent("/home")).flatten
   val posiibleHtml: Try[String] = possibleConncetion.flatMap(conection => conection.getSafeServerContent("/home"))
   posiibleHtml.foreach(renderHtml)
 

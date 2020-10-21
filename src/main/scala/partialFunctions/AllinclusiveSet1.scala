@@ -12,6 +12,8 @@ object AllinclusiveSet1 extends App {
     override def ++(element: MySet[A]): MySet[A] = this
 
     // allinclusiveSet[Int]= all natural numbers
+    //as allinclusiveSet is inifinite set basically so we can't implement the
+    //map, flatmap,
     override def map[B](fx: A => B): MySet[B] = ???
 
     override def flatMap[B](fx: A => MySet[B]): MySet[B] = ???

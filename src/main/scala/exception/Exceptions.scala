@@ -20,7 +20,7 @@ object Exceptions extends App {
     else 42
   }
 // catching an exception via pattern matching
-  val potentialFail = try {
+  val potentialFail: Int = try {
 
     getInt(true)
   } catch {
@@ -46,4 +46,26 @@ object Exceptions extends App {
     }
   }
 
+
+  /*
+  Returning an Option from a method
+The toInt method used in this book shows how to return an Option from a method.
+It takes a String as input and returns a Some[Int]
+ if the String is successfully converted to an Int, otherwise it returns a None:
+
+   */
+
+  def toInt(s: String): Option[Int] = {
+    try {
+      Some(Integer.parseInt(s.trim))
+    } catch {
+      case e: Exception => None
+    }
+  }
+  //same thing but in short
+
+  import scala.util.control.Exception._
+  def toInt1(s: String): Option[Int] = allCatch.opt(s.toInt)
+  val x1: Int = toInt("prem").getOrElse(2)
+  val x2: Option[Int] = toInt("hello").orElse(Some(2))
 }

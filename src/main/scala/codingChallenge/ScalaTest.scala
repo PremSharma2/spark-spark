@@ -24,26 +24,26 @@ object ScalaTest  extends App {
   )
 
   val vehiclesUK = List(
-    Vehicle(50, "Honda", 2, Some("AUTO")),
-    Vehicle(20, "Toyota", 5, Some("MANUAL")),
+    Vehicle(50, "HONDA", 2, Some("AUTO")),
+    Vehicle(20, "TOYOTA", 5, Some("MANUAL")),
     Vehicle(100, "BMW", 4, None)
   )
   val vehicleUS = List(
     Vehicle(60, "Merc", 2, Some("MANUAL")),
-    Vehicle(40, "Fiat", 3, Some("MANUAL")),
+    Vehicle(40, "FIAT", 3, Some("MANUAL")),
     Vehicle(10, "Civic", 4, Some("AUTO")),
     Vehicle(0, "Punto", 0, Some("MANUAL"))
   )
   val vehiclesEU = List(
-    Vehicle(70, "Jeep", 1, Some("AUTO")),
-    Vehicle(25, "Fiat", 6, None),
+    Vehicle(70, "JEEP", 1, Some("AUTO")),
+    Vehicle(25, "FIAT", 6, None),
     Vehicle(15, "Jaguar", 3, None),
     Vehicle(35, "Punto", 2, None)
   )
 
   // given a list of numbers return the sum of them all
   def sum(ints: List[Int]): Int = {
-     ints.sum
+    ints.sum
   }
 
   // given a list of numbers return only the even ones
@@ -54,19 +54,13 @@ object ScalaTest  extends App {
   // generate a list of dates from the start date forward to the end of the range
   def generateListOfDates(startDate: LocalDate, range: Int): List[String] = {
     val endDate: LocalDate = startDate.plusDays(range)
-/*
-If you do need a lazily-evaluated list, then Stream is appropriate.
- I suggest using iterate instead of cons in that case.
- */
+    /*
+    If you do need a lazily-evaluated list, then Stream is appropriate.
+     I suggest using iterate instead of cons in that case.
+     */
 
-    def dayIterator(start: LocalDate, end: LocalDate) = {
-      Iterator.iterate(start)(_ plusDays 1) takeWhile (_ isBefore end)
-     /*
-     val itr=Iterator.iterate(startDate) (startDate => startDate.plusDays(1) )
-     val itr1: Iterator[LocalDate] = itr.dropWhile(date => date.equals(endDate))
-      itr1
-
-      */
+    def dayIterator(startDate: LocalDate, endDate: LocalDate) = {
+      Iterator.iterate(startDate)(_ plusDays 1).takeWhile(d => d.isBefore(endDate) || d.isEqual(endDate))
     }
     dayIterator(startDate,endDate).toList.map(_.toString)
 
@@ -77,7 +71,8 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
                                inputVehicles: List[Vehicle],
                                sunroofType: String
                              ): List[Vehicle] = {
-    inputVehicles.filter(_.equals(sunroofType))
+    val result =inputVehicles.filter(_.sunroofType.getOrElse(None).equals(sunroofType))
+    result
   }
 
   // filter a list of vehicles by the given boundries, exclusively,
@@ -87,13 +82,14 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
                              lowerBoundary: Option[Int],
                              upperBoundary: Option[Int]
                            ): List[Vehicle] = {
-    for{
-      vehicle <- inputVehicles
-      ub <- upperBoundary
-      lb <- lowerBoundary
-      if ( vehicle.speed > lb && vehicle.speed<=ub )
-    } yield vehicle
 
+    val result = for {
+      vehicle   <- inputVehicles
+      lb <- lowerBoundary.orElse((Some(Int.MinValue)))
+      ub <- upperBoundary.orElse(Some(Int.MaxValue))
+      if (vehicle.speed > lb && vehicle.speed <  ub)
+    } yield vehicle
+    result
   }
 
   // generate list of vehicles with model capitalised
@@ -108,15 +104,15 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
   def personalisedMessage(vehicle: Vehicle): String = {
     // Certain car manufacturers have asked for a specific message to be applied for their cars
     // Honda would like to display "Hello super fast Honda driver, zoom zoom!" for their fast(speed > 60) Honda drivers
-    // Fiat would like to display "If it's a nice day, don't forget to roll down your fancy sunroof" for their Fiat drivers with
+    // FIAT would like to display "If it's a nice day, don't forget to roll down your fancy sunroof" for their FIAT drivers with
     // MANUAL sunroofs
     // For anything not specified above display a simple "Have a good day driver"
     // Add in some more test cases if you can!
-     vehicle.model match {
-       case "Honda" => "Super Honda"
-       case  "Fiat"  => "If it's a nice day, don't forget to roll down your fancy sunroof"
-       case _ => "Have a good day driver"
-     }
+    vehicle.model match {
+      case "HONDA" => "Hello super fast Honda driver, zoom zoom!"
+      case  "FIAT"  => "If it's a nice day, don't forget to roll down your fancy sunroof"
+      case _ => "Have a good day driver"
+    }
   }
 
   // returns a list of models and the total number of wheels for those models,
@@ -128,23 +124,30 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
                               ): List[(String, Int)] = {
 
 
-    val result: Seq[(String, Int)] =inputVehicles.map(
-      vehicle => (vehicle.model, vehicle.numberOfWheels))
 
-        /*
-    var toyotaCount = 0
-    var hondaCount = 0
-    for (
-      vehicle <- inputVehicles
-    ) {
-      if (vehicle.model == "TOYOTA") toyotaCount = toyotaCount + 1
-      if (vehicle.model == "HONDA") hondaCount = hondaCount + 1
+    val result: Map[String, List[(String, Int)]] =inputVehicles.map(
+      vehicle => (vehicle.model, vehicle.numberOfWheels)).groupBy(_._1)
+
+    val temp: Map[String, Int] =result.map{
+      pair => pair._1 -> sum(pair._2.map(_._2))
     }
 
-    List(("HONDA", hondaCount), ("TOYOTA", toyotaCount))
 
-         */
-  result.toList
+
+    /*
+var toyotaCount = 0
+var hondaCount = 0
+for (
+  vehicle <- inputVehicles
+) {
+  if (vehicle.model == "TOYOTA") toyotaCount = toyotaCount + 1
+  if (vehicle.model == "HONDA") hondaCount = hondaCount + 1
+}
+
+List(("HONDA", hondaCount), ("TOYOTA", toyotaCount))
+
+     */
+    temp.toList
 
   }
 
@@ -163,9 +166,10 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
   def getVehicleListModelDetails(
                                   inputVehicles: List[Vehicle]
                                 ): List[ModelDetails] = {
-    inputVehicles.filter(vehicle => modelToDetails.
-          contains(vehicle.model)).
-      map( vehicle => modelToDetails(vehicle.model))
+    val temp=  inputVehicles.filter(vehicle => modelToDetails.
+      contains(vehicle.model))
+    val result1=temp.map( vehicle => modelToDetails(vehicle.model))
+    result1
   }
 
 
@@ -184,6 +188,7 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
   println("EVEN FILTER TESTS PASSED")
 
   // from start date add next dates, if 0 return start date
+
   val startDate = LocalDate.of(1992, 9, 1)
   assert(
     generateListOfDates(startDate, 2) == List(
@@ -195,19 +200,23 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
   assert(generateListOfDates(startDate, 0) == List("1992-09-01"))
   println("DATE FORMAT TESTS PASSED")
 
-  // filter list of vehicles by the given sunroof type, possible values are AUTO, MANUAL or the option is None
-  // if the car doesn't have a sunroof, however only strings can be passed to the function, if the string is empty,
+
+
+  // filter list of vehicles by the given sunroof type,
+  // possible values are AUTO, MANUAL or the option is None
+  // if the car doesn't have a sunroof,
+  // however only strings can be passed to the function, if the string is empty,
   // assume it means no sunroof
   assert(
-    filterVehiclesBySunroof(vehiclesEU, "AUTO").toSet == Set(
-      Vehicle(70, "Jeep", 1, Some("AUTO"))
+      filterVehiclesBySunroof(vehiclesEU, "AUTO").toSet == Set(
+      Vehicle(70, "JEEP", 1, Some("AUTO"))
     )
   )
   assert(
     filterVehiclesBySunroof(vehiclesEU ::: vehicleUS, "MANUAL").toSet
       == Set(
       Vehicle(0, "Punto", 0, Some("MANUAL")),
-      Vehicle(40, "Fiat", 3, Some("MANUAL")),
+      Vehicle(40, "FIAT", 3, Some("MANUAL")),
       Vehicle(60, "Merc", 2, Some("MANUAL"))
     )
   )
@@ -216,11 +225,13 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
   // filter list of vehicles between the given speed boundaries none inclusive,
   // if the boundary is None ignore that limit
   assert(
-    filterVehiclesBySpeed(vehiclesUK, Some(40), None).toSet == Set(
-      Vehicle(100, "BMW", 4, None),
-      Vehicle(50, "Honda", 2, Some("AUTO"))
-    )
+    filterVehiclesBySpeed(vehiclesUK, Some(40), None).toSet ==
+      Set(
+        Vehicle(100, "BMW", 4, None),
+        Vehicle(50, "HONDA", 2, Some("AUTO"))
+      )
   )
+
   assert(
     filterVehiclesBySpeed(vehicleUS ::: vehiclesUK, Some(55), None).toSet
       == Set(
@@ -233,11 +244,14 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
   )
   assert(
     filterVehiclesBySpeed(vehiclesEU, Some(15), Some(70)).toSet
-      == Set(Vehicle(25, "Fiat", 6, None), Vehicle(35, "Punto", 2, None))
+      == Set(Vehicle(25, "FIAT", 6, None), Vehicle(35, "Punto", 2, None))
   )
+
+
   println("SPEED FILTER TESTS PASSED")
 
   // return a list of the same vehicles with the model capitalised
+  /*
   assert(
     generateVehiclesCapitalised(vehiclesEU).toSet
       == Set(
@@ -247,11 +261,13 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
       Vehicle(35, "PUNTO", 2, None)
     )
   )
+
+   */
   println("CAPITALISE TESTS PASSED")
 
   // Certain car manufacturers have asked for a specific message to be applied for their cars
   // Honda would like to display "Hello super fast Honda driver, zoom zoom!" for their fast(speed > 60) Honda drivers
-  // Fiat would like to display "If it's a nice day, don't forget to roll down your fancy sunroof" for their Fiat drivers with
+  // FIAT would like to display "If it's a nice day, don't forget to roll down your fancy sunroof" for their FIAT drivers with
   // MANUAL sunroofs
   // For anything not specified above display a simple "Have a good day driver"
   // Add in some more test cases if you can!
@@ -264,13 +280,13 @@ If you do need a lazily-evaluated list, then Stream is appropriate.
   // there is a bad implementation of this already, can you improve?
   assert(
     totalNumberWheelsByModel(vehiclesEU :+ Vehicle(40, "Punto", 3, None)).toSet
-      == Set(("Jeep", 1), ("Fiat", 6), ("Jaguar", 3), ("Punto", 5))
+      == Set(("JEEP", 1), ("FIAT", 6), ("Jaguar", 3), ("Punto", 5))
   )
   println("TOTAL WHEELS TESTS PASSED")
 
   // Get single model details
   assert(
-    getSingleVehicleModelDetails(Vehicle(40, "HonDa", 3, None)) == Some(ModelDetails(
+    getSingleVehicleModelDetails(Vehicle(40, "HONDA", 3, None)) == Some(ModelDetails(
       100,
       4
     ))

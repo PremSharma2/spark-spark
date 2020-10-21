@@ -1,7 +1,4 @@
 package option
-
-import java.io
-import java.util.Random
 /*
  * use of options and handling failures
  *
@@ -45,4 +42,21 @@ object Options extends App {
   val emptyOption : Option[Int] = Some(0)
   // As Option is monad so it implements ETW pattern
   println(noOption.flatMap(x => Option(x * 10)))
+  // pattern match in Option
+/*
+ Mapping over option depending on condition:
+Returns a scala.Some containing the result of applying pf to this
+scala.Option's contained value,
+if this option is nonempty and partial function is defined for that value.
+4
+
+
+I have two vals, a condition and an option.
+ Note that condition is a simple boolean, not depending on the option's value.
+ i.e some external condition
+ */
+  val condition = true
+  val optionMatch: Any = myfirstOption.collect {
+    case x if condition => x
+  }.getOrElse(None)
 }

@@ -9,7 +9,28 @@ object VarianceExercise  extends App{
    * checkVehicles(conditions:String):List[T]
    * 
    * }
-   * 
+   *
+   *
+   * Imp points for varince
+   *   --------------------------------------------------
+def method(...): SomeType
+that SomeType is in a covariant position. Here are the cases:
+If SomeType is a normal type (e.g. Person), then you're good.
+If SomeType is a generic type argument (e.g. T),
+* then T must at least not be contravariant in the class where the method is being defined.
+ Invariant and covariant is fine.
+
+1 If SomeType is a generic type containing your class' type argument (e.g. List[T]),
+* then the position of SomeType is accepted
+(regardless of whether T is annotated with +/-, much like case 1 above),
+*  but the variance position is now transferred to T. This is the complex part.
+*
+2 If SomeType is covariant in T (e.g. List), then SomeType's variance position transfers to T.
+* In this case, T would be in a covariant position.
+If SomeType is contravariant in T, then SomeType's variance position is transferred backwards to T.
+In this (your) case, T will be in a contravariant position, which matches the original type definition.
+If SomeType is invariant in T, then the position of T is strictly invariant,
+* and T must not have any +/- annotation.
    */
   class IList[T]
   class Vehicle

@@ -76,11 +76,11 @@ the key/value pairs that make up the map
   // if (status !=null)
   //println(status)
   connectionStatus.foreach(println)
-  serverConfig.get("host").
+  val x: Option[String] = serverConfig.get("host").
     flatMap(host => serverConfig.get("port").
       flatMap(port => Connection.apply(host, port)).
       map(connection => connection.connect))
-    .foreach(println)
+
 
 // as we can see we are using the composite Function here so we can decompose
 // it further like this  x => f(x).flatmap(g(x,y).map(h(z))
@@ -95,7 +95,7 @@ the key/value pairs that make up the map
      host.flatMap(h => port.
     flatMap(p => Connection.apply(h, p)))
    */
-  val forConnectionStatus: Unit = for {
+  val forConnectionStatus: Option[String] = for {
     host: String <- serverConfig.get("host")
     port: String <- serverConfig.get("port")
     connection <- Connection(host, port)

@@ -36,8 +36,8 @@ On the other hand a partial function from A to B is not defined for some inputs 
   }
  // println(anicerFussyFunction(33))
   //Hence this anicerFussyFunction is a partial function because it is applicable
-  // only to subset of Int values {1,2,5}
-  //[1,2,5] => Int
+  // only to subset of Int values {1,2,3}
+  //[1,2,3] => Int
   // it is same as above that we gave implementation of Function1[Int,Int] using lambda
   // We have Partial Function in scala to implement this kind of functionality
   val aPartialFunction: PartialFunction[Int, Int] = {
@@ -71,7 +71,7 @@ On the other hand a partial function from A to B is not defined for some inputs 
   }
  val shouldHandleAlldomainValues: PartialFunction[Int, Int] = newPartialFunction orElse chainedfunction
   println(shouldHandleAlldomainValues.apply(34))
-  // Partial function extends Normal Function
+  // Partial function extends Function1[]
   // Hence we can write Total Function with Single Argument or
   // Normal Function Like Partial Function Syntax
   //Because Partial Function are subTypes of Normal Functions
@@ -79,7 +79,7 @@ On the other hand a partial function from A to B is not defined for some inputs 
     case 1 => 99
   }
   // Both are Same because as we aware that Partial Function works on pattern match
-  //Although is not partial function but because as we are aware that Partial Function Extends Function
+  //Although i not partial function but because as we are aware that Partial Function Extends Function
   // Then they also can be used for the same purpose if we want to
   val aTotalFuntion1: Int => Int = x => x match {
     case 1 => 99
@@ -103,6 +103,14 @@ On the other hand a partial function from A to B is not defined for some inputs 
   val partialList=List(3,9,99)
   println(partialList.map(newPartialFunction))
 
+  // partial functio using flatMap
+
+  import math.sqrt
+  List(-2.0, 0.0, 2.0).flatMap {
+    case d if d < 0.0 => List.empty
+    case 0.0          => List(0.0)
+    case d            => List(sqrt(d), -sqrt(d))
+  }
 
 
 }
