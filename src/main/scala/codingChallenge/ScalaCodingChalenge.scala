@@ -1,7 +1,5 @@
 package codingChallenge
 
-import PriceBasket.{breads, soups}
-
 import scala.math.min
 
 object ScalaCodingChalenge extends App {
@@ -113,7 +111,7 @@ Seq(9, 9, 9) => Seq(1, 0, 0, 0)*/
   */
 
 //Q6:
-   import cats.FlatMap
+  import cats.FlatMap
   import cats.implicits._
   trait MyAlg[F[_]] {
     def insertItSomewhere(someInt: Int): F[Unit]

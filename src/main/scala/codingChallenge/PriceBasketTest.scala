@@ -2,7 +2,8 @@ package codingChallenge
 
 import scala.math.min
 /*
-Enumerations are useful tool for creating groups of constants, such as Numeric Constants or Customized Object Constants ,
+Enumerations are useful tool for creating groups of constants,
+ such as Numeric Constants or Customized Object Constants ,
 such as  Days of the week, Months of the year,
  Items in Shopping cart
 all these are represented by  case Objects as states are represented by case classes/objects in Scala
@@ -15,34 +16,31 @@ You can also use the following approach of using a Scala trait to create the equ
  */
 //When we want to compare o an  constant against the all  possible constants in the enum type.
 //then we can implement it using sealed trait
-//And if you want to perform some action on these constants you can define that action in that trait
-// IT is enum comparing all possible values as key value pair and getting the value of corresponding enum key
+//And if you want to perform some action on these constants
+// you can define that action in that trait
+// It is enum comparing all possible values as
+// key value pair and getting the value of corresponding enum key
 sealed trait Item {
-  def  price: Double = this match {
+  def price: Double = this match {
     case Apple => 1
-    case Milk   => 1.3
-    case Bread  => 0.8
-    case Soup   => 0.65
+    case Milk => 1.3
+    case Bread => 0.8
+    case Soup => 0.65
   }
+
 }
 
-// changing to PArtial Function
 
-/*
-Because of these features, case objects are primarily used in two places (instead of regular objects):
-
-When creating enumerations
-When creating containers for “messages” that you want to pass between other objects (such as with the Akka actors library)
- */
 //Constants Are declared here as case Objects
 final case object Apple extends Item
 final case object Milk extends Item
 final case object Bread extends Item
 final case object Soup extends Item
 
-//Now we want create that Domain related constants objects so need companion object of this sealed trait which will act as factory
+//Now we want create that Domain related constants objects
+// so need companion object of this sealed trait which will act as factory
 object Item {
-  def fromString(str: String): Item = str match {
+  def apply(str: String): Item = str match {
     case "Apples" => Apple
     case "Milk"   => Milk
     case "Bread"  => Bread
@@ -53,10 +51,11 @@ object Item {
 
 
 /*
-Here s we can see the state is represented by the Percentage case class nad the HalfPrice case class
+Here s we can see the state is represented by the Percentage case class and
+ the HalfPrice case class
 But if we want to perform actions on pattern match of these pojos so we will always use the sealed trait in the same file scope
 Like this we have done this also here we wanted a Seq of offers so we extended the Offer trait to thse case clases bcz
-Seq[Offer] we want to be put inside the Seq
+Seq[Offer] we want to be put inside the Seq because case class represents only state
  */
 sealed trait Offer {
   def discountedAmount: Double = this match {
@@ -116,8 +115,8 @@ object PriceBasket extends App {
     case _      => Seq.empty
   })
 
-  val breads: Int = items.filter({ case Bread => true; case _ => false }).size
-  val soups: Int = items.filter({ case Soup   => true; case _ => false }).size
+  val breads: Int = items.count { case Bread => true; case _ => false }
+  val soups: Int = items.count { case Soup => true; case _ => false }
 
   val soupsBreadOffers: Seq[HalfPrice] =
     (1 to min(breads, soups / 2)).toSeq.map(_ => HalfPrice(Bread, Soup))
