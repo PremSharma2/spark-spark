@@ -7,7 +7,7 @@ object TypeClassAndImplicits  extends App {
   trait HtmlSerializer[T]{
     def serialize(value : T):String
   }
-  // This is utility to use smartly Type Class via this companion object
+  // This is utility to use smartly, Type Class via this companion object
   // as a good design we always access type classes or traits who top most member of faimly
   // via companion object
   // via this utility i.e Type class instances will be passed to utility to this Companion Object
@@ -39,6 +39,7 @@ object TypeClassAndImplicits  extends App {
   println(HtmlSerializer.serialize(42))
   val user=User("Prem", 34, "prem.kaushik@outlook.com")
 println(HtmlSerializer.apply[User].serialize(user))
-
+  // SAME
+  println(HtmlSerializer[User].serialize(user))
   // Exercise
 }

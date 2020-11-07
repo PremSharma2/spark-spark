@@ -1,12 +1,15 @@
 package ImplicitsAndTypeClasses
-
+// old traditional way of designing serialising API
 object TypeClasses  extends App {
 // Design to Serialize domain objects to render html
   trait HtmlSerializable{
     def serializeToHtml:String
   }
   // This is the POJO or BO  we want to map that HTML object
+  // we extended this pojo to HtmlSerializable just to mark it it is serializable
+  // this approach is tightly coupled
 case class User(name:String, age:Int , email:String) extends HtmlSerializable {
+    // and here we serialized this
   override def serializeToHtml: String = s"<div> $name {$age} <a href = $email /> </div>"
 }
   val user=User("Prem", 34, "prem.kaushik@outlook.com")

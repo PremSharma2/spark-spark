@@ -111,8 +111,6 @@ Seq(9, 9, 9) => Seq(1, 0, 0, 0)*/
   */
 
 //Q6:
-   import cats.FlatMap
-  import cats.implicits._
   trait MyAlg[F[_]] {
     def insertItSomewhere(someInt: Int): F[Unit]
     def doSomething(someInt: Int): F[Int]

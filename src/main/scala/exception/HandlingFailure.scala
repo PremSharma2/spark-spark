@@ -16,10 +16,13 @@ object HandlingFailure extends App {
   // checking whether Failure object is there or Success object is there
   println(potentialFailuer.isFailure)
   //syntactic sugar
-  val anotherPotentialFailure: Try[String] = Try.apply {
+  val anotherPotentialFailure = Try.apply {
     // code that will throw exception will come here
     unsafeMethod()
     
+  }match {
+    case Success(_) => "Pass"
+    case Failure(value) => "Fail"
   }
   // utilities
   println(potentialFailuer.isSuccess)
@@ -43,5 +46,6 @@ object HandlingFailure extends App {
 
   val answer = z.getOrElse(0) * 2
   println(answer)
+  println(anotherPotentialFailure)
  
 }

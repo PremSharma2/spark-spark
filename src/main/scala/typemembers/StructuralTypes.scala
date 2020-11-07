@@ -1,8 +1,7 @@
 package typemembers
 
-import typemembers.StructuralTypes.MyAbstractList
-
 object StructuralTypes  extends App {
+  // type aliasing
   type JavaClosable = java.io.Closeable
 
   // let say our team has implemented some custom impl of closeable
@@ -15,11 +14,11 @@ object StructuralTypes  extends App {
  // def closeQuitely(closeable: JavaClosable or HipsterCloseable)
   // this can possible in scala only by structural types
   // it is nothing but type alias with return type of this code block i.e the type structure
-  // i.e anything which has this structure which has close method that type will be aliased
+  // Type Structure :-> Is  anything which has a structure in which we have close method that type will be aliased
   // with UnifiedCloseable
   type UnifiedCloseable = {
    def close() : Unit
-  }// this is called stryuctural type
+  }// this is called structural type
 // now we can redefine method
   def closeQuitely(closeable: UnifiedCloseable) = closeable.close()
 
@@ -31,6 +30,7 @@ object StructuralTypes  extends App {
   //type refinements
 // So AdvancedCloseable is JavaCloseable Plus the Structural type in form of codeblock
   // so this type of aliasing represents two types
+  // it is that structural type  which has this structure plus it implements JavaClosable i.e JavaClosable type
   type AdvancedCloseable = JavaClosable {
     def closeSilently(): Unit
   }
@@ -47,8 +47,10 @@ object StructuralTypes  extends App {
   // using structural types as standalone types
   // this is like we passed structural Type as an argument in method
   def altCloesable(cloesable: {def close():Unit}) = cloesable.close()
-  // type checking --> duck typing using structural types
 
+
+
+  // type checking --> duck typing using structural types
   type SoundMaker = {
   def makeSound():Unit
 
@@ -64,9 +66,10 @@ object StructuralTypes  extends App {
 
   }
   // this is called static Duck typing
-  // here RHS is refrence of Dog type whcich matches the Structure of Structure Type SoundMaker
-  // one caveat is that it duck typing is possible beacuse of Reflection hence it will be expensive one
+  // here RHS is reference of Dog type which matches the Structure of Structure Type SoundMaker
+  // one caveat is that it duck typing is possible because of Reflection hence it will be expensive one
 val SoundMaker = new Dog
+
   //Exercise
   trait MyAbstractList[+T]{
     def head:T
@@ -88,8 +91,8 @@ val SoundMaker = new Dog
   We ned to check that HeadEqualizer is compatible with MyList and Human
    */
   object HeadEqualizer{
-    type Headable[T] = {def head : T}
-    def ===[T](a:Headable[T],b:Headable[T]) : Boolean = a.head == b.head
+    type HeadAble[T] = {def head : T}
+    def ===[T](a:HeadAble[T], b:HeadAble[T]) : Boolean = a.head == b.head
   }
 
   // solution
@@ -106,6 +109,7 @@ val SoundMaker = new Dog
   f(EmptyList)
   f(Node(2,EmptyList))
   f(new Human) // Compiler plays very smartly it immediately correlates T with human
+  // i.e derived the value of T from Human head def return type
   // Question 2
 
   val brainzList= new Node(new Brain, EmptyList)

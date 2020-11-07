@@ -28,7 +28,7 @@ object MagnetPattern extends App {
       actor.receive(default argument we cant give bcz compiler again will get confuse)
      */
   }
-  // this problem can be solved by type class pattern
+  // this problem can be solved implicit conversion
   trait MessageMagnet[Result]{
     def apply():Result
   }
@@ -37,12 +37,12 @@ object MagnetPattern extends App {
   // so that receive method can consume all types of messages so messages are in form of type class instances
 def receive[R](magnet: MessageMagnet[R]):R= magnet.apply()
   // now how we can make sure that this apply method somehow receive other types as well
-  // this we can do by implicit conversion
+  // this we can do by implicit conversion by using value classes
   // these are type class instances which are helping to implement overloading receive method
   implicit class FromP2PRequest(request:P2PRequest) extends MessageMagnet[Int]{
     override def apply(): Int = {
       // all logic to handle P2P request
-      println("handling p2p request")
+      println("request:P2PRequest:->handling p2p request")
       202
     }
   }
@@ -98,13 +98,13 @@ def receive[R](magnet: MessageMagnet[R]):R= magnet.apply()
   }
   val addFv: AddMagnet => Int = add _
   println(addFv.apply(1))
-  // because here we ised Generic type and compiler doesn't know while lifting thta
+  // because here we have used Generic type and compiler doesn't know while lifting thta
   // when converting def to Function What will be the Function Type so it gave by default
   // MessageMagnet[Nothing] => Nothing
   val reciveFv: MessageMagnet[Nothing] => Nothing = receive _
 
   /*
-  Drawback of this pattren
+  Drawback of this pattern
   1 - Verbose
   2 - harder to read
   3- you cant name or place default argument

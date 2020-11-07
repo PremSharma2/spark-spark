@@ -7,12 +7,16 @@ object PimpMyLibrary  extends App {
   it must have exactly one parameter and have nothing inside — except defs.
   Furthermore, no other class can extend a value class,
   and a value class cannot redefine equals or hashCode.
-  To define a value class, make it a subclass of  AnyVal and put the val keyword before the one parameter.
+  To define a value class, make it a subclass of
+  AnyVal and put the val keyword before the constructor parameter.
   This is how you can recognize or create value classes in Scala
- Fundamentally, a value class is one that wraps around a very simple type or a simple value, like :
+ Fundamentally, a value class is one
+ that wraps around a very simple type or a simple value, like :
  Int,  Boolean, etc. What that means is that, at compile time,
- you see the value class and use the value class, but at the time bytecode could get generated,
- you are actually using the underlying simple type. So, that means that your instances of the wrapper classes
+ you see the value class and use the value class,
+ but at the time bytecode could get generated,
+ you are actually using the underlying simple type.
+ So, that means that your instances of the wrapper classes
      creator, which means less initialization,
    increase performance and create less memory usage, because there is no instance of the wrapper classes.
    Value classes are mostly used for performance optimization and memory optimization.

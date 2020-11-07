@@ -7,6 +7,7 @@ object SelfTypes  extends App {
   }
 trait Singer{ self: InstrumentList => //whoever implement Singer he has to implement InstrumentList also
 def sing():Unit
+  self.play()
 }
 // It is the correct impl which say that whoever extends Singer has to implement InstrumentList
   class LeadSinger extends Singer with InstrumentList{
@@ -69,7 +70,7 @@ val ericClapton= new Guitarist with Singer{
    def dependentAction(x:Int):String = action(x) + "Scala-Dependency"
 
   }
-  //fundamental difference between Sparing DI and Scala cake pattern is that
+  //fundamental difference between Spring DI and Scala cake pattern is that
   // Dependencies in Spring DI is that Spring Enforces the type check at run time i.e
   // It will check at run time whether the dependency is correct or not but in Cake
   // Scala Self type enforces this is Compile time type constraint
@@ -78,17 +79,19 @@ val ericClapton= new Guitarist with Singer{
   // In this layer the components declared are lowest small components of any Application
   trait Picture extends ScalaComponent
   trait Stats  extends ScalaComponent
+
   //2 Layer: => compose components
-  // Here we have injected the dependency to 2nd layer component from 1 st layer
+  // Here we have injected the dependency in 2nd layer component from 1 st layer
   // and the dependency is also the component from first layer
-  // Here Profile Requires ScalaComponent{Picture or Stats } which one is designed for this layer
+  // Here Profile Requires ScalaComponent{Picture or Stats }
+  // which one is designed for this layer
   // will get injected as Dependent component into Profile
   trait Profile extends ScalaDependentComponent with Picture{
 
   }
   trait Analytics extends ScalaDependentComponent with Stats
   //3 Layer :-> Application Layer
- // Here 3rd layer is top most layer here it is highest level of abstraction of diffretn layers composition
+ // Here 3rd layer is top most layer here it is highest level of abstraction of different layers composition
   // here we have used the cake pattern As DI pattern to inject the required Component dependencies
   // into the Component of one layer from the another layer
   trait AnalyticsApplicationLayer extends ScalaDependentComponent with Analytics

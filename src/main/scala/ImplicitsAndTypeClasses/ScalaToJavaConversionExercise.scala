@@ -1,7 +1,7 @@
 package ImplicitsAndTypeClasses
 import java.{util => javaCollection}
 object ScalaToJavaConversionExercise  extends App {
-// exercise to convert java optional ti scala option
+// exercise to convert java optional to scala option
    class ToScala[T](value : => T ){
   def asScala:T = value
 

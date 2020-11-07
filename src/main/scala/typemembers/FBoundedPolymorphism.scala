@@ -1,7 +1,5 @@
 package typemembers
 
-import typemembers.FBoundedPolymorphism.Animal
-
 object FBoundedPolymorphism extends App {
 
   /*
@@ -46,7 +44,7 @@ object FBoundedPolymorphism extends App {
 
   // Here we have used in type parameter as Animal type i.e recursive type
   // This means that the type you will pass here it must Extend Animal i.e self Type and animal is typed to A i.e A<: Animal[A]
-  // for example if we pass Cat then Cat is extending the Animal of Type Cat Cat< : Animal[Cat]
+  // for example if we pass Cat then Cat must extend  the Animal of Type Cat Cat< : Animal[Cat]
   /*
   trait Animal[A <: Animal[A]]{ // this is called recursive Type and A <: Animal[A] is called F bounded Polymorphism
     def breed:List[Animal[A]]
@@ -83,7 +81,7 @@ object FBoundedPolymorphism extends App {
   // type i am annotating i.e A <: Animal[A]  are same
   // In this we will use  recursive Type and A <: Animal[A] is called F bounded Polymorphism Plus SelfType
   // It means that if A<: Animal  it Requires A also that Means in short it should be A i.e
-  // Both A should be equal or  Whatever Decedents of Animal[A] we will implement they must als be an A
+  // Both A should be equal or  Whatever Decedents of Animal[A] we will implement that must also be an A
   /*
   trait Animal[A <: Animal[A]]{ self: A=>
     def breed:List[Animal[A]]
@@ -146,6 +144,8 @@ object FBoundedPolymorphism extends App {
     override def breed(a: Dog): List[Dog] = List()
   }
   }
+   */
+  /*
   implicit class CanBreedOps[A](animal:A){
     def breed (implicit canBreed: CanBreed[A]): List[A] = canBreed.breed(animal)
   }

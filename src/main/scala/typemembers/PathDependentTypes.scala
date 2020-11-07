@@ -52,7 +52,9 @@ object PathDependentTypes  extends App {
   trait Item[K] extends ItemLike{
     override type key = K
   }
-  class IntItem extends Item[Int]
+  class IntItem extends Item[Int]{
+    override type key = Int
+  }
   class StringItem extends Item[String]
   // compiler will interpret as ItemType<: ItemLike the type like this
   /*
@@ -63,7 +65,7 @@ object PathDependentTypes  extends App {
             ItemType<:key
    */
   // here idea is to add type constraint or upper bound with this guy
-  // itemLike
+  // itemLike, in short it is parametrized with abstract type member Key
   def get [ItemType<: ItemLike] (key: ItemType#key) : ItemType = ???
  def getKey[T] (key : T) :T = ???
   get[IntItem] (42) // ok

@@ -1,13 +1,10 @@
 package typemembers
-
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 object HigherKindedType  extends App {
 
   trait AHigherKindedType[F[_]] // This is called Higher Kinded Type
 
   // Lets Explain Higher Kinded Type By Monad  example
-
+/*
   trait ListMonad[T]{
     // ETW pattern
     def flatMap[B](fx: T => B): ListMonad[B]
@@ -29,7 +26,7 @@ object HigherKindedType  extends App {
     } yield (a,b)
 
   }
-// now intresting thing here is that we can apply this For Comprehension to any Monad
+// now interesting thing here is that we can apply this For Comprehension to any Monad
 
 
 
@@ -48,6 +45,8 @@ object HigherKindedType  extends App {
     } yield (a,b)
 
   }
+
+ */
   // Imp Question When we want to design an API where All types of monads Will be there
   // then this can be only Possible With higherKinded Types
   //F[_] this here Represents that it will accept any Kind of Monad so all kinds of monads will be present
@@ -96,5 +95,6 @@ implicit  class OptionMonad1[A](option:Option[A]) extends SuperMonad[Option,A] {
   // Lets Test This For ListMonad container We created to Handle ListMonad
  println(multiply(monadList,new MonadicList[String](List("a","b","c")) ))
   println(multiply(new OptionMonad1[Int](Some(1)),new OptionMonad1[String](Some("Scala"))))
-  println(multiply(List(1,2,3),List("a,b,c")))
+  println(multiply(List(1,2),List("a","b","c")))
+  println(multiply(Some(1),Some("Scala")))
 }

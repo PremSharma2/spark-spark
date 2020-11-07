@@ -3,6 +3,7 @@ package ImplicitsAndTypeClasses
 object PimpMyLibraryAndEqualityTypeClassExercise1 extends App {
 // implementing full fledged type class pattern with type enrichment or pimping
   // i.e with type conversion also
+  //first is define  type class using trait
   trait Equal[T]{
     def apply(a:T,b:T):Boolean
   }
@@ -19,6 +20,8 @@ object PimpMyLibraryAndEqualityTypeClassExercise1 extends App {
   object FullEquality extends Equal[User] {
     override def apply(a: User, b: User): Boolean = a.name == b.name && a.email==b.email
   }
+  // implementing type class pattern using pimping
+  // Type Enrichment
   implicit class TypeSafeEqual[T](value:T){
     def ===(other:T)(implicit equalizer:Equal[T]) = equalizer.apply(value,other)
     def =!=(other:T)(implicit equalizer:Equal[T]) = !equalizer.apply(value,other)

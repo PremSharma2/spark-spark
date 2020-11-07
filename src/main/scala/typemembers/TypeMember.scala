@@ -21,7 +21,8 @@ val ac = new AnimalCollection
   type catTypeAlias = Cat
   val pussycat : catTypeAlias = new Cat
   val mycat :Cat= new Cat
-// alternatives to generics when we design APIS we can use type aliases and abstract type members
+// alternatives to generics when
+// we design APIS we can use type aliases and abstract type members
   trait Mylist{
     type T
     def add(element :T):Mylist
@@ -50,7 +51,8 @@ val ac = new AnimalCollection
 
     override def tail: CustomList = tl
   }
-// no you wanted to compile this guy only not the above one because this API is designed for
+// no you wanted to compile this guy only not the above
+// one because this API is designed for
   //Integers not for Strings
   // So we want to enforce this limitation to compile time also so that code should not compile
   class IntList(hd: Int, tl:IntList) extends MList {

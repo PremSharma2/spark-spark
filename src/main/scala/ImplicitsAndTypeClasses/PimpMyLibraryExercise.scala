@@ -3,8 +3,9 @@ package ImplicitsAndTypeClasses
 object PimpMyLibraryExercise extends App {
   //Exercise 1
 // implicit && value class  this represent the implicit conversion
-  implicit class RichString(value : String){
-  def asInt:Int = Integer.valueOf(this.value) // here this expression returns java.lang.Int which scala convert
+  implicit class RichString( val value : String) extends AnyVal {
+  def asInt:Int = Integer.valueOf(this.value)
+    // here this expression returns java.lang.Int which scala convert
   //to Int
     // Here in short we are trying to convert the String to Encrypted String
     // i.e implicit conversion
@@ -39,6 +40,7 @@ object PimpMyLibraryExercise extends App {
 
 
   }
+  //val result :Unit= new RichInt(3).times(fx: () => println("Scala Rocks"))
   3.times(() => println("Scala Rocks"))
   println(4* List(1,2))
 

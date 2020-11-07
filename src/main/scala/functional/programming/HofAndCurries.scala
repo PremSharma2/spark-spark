@@ -159,10 +159,12 @@ object HofAndCurries extends App {
   def andThen(function: Int => Int, g: Int => Int): Int => Int =
     x => g.apply(function.apply(x))*/
 
-    def compose [A,B,T](function1: A => B, function2: T => A): T => B =
+    def compose [A,B,T](function1: A => B, function2: T => A): T => B = {
      // x => functions.apply(g.apply(x))
       x => function1(function2(x))
-
+      // or we can write like this
+      // x => (function1 compose function2 ) (x)
+    }
 
 
   //   Composing small exercise

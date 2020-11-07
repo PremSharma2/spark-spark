@@ -11,8 +11,8 @@ Serialize these case classes
   case class Feed(user:User, posts:List[Post] )
 
   /*
-  1 Lets create the intermediate data types :-> Int , String,List, Date
-   because we need to JSON representation For these
+  1 Lets create the intermediate data types to represent :-> Int , String,List, Date
+   because we need to JSON String representation For these data types
  We will pass these intermediate data types to Json Data Object
  which is object representation of JSoN
    */
@@ -58,10 +58,20 @@ Like this i.e the final JSon representation which is going to serialize now
  }
  }
  or
- {"user:"{"name":"John","age":43,"email":"john@outlook.com"},
+ {
+ "user:"{"name":"John","age":43,"email":"john@outlook.com"},
 "posts:":[{"content":"Hello- Scala","createdDate:":"Thu Sep 03 07:54:37 BST 2020"}
-,{"content":"Look at the cute puppy","createdDate:":"Thu Sep 03 07:54:37 BST 2020"}]}
+,{"content":"Look at the cute puppy","createdDate:":"Thu Sep 03 07:54:37 BST 2020"}]
+}
   */
+
+  /*
+  Lets take an basic example
+  val jsonData= JsonDataObject.apply{
+  //    Map(
+  //      "user" -> JsonString("Prem"),
+  //      "posts" -> JsonArray(List(JsonString("Jai Mata De"),JsonNumber(111)))
+   */
 final case class JsonDataObject(keyValuePair: Map[String,JSONValue]) extends JSONValue {
   override def toJSONString: String = keyValuePair.map{
         // here we are List("key":value, "key":value) collecting key value as string in list
@@ -78,10 +88,13 @@ final case class JsonDataObject(keyValuePair: Map[String,JSONValue]) extends JSO
   final case class JsonNumber(value: Int) extends JSONValue{
     override def toJSONString: String = value.toString
   }
-  // This is special because it contains List of other JSONValue(other intermediate data types)
-  // input is List(JsonDataObject(Map(
-  // content -> JsonString(Hello- Scala),
-  // createdDate: -> JsonString(Tue Sep 08 08:41:38 BST 2020))))
+  // This is special because it contains
+  // List of other JSONValue(other intermediate data types)
+  // input is
+  // val jsonData= JsonDataObject.apply{
+  //    Map(
+  //      "user" -> JsonString("Prem"),
+  //      "posts" -> JsonArray(List(JsonString("Jai Mata De"),JsonNumber(111)))
   final case class JsonArray(value: List[JSONValue]) extends JSONValue{
     //When using mkString with a Scala array, list, seq, etc.,
     // you can also define a prefix, suffix, and element separator, as shown in these examples:
@@ -93,22 +106,23 @@ final case class JsonDataObject(keyValuePair: Map[String,JSONValue]) extends JSO
       jsonString
     }
   }
+  //---------------------------------------------------------------------------------------------------
   // here we are populating JsonDataObject from our application DO
 
   /*
-  2 step is to implement type class pattern for implicit conversion
-  for that We need to have
+  Now introduce type class pattern here
+  Reason of type class pattern here is that to convert
+  the business object to JSON Object so that they can converted in to JSON string
   1 Type classes
-  2 Type class companion
-  3 Type class instances
-  4 pimp my library to use type class instances
+  2 Type class instances
+  3 pimp library to use type class instances
   Lets implement it
    */
   // This is our type class this is step 2.1
   trait JsonConverter[T]{
     def convert(value : T):JSONValue
   }
-  // thsese are for existing types
+  // these are for existing types
 implicit object StringConverter extends JsonConverter[String]{
   override def convert(value: String): JSONValue = JsonString.apply(value)
 }
@@ -180,9 +194,11 @@ implicit object StringConverter extends JsonConverter[String]{
  // println(feed.toJSON.toJSONString)
   /*
   output will be Feed Json like this which contains user and post JSON as well
-  {"user:"{"name":"John","age":43,"email":"john@outlook.com"},
+  {
+  "user:"{"name":"John","age":43,"email":"john@outlook.com"},
 "posts:":[{"content":"Hello- Scala","createdDate:":"Thu Sep 03 07:54:37 BST 2020"}
-,{"content":"Look at the cute puppy","createdDate:":"Thu Sep 03 07:54:37 BST 2020"}]}
+,{"content":"Look at the cute puppy","createdDate:":"Thu Sep 03 07:54:37 BST 2020"}]
+}
 
   {
  name:"john",

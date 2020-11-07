@@ -111,16 +111,16 @@ Seq(9, 9, 9) => Seq(1, 0, 0, 0)*/
   */
 
 //Q6:
-  import cats.FlatMap
-  import cats.implicits._
   trait MyAlg[F[_]] {
     def insertItSomewhere(someInt: Int): F[Unit]
     def doSomething(someInt: Int): F[Int]
   }
-
+/*
   abstract class MyProg[F[_]: FlatMap] extends MyAlg[F] {
     def checkThenAddIt(someInt: Int) = doSomething(someInt).flatMap(int_value => insertItSomewhere(int_value))
   }
 
+
+ */
 
 }
