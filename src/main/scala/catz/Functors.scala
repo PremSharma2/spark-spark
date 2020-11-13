@@ -1,0 +1,152 @@
+package catz
+
+import scala.util.Try
+
+/*
+TODO : functors is a type- class which provides map method which works on
+ //TODO : Higher Kinded types Functor[F[_]]
+ */
+object Functors extends App {
+  //TODO class instance
+val aModifed: Seq[Int] = List(1,2,3).map(_ +1)
+
+  //TODO Same is for option
+
+  val modifiedOption: Option[Int] = Option(2).map(_ +1)
+// TODO : a functor is a type F[A] with an operation map with type (A => B) => F[B].
+//  The general type
+  //TODO : Cats encodes Functor as a type class, cats.Functor,
+// TODO so the method looks a little different. It accepts the initial F[A]
+// TODO as a parameter alongside the transformation function. Here’s a simplified version of the
+  // TODO : Functor Description:  Functor is a type-class which takes type parameter
+  //  of Higher Kinded type Like this :
+  // ToDO : It has only one fundamental operation called map for the type we passed
+  //TODO F in our case is List, Option, Try
+  trait MyFunctor[F[_]] {
+    def map[A, B](fa: F[A])(f: A => B): F[B]
+  }
+object MyFunctor{
+  def apply[F[_]](implicit instance : MyFunctor[F]): MyFunctor[F] = instance
+}
+  //TODO : Example implementation for Functor type-class instance for higher-kinded-type
+  // [Option[_]]
+   val functorForOption: MyFunctor[Option] = new MyFunctor[Option] {
+    def map[A, B](fa: Option[A])(f: A => B): Option[B] = fa match {
+      case None    => None
+      case Some(a) => Some(f(a))
+    }
+  }
+  // TODO : basic expample for type class instance for Functor type class for List type
+  implicit val mycatsStdInstancesForList: MyFunctor[List] = new MyFunctor[List] {
+    override def map[A, B](fa: List[A])(f: A => B): List[B] =
+      fa.map(f)
+  }
+
+  implicit val mycatsStdInstancesForOption: MyFunctor[Option] = new MyFunctor[Option] {
+    override def map[A, B](fa: Option[A])(f: A => B): Option[B] =
+      fa.map(f)
+  }
+  // TODO : Test our own Custom Functor
+  //val listTypeClassInstaceforCustomFunctor= MyFunctor.apply[List]
+ // println(listTypeClassInstaceforCustomFunctor.map(List(1,2,2))(_+1))
+
+
+  //TODO ---------------------------cats API Functor type class------------------------------------------------------
+
+
+//TODO lets take a look cats API for functors
+  // TODO First of all import the typeclass and type-class instances
+  //  of Functor type-class
+  // TODO : for the type List
+   import cats.Functor // type class
+  import cats.instances.list._ // type class instance for type List like i gave example above
+
+  // TODO : def apply[F[_]](implicit instance : cats.Functor[F])
+  // TODO here as we can see that apply method takes higherkinded type
+  val listTypeClassInstace= Functor.apply[List]
+
+  val incrementedNumbers= listTypeClassInstace.map(List(1,2,3))(_ + 1)
+  import cats.instances.option._
+  val optionFunctortypeClassInstance = Functor[Option]
+  println(optionFunctortypeClassInstance.map(Option(2))(_ * 1))
+  // TODO Lets test this Functor Type class for the type Try
+  // TODO this is also higherKinded type i.e Functor[Try[Int]]
+  import cats.instances.try_._
+  val anFunctorTypeClassInstanceForTrytype= Functor[Try].map(Try(41))(_+1)
+
+
+  //TODO : need of Functors type class is that when we want to genralize the API
+  // TODO : that takes any HigherKinded type or we can say monad
+  // TODO : and try to call map function over it for example
+  def do10xList(list: List[Int]) = list.map(_*10)
+  def do10xOption(option:Option[Int]) = option.map(_*10)
+
+  //TODO We can generalize this api
+/*
+TODO : type class instance like below will be implicitly passed to here
+implicit val mycatsStdInstancesForList = new MyFunctor[List] {
+    override def map[A, B](fa: List[A])(f: A => B): List[B] =
+      fa.map(f)
+  }
+ */
+  def do10x[F[_]](container:F[Int])(implicit functortypeClassInstance:Functor[F]):F[Int] ={
+    functortypeClassInstance.map(container)(_+1)
+  }
+
+  println(do10x(List(1,2,3,4)))
+  println(do10x(Option(1)))
+
+  // TODO : Define a Functor for Binary Tree
+  trait Tree[+T]
+  case class Leaf[+T](value : T) extends Tree[T]
+  //TODO: leaf is node of tree which has no branch
+//TODO : Branch is also an Tree but it has further branches or leaf nodes only
+  case class Branch [+T](value : T , left:Tree[T] , right:Tree[T]) extends Tree[T]
+
+  // TODO : We will create smart constructor instead of using case class constructor
+  object Tree{
+    def leaf[T](value:T): Tree[T] = Leaf(value)
+    def branch[T](value : T , left:Tree[T] , right:Tree[T]): Tree[T] =
+      Branch(value,left,right)
+  }
+
+
+
+
+//TODO : we will create type class instance for type Functor[Tree[_]]
+  implicit object TreeFunctor extends Functor[Tree]{
+  override def map[A, B](fa: Tree[A])(f: A => B): Tree[B] = fa match {
+    case Leaf(value) => Leaf(f(value))
+    case Branch(value, left, right) => Branch(f(value) , map(left)(f), map(right)(f))
+  }
+  }
+  println(do10x[Tree](Branch(2,Leaf(2),Leaf(2))))
+  println(do10x(Tree.branch(2,Tree.leaf(2),Tree.leaf(2))))
+
+  //TODO : Extension methods
+
+     import cats.syntax.functor._
+
+
+  /*
+  TODO: Type Enrichment API or extension methods or imp the library API is here
+    implicit def toFunctorOps[F[_], A](target : F[A])(implicit tc : cats.Functor[F])
+    : Functor.Ops[F, A] {
+
+  trait Ops[F[_], A] extends scala.AnyRef {
+    type TypeClassType <: cats.Functor[F]
+    val typeClassInstance : Ops.this.TypeClassType
+    def self : F[A]
+    def map[B](f : scala.Function1[A, B]) : F[B] = { /* compiled code */ }
+   */
+  val tree: Tree[Int] = Tree.branch(2,Tree.leaf(2),Tree.leaf(2))
+  tree.map(_ + 1)
+
+
+  // TODO : Exercise Create Shorter Version of do10x def
+  //TODO : using the cats API typeEnrichment we can modify our code like that
+  import cats.syntax.functor._
+  def smartDo10x[F[_]](container:F[Int])(implicit functortypeClassInstance:Functor[F]):F[Int] ={
+    container.map(_+1)
+  }
+}
