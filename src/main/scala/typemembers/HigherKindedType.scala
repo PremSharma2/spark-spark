@@ -1,7 +1,8 @@
 package typemembers
 object HigherKindedType  extends App {
 
-  trait AHigherKindedType[F[_]] // This is called Higher Kinded Type
+
+  trait AHigherKindedType[F[_], T] // This is called Higher Kinded Type
 
   // Lets Explain Higher Kinded Type By Monad  example
 /*
@@ -77,8 +78,8 @@ implicit  class OptionMonad1[A](option:Option[A]) extends SuperMonad[Option,A] {
   // now as we are building a common API for all types of monads
 // here we will add type for Monad also
   // We can read like this as well as
-  // ma is Container of Monad of type A
-  // To handle Monad of diffrent kind we added type for Monad F[_]
+  // ma is Container of type  Monad which is of type A
+  // To handle Monad of different kind we added type for Monad F[_]
   // output of this method is F[(A,B)] which is ListMonad of (Int,String) i.e tuple
   def multiply[F[_],A,B](implicit ma:SuperMonad[F,A],mb:SuperMonad[F,B]):F[(A,B)] = {
     for{

@@ -6,22 +6,25 @@ import scala.util.Try
 TODO : functors is a type- class which provides map method which works on
  //TODO : Higher Kinded types Functor[F[_]]
  */
-object Functors extends App {
+object FunctorTypeClass extends App {
   //TODO class instance
 val aModifed: Seq[Int] = List(1,2,3).map(_ +1)
 
   //TODO Same is for option
 
   val modifiedOption: Option[Int] = Option(2).map(_ +1)
-// TODO : a functor is a type F[A] with an operation map with type (A => B) => F[B].
+// TODO : a functor is a type F[A] with an operation map with type (A => B) => F[B]
+
 //  The general type
   //TODO : Cats encodes Functor as a type class, cats.Functor,
-// TODO so the method looks a little different. It accepts the initial F[A]
-// TODO as a parameter alongside the transformation function. Here’s a simplified version of the
+// TODO :so the method looks a little different. It accepts the initial F[A]
+// TODO : as a parameter alongside the transformation function. Here’s a simplified version of the
   // TODO : Functor Description:  Functor is a type-class which takes type parameter
   //  of Higher Kinded type Like this :
   // ToDO : It has only one fundamental operation called map for the type we passed
-  //TODO F in our case is List, Option, Try
+  //TODO F for example could be  List, Option, Try etc they all are Functors by definition
+  //TODO :  we leave F abstract i.e we will not pass type parameter to F
+//  and leave the argument and the return type unchanged,
   trait MyFunctor[F[_]] {
     def map[A, B](fa: F[A])(f: A => B): F[B]
   }
@@ -43,8 +46,8 @@ object MyFunctor{
   }
 
   implicit val mycatsStdInstancesForOption: MyFunctor[Option] = new MyFunctor[Option] {
-    override def map[A, B](fa: Option[A])(f: A => B): Option[B] =
-      fa.map(f)
+    override def map[A, B](option: Option[A])(f: A => B): Option[B] =
+      option.map(f)
   }
   // TODO : Test our own Custom Functor
   //val listTypeClassInstaceforCustomFunctor= MyFunctor.apply[List]
@@ -76,7 +79,7 @@ object MyFunctor{
 
 
   //TODO : need of Functors type class is that when we want to genralize the API
-  // TODO : that takes any HigherKinded type or we can say monad
+  // TODO : that takes any HigherKinded type alias Monad  and implicit functor type class instance
   // TODO : and try to call map function over it for example
   def do10xList(list: List[Int]) = list.map(_*10)
   def do10xOption(option:Option[Int]) = option.map(_*10)
@@ -89,6 +92,7 @@ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
       fa.map(f)
   }
  */
+  // TODO: Use of functor Type class to expose API or end point which accepts any kind of Monad
   def do10x[F[_]](container:F[Int])(implicit functortypeClassInstance:Functor[F]):F[Int] ={
     functortypeClassInstance.map(container)(_+1)
   }
@@ -133,7 +137,7 @@ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
     implicit def toFunctorOps[F[_], A](target : F[A])(implicit tc : cats.Functor[F])
     : Functor.Ops[F, A] {
 
-  trait Ops[F[_], A] extends scala.AnyRef {
+  implicit trait Ops[F[_], A] extends scala.AnyRef {
     type TypeClassType <: cats.Functor[F]
     val typeClassInstance : Ops.this.TypeClassType
     def self : F[A]
@@ -149,4 +153,6 @@ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
   def smartDo10x[F[_]](container:F[Int])(implicit functortypeClassInstance:Functor[F]):F[Int] ={
     container.map(_+1)
   }
+
+  println(smartDo10x(Tree.branch(2,Tree.leaf(2),Tree.leaf(2))))
 }
