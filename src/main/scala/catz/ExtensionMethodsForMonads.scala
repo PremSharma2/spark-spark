@@ -47,9 +47,14 @@ object ExtensionMethodsForMonads  extends App {
 
   import cats.implicits.catsStdInstancesForOption
   import cats.syntax.applicative._
-
+// TODO ALl type Enrichment Ops for Int -> Monad are defined  in cats.syntax.applicative._
   val oneOption: Option[Int] = 1.pure[Option]
-
+/*
+TODO : For Example Like this Ops and it also take implicit type class instance
+    implicit  class ApplicativeIdOps[A](private val a: A) extends AnyVal {
+  def pure[F[_]](implicit F: Applicative[F]): F[A] = F.pure(a)
+}
+ */
   // TODO : Another extension methods or Type Enrichment is flatmap
   //TODO import cats.syntax.flatMap._
   //TODO But flatMap is already there in monad so there is no need to use extension methods
@@ -123,7 +128,9 @@ object ExtensionMethodsForMonads  extends App {
 
 
    */
-
+//TODO this flatmap of Ops class will internally use the typeclass instance of monad and will call
+  // TODO flatmap and in turn will call original flat map of Monad
+  //TODO : new Ops[List](list)(implicit monadinstance).flatMap(fx)
   def getPairs[M[_], A, B](bag1: M[A], bag2: M[B])(implicit monad: Monad[M]): M[(A, B)] = {
     bag1.flatMap(a => bag2.map(b => (a, b)))
   }

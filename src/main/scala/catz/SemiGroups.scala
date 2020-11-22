@@ -6,11 +6,11 @@ import cats.Semigroup
 /*
 TODO : SemiGroup Type class Looks like that
 
-trait Semigroup[@sp(Int, Long, Float, Double) A] {
-
- Associative operation taking which combines two values.
-
-  def combine(x: A, y: A): A
+TODO
+ trait Semigroup[@sp(Int, Long, Float, Double) A] {
+      def combine(x: A, y: A): A
+  Associative operation taking which combines two values.
+}
  */
 
 //lets import the type class
@@ -34,7 +34,8 @@ object SemiGroups  extends App {
 
   // TODO --------------------------------------------------------------------------------
 
-  // TODO : -> use of Semigroup type class we created an API
+  // TODO : -> use of Semigroup type class  is to reduce the List elements
+  // TODO or combine the elements in list
   //TODO : -> this we can enhance by converting into
   // type Enrichment by making it implicit class
   //TODO : -> General APi for Reduction of any type using type class
@@ -69,6 +70,26 @@ val fx : (Int,Int) => Int = (x,y) => x+ y
   val numberOptions: List[Option[Int]] = myList.map(Option(_)).toList
 
   // TODO :-> importing the implicit  Semigroup type class instance of Type Option[Int]
+  // TODO it is an higher kinded type so we will use type class instance of monoid with semigroup
+  /*
+  implicit def catsKernelStdMonoidForOption[A: Semigroup]: Monoid[Option[A]] =
+    new OptionMonoid[A]
+
+  TODO  : because Semigroup is also Monoid  Semigroup -> Monoid
+  TODO and we have passed an implicit argument of Semigroup type Class for actual combining
+    implicit  object OptionMonoid[A](implicit A: Semigroup[A]) extends Monoid[Option[A]] {
+     def empty: Option[A] = None
+     def combine(x: Option[A], y: Option[A]): Option[A] =
+    x match {
+      case None => y
+      case Some(a) =>
+        y match {
+          case None    => x
+          case Some(b) => Some(A.combine(a, b))
+        }
+    }
+}
+   */
   import cats.instances.option._
   // TODO : -> it will sum all elements of List  and wrap them in Monad Option
   println(reduceThings(numberOptions))
@@ -77,11 +98,13 @@ val strings= List("I am" , "starting" ,"to like " , "SemiGroup")
   val stringOption: List[Option[String]] = strings.map(Option(_)).toList
   println(reduceThings(stringOption))// It will concat the list and wrap them Option Monad
   //TODO --------------------------------------------------------------------------------------
+
   // TODO 1: Exercise make this api to support for Custom Types
 
   case class Expense(id:Long, amount:Double)
   // TODO : creating the  Type class Instance for Expense Type which is custom Type Expense
   // TODO and marking it implicit
+  // TODO here as we can see we have given a reducing function so that combine will use
   implicit val typeClassInstanceExpense = Semigroup.instance[Expense]{
     (e1,e2) => Expense(Math.max(e1.id,e2.id), e1.amount + e2.amount)
   }
@@ -94,7 +117,7 @@ val strings= List("I am" , "starting" ,"to like " , "SemiGroup")
   // lets import the correct package
   import cats.implicits.catsSyntaxSemigroup
   /*
-  TODO : type Enrichmet by this implcit def catsSyntaxSemigroup
+  TODO : type Enrichment by this implicit def catsSyntaxSemigroup
    TODO : It will inject the desired implicit type class instance of type Class SemiGroup
  TODO : i.e 2 will be converted into val enrichment= SemigroupOps(implicit typeclassinstance)(2)
   TODO : then  compiler will call enrichment.|+|(3), hence it is implicitly enriched
@@ -103,11 +126,11 @@ val strings= List("I am" , "starting" ,"to like " , "SemiGroup")
   implicit final def catsSyntaxSemigroup[A: Semigroup](a: A): SemigroupOps[A] =
     new SemigroupOps[A](a)
 }
-
-final class SemigroupOps[A: Semigroup](lhs: A) {
-  def |+|(rhs: A): A = macro Ops.binop[A, A]
-  def combine(rhs: A): A = macro Ops.binop[A, A]
-  def combineN(rhs: Int): A = macro Ops.binop[A, A]
+//TODO type Enrichment using implicits
+implicit class SemigroupOps[A: Semigroup](lhs: A) {
+  def |+|(rhs: A): A = Semigroup[A].combine(lhs, rhs)
+  def combine(rhs: A): A = Semigroup[A].combine(lhs, rhs)
+  def combineN(rhs: Int): A = Semigroup[A].combineN(lhs, rhs)
 }
    */
   val anIntsumUsingTypeEnrichMent = 2 |+| 3
@@ -118,10 +141,13 @@ final class SemigroupOps[A: Semigroup](lhs: A) {
   println(anStringConcatUsingTypeEnrichMent)
   val aCombinedExpense: Expense = Expense(1,60) |+| Expense(2,40)
   println(aCombinedExpense)
-  // TODO: implement reduce things API with |+|
+
+  // TODO: implement reduce things API with |+| i.e via type Enrichment
   //TODO : here we passed Lambda combiner function fx : (x,y) => x |+| y
-  //TODO : here x is implcitly converted to implict class refrence
+  //TODO : here x is implcitly converted to  SemigroupOps[instance: Semigroup](x).|+|(y)
+  //TODO and that will turn into instance.combine(x,y)
   //TODO on top of that refrence we will call |+| method
+
   def reduceThings1[T](list:List[T])(implicit semiGroup:Semigroup[T]) = {
     list.reduce(_ |+| _)
   }

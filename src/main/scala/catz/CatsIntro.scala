@@ -10,10 +10,11 @@ object CatsIntro extends App {
   // TODO : ->  import the type class  Eq these type classes are scala in built
   // TODO : -> import cats.Eq  : -. Type class
   /*
-  Eq type class looks like this
-  trait Eq[A]{
-  def eqv(x: A, y: A): Boolean
-  }
+  TODO
+    Eq type class looks like this:
+    trait Eq[A]{
+     def eqv(x: A, y: A): Boolean
+     }
    */
   // TODO : -----------------------------------------------------------------------
 
@@ -25,15 +26,15 @@ object CatsIntro extends App {
   /*
    TODO : -> Here Eq companion object looks like this
 
-  it takes type class instance as implicit value Like we did in
+  TODO : it takes type class instance as implicit value Like we did in
    TODO : -> Json Serialization way
   and this apply returns the type class instance
    */
   /*
   TODO : ->
-   TODO : -> Companion object looks like this
+   TODO : -> Companion object looks like this it will return type class instance
  TODO : ->  This is ours and below one is scala one
-  object Equal{
+   object Equal{
     // this takes an type class instance
     // we ca read like this use this equalizer on these values of Type T
     def apply[T](a:T,b:T)(implicit equalizer:Equal[T]) = equalizer
@@ -43,8 +44,9 @@ object CatsIntro extends App {
     override def apply(a: User, b: User): Boolean = a.name==b.name
    */
   /*
-  object Eq extends EqFunctions[Eq] with EqToEquivConversion {
-final def apply[A](implicit ev: Eq[A]): Eq[A] = ev
+  TODO Cats API Companion object implementation
+    object Eq extends EqFunctions[Eq] with EqToEquivConversion {
+   final def apply[A](implicit ev: Eq[A]): Eq[A] = ev
    */
 
 // TODO : -> this will automatically inject implicit type class instance
@@ -85,6 +87,7 @@ final def apply[A](implicit ev: Eq[A]): Eq[A] = ev
   //  use extension methods or type enrichment by importing it
   /*
   Like this : ->
+
  TODO: -> type Enrichment or extension method
   implicit class TypeSafeEqual[T](value:T){
     def ===(other:T)(implicit equalizer:Equal[T]) = equalizer.apply(value,other)
@@ -116,7 +119,8 @@ final def apply[A](implicit ev: Eq[A]): Eq[A] = ev
   // with this method scala will give you type class instance
   //and we marked it implicit so that this type class instance cam be marked implicit
   /*
-  def instance[A](f: (A, A) => Boolean): Eq[A] =
+  TODO: instance method implementation
+    def instance[A](f: (A, A) => Boolean): Eq[A] =
     new Eq[A] {
       def eqv(x: A, y: A) = f(x, y)
     }
