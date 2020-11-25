@@ -39,8 +39,8 @@ object ExtensionMethodsForMonads  extends App {
        or we can say like this
 
      TODO: Type Enrichment convert Int to Option[Int]
-        implicit  class ApplicativeIdOps[A](private val a: A) extends AnyVal {
-       def pure[F[_]](implicit typeClassInstance: Applicative[F]): F[A] =
+        implicit  class ApplicativeIdOps[A](private val a: Int) extends AnyVal {
+       def pure[F[_]](implicit typeClassInstance: Applicative[Option]): Option[Int] =
          typeClassInstance.pure(a)
 }
    */
@@ -50,7 +50,7 @@ object ExtensionMethodsForMonads  extends App {
 // TODO ALl type Enrichment Ops for Int -> Monad are defined  in cats.syntax.applicative._
   val oneOption: Option[Int] = 1.pure[Option]
 /*
-TODO : For Example Like this Ops and it also take implicit type class instance
+TODO : For Example Like this Ops and it also take implicit type class instance in scope
     implicit  class ApplicativeIdOps[A](private val a: A) extends AnyVal {
   def pure[F[_]](implicit F: Applicative[F]): F[A] = F.pure(a)
 }
@@ -93,12 +93,13 @@ TODO : For Example Like this Ops and it also take implicit type class instance
   val myOptionMonadwithValue: Option[Int] = OptionMonad.pure(1)
   val mytransformedoptionMonad: Option[Int] = mymonadOption.map(oneOption)(_ + 1)
 
-  // TODO : now most important feature is that if we have proved that the Moand are Functors
+  // TODO : now most important feature is that if we have proved that the Monad are Functors SAME
   // TODO : then they ideal candidate for the for comprehension
+// TODO because monad has map and flatmap both
 
   val composedOptionMonad: Option[Int] = for {
-    one <- 1.pure[Option]
-    two <- 2.pure[Option]
+    one <- 1.pure[Option] // Some(1)
+    two <- 2.pure[Option]  // Some(2)
 
   } yield one + two
 
@@ -122,7 +123,7 @@ TODO : For Example Like this Ops and it also take implicit type class instance
 
     trait Ops[F[_], A] extends scala.AnyRef {
     type TypeClassType <: cats.Functor[F]
-    val typeClassInstance : Ops.this.TypeClassType
+    val typeClassInstance : Ops.this.TypeClassType // instance in scope
     def self : F[A]
     def map[B](f : scala.Function1[A, B]) : F[B] = { /* compiled code */ }
 

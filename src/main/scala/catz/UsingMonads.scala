@@ -1,13 +1,31 @@
 package catz
 
 import cats.Monad
+
 object UsingMonads extends App {
 import cats.instances.list._
-  //def apply[F[_]](implicit instance : cats.Monad[F]) :instance
+  //def apply[F[_]](implicit instance : cats.Monad[F] // instance in scope) :instance
   val monadListtypeClassInstance: Monad[List] = Monad.apply[List]
   val list: List[Int] =monadListtypeClassInstance.pure(2)
   val transformedList: List[Int] = monadListtypeClassInstance.flatMap(list)(x =>List(x,x+1))
+/*
+  Try[A] is isomorphic to Either[Throwable, A].
+  In other words you can treat a Try as an Either with a left type of Throwable,
+  and you can treat any Either that has a left type of Throwable as a Try.
+  It is conventional to use Left for failures and Right for successes.
 
+Of course, you can also use Either more broadly,
+not only in situations with missing or exceptional values.
+There are other situations where
+Either can help express the semantics of a simple union type (where value is one of two types).
+
+Semantically, you might use Try to indicate that the operation might fail.
+You might similarly use Either in such a situation,
+especially if your "error" type is something other than
+Throwable (e.g. Either[ErrorType, SuccessType]).
+And then you might also use Either when you are operating
+over a union type (e.g. Either[PossibleType1, PossibleType2]).
+ */
   //TODO : Right Hand type is desirable value and the Left hand type is undesirable value
   // TODO because either returns either Left or Right case class instance
   /*
@@ -49,7 +67,7 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
   // TODO We can import the type class instances for Either
    import cats.instances.either._
   /*
-  TODO
+  TODO : -> This Either instance is very Generic
     implicit def catsStdInstancesForEither[A]: MonadError[Either[A, *], A] with Traverse[Either[A, *]] =
     new MonadError[Either[A, *], A] with Traverse[Either[A, *]] {
       def pure[B](b: B): Either[A, B] = Right(b)
@@ -90,7 +108,7 @@ val orderLocation= eitherMonadTypeClassInstance.
   /*
   implicit class Ops[F[_], C] extends scala.AnyRef {
     type TypeClassType <: cats.FlatMap[F]
-    val typeClassInstance : Ops.this.TypeClassType
+    val typeClassInstance : Ops.this.TypeClassType TODO:  type class instance in scope
     def self : F[C]
     def flatMap[B](f : scala.Function1[C, F[B]]) : F[B] = { /* compiled code */ }
    */
@@ -106,7 +124,7 @@ val orderLocation= eitherMonadTypeClassInstance.
     you write this and compiler wil transform this into as shown below eg
     getOrderStatus(ordreId = 101).flatMap(os => trackLocation(os))
   TODO : compiler re writes our code Like this
-   eg : new FlatMapOps[Either, OrderStatus](fa).flatMap(f: OrderStatus => Either[B])(implicit F: FlatMap[Either])
+   eg : new FlatMapOps[Either[OrderStatus]](fa).flatMap(f: OrderStatus => Either[B])(implicit F: FlatMap[Either])
 
  TODO    ----------------------type class instance for monad-------------------------------
      implicit def catsStdInstancesForEither[A]: MonadError[Either[A, *], A] with Traverse[Either[A, *]] =
@@ -122,20 +140,22 @@ import cats.syntax.functor._
   val orderLocationBetter: LoadingOr[String] = {
     getOrderStatus(ordreId = 101).flatMap(os => trackLocation(os))
   }
-  val orderLocationForComprehension= for{
+  val orderLocationForComprehension: LoadingOr[String] = for{
     os <-getOrderStatus(101)
     location <-trackLocation(os)
   } yield location
 
 
 
-  val EitherMonad: LoadingOr[OrderStatus] = getOrderStatus(101)
+  val eitherMonad: LoadingOr[OrderStatus] = getOrderStatus(101)
 
- val transformedEitherMonad: LoadingOr[String] = EitherMonad.flatMap(trackLocation)
-//TODO : ---------------------------------------------------------------------------------------
+ val transformedEitherMonad: LoadingOr[String] = eitherMonad.flatMap(trackLocation)
+
+//TODO : -------------------------------Exercise--------------------------------------------------------
 
 
   //TODO: Exercise Connection Service API for web APP
+
   case class Connection(host:String, port:String)
 
   val config=Map(
@@ -145,13 +165,15 @@ import cats.syntax.functor._
 
 
   //todo : Type class Every Where we Designed HttpService API inter terms of type class
+  // This type takes Option as input  and perform action on it
+
   trait HttpService[M[_]]{
    def  getConnection(config:Map[String,String]): M[Connection]
     def issueRequest(connection:Connection , payload:String): M[String]
 
   }
   //TODO Provide a real implementation for http service with using Option, Either , Future
-
+ // Todo : this is Type class instance  for type HttpService[Option]
   object OptionHttpService extends HttpService[Option]{
     override def getConnection(config: Map[String, String]): Option[Connection] = {
       for{
@@ -168,7 +190,8 @@ import cats.syntax.functor._
   }
 // TODO :Now Lets call the HttpService API here in functional style
   //TODO here we can use flatmap here because we want transform Option[A] monad to Option[B]
-  // i.e Option[Connection] to Option[String]
+  // i.e Option[Connection] => Option[String]
+
   val optionHttpResponse: Option[String] = OptionHttpService.getConnection(config).flatMap{
     conn => OptionHttpService.issueRequest(conn,"Http-Payload")
   }
@@ -176,6 +199,7 @@ import cats.syntax.functor._
 println(optionHttpResponse)
 
 // TODO : Using For Comprehension we can also do that
+
   val responseHttpOptionFor: Option[String] = for{
     conn <- OptionHttpService.getConnection(config)
     response <- OptionHttpService.issueRequest(conn,"Http-Payload")
@@ -185,7 +209,7 @@ println(optionHttpResponse)
 
   // TODO Implement HttpService for Either Monad typeclass instance
 
-  object AggresiveHttpService extends HttpService[ErrorOr]{
+  implicit object AggresiveHttpService extends HttpService[ErrorOr]{
     override def getConnection(config: Map[String, String]): ErrorOr[Connection] =
       if(!config.contains("host") || !config.contains("port"))  {
         Left(new RuntimeException("Connection could not be established !!!!"))
@@ -198,9 +222,37 @@ println(optionHttpResponse)
   }
 
   //TODO Lets test this HttpService API
+  // import cats.syntax.flatMap._
+    //TODO import cats.syntax.functor._
+  // We are able to do For comprehension here because of the extension method import
 
+  /*
+   final class FlatMapOps[F[_], A](private val fa: F[A]) extends AnyVal {
+     def flatMap=[B](f: A => F[B])(implicit F: FlatMap[F]): F[B] = F.flatMap(fa)(f)
+
+    you write this and compiler wil transform this into as shown below eg
+    gAggresiveHttpService.getConnection(config).flatMap(con =>
+    AggresiveHttpService.issueRequest(conn,"Http-Payload"))
+  TODO : compiler re writes our code Like this
+   eg : new FlatMapOps[ErrorOr[Connection]](fa).
+   flatMap(f: Connection => Either[throwable,String])(implicit F: Monad[Either])
+
+    TODO implicit type class instance in scope
+      implicit object MonadError[Either[A, *], A] with Traverse[Either[A, *]] {
+      def pure[B](b: B): Either[A, B] = Right(b)
+
+      TODO: flatMap Impl
+         def flatMap[B, C](fa: Either[A, B])(f: B => Either[A, C]): Either[A, C] =
+          fa.flatMap(f)
+
+       Todo Either flatMap implementation
+         def flatMap[AA >: A, Y](f: B => Either[AA, Y]) = e match {
+         case Left(a) => Left(a)
+          case Right(b) => f(b)
+    }
+   */
   val htpServiceResponse: ErrorOr[String] = for{
-    conn <- AggresiveHttpService.getConnection(config)
+    conn <- AggresiveHttpService.getConnection(config) //  ErrorOr[Connection]
     response <- AggresiveHttpService.issueRequest(conn,"Http-Payload")
   } yield response
   println(htpServiceResponse)
@@ -215,7 +267,7 @@ println(optionHttpResponse)
     location <-trackLocation(os)
   } yield location
 
-
+// TODO General API 
   def httpResponse[M[_]](service:HttpService[M],payload: String)(implicit  monad:Monad[M]): M[String] ={
    val myhttpResponse= for{
       conn <- service.getConnection(config)
@@ -223,5 +275,7 @@ println(optionHttpResponse)
     } yield response
     myhttpResponse
   }
+  import cats.implicits.catsStdInstancesForOption
+  println(httpResponse(OptionHttpService,"Hello Either!!"))
  println(httpResponse(AggresiveHttpService,"Hello Either!!"))
 }

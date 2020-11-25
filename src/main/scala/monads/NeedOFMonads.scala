@@ -1,6 +1,16 @@
 package monads
 
 object NeedOFMonads extends App {
+  /*
+     TODO
+      You can think of monads as wrappers. You just take an object and wrap it with a monad.
+      It’s like wrapping a present; you take a scarf, a good book or a fancy watch,
+      and wrap it with some shiny paper and a red ribbon.
+      We wrap gifts with shiny paper because they look pretty.
+      We wrap objects with monads because monads provide us with the following two operations:
+      identity (return in Haskell, unit in Scala)
+      bind (>>= in Haskell, flatMap in Scala)
+   */
   // this constructor are called  pure or unit in scala because they take one value
   //  and  wrap them in container
   case class SafeValueContainer[+T](private val internalValue:T){

@@ -20,17 +20,19 @@ object FunctorsIntroduction extends App {
 TODO: Functor is any data type that defines how fmap applies to it. Here's how fmap works:
 
    */
+  //TODO Example of Functor
   case class Bag[A](content: A) {
     def map[B](f: A => B): Bag[B] = Bag(f(content))
   }
 
+  // TODO : Its a Bag of sugar here
   case class Sugar(weight: Double)
   // the guy who is expert at making sugar half
   def half = (sugar: Sugar) => Sugar(sugar.weight / 2)
   val sugarBag: Bag[Sugar] = Bag.apply[Sugar](Sugar(1)) //Bag functor of type sugar
   // map is the guy in our story who can perform operations
   // by unwrapping the bag and then calling respective function
-  // and wraps the content back in a bag
+  // and wraps the content back in a new bag
   val halfSugarBag: Bag[Sugar] = sugarBag.map(sugar => half(sugar))
 
 

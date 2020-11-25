@@ -7,27 +7,33 @@ TODO : functors is a type- class which provides map method which works on
  //TODO : Higher Kinded types Functor[F[_]]
  */
 object FunctorTypeClass extends App {
-  //TODO class instance
+  //TODO Seq is funtor
 val aModifed: Seq[Int] = List(1,2,3).map(_ +1)
 
-  //TODO Same is for option
+  //TODO Option is also Functor
 
   val modifiedOption: Option[Int] = Option(2).map(_ +1)
-// TODO : a functor is a type F[A] with an operation map with type (A => B) => F[B]
 
-//  The general type
+//TODO : --------------------Cats Functors-----------------------------------------------------
+
   //TODO : Cats encodes Functor as a type class, cats.Functor,
 // TODO :so the method looks a little different. It accepts the initial F[A]
 // TODO : as a parameter alongside the transformation function. Here’s a simplified version of the
   // TODO : Functor Description:  Functor is a type-class which takes type parameter
   //  of Higher Kinded type Like this :
   // ToDO : It has only one fundamental operation called map for the type we passed
-  //TODO F for example could be  List, Option, Try etc they all are Functors by definition
+  //TODO F for example could be  List, Option, Try etc they all are Functors by definition in nature
   //TODO :  we leave F abstract i.e we will not pass type parameter to F
+// TODO : a functor is a type F[A] with an operation map with type (A => B) => F[B]
 //  and leave the argument and the return type unchanged,
+
+
+  // TODO Type Class
   trait MyFunctor[F[_]] {
-    def map[A, B](fa: F[A])(f: A => B): F[B]
+    def map[A, B](bag: F[A])(f: A => B): F[B]
   }
+  // TODO : Companion Object
+
 object MyFunctor{
   def apply[F[_]](implicit instance : MyFunctor[F]): MyFunctor[F] = instance
 }
@@ -68,14 +74,15 @@ object MyFunctor{
   // TODO here as we can see that apply method takes higherkinded type
   val listTypeClassInstace= Functor.apply[List]
 
-  val incrementedNumbers= listTypeClassInstace.map(List(1,2,3))(_ + 1)
+  val incrementedNumbers: List[Int] = listTypeClassInstace.map(List(1,2,3))(_ + 1)
   import cats.instances.option._
-  val optionFunctortypeClassInstance = Functor[Option]
+  val optionFunctortypeClassInstance = Functor.apply[Option]
   println(optionFunctortypeClassInstance.map(Option(2))(_ * 1))
+
   // TODO Lets test this Functor Type class for the type Try
   // TODO this is also higherKinded type i.e Functor[Try[Int]]
   import cats.instances.try_._
-  val anFunctorTypeClassInstanceForTrytype= Functor[Try].map(Try(41))(_+1)
+  val anFunctorTypeClassInstanceForTrytype: Try[Int] = Functor[Try].map(Try(41))(_+1)
 
 
   //TODO : need of Functors type class is that when we want to genralize the API
