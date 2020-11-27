@@ -9,6 +9,14 @@ import cats.instances.list._
   val list: List[Int] =monadListtypeClassInstance.pure(2)
   val transformedList: List[Int] = monadListtypeClassInstance.flatMap(list)(x =>List(x,x+1))
 /*
+TODO
+  One of the reasons to use Either type constructor is not to create any surprising output
+ when running the program. Without Either, your function is not predictable.
+ You may encounter some unexpected side effects when an exception is thrown.
+ For instance, instead of blows up the exception unexpectedly,
+ Either can return a Left (failure case) or Right (success case).
+ Therefore, the function is predictable to the caller,
+  letting the caller knows what potential result may happen.
   Try[A] is isomorphic to Either[Throwable, A].
   In other words you can treat a Try as an Either with a left type of Throwable,
   and you can treat any Either that has a left type of Throwable as a Try.
@@ -64,6 +72,24 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
   type ErrorOr[T] = Either[Throwable,T]
 
   //TODO this syntax LoadingOr[T] looks like monad yes Either is Monad
+  //TODO : Lets prove it Either is Monad
+  /*
+  TODO
+    This is where the right bias came into the picture.
+    Right biased means that functions such as map and flatMap only apply to the
+     "right side" or the "happy scenario", leaving the other side untouched
+      We  have to use "right projectable" to make it right-biased and flatmappable
+   */
+  val either1: Either[Exception, Int] = Right(1)
+  val either2: Either[Exception, Int] = Right(2)
+  val x: Either.RightProjection[Exception, Int] =either1.right
+  x.flatMap(e1 =>either2.right.map(e2 => (e1,e2)) )
+  for {
+    one <- either1.right
+    two <- either2.right
+  } yield one + two
+  //TODO ----------------------------------------------------------------------------------
+
   // TODO We can import the type class instances for Either
    import cats.instances.either._
   /*
@@ -78,6 +104,7 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
    */
   val eitherMonadTypeClassInstance: Monad[LoadingOr] = Monad.apply[LoadingOr]
   val anEither: LoadingOr[Int] = eitherMonadTypeClassInstance.pure(42) // Loading[Int]==Right(45)
+   anEither.right
   val aTransformedEither: LoadingOr[Int] =
     eitherMonadTypeClassInstance.
        flatMap(anEither)(n => if (n%2==0) Right(42)
@@ -89,7 +116,7 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
   //  or will return String value stating status not found
 
   def getOrderStatus(ordreId:Long):LoadingOr[OrderStatus] = Right(OrderStatus(101,"ReadytoShip"))
-
+// Either[String,String]
   def trackLocation(orderStatus:OrderStatus): LoadingOr[String] =
     if(orderStatus.orderID>1000) Left("Not available yet !!!!")
     else Right("Amsterdam")
@@ -97,6 +124,12 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
   //TODO: to combine these APIS here best way is flatMap ....i.e o/p of one is i/p of another
   //TODO : considering a fact that we are dealing with monads
   //TODO trackLocation is function we used to implement ETW pattern for monads
+  /*
+  def flatMap[AA >: A, Y](f: B => Either[AA, Y]) = e match {
+      case Left(a) => Left(a)
+      case Right(b) => f(b)
+    }
+   */
 val orderLocation= eitherMonadTypeClassInstance.
            flatMap(getOrderStatus(ordreId = 101))(trackLocation)
 
@@ -165,7 +198,7 @@ import cats.syntax.functor._
 
 
   //todo : Type class Every Where we Designed HttpService API inter terms of type class
-  // This type takes Option as input  and perform action on it
+  // This HttpService type-class  takes Option as input  and perform action on it
 
   trait HttpService[M[_]]{
    def  getConnection(config:Map[String,String]): M[Connection]
@@ -173,7 +206,7 @@ import cats.syntax.functor._
 
   }
   //TODO Provide a real implementation for http service with using Option, Either , Future
- // Todo : this is Type class instance  for type HttpService[Option]
+ // Todo : this is Type-class instance  for type HttpService[Option]
   object OptionHttpService extends HttpService[Option]{
     override def getConnection(config: Map[String, String]): Option[Connection] = {
       for{
@@ -190,7 +223,7 @@ import cats.syntax.functor._
   }
 // TODO :Now Lets call the HttpService API here in functional style
   //TODO here we can use flatmap here because we want transform Option[A] monad to Option[B]
-  // i.e Option[Connection] => Option[String]
+  // i.e Option[Connection] => Option[String] ETW pattern
 
   val optionHttpResponse: Option[String] = OptionHttpService.getConnection(config).flatMap{
     conn => OptionHttpService.issueRequest(conn,"Http-Payload")
@@ -198,7 +231,7 @@ import cats.syntax.functor._
 
 println(optionHttpResponse)
 
-// TODO : Using For Comprehension we can also do that
+// TODO : Using For Comprehension we can also do that because Option Monad has flatMap
 
   val responseHttpOptionFor: Option[String] = for{
     conn <- OptionHttpService.getConnection(config)
@@ -208,7 +241,7 @@ println(optionHttpResponse)
   println(responseHttpOptionFor)
 
   // TODO Implement HttpService for Either Monad typeclass instance
-
+  // Either[Throwable,Connection]
   implicit object AggresiveHttpService extends HttpService[ErrorOr]{
     override def getConnection(config: Map[String, String]): ErrorOr[Connection] =
       if(!config.contains("host") || !config.contains("port"))  {
@@ -225,6 +258,7 @@ println(optionHttpResponse)
   // import cats.syntax.flatMap._
     //TODO import cats.syntax.functor._
   // We are able to do For comprehension here because of the extension method import
+  // because Either does not have flatmap ,RightProjection have flat-map
 
   /*
    final class FlatMapOps[F[_], A](private val fa: F[A]) extends AnyVal {
@@ -267,7 +301,7 @@ println(optionHttpResponse)
     location <-trackLocation(os)
   } yield location
 
-// TODO General API 
+// TODO General API
   def httpResponse[M[_]](service:HttpService[M],payload: String)(implicit  monad:Monad[M]): M[String] ={
    val myhttpResponse= for{
       conn <- service.getConnection(config)

@@ -107,6 +107,23 @@ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
   println(do10x(List(1,2,3,4)))
   println(do10x(Option(1)))
 
+  //TODO Binary Tree
+
+  // Binary Tree Reresentation
+/*
+  Branch(2,Leaf(2),Leaf(2)))
+
+         2
+        / \
+       /   \
+      /     \
+     /       \
+     2       2
+      
+
+ */
+
+
   // TODO : Define a Functor for Binary Tree
   trait Tree[+T]
   case class Leaf[+T](value : T) extends Tree[T]
