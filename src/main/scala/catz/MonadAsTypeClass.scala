@@ -85,7 +85,7 @@ object MonadAsTypeClass  extends App {
   def flatMap[S](f: T => Future[S])(implicit executor: ExecutionContext): Future[S] = {
     import impl.Promise.DefaultPromise
     val p = new DefaultPromise[S]()
-    onComplete {
+    this.onComplete {
       case f: Failure[_] => p complete f.asInstanceOf[Failure[S]]
       case Success(v) => try f(v) match {
         // If possible, link DefaultPromises to avoid space leaks

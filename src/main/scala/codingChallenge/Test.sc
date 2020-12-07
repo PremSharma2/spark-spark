@@ -13,5 +13,8 @@ s.filter(x => s1.apply(x))
 var x,y,z = (1,2,3)
 println(x,y,z)
 println(l.mkString("[",",","]"))
+val str= "hello"
+println(str.takeRight(2))
+
 
 

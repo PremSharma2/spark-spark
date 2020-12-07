@@ -12,7 +12,8 @@ object CustomMonads  extends App {
     override def flatMap[A, B](fa: Option[A])(f: A => Option[B]): Option[B] = fa.flatMap(f)
     // TODO
  //     this is for Sequential iteration of
- //      immutable data structures  for imperative programming
+ //      immutable data structures  with  imperative programming
+    //   i.e this method is to support the impertive programming fetaures
     //   tailRec is also Looping function until i will get Right(v) i.e
     //   loop through the data structure
     //   because function types of f is A => Option[Either[A, B] so we are looking for Right[B]
@@ -25,8 +26,9 @@ object CustomMonads  extends App {
       case Some(Right(value)) => Some(value)
     }
   }
-  //This will return the final value after the iteration over this monad All these iteration functions take inference of tailRecM
- // MonadOption.iterateUntil()
+  //This will return the final value after
+  // the iteration over this monad All these iteration functions take inference of tailRecM
+  // MonadOption.iterateUntil()
 
   // Todo Exercise Define a monad for Identity Type
 // type alias
@@ -49,6 +51,18 @@ object CustomMonads  extends App {
 
   // TODO : Exercise Define a Monad for Binary tree
 // TODO Tree hierarchy or Faimly
+
+  /*
+   Binary Tree Reresentation
+       1
+      / \
+     /   \
+    /     \
+   /       \
+   2        3
+
+TODO Here transformation will be applied over leaf nodes of Tree
+   */
  sealed trait Tree[+T]
  final  case class Leaf[+T](value : T) extends Tree[T]
   //TODO: leaf is node of tree which has no branch
@@ -62,14 +76,15 @@ object CustomMonads  extends App {
       Branch(left,right)
   }
 
-implicit object TreeMonad extends Monad[Tree]{
+implicit object TreeMonad extends Monad[Tree] {
 
   override def pure[A](x: A): Tree[A] = Tree.leaf(x)
 
-  override def flatMap[A, B](fa: Tree[A])(f: A => Tree[B]): Tree[B] =
+  override def flatMap[A, B](fa: Tree[A])(f: A => Tree[B]): Tree[B] = {
     fa match {
-    case Leaf(v) => f(v)
-    case Branch( left,right) => Branch( flatMap(left)(f) , flatMap(right)(f))
+      case Leaf(v) => f(v)
+      case Branch(left, right) => Branch(flatMap(left)(f), flatMap(right)(f))
+    }
   }
 
   override def tailRecM[A, B](a: A)(f: A => Tree[Either[A, B]]): Tree[B] = {
@@ -82,6 +97,9 @@ implicit object TreeMonad extends Monad[Tree]{
       }
     }
 
+    stackRecursive(f(a))
+  }
+}
    // stackRecursive(f(a))
 
     /*
@@ -163,6 +181,7 @@ case Leaf(Right(desirableValue)) => tailRec(todo.tail , processed , Leaf(desirab
             tailRec([] , [1,2,3],[B1234])
 
      */
+    /*
     def tailRec[A, B](todo: List[Tree[Either[A, B]]], processed: Set[Tree[Either[A, B]]], doneAccumlator: List[Tree[B]]): Tree[B] = {
       // Lets check if this  nodes is spawned  spawned
       if (todo.isEmpty) doneAccumlator.head
@@ -182,12 +201,15 @@ case Leaf(Right(desirableValue)) => tailRec(todo.tail , processed , Leaf(desirab
           }
       }
     }
-    tailRec(List(f(a)) , Set.empty , List.empty)
+    tailRec(List(f(a)) , Set() , List())
   }
 }
+
+     */
 
   val tree: Tree[Int] = Branch(Leaf(2),Leaf(4))
   val transformedTree = TreeMonad.flatMap(tree)(v => Branch(Leaf(v+1),Leaf(v+2)))
   println(tree)
   println(transformedTree)
+
 }

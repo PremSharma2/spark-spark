@@ -3,7 +3,14 @@ import concurrency.FutureExercise.{Profile, SocialNetwork}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
+/*
+Based on this, we can assume that we are dealing with a monad.
+ Moreover, Future meats all three monad laws. But! Only if we use it
+ for pure in-memory computation without side-effects
+However, in real life, Future is almost always used for asynchronous IO
+ with a web service or a database.
+In this case, it might be dangerous to consider Future as a monad.
+ */
 object FunctionalCompositionOFFutures  extends  App {
   val mark: Future[Profile] = SocialNetwork.toFetchProfile("fb.id.1.zuck")
   //def map[S](f: T => S)(implicit executor: ExecutionContext): Future[S]

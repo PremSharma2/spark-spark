@@ -119,7 +119,7 @@ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
       /     \
      /       \
      2       2
-      
+
 
  */
 
