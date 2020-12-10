@@ -152,7 +152,7 @@ final case class MyT[F[_], Int](value: F[Int])
   def generateTrafficSpikeReport(s1:String,s2:String):AsyncResponseOFThread[String] ={
     // transform will transform Future[Either[String,Boolean]] to Future[Either[String,String]]
     canStandWithSurge(s1,s2) .transform{
-      case Left(undesirableValue) => Left("Server s1 and s2 cannot cope with the incoming spike")
+      case Left(reason) => Left(s"Server s1 and s2 cannot cope with the incoming spike:$reason")
       case Right(false) =>  Left("Server s1 and s2 cannot cope with the incoming spike: not enough total bandwidth")
       case Right(true) => Right("Server s1 and s2 can cope with the incoming spike")
 
