@@ -33,7 +33,9 @@ case class Configuration(dbUserName:String, dbPassword:String , host:String, por
   // Reader apply method takes function which consumes the input and generate the desired output
   //def apply[A, B](f: A => B): Reader[A, B] = ReaderT[Id, A, B](f)
   //TODO here A is input to function B is o/p of function
-  // and ID whcih is an identity type is final o/p of reader
+  // and ID which is an identity type is final o/p of reader
+  // type Reader[-A, B] = ReaderT[Id, A, B]
+  //  where Id = Id[B] =B
   val dbReader: Reader[Configuration,DbConnection] = Reader.apply{
     conf => DbConnection(conf.dbUserName, conf.dbPassword)
   }
@@ -42,8 +44,8 @@ case class Configuration(dbUserName:String, dbPassword:String , host:String, por
   // to fetch the derived output from the Reader we will call run on dbReader
 // now this run method will run the function we passed in Reader apply method
   // hence readers are wrapper over function here
-  //TODO hete Id is identity type i.e Id[A] =A
-  // TODO here dbReader.run(configuration) is dbreader.f(configuration)
+  //TODO here Id is identity type i.e Id[B] =B
+  // TODO here dbReader.run(configuration) is dbreader.f.apply(configuration)
   // TODO we passed input to the function f is configuration
   val connection: Id[DbConnection] = dbReader.run(configuration)
 
@@ -60,14 +62,15 @@ def map[C](f: B => C)(implicit F: Functor[F]): Kleisli[F, A, C] =
  */
   val myOrderStatusReader : Reader[Configuration,String] = dbReader.
            map(conn => conn.getOrderStatus(101))
-// the flow will be like that here first orginal function will run and we will get dbReader
-  // and then dbReadermap will run
+// the flow will be like that here first orginal function will run i.e original run
+// and we will get dbReader
+  // and then dbReader map will run like this a => F.map(run(a))(f)
   val orderStatus: Id[String] = myOrderStatusReader.run(configuration)
   /*
   TODO
       This pattern goes like this
       1 you create the initial data structure
-      2 you create a Reader which specifies  how that data structure will be manipulated
+      2 you create a Reader which specifies  how that data structure will be manipulated initially
       3 you can then map or Flatmap the reader to produce derived information
       4 When you need the final piece of information you call the run on the reader
          with the initial data structure
@@ -106,7 +109,13 @@ def getLastOrderStatus(userName:String): String = {
   def emailUser(userName:String,userEmail:String):String = {
     // fetch the status of their last order
     // email them with the Email service
+// creation of Initial datastructure
 
+    /*
+   val dbReader: Reader[Configuration,DbConnection] = Reader.apply{
+    conf => DbConnection(conf.dbUserName, conf.dbPassword)
+  }
+   */
     val emailServiceReader: Reader[Configuration,EmailService] = Reader.apply{
       conf => EmailService(conf.emailReplyto)
     }
@@ -114,7 +123,9 @@ def getLastOrderStatus(userName:String): String = {
       lastOrderID <- dbReader.map(_.getLastOrderId(userName))
       lastOrderStatus <- dbReader.map(_.getOrderStatus(lastOrderID))
       emailService <- emailServiceReader
-    } yield emailService.sendEmail(userEmail, s"your last order has the status: -> $lastOrderStatus")
+    } yield emailService.sendEmail(
+      userEmail, s"your last order has the status: -> $lastOrderStatus")
     emailReader.run(configuration)
   }
+  println(emailUser("prem","prem.kaushik@outlook.com"))
 }

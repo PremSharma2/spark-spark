@@ -33,6 +33,7 @@ object CustomMonads  extends App {
   // Todo Exercise Define a monad for Identity Type
 // type alias
   type Identity[T] = T
+  // its like type Identity = T
   val aNumber:Identity[Int] = 42
 
 
