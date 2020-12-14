@@ -1,9 +1,7 @@
 package codingChallenge
-import org.apache.spark.{SparkConf, sql}
-import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
-import  org.apache.spark.sql.functions._
+import org.apache.spark.sql.functions._
 
 object SynechronTest extends App {
 
@@ -24,7 +22,7 @@ object SynechronTest extends App {
 
   val df = Seq(("prem","maths",20),("amit","physics",50),("amit","maths",80)).toDF("name","subject","marks")
 
-  val pivot_df = df.groupBy("name").pivot("subject").sum("marks")
+  val pivot_df = df.groupBy("name").pivot("subject").max("marks")
 
   val cols = df.select("subject").distinct.map(r => r.getString(0)).collect.toSeq
 

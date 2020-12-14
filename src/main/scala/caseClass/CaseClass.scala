@@ -2,7 +2,8 @@ package caseClass
 
 object CaseClass extends App {
   /*
-  • An apply method is generated inside companion object, so you don’t need to use the new keyword to create
+  • An apply method is generated inside companion object,
+   so you don’t need to use the new keyword to create
     a new instance of the class.
   • Accessor methods are generated for the constructor parameters because case class
     constructor parameters are val by default. Mutator methods are also generated for
