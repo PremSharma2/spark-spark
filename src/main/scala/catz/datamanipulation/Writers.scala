@@ -178,5 +178,7 @@ implicit val ec: ExecutionContext = ExecutionContext.
   fromExecutorService(Executors.newFixedThreadPool(2))
   val samFuture1= Future(sumWithLogs(3))
   val samFuture: Future[Writer[Vector[String], Int]] = Future(sumWithLogs(2))
-  val logs = samFuture.map(_.written)
+  val logs: Future[Id[Vector[String]]] = samFuture.map(_.written)
+  // Writers keep separate logs for seprate thread
+  println(logs)
 }

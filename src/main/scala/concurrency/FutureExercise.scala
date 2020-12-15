@@ -2,7 +2,27 @@ package concurrency
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Random, Success}
+/*
+Future and Promise are constructs used for synchronizing program execution
+in some concurrent programming languages.
+ They describe an object that acts as a proxy for a result that is initially unknown,
+ usually because the computation of its value is yet incomplete.
 
+ Futures provide a way to reason about performing many operations
+ in parallel– in an efficient and non-blocking way
+
+ The properties of Future:
+
+Eagerly evaluated (strict and not lazy), meaning that when the caller of a function
+receives a Future reference,
+ whatever asynchronous process that should complete it has probably started already.
+Memoized (cached), since being eagerly evaluated means that it behaves
+like a normal value instead of a function
+and the final result needs to be available to all listeners.
+ The purpose of the value property is to return that memoized result or None
+ if it isn’t complete yet.
+ Goes without saying that calling its def value yields a non-deterministic result.
+ */
 object FutureExercise extends App {
   case class Profile(id:String , name:String){
     def poke(anotherProfile:Profile): Unit ={
