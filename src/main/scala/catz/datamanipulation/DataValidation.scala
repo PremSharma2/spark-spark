@@ -90,7 +90,10 @@ val aValidValue:Validated[String,Int] = Validated.
   // backward compatibilty
   val validatetoEither: Either[String, Int] =aValidValue.toEither
   aValidValue.toOption
-
+  //TODO implicit conversion or type enrichment
+  import cats.syntax.validated._
+  val aValidwithExtesionmethods: Validated[List[String], Int] = 42.valid[List[String]]
+  val anError: Validated[String, Int] ="Something".invalid[Int]
   // TODO Exercise number 2 Form validation
   object FormValidation{
     import cats.instances.string._
