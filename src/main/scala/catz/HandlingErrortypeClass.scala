@@ -147,8 +147,8 @@ the newly created Promise object
       // and at last the pure method from Applicative but this is auxiallary method
       def pure[A](x: A): M[A]
     }
-
-    trait MyMonadError1[M[_], E] extends Monad[M] {
+// this is the exact structure of MonadError type class   
+    trait MyMonadError1[M[_], E] extends MyApplicativeError[M,E] with  Monad[M] {
       // this type class has fundamental method raiseError
       def ensure[A](fa: M[A])(error: E)(predicate: A => Boolean): M[A]
     }
@@ -161,11 +161,45 @@ the newly created Promise object
               }
               i.e it will call Validated pure  def pure[A](a: A): Validated[E, A] = Validated.valid(a)
      */
-    //import cats.syntax.applicativeError._// will import raiseError ,handleError , handleErrorWith
+    import cats.syntax.applicativeError._// will import raiseError ,handleError , handleErrorWith
   //type ErrorsOR[T] = Validated[List[String],T]
-    val extendedSuccess: ErrorsOR[Int] = 42.pure[ErrorsOR]
+    val extendedSuccess: ErrorsOR[Int] = 42.pure[ErrorsOR] // it requires a implicit ApplicativeError[Errorsor,List[String]]
 
 
+  /*
+    TODO
+      implicit class ApplicativeErrorIdOps[E](private val e: E) extends AnyVal {
+      def raiseError[F[_], A](implicit F: ApplicativeError[F, _ >: E]): F[A] =
+       F.raiseError(e)
+       and that inturn will call further Validated
+        def raiseError[A](e: E): Validated[E, A] = Validated.Invalid(e)
+    }
+}
+   */
+    val extendedError: ErrorsOR[Int] = List("Badness").raiseError[ErrorsOR,Int]
+
+  /*
+     implicit  class ApplicativeErrorOps[F[_], E, A](private val fa: F[A]) extends AnyVal {
+  def handleError(f: E => A)(implicit F: ApplicativeError[F, E]): F[A] =
+    F.handleError(fa)(f)
+
+  def recover(pf: PartialFunction[E, A])(implicit F: ApplicativeError[F, E]): F[A] =
+    F.recover(fa)(pf)
+   */
+    val extendedRecover: ErrorsOR[Int] = extendedError.recover{
+      case _ => 43
+    }
+
+   import cats.syntax.monadError._ // ensure
+  /*
+    implicit  class MonadErrorOps[F[_], E, A](private val fa: F[A]) extends AnyVal {
+    def ensure(error: => E)(predicate: A => Boolean)(implicit F: MonadError[F, E]): F[A] =
+    F.ensure(fa)(error)(predicate)
+
+   */
+  //val success: ErrorOr[Int] = typeClassinstanceMonadError.pure(2)
+  //type ErrorOr[A] = Either[String,A]
+  val testedSuccess: ErrorOr[Int] = success.ensure("Exception")(_>100)
   def main(args: Array[String]): Unit = {
 
   }
