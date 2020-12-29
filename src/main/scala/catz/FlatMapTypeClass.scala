@@ -1,9 +1,10 @@
 package catz
 
-import cats.{Applicative, Apply}
+import cats.{Applicative, Apply, FlatMap}
 
 object FlatMapTypeClass {
-//TODO : FlatMap type class
+//TODO : FlatMap type class it is also called Weaker monad because
+  // in this family of monads we have stronger monad is Monad Type class
   // TODO : Note : -> Apply extends Semigroupal and Functors
 trait MyFlatMap[M[_]] extends Apply[M]{
   def flatMap[A,B](fa:M[A])(f: A=> M[B]):M[B]
@@ -11,12 +12,12 @@ trait MyFlatMap[M[_]] extends Apply[M]{
   // Here we have implemented in-terms if flat map and Flatmap
   // bcz we have both of these available, where as in Semigroupal
   // we did not have the map and flatMap
-  def ap [A,B] (functionWrapper :M[A => B])(wa:M[A]): M[B] =
-    flatMap(wa)(a => map(functionWrapper)(fx=> fx(a)))
-  //         |  |        /                 \     \/
-  //         |  |    M[A=>B]                A=>B  B
-  //         |  |    \_____                ____/
-  //       M[A] A =>            M[B]
+  def ap[A, B](wf: M[A => B])(wa: M[A]): M[B] =
+    flatMap(wa)(a => map(wf)(f => f(a)))
+  //         |  |        /   \     \/
+  //         |  |    M[A=>B] A=>B  B
+  //         |  |    \_____   ____/
+  //       M[A] A =>      M[B]
 }
   // TODO : structure of Monad looks like that and this is what cats API follows
   trait MyMonad[M[_]] extends Applicative[M] with MyFlatMap[M]{
@@ -31,5 +32,31 @@ trait MyFlatMap[M[_]] extends Apply[M]{
     //  in-terms of map
     override def map [A,B](fa:M[A])(f: A=> B):M[B] =
       flatMap(fa)(x => pure(f(x)))
+  }
+// TODO : now lets discuss about type enrichment or Extension methods for FlatMap type class
+  import cats.syntax.flatMap._ // flatmap extension method
+  import cats.syntax.functor._ // map extension method
+  // TODO : now we can use for comprehension
+/*
+trait Ops[F[_], A] extends scala.AnyRef {
+    type TypeClassType <: cats.Functor[F]
+    val typeClassInstance : Ops.this.TypeClassType
+    def map[B](f : A=>B : F[B] = typeClassInstance.map(F[A])(fx)
+
+    trait Ops[F[_], C] extends scala.AnyRef {
+    type TypeClassType <: cats.FlatMap[F]
+    val typeClassInstance : Ops.this.TypeClassType
+    def self : F[C]
+    def flatMap[B](f : C=> F[B]) : F[B] = typeClassInstance.flatMap(fa:F[Int])(f)
+ */
+  def getPairs [M[_]:FlatMap] (numbers:M[Int],chars:M[Char]):M[(Int,Char)] ={
+    for{
+      n <- numbers
+      char <- chars
+    }yield(n,char)
+  }
+
+  def main(args: Array[String]): Unit = {
+    FlatMap
   }
 }
