@@ -28,10 +28,12 @@ val instantEval: Eval[Int] = Eval.now{
   println("eagerly evaluated Expression !!!!!")
   4
 }
+
   // TO access the o/p of this Eagerly evaluated Expression
   // we have this instantEval.value
   //println(instantEval.value)
   /*
+
      TODO
        Construct a lazy Eval[A] instance.
        This type can be used for "lazy" values.
@@ -40,7 +42,7 @@ val instantEval: Eval[Int] = Eval.now{
        It should be avoided except when laziness is required and caching must be avoided.
       Generally, prefer Later.
 
-      final class Always[A](f: () => A) extends Eval[A] {
+   final class Always[A](f: () => A) extends Eval[A] {
   def value: A = f()
   def memoize: Eval[A] = new Later(f)
 }
@@ -58,6 +60,13 @@ val instantEval: Eval[Int] = Eval.now{
  // println(delayedEval.value)
  // println(delayedEval.value)
 
+  /* TODO
+        Computation performed in eval call by name expression
+         is always lazy, even when called on an
+   *    eager (Now) instance.
+        Lazily perform a computation based on an Eval[A], using the
+   *     function `eval` to produce an Eval[B] given an A.
+   */
   val ComposedEvaluation = instantEval.
     flatMap(value1 => delayedEval.map(value2=> value1 + value2))
   //println(ComposedEvaluation.value)
@@ -90,6 +99,14 @@ val instantEval: Eval[Int] = Eval.now{
  // println(tutorial.value)
   //println(tutorial.value)
   // TODO : implement defer such that defer Eval.now should not run side effects
+  /* TODO
+        Computation performed in eval call by name expression
+         is always lazy, even when called on an
+   *    eager (Now) instance.
+        Lazily perform a computation based on an Eval[A], using the
+   *     function `eval` to produce an Eval[B] given an A.
+   We have delayed the expression evaluation by using later
+   */
   def defer [T](eval : =>Eval[T]):Eval[T] ={
    Eval.later(()).flatMap(_ => eval)
   }

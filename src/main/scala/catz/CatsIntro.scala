@@ -6,7 +6,7 @@ object CatsIntro extends App {
 // TODO : -> this is Eq type class here working behind the scene
   val aComparison= 2 == "aString"
   //TODO : -> Steps to use type Class Api of cats
-// TODO : -> Step 1:  lets import the type class
+// TODO : -> Step    lets import the type class
   // TODO : ->  import the type class  Eq these type classes are scala in built
   // TODO : -> import cats.Eq  : -. Type class
   /*
@@ -35,11 +35,11 @@ object CatsIntro extends App {
    TODO : -> Companion object looks like this it will return type class instance
  TODO : ->  This is ours and below one is scala one
    object Equal{
-    // this takes an type class instance
+    // this takes an type class instance in scope
     // we ca read like this use this equalizer on these values of Type T
     def apply[T](a:T,b:T)(implicit equalizer:Equal[T]) = equalizer
   }
-  // This is Type Class instance
+  // This is Type Class instance this wil be automatically injected by compiler into companion apply
   implicit object    User   extends Equal[User] {
     override def apply(a: User, b: User): Boolean = a.name==b.name
    */
@@ -57,8 +57,9 @@ object CatsIntro extends App {
   // TODO : Type class instance
   val intEqualityTypeClassInstance: Eq[Int] = Eq.apply[Int]
   /*
-  now we will call eqv method of type class Eq via type class instance
-  def eqv[@sp A](x: A, y: A)(implicit ev: E[A]): Boolean =
+  TODO
+    now we will call eqv method of type class Eq via type class instance intEqualityTypeClassInstance
+    def eqv[@sp Int](x: Int, y: Int)(implicit ev: E[Int]): Boolean =
     ev.eqv(x, y)
 
    */
@@ -114,7 +115,7 @@ object CatsIntro extends App {
   //TODO :i.e Eq[A].instance(f)(implicit typeclass object) def
   // but it is not singleton object
   // it is anonymous class object
-  // using this function f: (A, A) => Boolean
+  // using this function f: (A, A) => Boolean type class will compare your custom objects
   //i mean its an way of creating type class instance for custom type
   // with this method scala will give you type class instance
   //and we marked it implicit so that this type class instance cam be marked implicit
