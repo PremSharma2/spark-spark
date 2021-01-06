@@ -29,7 +29,8 @@ object MonadAsTypeClass  extends App {
   }
   val sugarBag= Bag.apply(Sugar.apply(1))
   def double = (sugar: Sugar) => Bag(Sugar(sugar.weight * 2))
-  val doubleSugarBag1 = sugarBag.map(sugar => double(sugar)).flatten
+  val r: Sugar => Bag[Sugar] = double
+  val doubleSugarBag1 = sugarBag.map(sugar => double.apply(sugar)).flatten
    // val sugarBag= Bag.apply(Sugar.apply(1))
   val doubleSugarBag2 = sugarBag.flatMap(sugar => double(sugar))
 
@@ -63,11 +64,11 @@ object MonadAsTypeClass  extends App {
 //TODO : This type class is provided by cats library
   import cats.Monad
   import cats.instances.option._ // implicit Monad[Option] type class instance
-
+// def apply[F[_]](implicit instance : cats.Monad[F]) : cats.Monad[F]
   val monadtypeClassInstanceForOption= Monad.apply[Option]
-  val option4: Option[Int] =monadtypeClassInstanceForOption.pure(4)
+  val option4: Option[Int] =monadtypeClassInstanceForOption.pure[Int](4)
   val f: Int => Option[Int] = x => if (x%4==0) Some(x+1) else None
-  val aTransformedMonad= monadtypeClassInstanceForOption.flatMap(option4)(f)
+  val aTransformedMonad: Option[Int] = monadtypeClassInstanceForOption.flatMap(option4)(f)
 
  import cats.instances.list._ //
   val listMonadTypeClassInstance= Monad.apply[List]

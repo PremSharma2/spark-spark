@@ -40,7 +40,8 @@ over a union type (e.g. Either[PossibleType1, PossibleType2]).
   TODO
      Represents a value of one of two possible types (a disjoint union.)
     Instances of Either are either an instance of Left or Right.
-    A common use of Either is as an alternative to Option for dealing with possible missing values.
+    A common use of Either is as an alternative to Option for dealing
+     with possible missing values.
    In this usage, None is replaced with a Left which can contain useful information.
    Right takes the place of Some.
     Convention dictates that Left is used for failure and Right is used for success.
@@ -90,7 +91,7 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
   } yield one + two
   //TODO ----------------------------------------------------------------------------------
 
-  // TODO We can import the type class instances for Either
+  // TODO We can import the Monad type class instances for Either
    import cats.instances.either._
   /*
   TODO : -> This Either instance is very Generic
@@ -115,7 +116,8 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
   // TODO: Here this API here will return OrderStatus
   //  or will return String value stating status not found
 
-  def getOrderStatus(ordreId:Long):LoadingOr[OrderStatus] = Right(OrderStatus(101,"ReadytoShip"))
+  def getOrderStatus(ordreId:Long):LoadingOr[OrderStatus] =
+    Right(OrderStatus(101,"ReadytoShip"))
 // Either[String,String]
   def trackLocation(orderStatus:OrderStatus): LoadingOr[String] =
     if(orderStatus.orderID>1000) Left("Not available yet !!!!")
@@ -130,7 +132,7 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
       case Right(b) => f(b)
     }
    */
-val orderLocation= eitherMonadTypeClassInstance.
+val orderLocation: LoadingOr[String] = eitherMonadTypeClassInstance.
            flatMap(getOrderStatus(ordreId = 101))(trackLocation)
 
   //TODO  : To use for comprehension we need to import the extension methods

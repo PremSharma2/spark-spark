@@ -27,8 +27,8 @@ object FoldingTypeClass  {
   }
 // TODO Cats also Provide type classes for this kind of operation called Foldable
    import cats.Foldable
-  import cats.instances.list._ // implicit Foldable[Int]
-  import cats.instances.option._ // implicit Foldable[Option]
+   import cats.instances.list._
+   import cats.instances.option._ // implicit Foldable[Option]
   val foldabletypeclassinstance: Foldable[List] =Foldable.apply[List]
 
   val foldedResult: Int = foldabletypeclassinstance.
@@ -57,8 +57,8 @@ object FoldingTypeClass  {
     foldLeft(List(1,2,3),Eval.now(0)){
       (eval,num) => eval.map(_+num)
     }
-  import cats.instances.string._//Monoid[String]
   import cats.implicits.catsKernelStdGroupForInt
+  import cats.instances.string._
   /*
   def combineAll[A: Monoid](fa: F[A]): A = fold(fa)
   def fold[A](fa: F[A])(implicit A: Monoid[A]): A =
@@ -84,13 +84,12 @@ object FoldingTypeClass  {
 
   val combineValue: Int = foldedDatastructure.combineAll(nestedDataStructure)
    def main(args: Array[String]): Unit = {
-     import ListFoldingExercise._
-     import cats.instances.int._//Monoid[Int]
+     import ListFoldingExercise._//Monoid[Int]
      val list = (1 to 4).toList
      println(map(list)(_+1))
      println(flatMap(list)(x=> List(x,x+1)))
      println(filter(list)(_ %2 == 0))
-     println(combineAll(list))
+    /// println(combineAll(list))
   }
 
 }

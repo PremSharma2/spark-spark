@@ -53,7 +53,7 @@ object MonadTransformers  extends App {
     // TODO : final case class OptionT[F[_], A](value: F[Option[A]])
 
     import cats.data.OptionT
-    import cats.instances.list._ // fetch an implicit type-class instance  of type OptionT[List]
+    import cats.instances.list._ //fetch an implicit type-class Monad , functor instances
     // it actually means that its a List[Option[Int]]
     /*
      TODO
@@ -98,11 +98,12 @@ object MonadTransformers  extends App {
   //final case class EitherT[F[_], A, B](value: F[Either[A, B]])
   // its like
 final case class MyT[F[_], Int](value: F[Int])
-  MyT.apply(List(1,2,3))
+  val x: MyT[List, Int] =MyT.apply(List(1,2,3))
   val listOfEiterT: EitherT[List, String, Int] =
     EitherT.apply(listOfEither)
   // it is wrapper over   Future[Either[String,Int]] nested monad
-  val futureOfEiterT: EitherT[Future, String, Int] = EitherT.apply(Future.apply[Either[String,Int]](Right(42)))
+  val futureOfEiterT: EitherT[Future, String, Int] =
+    EitherT.apply(Future.apply[Either[String,Int]](Right(42)))
 /*
   TODO : Exercise
       We have multi machine cluster for your businesses which will receive a traffic
@@ -121,15 +122,18 @@ final case class MyT[F[_], Int](value: F[Int])
     "server3.com.USA" ->170
   )
   // it is used  for   Future[Either[String,Int]] nested monad
+  ////final case class EitherT[F[_], A, B](value: F[Either[A, B]])
   type AsyncResponseOFThread[T] = EitherT[Future, String, T]
  val dataBaseThread= Future.apply[Either[String,Int]](Left("Server Not Reachable!!!!"))
+  val dbThread: Future[Either[String, Int]] =
+    Future.successful(Left("Server Not Reachable!!!!"))
   //TODO bandwidth API here Int is bandwidth of server
-  def getBandWidthAPI(server:String): AsyncResponseOFThread[Int] ={
+  def calculateBandWidthAPI(server:String): AsyncResponseOFThread[Int] ={
     bandwidthsConfigOfServer.get(server) match {
         //Future[Either[String,Int]]
         // trying access the database
 
-      case None => EitherT.apply(dataBaseThread)
+      case None => EitherT.apply(dbThread)
       //Future[Either[String,Int]]
       case Some(value) => EitherT.apply(Future.apply[Either[String,Int]](Right(value)))
 
@@ -140,8 +144,8 @@ final case class MyT[F[_], Int](value: F[Int])
   // will return //Future[Either[String,Boolean]]
   def canStandWithSurge(s1:String,s2:String):AsyncResponseOFThread[Boolean] ={
     for{
-      band1 <- getBandWidthAPI(s1)
-      band2 <- getBandWidthAPI(s2)
+      band1 <- calculateBandWidthAPI(s1)
+      band2 <- calculateBandWidthAPI(s2)
     } yield band1 + band2 > 250
 
   }
@@ -149,8 +153,12 @@ final case class MyT[F[_], Int](value: F[Int])
   def transform[C, D](f: Either[A, B] => Either[C, D])(implicit F: Functor[F]): EitherT[F, C, D] =
     EitherT(F.map(value)(f))
   */
+  // TODO Here we are processing the Async Response of the Thread
   def generateTrafficSpikeReport(s1:String,s2:String):AsyncResponseOFThread[String] ={
-    // transform will transform Future[Either[String,Boolean]] to Future[Either[String,String]]
+    // transform will transform Future[Either[String,Boolean]] to
+    // Future[Either[String,String]]
+    // def transform[C, D](f: Either[A, B] => Either[C, D])(implicit F: Functor[F]): EitherT[F, C, D] =
+    //    EitherT(F.map(value)(f))
     canStandWithSurge(s1,s2) .transform{
       case Left(reason) => Left(s"Server s1 and s2 cannot cope with the incoming spike:$reason")
       case Right(false) =>  Left("Server s1 and s2 cannot cope with the incoming spike: not enough total bandwidth")

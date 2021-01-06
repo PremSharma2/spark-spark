@@ -26,6 +26,7 @@ TODO: Functor is any data type that defines how fmap applies to it. Here's how f
   }
 
   // TODO : Its a Bag of sugar here
+  // TODO: bags can List,Option ,Try,Either
   case class Sugar(weight: Double)
   // the guy who is expert at making sugar half
   def half = (sugar: Sugar) => Sugar(sugar.weight / 2)

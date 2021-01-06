@@ -4,13 +4,14 @@ import java.util.concurrent.Executors
 
 import scala.concurrent.{ExecutionContext, Future}
 /*
-TODO : The bag with unit, map and flatten makes a Monad.
+TODO : The bag with unit alias pure , flatMap around  makes a Monad.
        It was another shock for me. Monad!, so this is what is a Monad.
  It’s like a Functor who knows how to flatten.
   unit, map , flatten you guys are cool but wouldn’t it be convenient
   if there is someone who knows how to unwrap/wrap and flatten both.
   Someone who can do the job of map and flatten” I said.
-TODO : Like this
+TODO : Like this map is there because monad extends Functor
+TODO
   case class Bag[A](content: A) {
     def map[B](f: A => B): Bag[B] = Bag(f(content))
     def flatMap(f: A=> Bag[B]) : Bag[B] =f(content)
@@ -18,7 +19,7 @@ TODO : Like this
   So List , Future , Try all are Monads
  */
 object Monads extends App {
-  val numbersList= List(1,2,3,4)
+  val numbersList= List(1,2,3,4) // List Bag
   val charsList: Seq[Char] =List('a','b','c')
 
 

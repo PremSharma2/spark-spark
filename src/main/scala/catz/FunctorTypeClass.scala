@@ -3,8 +3,10 @@ package catz
 import scala.util.Try
 
 /*
-TODO : functors is a type- class which provides map method which works on
- //TODO : Higher Kinded types Functor[F[_]]
+TODO :cats api encodes  functors as a type- class
+  which provides map method which works on
+ TODO : Higher Kinded types Functor[F[_]] which are in nature functors
+ i.e Bag with map
  */
 object FunctorTypeClass extends App {
   //TODO Seq is funtor
@@ -18,15 +20,18 @@ val aModifed: Seq[Int] = List(1,2,3).map(_ +1)
 
   //TODO : Cats encodes Functor as a type class, cats.Functor,
 // TODO :so the method looks a little different. It accepts the initial F[A]
-// TODO : as a parameter alongside the transformation function. Here’s a simplified version of the
+// TODO : as a parameter alongside the transformation function.
+  //  TODO Here’s a simplified version of the
   // TODO : Functor Description:  Functor is a type-class which takes type parameter
   //  of Higher Kinded type Like this :
   // ToDO : It has only one fundamental operation called map for the type we passed
-  //TODO F for example could be  List, Option, Try etc they all are Functors by definition in nature
+  //TODO F for example could be  List, Option, Try etc
+  // they all are Functors by definition in nature
   //TODO :  we leave F abstract i.e we will not pass type parameter to F
 // TODO : a functor is a type F[A] with an operation map with type (A => B) => F[B]
 //  and leave the argument and the return type unchanged,
 
+  // TODO F[_] is abstract  representation of any kind of Bag for example Bag[A](content: A)
 
   // TODO Type Class
   trait MyFunctor[F[_]] {
@@ -39,6 +44,10 @@ object MyFunctor{
 }
   //TODO : Example implementation for Functor type-class instance for higher-kinded-type
   // [Option[_]]
+  implicit val mycatsStdInstancesForOption: MyFunctor[Option] = new MyFunctor[Option] {
+    override def map[A, B](option: Option[A])(f: A => B): Option[B] =
+      option.map(f)
+  }
    val functorForOption: MyFunctor[Option] = new MyFunctor[Option] {
     def map[A, B](fa: Option[A])(f: A => B): Option[B] = fa match {
       case None    => None
@@ -51,10 +60,7 @@ object MyFunctor{
       fa.map(f)
   }
 
-  implicit val mycatsStdInstancesForOption: MyFunctor[Option] = new MyFunctor[Option] {
-    override def map[A, B](option: Option[A])(f: A => B): Option[B] =
-      option.map(f)
-  }
+
   // TODO : Test our own Custom Functor
   //val listTypeClassInstaceforCustomFunctor= MyFunctor.apply[List]
  // println(listTypeClassInstaceforCustomFunctor.map(List(1,2,2))(_+1))
@@ -165,7 +171,7 @@ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
     type TypeClassType <: cats.Functor[F]
     val typeClassInstance : Ops.this.TypeClassType
     def self : F[A]
-    def map[B](f : scala.Function1[A, B]) : F[B] = { /* compiled code */ }
+    def map[B](f : A => B) : F[B] = { /* compiled code */ }
    */
   val tree: Tree[Int] = Tree.branch(2,Tree.leaf(2),Tree.leaf(2))
   tree.map(_ + 1)

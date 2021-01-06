@@ -2,7 +2,7 @@ package catz
 
 import cats.Semigroup
 // TODO : -> Semigroup is a type class that combines the Element of same type
-// and what it combines that depends on type class instance
+// TODO and what it combines that depends on type of type class instance
 /*
 TODO : SemiGroup Type class Looks like that
 
@@ -38,11 +38,12 @@ object SemiGroups  extends App {
   // TODO or combine the elements in list
   //TODO : -> this we can enhance by converting into
   // type Enrichment by making it implicit class
-  //TODO : -> General APi for Reduction of any type using type class
+
+  //TODO : Use case -> General API for Reduction of any type using type class
 
   def reduceThings[T](list:List[T])(implicit semiGroup:Semigroup[T]) = {
     list.reduce(semiGroup combine)
-    //
+
   }
 
 // TODO : -> These are specific APIS over here we dont require combine function
@@ -67,16 +68,18 @@ val fx : (Int,Int) => Int = (x,y) => x+ y
 
   // TODO : -> converting List[Int] to List[Option[Int]]
 
-  val numberOptions: List[Option[Int]] = myList.map(Option(_)).toList
+  val numberOptions: List[Option[Int]] = myList.map(Option(_))
 
   // TODO :-> importing the implicit  Semigroup type class instance of Type Option[Int]
-  // TODO it is an higher kinded type so we will use type class instance of monoid with semigroup
+  // TODO it is an higher kinded type so we will
+  //  use type class instance of monoid with semigroup
   /*
   implicit def catsKernelStdMonoidForOption[A: Semigroup]: Monoid[Option[A]] =
     new OptionMonoid[A]
 
   TODO  : because Semigroup is also Monoid  Semigroup -> Monoid
   TODO and we have passed an implicit argument of Semigroup type Class for actual combining
+   TODO
     implicit  object OptionMonoid[A](implicit A: Semigroup[A]) extends Monoid[Option[A]] {
      def empty: Option[A] = None
      def combine(x: Option[A], y: Option[A]): Option[A] =
@@ -92,11 +95,13 @@ val fx : (Int,Int) => Int = (x,y) => x+ y
    */
   import cats.instances.option._
   // TODO : -> it will sum all elements of List  and wrap them in Monad Option
-  println(reduceThings(numberOptions))
+  val result: Option[Int] = reduceThings(numberOptions)
+  println(reduceThings(numberOptions).getOrElse(23))
+
 val strings= List("I am" , "starting" ,"to like " , "SemiGroup")
 
-  val stringOption: List[Option[String]] = strings.map(Option(_)).toList
-  println(reduceThings(stringOption))// It will concat the list and wrap them Option Monad
+  val stringOption: List[Option[String]] = strings.map(Option(_))
+  println(reduceThings(stringOption).getOrElse("default-string"))// It will concat the list and wrap them Option Monad
   //TODO --------------------------------------------------------------------------------------
 
   // TODO 1: Exercise make this api to support for Custom Types
@@ -105,7 +110,8 @@ val strings= List("I am" , "starting" ,"to like " , "SemiGroup")
   // TODO : creating the  Type class Instance for Expense Type which is custom Type Expense
   // TODO and marking it implicit
   // TODO here as we can see we have given a reducing function so that combine will use
-  implicit val typeClassInstanceExpense = Semigroup.instance[Expense]{
+  implicit val typeClassInstanceExpense: Semigroup[Expense] =
+  Semigroup.instance[Expense]{
     (e1,e2) => Expense(Math.max(e1.id,e2.id), e1.amount + e2.amount)
   }
 
