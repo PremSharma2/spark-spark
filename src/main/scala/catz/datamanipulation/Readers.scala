@@ -5,15 +5,16 @@ import cats.Id
 object Readers extends App {
 
   /*
-  This conf file has all info for all the layers
-  - configuration File => initial data structure
-  - a DB layer
-  - an http layer
-  - a business logic layer
+  TODO
+   This conf file has all info for all the layers
+   - configuration File => initial data structure
+   - a DB layer i.e Repository
+   - an http layer i.e Rest End point
+   - a business logic layer  service layer
    */
 case class Configuration(dbUserName:String, dbPassword:String , host:String, port:Int , nThreads:Int , emailReplyto:String)
 
-
+// TODO Repository layer Dao
   case class DbConnection(userName:String,password:String){
     def getOrderStatus(orderID:Long):String = "dispatched" // it select * from Order and return status of order
 
@@ -30,8 +31,9 @@ case class Configuration(dbUserName:String, dbPassword:String , host:String, por
   // now lets introduce Reader data processor API which is used to handle these situation
   import cats.data.Reader
   // This API has one input and one output here as we can see that
-  // Reader apply method takes function which consumes the input and generate the desired output
-  //def apply[A, B](f: A => B): Reader[A, B] = ReaderT[Id, A, B](f)
+  // Reader apply method takes function which consumes the input and
+  // generate the desired output it is wrapper over function
+  //def apply[A, B](f: A => B): Reader[A, B] = ReaderT[Id, A, B].apply(f)
   //TODO here A is input to function B is o/p of function
   // and ID which is an identity type is final o/p of reader
   // type Reader[-A, B] = ReaderT[Id, A, B]
@@ -47,7 +49,7 @@ case class Configuration(dbUserName:String, dbPassword:String , host:String, por
   //TODO here Id is identity type i.e Id[B] =B
   // TODO here dbReader.run(configuration) is dbreader.f.apply(configuration)
   // TODO we passed input to the function f is configuration
-  val connection: Id[DbConnection] = dbReader.run(configuration)
+  val connection: Id[DbConnection] = dbReader.run.apply(configuration)
 
   //TODO: -> there is catch here what if we want transform this o/p to some other form
   // for that we have map function here available which will transform the o/p1 to o/p2
