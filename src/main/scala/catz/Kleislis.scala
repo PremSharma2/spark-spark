@@ -4,13 +4,11 @@ object Kleislis {
 
   val func1 : Int => Option[String] =  x => if(x%2==0) Some("Validation Passed") else None
 
-
   val func2 : Int => Option[Int] = x => Some(x*3)
   //TODO now the task is to compose these two functions
   // TODO func3 = func1 andThen func2
 
   val plainfunc1 : Int => String = x => if(x%2==0) "Validation Passed" else "Failed"
-
 
   val plainfunc2 : Int => Int = x =>   x*3
   //def andThen[A](g: R => A): T1 => A = { x => g(apply(x)) }
@@ -121,5 +119,36 @@ object Kleislis {
     val output: Option[String] = chainResult.apply(2)
     println(output)
   }
+/*
+  TODO
+   use of Kleisli in real world
+    import cats.Monad
+   import cats.mtl.ApplicativeAsk
+
+  TODO
+   val makeDB: Config => IO[Database]
+   val makeHttp: Config => IO[HttpClient]
+   val makeCache: Config => IO[RedisClient]
+   then I could combine things as a monad this way:
+TODO
+    def program(config: Config) = for {
+    db <- makeDB(config)
+   http <- makeHttp(config)
+   cache <- makeCache(config)
+  ...
+   } yield someResult
+but passing things manually would be annoying.
+So instead we could make that Config => part of the type
+and do our monadic composition without it.
+
+val program: Kleisli[IO, Config, Result] = for {
+  db <- Kleisli(makeDB)
+  http <- Kleisli(makeHttp)
+  cache <- Kliesli(makeCache)
+  ...
+} yield someResult
+If all of my functions were Kleisli in the first place,
+then I would be able to skip that Kleisli(...) part of the for comprehension.
+ */
 
 }

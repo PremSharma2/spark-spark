@@ -40,10 +40,12 @@ import cats.data.Writer
     mapBoth((l, v) => (f(l), v))
 
     def mapBoth[M, U](f: (L, V) => (M, U))(implicit functorF: Functor[F]): WriterT[F, M, U] =
-    WriterT { functorF.map(run)(f.tupled) }
+    WriterT { functorF.map(this.run)(f.tupled) }
    */
-  val aLogWriter: WriterT[Id, List[String], Int] = aWriter.mapWritten(_ :+"Found-interesting ")
-  val aWriterWithBoth: WriterT[Id, List[String], Int] = aWriter.bimap(_ :+"Found interesting " , _+1)
+  val aLogWriter: WriterT[Id, List[String], Int] = aWriter.
+    mapWritten(_ :+"Found-interesting ")
+  val aWriterWithBoth: WriterT[Id, List[String], Int] = aWriter.
+    bimap(_ :+"Found interesting " , _+1)
   val aWriterWithBoth1: WriterT[Id, List[String], Int] = aWriter.mapBoth{
     (logs,value) => (logs:+ "found something interesting", value+1)
   }
@@ -63,17 +65,21 @@ import cats.data.Writer
   val finalResult: Id[Int] = increasedWriter.value
 
   val logsWritten: Id[List[String]] = aWriterWithBoth.written
+  //run: Id[(List[String], Int)]
   val bothLogsAndValue: (List[String], Int) = aWriterWithBoth.run
   val writerA= Writer.apply(Vector("a","b"),44)
   val writerB= Writer.apply(Vector("c","d"),40)
-  // Here problem here is that the Writer Monad is that is has two components Logs and value
+  // Here problem here is that the
+  // Writer Monad is that is has two components Logs and value
   // we have combined values but Writer flatmap also combines the Logs as well
-  // because it has to wrap both value and log into context named Writer
+  // because it has to wrap both value and log into Writer context alias bag
   // so logs will be concatenated automatically
   // and two combine List we have Semigroup type class to combine all elements
   // we have to import the SemiGroup[Vector] so that we can combine two vectors
-  // In short Semigroup is required because flatmap take a transformer function to implement ETW pattern
-   // so f: A=> Writer[B] like that so in that case we have to merge logs of earlier Writer to new writer
+  // In short Semigroup is required because flatmap
+  // take a transformer function to implement ETW pattern
+   // so f: A=> Writer[B]
+  // like that so in that case we have to merge logs of earlier Writer to new writer
  /*
  TODO Semigroup type class instance for Vector monoid
   implicit object VectorMonoid[A] extends Monoid[Vector[A]] {
@@ -83,7 +89,8 @@ import cats.data.Writer
   */
   // TODO Lets take a loook at flatmap impl
   /*
-  def flatMap[U](f: V => WriterT[F, L, U])(implicit flatMapF: FlatMap[F], semigroupL: Semigroup[L]): WriterT[F, L, U] =
+  def flatMap[U](f: V => WriterT[F, L, U])(implicit flatMapF: FlatMap[F], semigroupL:
+   Semigroup[L]): WriterT[F, L, U] =
     WriterT {
       flatMapF.flatMap(run) { lv =>
         flatMapF.map(f(lv._2).run) { lv2 =>
@@ -97,6 +104,7 @@ import cats.data.Writer
   // For example
  val finalValue: (Vector[String], Int) = writerA.
    flatMap(intValue => Writer(writerB.written,intValue+1)).run
+  // Here Semigroup will combine the logs of writerA and writerB
   writerA.flatMap(valueA => writerB.map(valueB=> valueA + valueB))
   // OR
    val compositeWriter = for{
@@ -119,6 +127,7 @@ import cats.data.Writer
 
   //TODO
   // Write a function that print thing with Writers
+
   def countAndSay(n:Int) : Unit ={
     if(n<0) println("starting")
     else {
@@ -163,13 +172,14 @@ import cats.data.Writer
 
   //  Writer(Vector(s"Now at $n"), n).flatMap(n => sumWithLogs(n-1).
   //  flatMap(
-  //  lowerSum => Writer(Vector(s"computed sum ${n-1} = $lowerSum"), n).map(_=>(lowerSum + n) )
+  //  lowerSum => Writer(Vector(s"computed sum ${n-1} = $lowerSum"), n)
+  //  .map(_=>(lowerSum + n) )
   def sumWithLogs(n:Int) : Writer[Vector[String],Int] ={
     if(n<=0) Writer(Vector(),0)
     else for{
       _ <- Writer(Vector(s"Now at $n"), n) // println(s"now at $n")
       lowerSum <- sumWithLogs(n-1)
-      _ <- Writer(Vector(s"computed sum ${n-1} = $lowerSum"), n)// println(s"computed sum ${n-1} = $lowerSum")
+      n <- Writer(Vector(s"computed sum ${n-1} = $lowerSum"), n)// println(s"computed sum ${n-1} = $lowerSum")
     } yield lowerSum + n //   lowerSum + n
   }
   println(sumWithLogs(3))
@@ -179,6 +189,8 @@ implicit val ec: ExecutionContext = ExecutionContext.
   val samFuture1= Future(sumWithLogs(3))
   val samFuture: Future[Writer[Vector[String], Int]] = Future(sumWithLogs(2))
   val logs: Future[Id[Vector[String]]] = samFuture.map(_.written)
+  val logs1: Future[Id[Vector[String]]] = samFuture1.map(_.written)
   // Writers keep separate logs for seprate thread
   println(logs)
+  println(logs1)
 }

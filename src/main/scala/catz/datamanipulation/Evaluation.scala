@@ -24,6 +24,7 @@ object Evaluation extends App {
     Always will run its computation every time.
    */
   import cats.Eval
+  //def now[A](a: A): Eval[A] = Now(a)
 val instantEval: Eval[Int] = Eval.now{
   println("eagerly evaluated Expression !!!!!")
   4
@@ -53,6 +54,12 @@ val instantEval: Eval[Int] = Eval.now{
   }
   //println(redoEval.value)
   //println(redoEval.value)
+  /*
+   Construct a lazy Eval[A] value with caching (i.e. Later[A]).
+
+  def later[A](a: => A): Eval[A] = new Later(a _)
+  final class Later[A](f: () => A) extends Eval[A]
+   */
   val delayedEval = Eval.later{
     println("evaluating lazily and keeping the value")
      "Evaluated lazily and kept the value in caeche"
@@ -66,6 +73,12 @@ val instantEval: Eval[Int] = Eval.now{
    *    eager (Now) instance.
         Lazily perform a computation based on an Eval[A], using the
    *     function `eval` to produce an Eval[B] given an A.
+        This call is stack-safe -- many .flatMap calls may be chained without consumed
+        additional stack during evaluation.
+        It is also written to avoid left-association problems,
+        so that repeated calls to .flatMap will be efficiently applied.
+       Computation performed in f is always lazy,
+       even when called on an eager (Now) instance.
    */
   val ComposedEvaluation = instantEval.
     flatMap(value1 => delayedEval.map(value2=> value1 + value2))
@@ -85,6 +98,7 @@ val instantEval: Eval[Int] = Eval.now{
   } yield a + b+ c+d
  // println(ex.value)
  // println(ex.value)
+  // TODO now this will not be recomputed again and again
   val dontRecompute = redoEval.memoize
   //println(dontRecompute.value)
  // println(dontRecompute.value)
@@ -99,14 +113,15 @@ val instantEval: Eval[Int] = Eval.now{
  // println(tutorial.value)
   //println(tutorial.value)
   // TODO : implement defer such that defer Eval.now should not run side effects
-  /* TODO
+  /* TODO Note:
         Computation performed in eval call by name expression
-         is always lazy, even when called on an
+       (eval : =>Eval[T])  is always lazy, even when called on an
    *    eager (Now) instance.
         Lazily perform a computation based on an Eval[A], using the
    *     function `eval` to produce an Eval[B] given an A.
    We have delayed the expression evaluation by using later
    */
+
   def defer [T](eval : =>Eval[T]):Eval[T] ={
    Eval.later(()).flatMap(_ => eval)
   }
@@ -115,6 +130,14 @@ val instantEval: Eval[Int] = Eval.now{
     4
   }).value
 
+  /*
+    Scala cats implementation if Defer APi
+    sealed abstract class Defer[A](val thunk: () => Eval[A]) extends Eval[A] {
+
+    def memoize: Eval[A] = Memoize(this)
+    def value: A = evaluate(this)
+  }
+   */
 
   // TODO Exercise 3
   def reverseList[T](list: List[T]): List[T] =
@@ -128,5 +151,8 @@ val instantEval: Eval[Int] = Eval.now{
     else defer(reverseEval(list.tail).map(_:+list.head))
 
   }
+  // defer(reverseEval(list.tail).map(_:+list.head))
+  // This will create a chain of  Eval.later(()).flatMap(_ => eval) in stack
+  // which is by nature stack safe so that in turn makes this stack safe
   println(reverseEval((1 to 5).toList).value)
 }

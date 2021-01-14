@@ -41,7 +41,8 @@ object SapientTest extends App {
     ("2018-01-02 11:00:00", "u2")
   ).toDF("click_time", "user_id")
 
-  def clickSessList(tmo: Long) = udf{ (uid: String, clickList: Seq[String], tsList: Seq[Long]) =>
+  def clickSessList(tmo: Long) =
+    udf{ (uid: String, clickList: Seq[String], tsList: Seq[Long]) =>
     def sid(n: Long) = s"$uid-$n"
 
     val sessList = tsList.foldLeft( (List[String](), 0L, 0L) ){ case ((ls, j, k), i) =>
