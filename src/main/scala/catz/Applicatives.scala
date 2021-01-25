@@ -76,11 +76,11 @@ object Applicatives {
        def productWithMonads[F[_],A,B](fa:F[A],fb:F[B])(implicit monad:Monad[F]) =
         monad.flatMap(fa)(a => monad.map(fb)(b => (a,b)))
         but we cant have flatmap so ap will be helpful
-        SO Applicative ca also be a semigroupal now because they are able define product method
+        SO Applicative can also be a semigroupal now because they are able define product method
 
 
  */
- // def ap [F[_],B,T] (functionWrapper : F[B=> T])(wa:F[B]): F[T] = ???
+  def ap [F[_],B,T] (functionWrapper : F[B=> T])(wa:F[B]): F[T] = ???
   def productWithApplicatives[F[_],A,B] (fa:F[A],fb:F[B])(implicit applicative: Applicative[F]): F[(A,B)] ={
    val functionWrapper: F[B => (A, B)] = applicative.map(fa)(a => (b:B)=> (a,b))
    // ap(functionWrapper)(fb)

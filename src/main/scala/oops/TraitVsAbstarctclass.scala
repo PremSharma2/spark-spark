@@ -17,6 +17,7 @@ object TraitVsAbstarctclass  extends App{
 class Dog (name: String) extends Animal (name) {
   override val hello = "Woof"
   override val greeting: String = s"I am $name and I like to play with you!"
+ override var age = 2
 }
 
 
@@ -65,4 +66,18 @@ println(tom.greeting)
 println(tom.isAngry)
 println(tom.catchBall)
 
+// In the following example the methods save,
+  // update, and delete are defined in the abstract class BaseController,
+  // and the method connect is undefined, and therefore abstract:
+/*
+  abstract class BaseController(db: Database) {
+    def save { db.save }
+    def update { db.update }
+    def delete { db.delete }
+    def connect                             // abstract since it has no implementation
+    def getStatus: String                   // an abstract method that returns a String
+    def setServerName(serverName: String)   // an abstract method that takes a parameter
+  }
+
+ */
 }

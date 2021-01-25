@@ -9,7 +9,7 @@ object ScalaObjects extends App {
     //static constant
     // All helper utilities goes here
     // all factory goes here
-    val N_EYES = 2
+    val N_EYES = 2 // static constants
     def vanFly(): Boolean = true
     //factory method for Person class
     def apply(mother:Person, father:Person):Person= new Person("Bobie")
@@ -23,7 +23,8 @@ object ScalaObjects extends App {
   println(Person.vanFly())
   
   //scala object=Singleton Instance  
-  //scala instances are singleton by defination no extra code needed from you to make it singleton
+  //scala instances are singleton by defination
+  // no extra code needed from you to make it singleton
   val mary1=Person
   //val john=Person
   val  mary=new Person("Mary")
@@ -33,7 +34,16 @@ object ScalaObjects extends App {
   //or calling via apply factory method 
   
   val bob=Person(mary,john)
-  // scala Application is scala object with 
-  //def main(args:Array[String]):Unit
 
+  //scala singleton pattern using scala singleton objects
+  class Brain private {
+    override def toString = "This is the brain."
+  }
+
+  object Brain {
+    val brain = new Brain
+    def getInstance: Brain = {
+      brain
+    }
+  }
 }

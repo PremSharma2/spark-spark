@@ -1,5 +1,6 @@
 package oops
 
+import scala.annotation.tailrec
 import scala.beans.BeanProperty
 /*
  * An immutable object remains in exactly one state, the state in which it was created. 
@@ -24,8 +25,8 @@ class Counter(@BeanProperty val count: Int=0) {
     println("decrementing")
     new Counter(count - 1)
   }
-
-  def inc(n: Int): Counter = {
+@tailrec
+  final def inc(n: Int): Counter = {
     if (n <= 0) this else 
       this.inc.inc(n-1)
   }

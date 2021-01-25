@@ -51,7 +51,7 @@ object Function extends App {
 
   def isPrime(n: Int): Boolean = {
     //auxiliary nested function
-    @tailrec
+
     def isPrimeUntil(t: Int): Boolean =
       if (t <= 1) true
     else {

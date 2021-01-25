@@ -2,7 +2,7 @@ package scalaBasics
 
 object Expressions extends App {
   //In scala every thing is an expression and every expression has some value associated with it
-  val x=1+2 // Expression
+  val x: Int = 1+2 // Expression
   //printing expression value
   println(x)
   println(x==1)// Boolean Expression
@@ -14,14 +14,14 @@ object Expressions extends App {
   a+=3
   println(a)
   // one more boolean expression
-  val booleanExpression= 4 % 2 != 0
+  val booleanExpression: Boolean = 4 % 2 != 0
   println(booleanExpression)
   println(4 % 2 != 0)// printing boolean expression o/p value
   // Instructions vs Expression in scala
   
 
   val aCondition: Boolean =true
-  //Example of Conditional expression
+  //Example of Conditional expression returns a value on condition basis
   // use of if else as ternary operator as expression i.e conditional expression
   //if (aCondition) 5 else 3 this is conditional expression
   val conditionalExpressionOutput: Int =if (aCondition) 5 else 3
@@ -31,7 +31,7 @@ object Expressions extends App {
   /*var i=0
   while(i<10){
     println(i)
-    i+=1
+    i+=1 // side effects not advisable in scala
   }*/
   //Never do this in scala
 

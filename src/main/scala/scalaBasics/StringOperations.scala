@@ -6,8 +6,11 @@ object StringOperations extends App{
   println(str.charAt(2))
   println(str.substring(7, 11))
   println(str.split(" ").toList)
-  
+  val splitArray: Array[String] =str.split(" ")
+ val doubleSplit: Array[Array[String]] =
+   splitArray.map(_.split(",") )
   val numberStr:String="45"
+
   println(numberStr.toInt)
   val name="Prem"
   val age=12

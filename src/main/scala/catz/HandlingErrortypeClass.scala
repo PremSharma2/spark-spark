@@ -9,13 +9,13 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 /*
-A monad that also allows you to raise and or handle an error value.
+A monad that also allows you to raise and or handle an error value.in Pure FP
 This type class allows one to abstract over error-handling monads.
  */
 object HandlingErrortypeClass {
 
 //TODO : this type class takes two arguments M[_] which is higher-kinded type
-  // TODO and another one is Error type E becuase this monad also handles the error
+  // TODO and another one is Error type E because this monad also handles the error if occurred
   //MonadError  is  A monad that also allows you to raise and or handle an error value.
   trait MyMonadError[M[_],E] extends Monad[M] {
     // this type class has fundamental method raiseError to handle the error
@@ -26,6 +26,7 @@ object HandlingErrortypeClass {
     new MonadError[Either[A, *], A]  {
 
      def raiseError[B](e: A): Either[A, B] = Left(e)
+     // as this monad so this must have pure
       def pure[B](b: B): Either[A, B] = Right(b)
 
       def handleErrorWith[B](fea: Either[A, B])(f: A => Either[A, B]): Either[A, B] =
@@ -92,7 +93,7 @@ object HandlingErrortypeClass {
   TODO implicit type class instance for MonadError[Future,Throwable]
   TODO
     implicit object ErrorFuture extends MonadError[Future, Throwable]{
-   def pure[A](x: A): Future[A] = Future.successful(x)
+   def pure[B](x: B): Future[B] = Future.successful(x)
      def handleErrorWith[A](fea: Future[A])(f: Throwable => Future[A]): Future[A] = fea.recoverWith { case t => f(t) }
        def raiseError[A](e: Throwable): Future[A] = Future.failed(e)
       override def handleError[A](fea: Future[A])(f: Throwable => A): Future[A] = fea.recover { case t => f(t) }
@@ -132,9 +133,13 @@ TODO
    */
   val monadErrortypeclassInstanceForFuture: MonadError[Future, Throwable] =
     MonadError[Future,Throwable]
-
+   val future: Future[Int] = monadErrortypeclassInstanceForFuture.pure(2)
    val futureOfException: Future[Int] = monadErrortypeclassInstanceForFuture.
      raiseError[Int](exception)
+  val handledFuture: Future[Int] = monadErrortypeclassInstanceForFuture.handleError(futureOfException){
+    case exceptionthrown => 44
+    case _ => 89
+  }
 
 //TODO Monad Error Type class instance for Validated
 

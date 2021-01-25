@@ -25,7 +25,9 @@ object TransposeDataFrame  extends App {
 |amit|  maths|   80|
 +----+-------+-----+
  */
-  val pivot_df = df.groupBy("name").pivot("subject").sum("marks")
+  val pivot_df = df.groupBy("name").
+                    pivot("subject").
+                   max("marks")
   pivot_df.show(false)
 /*
 ----+-----+-------+
@@ -64,4 +66,5 @@ val df4 = df.select(col("*"),
      cols.map(c => when(col(c).isNull,lit(0))
     .otherwise(col(c))).reduce(_ + _).as("totalmarks"))
 
+  final_df.show(false)
 }

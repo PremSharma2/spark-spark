@@ -3,6 +3,7 @@ package catz.datamanipulation
 import cats.data.Validated
 import cats.kernel.Semigroup
 
+import scala.annotation.tailrec
 import scala.util.Try
 /*
 TODO
@@ -18,7 +19,9 @@ val aValidValue:Validated[String,Int] = Validated.
   val aInvalidValue: Validated[String, Int] =  Validated.
     invalid("Validation failed returning Invalid value!!")// this is equivalent to Left()
   // cond is used to to validate the Expression using Validated API !!!
+  //so it will return Valid alias Right or Left alias Invalid
   val aTest: Validated[String, Int] = Validated.cond(42>22 , 42 , "Validation failed!!")
+
   // TODO Exercise
   /*
     TODO
@@ -32,6 +35,7 @@ val aValidValue:Validated[String,Int] = Validated.
    */
 
     def testPrime(n:Int)  = {
+      @tailrec
       def tailRecPrime(d: Int): Boolean = {
         if (d < 1) true
         else n % d != 0 && tailRecPrime(d - 1)
@@ -70,14 +74,36 @@ val aValidValue:Validated[String,Int] = Validated.
       .combine(Validated.cond(n<=100 ,n,List("Number is too big !!") ))
       .combine(Validated.cond(testPrime(n) ,n,List("Number is not Prime!!!!") ))
       // chain of functions
-  aValidValue.andThen(_=> aInvalidValue)
+  /*
+  Apply a function (that returns a Validated) in the valid case.
+   Otherwise return the original Validated.
+This allows "chained" validation: the output of one validation can be fed into another validation function.
+This function is similar to flatMap on Either.
+ It's not called flatMap, because by Cats convention, flatMap is a monadic bind
+ that is consistent with ap.
+  This method is not consistent with ap (or other Apply-based methods),
+  because it has "fail-fast" behavior as opposed to accumulating validation failures.
+  def andThen[EE >: E, B](f: A => Validated[EE, B]): Validated[EE, B] =
+    this match {
+      case Valid(a)       => f(a)
+      case i @ Invalid(_) => i
+    }
+   */
+  val anThenResult: Validated[String, Int] =aValidValue.andThen(_=> aInvalidValue)
   // we can also test a valid value with ensure
   // if a valid value pass this new predicate then it will remain as valid
   // else it will turn into the Invalid value
  val avalidValueTest= aValidValue.ensure(List("Something Went wrong"))(_%2==0)
-  // we can also transform teh Validated
+  // we can also transform the  Validated
+  /*
+    def map[B](f: A => B): Validated[E, B] = this match {
+    case i @ Invalid(_) => i
+    case Valid(a)       => Valid(f(a))
+  }
+   */
   aValidValue.map(_+1)
-  // if we want to transform the undesirable value or the left value or invalid value then
+  // if we want to transform the undesirable value or the left value or
+  // invalid value then
   aInvalidValue.leftMap(_ + "failed value")
   // we also transform both together
   aValidValue.bimap(_+"invalid value" , _+1)
@@ -110,7 +136,8 @@ val aValidValue:Validated[String,Int] = Validated.
 
      */
     def validateForm(form:Map[String,String]): FormValidation[String] ={
-        getValue(form,"Name").andThen(name=> nonBlank(name,"Name"))
+          getValue(form,"Name").
+          andThen(name=> nonBlank(name,"Name"))
           .combine(getValue(form,"Email")).andThen(emailProperForm)
           .combine(getValue(form,"Password")).andThen(passwordCheck)
           .map(_=> "User is Validated Successfully")

@@ -2,7 +2,8 @@ package catz
 
 object Kleislis {
 
-  val func1 : Int => Option[String] =  x => if(x%2==0) Some("Validation Passed") else None
+  val func1 : Int => Option[String] =
+    x => if(x%2==0) Some("Validation Passed") else None
 
   val func2 : Int => Option[Int] = x => Some(x*3)
   //TODO now the task is to compose these two functions
@@ -11,7 +12,7 @@ object Kleislis {
   val plainfunc1 : Int => String = x => if(x%2==0) "Validation Passed" else "Failed"
 
   val plainfunc2 : Int => Int = x =>   x*3
-  //def andThen[A](g: R => A): T1 => A = { x => g(apply(x)) }
+  //def andThen[A](g: R => A): T1 => A = { x => g(f.apply(x)) }
 
   val plainFunc3: Int => String = plainfunc2 andThen plainfunc1
 
@@ -68,6 +69,7 @@ object Kleislis {
   //    Kleisli(a => F.map(this.run.apply(a))(f))
   // TODO : This is just o/p of func2 applied to the function
   //  passed as argument to map function
+  //val func2 : Int => Option[Int] = x => Some(x*3)
   val multiply: Kleisli[Option, Int, Int] = func2K.map(_*2)
   val multiplyfunction: Int => Option[Int] = multiply.run
   /*
@@ -109,7 +111,11 @@ object Kleislis {
    TODO : note catch here is that input a will go simultaneously two both of the Kleisli
    Its like two Kleisli executed in parallel
    */
-  val compose: Kleisli[Id, Int, Int] = times.flatMap(t2 => plus4.map(p4 => t2 + p4))
+  // f= 4 => t2 + p4
+  val fz: Int => Kleisli[Id, Int, Int] = (t2:Int) => plus4.map(p4 => t2 + p4)
+  //  Kleisli(a => F.map(this.run.apply(a))(a =>f(a)))
+  //   Kleisli.shift(a => F.flatMap[B, C](this.run.apply(a))((b: B) => f.apply(b).run.apply(a)))
+  val compose: Kleisli[Id, Int, Int] = times.flatMap(fz)
   val forComposed: Kleisli[Id, Int, Int] = for{
     t2 <- times
     p4 <- plus4

@@ -1,7 +1,7 @@
 package catz.datamanipulation
 
 object WriterUsage {
-/*
+  /*
 TODO
  Logging is something we all need to do.
  There are a many logging frameworks available
@@ -121,3 +121,4 @@ for {
 The Writer monad can be a good solution to the tricky problem of correlating
 log entries togther in a multi user, multi-threaded environment
  */
+}

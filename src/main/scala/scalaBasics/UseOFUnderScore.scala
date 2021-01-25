@@ -26,8 +26,9 @@ val sumfunction : (Int,Int) => Int  = _ + _
   def makeSentence(words : String*) = words.toSeq.mkString(",")
 makeSentence("I","Love","Scala")
   val words= Array("I","Love","Akka")
+  //I,Love,Akka
   //val vararg: Array[String] = words : _*
   // it automatically converts this into varargs
-  makeSentence(words : _*)
+  println(makeSentence(words : _*))
 
 }

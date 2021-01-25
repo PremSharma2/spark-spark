@@ -3,7 +3,7 @@ package oops
 object InheritanceInScala extends App {
 
   class Animal {
-    val creatureType = "wildanimal"
+    val creatureType = "wild-animal"
     def eat = println("nom-nom-nom")
   }
   class Cat extends Animal
@@ -14,8 +14,11 @@ object InheritanceInScala extends App {
   class Person(name: String, age: Int) {
     //auxillary constructor
     def this(name: String) = this(name, 0)
+    def breath:String = "breath"
 
   }
+  val person = new Person("prem",20)
+
   // Constructor Chaining
   class Adult(name: String, age: Int, idcard: String) extends Person(name, age)
   //-----------------------------------------------------------------------------------------------------------------------------
@@ -40,6 +43,14 @@ object InheritanceInScala extends App {
   val dog = new Dog
   dog.eat
 
+// def can be overridden as val overide eyword not necesaary
+  abstract class Pet (name: String) {
+    def greeting: String
+  }
+
+  class Dog1 (name: String) extends Pet (name) {
+    val greeting = "Woof"
+  }
   //dynamic Binding
   val unknownanimal: Animal = new Bird("k9")
   unknownanimal.eat

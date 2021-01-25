@@ -8,23 +8,26 @@ package catz
   Weaker Applicatives means Apply type class: ->
   TODO
     Applicatives are the extension of functors
-    MyApplicatves = Functors (map method) + pure method
+    MyApplicatves = Functors (map method) + pure method which is fundamental to Applicative
     Also /Monad extends Applicative because they get pure form Applicatives
     also Applicatives extends Semigroupal so they also have product method
     import cats.Applicative
+    Applicative----> funtors
+   Applicative ----> Semigroupal
+    Monad -----> Applicative
  */
 object WeakerApplicatives {
   import cats.Functor
   import cats.Semigroupal
 
   //TODO : Structure of Applicative type class
-
+// TODO cats encode Applicative as tye class which takes HigherKinded type parameter
   trait MyApplicative[F[_]] extends Functor[F] with Semigroupal[F]{
     //TODO :-> fundamental method of Applicative is pure
     def pure[A](a: A):F[A]
 
     //TODO :->  as applicatives extend Semigroupal it also has product method
-    def product[A, B](fa: F[ A], fb:F[ B]): F[ (A, B)] = {
+    override def product[A, B](fa: F[ A], fb:F[ B]): F[ (A, B)] = {
       val functionWrapper: F[B => (A, B)] = this.map(fa)(a => (b:B)=> (a,b))
       // ap(functionWrapper)(fb)
       // so we can use inbuilt ap as well
@@ -32,7 +35,7 @@ object WeakerApplicatives {
     }
     // special method which helps to implement product of two higher kinded types
     // as Applicatives are not monads
-    def ap [B,T] (functionWrapper : F[B=> T])(wa:F[B]): F[T]
+    def ap [B,A] (functionWrapper : F[B=> (A,B)])(wa:F[B]): F[(A,B)]
   }
 
 
@@ -52,10 +55,15 @@ object WeakerApplicatives {
 // TODO this is the final structure now which is used by scala
   // TODO :-> structure of Apply type class with ap as only fundamental method
 
+  /*
+    TODO
+      Apply----> Functor
+      Apply ----> Semigroupal
+   */
   trait MyApply[F[_]] extends Functor[F] with Semigroupal[F]{
 
   def map[A, B](fa: F[A])(f: A => B): F[B]
-    def product[A, B](fa: F[ A], fb:F[ B]): F[ (A, B)] = {
+  override  def product[A, B](fa: F[ A], fb:F[ B]): F[ (A, B)] = {
       val functionWrapper: F[B => (A, B)] = this.map(fa)(a => (b:B)=> (a,b))
       // ap(functionWrapper)(fb)
       // so we can use inbuilt ap as well
@@ -63,7 +71,7 @@ object WeakerApplicatives {
     }
     // special method which helps to implement product of two higher kinded types
     // as Applicatives are not monads and this is the fundamental method of Apply type class
-    def ap [B,T] (functionWrapper : F[B=> T])(wa:F[B]): F[T]
+    def ap [B,A] (functionWrapper : F[B=> (A,B)])(wa:F[B]): F[(A,B)]
 
   def manpN[A,B,C](tuple:(F[A],F[B]))(f:(A,B) => C) = {
     val tupleWrapper: F[(A, B)] = product(tuple._1,tuple._2)
@@ -72,7 +80,7 @@ object WeakerApplicatives {
     }
   }
   }
-
+// TODO Applicative ------> MyApply
   trait Applicative1[F[_]] extends MyApply[F]{
     //most fundamental method of Applicative is pure
     def pure[A](a: A):F[A]
@@ -83,22 +91,29 @@ object WeakerApplicatives {
    import cats.instances.option._ // for Apply[Option]
   val applyTypeClassInstance: Apply[Option] = Apply.apply[Option]
   // def ap [B,T] (functionWrapper : F[B=> T])(wa:F[B]): F[T]
-  val funcApp: Option[Int] = applyTypeClassInstance.ap(Some((x:Int) => x+1))(Some(2))
- val productresult: Option[(Int, Int)] = applyTypeClassInstance.product(Option(1),Option(2))
+  val funcApp: Option[Int] =
+    applyTypeClassInstance.ap(Some((x:Int) => x+1))(Some(2))
+ val productresult: Option[(Int, Int)] =
+   applyTypeClassInstance.product(Option(1),Option(2))
   //TODO use of product method and ap method of Apply type class here basically
   //TODO : this works fine along with extension methods
   import cats.syntax.apply._
   val tupleOfOption: (Option[Int], Option[Int]) = (Option(1),Option(2))
   /*
-  implicit  class Tuple3SemigroupalOps[F[_], A0, A1, A2](private val t3: Tuple3[F[A0], F[A1], F[A2]]) {
-  def tupled(implicit invariant: Invariant[F], semigroupal: Semigroupal[F]): F[(A0, A1, A2)] = Semigroupal.tuple3(t3._1, t3._2, t3._3)
-  def tuple3[F[_], A0, A1, A2](f0:F[A0], f1:F[A1], f2:F[A2])(implicit semigroupal: Semigroupal[F], invariant: Invariant[F]):F[(A0, A1, A2)] =
+  TODO
+   implicit  class Tuple3SemigroupalOps[F[_], A0, A1, A2](private val t3: Tuple3[F[A0], F[A1], F[A2]]) {
+   def tupled(implicit invariant: Invariant[F], semigroupal: Semigroupal[F]): F[(A0, A1, A2)] =
+   Semigroupal.tuple3(t3._1, t3._2, t3._3)
+   TODO
+      def tuple3[F[_], A0, A1, A2](f0:F[A0], f1:F[A1], f2:F[A2])(implicit semigroupal: Semigroupal[F], invariant: Invariant[F]):F[(A0, A1, A2)] =
     imap3(f0, f1, f2)((_, _, _))(identity)
 
-  def apWith[Z](f: F[(A0, A1, A2) => Z])(implicit apply: Apply[F]): F[Z] = apply.ap3(f)(t3._1, t3._2, t3._3)
+//TODO  def identity[A](x: A): A
 
-  def imap3[F[_], A0, A1, A2, Z](f0:F[A0], f1:F[A1], f2:F[A2])(f: (A0, A1, A2) => Z)(g: Z => (A0, A1, A2))(implicit semigroupal: Semigroupal[F], invariant: Invariant[F]):F[Z] =
-    invariant.imap(semigroupal.product(f0, semigroupal.product(f1, f2))) { case (a0, (a1, a2)) => f(a0, a1, a2) }
+  def apWith[Z](f: F[(A0, A1, A2) => Z])(implicit apply: Apply[F]): F[Z] = apply.ap3(f)(t3._1, t3._2, t3._3)
+  TODO
+   def imap3[F[_], A0, A1, A2, Z](f0:F[A0], f1:F[A1], f2:F[A2])(f: (A0, A1, A2) => Z)(g: Z => (A0, A1, A2))(implicit semigroupal: Semigroupal[F], invariant: Invariant[F]):F[Z] =
+    invariant.imap(semigroupal.product(f0, semigroupal.product(f1, f2))) { case (a0, (a1, a2)) => f(a0, a1, a2) }{ z => val (a0, a1, a2) = g(z); (a0, (a1, a2)) }
 
     def imap[A, B](fa: F[A])(f: A => B)(g: B => A): F[B]
 

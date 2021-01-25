@@ -30,7 +30,8 @@ object SemiGroupalTypeClass {
 
   implicit val ec:ExecutionContext = ExecutionContext.
     fromExecutorService(Executors.newFixedThreadPool(2))
-  val aSemigroupalFuturetypeClassInstance: Semigroupal[Future] = Semigroupal.apply[Future]
+  val aSemigroupalFuturetypeClassInstance: Semigroupal[Future] =
+    Semigroupal.apply[Future]
     val aTupledFuture: Future[(Int, Int)] = aSemigroupalFuturetypeClassInstance
                                .product(Future(3),Future(4))
 
@@ -105,7 +106,7 @@ implicit class  Ops[F[_], C] extends scala.AnyRef {
   val validatedSemigroupaltypeclassinstance: Semigroupal[ErrorsOr] =
     Semigroupal.apply[ErrorsOr]// it requires an implicit instance of Semigroup[List[_]]
   val invalidCombination: ErrorsOr[(Nothing, Nothing)] = validatedSemigroupaltypeclassinstance
-    .product(Validated.invalid(List("Invalid value"))
+       .product(Validated.invalid(List("Invalid value"))
       ,Validated.invalid(List("Second-Invalid-value")))
 
 // TODO Now this product of two Either monads using semigroupal

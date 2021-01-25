@@ -174,7 +174,8 @@ The second type of ADT is known as a “Product type.”
  It’s name comes from the fact that you use the Scala
  case class constructor to create a data type
  whose number of possible concrete instances
- can be determined by multiplying the number of possibilities of all of its constructor fields.
+ can be determined by multiplying
+ the number of possibilities of all of its constructor fields.
 
 Take this class for example:
 
@@ -194,7 +195,9 @@ Therefore, the correct answer is that there are four possible instances.
 
 b1 has two possibilities
 b2 has two possibilities
-The total number of possible instances is determined by multiplying the number of possibilities of each constructor field, and 2 multiplied by 2 is 4
+The total number of possible instances
+is determined by multiplying the number of possibilities of
+ each constructor field, and 2 multiplied by 2 is 4
 Because the number of possible instances of Product ADTs can be calculated by multiplying the number of possible values of every constructor parameter, what do you think the number of possibilities of this Pair type are:
 
 case class Pair (

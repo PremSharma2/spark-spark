@@ -26,6 +26,12 @@ object FoldingTypeClass  {
     }
   }
 // TODO Cats also Provide type classes for this kind of operation called Foldable
+  /*
+  TODO
+   trait Foldable[F[_]]{
+    def foldLeft[A, B](fa: F[A], b: B)(f: (B, A) => B): B
+    }
+   */
    import cats.Foldable
    import cats.instances.list._
    import cats.instances.option._ // implicit Foldable[Option]
@@ -43,15 +49,12 @@ object FoldingTypeClass  {
   // because we have use chained Eval which makes stake safe
   /*
    * TODO
-        Computation performed in eval call by name expression
-         is always lazy, even when called on an
-   *    eager (Now) instance.
-        Lazily perform a computation based on an Eval[A], using the
-   *     function `f: A => B` for map operation to produce an Eval[B] given an A.
-   *    This call is stack-safe -- many .flatMap calls may be chained
-   *    without consumed additional stack during evaluation. It is also
-   *   written to avoid left-association problems, so that repeated
-   *    calls to .flatMap will be efficiently applied.
+      Transform an Eval[A] into an Eval[B] given the transformation function f.
+      This call is stack-safe -- many .map calls may be chained
+      without consumed additional stack during evaluation.
+      Computation performed in f is always lazy,
+      * even when called on an eager (Now) instance.
+      * when u call sumFoldRight.value then only this get evaluated
    */
   val sumFoldRight: Eval[Int] = foldabletypeclassinstance.
     foldLeft(List(1,2,3),Eval.now(0)){
@@ -66,6 +69,7 @@ object FoldingTypeClass  {
       A.combine(acc, a)
     }
    */
+  // it will sum all elements of list
   val anotherSum: Int =foldabletypeclassinstance.combineAll(List(1,2,3))
 
   /*
@@ -79,7 +83,7 @@ object FoldingTypeClass  {
   import cats.instances.vector._
   //TODO Working with nested datastructures
   val nestedDataStructure = List(Vector(1,2,3),Vector(4,5,6))
-  // Here we can combine two foldables
+  // Here we can combine two foldables type class instances
  val foldedDatastructure= Foldable[List] compose cats.Foldable[Vector]
 
   val combineValue: Int = foldedDatastructure.combineAll(nestedDataStructure)
@@ -89,6 +93,7 @@ object FoldingTypeClass  {
      println(map(list)(_+1))
      println(flatMap(list)(x=> List(x,x+1)))
      println(filter(list)(_ %2 == 0))
+     println(combineValue)
     /// println(combineAll(list))
   }
 

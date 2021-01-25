@@ -6,6 +6,7 @@ object FlatMapTypeClass {
 //TODO : FlatMap type class it is also called Weaker monad because
   // in this family of monads we have stronger monad is Monad Type class
   // TODO : Note : -> Apply extends Semigroupal and Functors
+  //TODO cats encode flatMap as type class which accepts the higher Kinded type
 trait MyFlatMap[M[_]] extends Apply[M]{
   def flatMap[A,B](fa:M[A])(f: A=> M[B]):M[B]
   //TODO : implementation of ap in-terms of map and FlatMap
