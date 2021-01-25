@@ -17,7 +17,7 @@ object TraitVsAbstarctclass  extends App{
 class Dog (name: String) extends Animal (name) {
   override val hello = "Woof"
   override val greeting: String = s"I am $name and I like to play with you!"
- override var age = 2
+     age = 2
 }
 
 

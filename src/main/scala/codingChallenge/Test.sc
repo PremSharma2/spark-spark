@@ -19,6 +19,11 @@ println(x,y,z)
 println(l.mkString("[",",","]"))
 val str= "hello"
 println(str.takeRight(2))
+val string1 = "A"
+val string2 = "B"
+val string3 = "C"
+val padLength = 20
+val string4 = string1 + string2.padTo(padLength, ' ') + string3
 
 
 
