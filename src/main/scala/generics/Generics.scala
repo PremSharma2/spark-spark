@@ -130,10 +130,11 @@ class ListNode[+A](nodeHead: A, nodeTail: MyGenericList[A]) extends MyGenericLis
 object Listest extends App {
   //val emptytail=EmptyList.tail
   // println(emptytail)
-
+   def process(list:MyGenericList[AnyVal]) = ()
   val listOfIntegers: MyGenericList[Int] =
     new ListNode(1, new ListNode(2, new ListNode(3, EmptyList)))
-  val anotherListOfIntegers: MyGenericList[Int] = 
+
+  val anotherListOfIntegers: MyGenericList[Int] =
     new ListNode(4, new ListNode(5, new ListNode(6, EmptyList)))
   val listOfString: MyGenericList[String] =
     new ListNode("Hello", new ListNode("Scala", EmptyList))
@@ -159,5 +160,6 @@ object Listest extends App {
       new ListNode(elem, new ListNode(elem + 1, EmptyList))
     }
   }).toString())
-  
+
+  process(listOfIntegers)
 }

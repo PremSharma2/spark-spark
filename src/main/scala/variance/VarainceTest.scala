@@ -43,7 +43,8 @@ object VarainceTest extends App {
    * Note: com.scala.variance.VarainceTest.Fruit <: com.scala.variance.VarainceTest.Food,
    * but class FoodBowl is invariant in type F. You may wish to define F as +F instead. (SLS 4.5)
    */
-  //here it will not accept the FoodBowl(Apple("apple")) because u have not declared the relationship in terms of variance u need to rewrite the FoodBowl with +F
+  //here it will not accept the FoodBowl(Apple("apple"))
+  // because u have not declared the relationship in terms of variance u need to rewrite the FoodBowl with +F
   val fruitBall: FoodBowl[Fruit] = FoodBowl(Apple("apple"))
   val fruitBall1: FoodBowl2[Fruit] = FoodBowl2(Apple("apple"))
   //serveToAFruitEater(fruitBall)
@@ -134,7 +135,25 @@ object VarainceTest extends App {
    * required: com.scala.variance.VarainceTest.Apple ⇒ com.scala.variance.VarainceTest.Description
    */
 
+/*
 
+This example is from the last project I was working on.
+ Say you have a type-class PrettyPrinter[A] that provides logic for pretty-printing objects of type A.
+  Now if B >: A (i.e. if B is superclass of A)
+   and you know how to pretty-print B (i.e. have an instance of PrettyPrinter[B] available)
+   then you can use the same logic to pretty-print A. In other words, B >: A implies PrettyPrinter[B] <: PrettyPrinter[A].
+    So you can declare PrettyPrinter[A] contravariant on A.
+ */
+  trait PrettyPrinter[-A] {
+       def pprint(a: A): String
+    }
 
+  def pprint[A](a: A)(implicit p: PrettyPrinter[A]) = p.pprint(a)
 
+  implicit object AnimalPrettyPrinter extends PrettyPrinter[Animal] {
+      def pprint(a: Animal) = "[Animal : %s]" format (a)
+     }
+  pprint(Dog("Tom"))
+  // TODO : here as we can see that we have declared the PrettyPrinter[Dog] but we have passed
+  // TODO the reference of Animal because of contravariance
 }

@@ -46,7 +46,8 @@ that is, a recipe based on meat, vegetable, etc.
   }
 
   /*
-  The Recipe has a name and a list of ingredients. The type of list of ingredients has the same type of Recipe.
+  The Recipe has a name and a list of ingredients.
+  The type of list of ingredients has the same type of Recipe.
   To express that the Recipe is covariant in its type A, we write it as Recipe[+A].
    The generic recipe is based on every kind of food ingredients,
    the meat recipe is based on meat ingredients ,
@@ -77,13 +78,15 @@ that is, a recipe based on meat, vegetable, etc.
     def name: String = s"Meat recipe based on ${ingredients.map(_.name)}"
 
   }
-
+  //Recipe[Food] <-  Recipe[Meat]
+  val recipe: Recipe[Food] = MeatRecipe(List(beef, turkey))
   // Recipe[Food]: Based on Meat or Vegetable
-  val mixRecipe = new GenericRecipe(List(chicken, carrot, beef, pumpkin))
+  val mixRecipe: GenericRecipe =
+     GenericRecipe(List(chicken, carrot, beef, pumpkin))
   // Recipe[Food] <- Recipe[Meat]: Based on any kind of Meat
-  val meatRecipe = new MeatRecipe(List(beef, turkey))
+  val meatRecipe =  MeatRecipe(List(beef, turkey))
   // Recipe[Food] <- Recipe[Meat] <- Recipe[WhiteMeat]: Based only on WhiteMeat
-  val whiteMeatRecipe = new WhiteMeatRecipe(List(chicken, turkey))
+  val whiteMeatRecipe =  WhiteMeatRecipe(List(chicken, turkey))
 
 
 
