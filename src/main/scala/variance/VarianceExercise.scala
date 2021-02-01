@@ -42,18 +42,19 @@ If SomeType is invariant in T, then the position of T is strictly invariant,
     def park(vehicle:T):IParking[T]= ???
     def impound (vehicles:List[T]):IParking[T]= ???
     def checkVehicles(conditions:String):List[T] = ???
+    //ETW pattern
     def flatMap[S](f : T => IParking[S]): IParking[S]= ???
   }
   
   //Covariant API Implementation
   class CParking[+T](vehicles :List[T])   {
-    // we need to do the hecking of compiler to avoid Second ThumB Rule for variance
+    // we need to do the heck the compiler because method argument are in contravariant position
    // def park [S>:T] (vehicle:S):T= ???
     def park [S>:T] (vehicle:S):CParking[S]= ???
     def impound [S>:T] (vehicles:List[S]):CParking[S]= ???
     def checkVehicles(conditions:String):List[T] = ???
     def flatMap[S](f : T => CParking[S]): CParking[S] = ???
-    // Due to double Varience function input has become covariant and its o/p has become contravariant
+    // Due to double Variance function input has become covariant and its o/p has become contravariant
     def transform [S>:T](function : T => S): CParking[T] = ???
   }
   //Contravariant implementation
@@ -61,7 +62,9 @@ If SomeType is invariant in T, then the position of T is strictly invariant,
   class XParking[-T] (vehicles :List[T]){
      def park (vehicle:T):XParking[T]= ???
      def impound (vehicles:List[T]):XParking[T]= ???
-     // we need to do the hecking of compiler to avoid Third ThumB Rule for variance
+     // here List is covariant to T
+     // and as we know that variance position transfers to T.
+     // In this case, T would be in a covariant position.
      def checkVehicles [S<:T](conditions:String):List[S] = ???
      // def flatMap[S](f : T => CParking[S]): CParking[S] = ???
      /*

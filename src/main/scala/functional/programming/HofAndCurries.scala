@@ -28,8 +28,11 @@ object HofAndCurries extends App {
 
   }
 
+  // val function:Function1[Int,Int] = (x: Int) => x + 1
   val plusOne: Int => Int = (x: Int) => x + 1
-
+// here as we can see that the now functions can be passed  as an argument to the
+  val ft: Int => Int = (x:Int)=>plusOne(plusOne(plusOne(x)))
+  // another function so functions are treated as primary citizens
   println(nTimes(plusOne, 10, 1))
   // curried approach
 
@@ -68,7 +71,7 @@ object HofAndCurries extends App {
       Identity Function is the Return value returned to caller i.e 4th Position
       so it will be like
 
-      now at 4th postion identity Function applied f.apply(f.apply(x)) = f.apply(x)
+      now at 4th postion identity Function applied f.apply(f.apply(x)) = f.apply(x) or f(x)
       i.e when u apply identity function to f.apply(x) this input which is function
        fIdentity.apply(f.apply(x)) then it will Return f.apply(x)
        bcz o/p of identity function is i/p
@@ -126,9 +129,14 @@ object HofAndCurries extends App {
     if (n <= 0)
       new Function[Int,Int] { override def apply(x: Int): Int = x}// Identity function /JVM object
     else
-      new Function[Int,Int] { override def apply(x: Int): Int = nTimesOriginal(function1,n-1).
-        apply(function1.apply(x))}
+      new Function[Int,Int] {
+        override def apply(x: Int): Int =
+          nTimesOriginal(function1,n-1). apply(function1.apply(x))}
+
   }
+  val nTimesOriginal:  Function1[Int,Int] =
+    nTimesOriginal(plusOne,2)
+  nTimesOriginal.apply(2)
 //Function[Int, Int] here fx is Function[Int, Int] and its
 // function type is (Int, Int) => Int
   /*
@@ -160,7 +168,7 @@ object HofAndCurries extends App {
     x => g.apply(function.apply(x))*/
 
     def compose [A,B,T](function1: A => B, function2: T => A): T => B = {
-     // x => functions.apply(g.apply(x))
+     // x => f.apply(g.apply(x))
       x => function1(function2(x))
       // or we can write like this
       // x => (function1 compose function2 ) (x)

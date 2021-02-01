@@ -1,16 +1,18 @@
-package exception
+package exceptionHandling
 
 import scala.util.{Failure, Success, Try}
 
-
+//TODO : -> Exception handling using Try API
 object HandlingFailure extends App {
   // Try is parent interface for both of them
   //Success and Failure  are  case classes so it has apply method 
   val aSuccess: Success[Int] =Success.apply(3)
-  val aFailure: Failure[Nothing] =Failure.apply(new RuntimeException("Exception thrown due to failure"))
+  val aFailure: Failure[Nothing] =
+    Failure.apply(new RuntimeException("Exception thrown due to failure"))
   println(aSuccess)
   println(aFailure)
-  def unsafeMethod() : String= throw new RuntimeException("No String For You Buster")
+  val nothing :Nothing = throw new RuntimeException("No String For You Buster")
+  def unsafeMethod() : String= nothing
   //Try will wrap it into Success or Failure
   val potentialFailuer: Try[String] =Try.apply(unsafeMethod)
   // checking whether Failure object is there or Success object is there

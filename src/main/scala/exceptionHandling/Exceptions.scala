@@ -1,4 +1,4 @@
-package exception
+package exceptionHandling
 
 object Exceptions extends App {
 

@@ -1,7 +1,5 @@
 package variance
 
-import variance.VarainceDeepDive.{Animal, AnotherContravariantCage, Cat, Kitty}
-
 object VarianceExercise1 extends App {
 
   trait Food {
@@ -60,19 +58,20 @@ that is, a recipe based on meat, vegetable, etc.
    recipe: Recipe[Food] = new GenericRecipe[Meat]
    */
 
-
+// TODO it is also type class instance for type Food
   case class GenericRecipe(ingredients: List[Food]) extends Recipe[Food] {
 
     def name: String = s"Generic recipe based on ${ingredients.map(_.name)}"
 
   }
-
+  // TODO it is also type class instance for type Meat
   case class MeatRecipe(ingredients: List[Meat]) extends Recipe[Meat] {
 
     def name: String = s"Meat recipe based on ${ingredients.map(_.name)}"
 
   }
 
+  // TODO it is also type class instance for type White Food
   case class WhiteMeatRecipe(ingredients: List[WhiteMeat]) extends Recipe[WhiteMeat] {
 
     def name: String = s"Meat recipe based on ${ingredients.map(_.name)}"

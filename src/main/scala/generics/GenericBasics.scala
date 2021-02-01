@@ -11,9 +11,10 @@ object GenericBasics extends App {
   }
 
   val listOfIntegers= new MyGenrcList[Int]
+val resultant: MyGenrcList[Any] =  listOfIntegers.add("Hello")
   val listOfStrings= new MyGenrcList[String]
 
-
+/*
   object MyEmptyList{
     //here this method empty take a parameter of type A
     def   empty[A] :MyGenrcList [A]={
@@ -23,13 +24,16 @@ object GenericBasics extends App {
   }
   val listofIntegers=MyEmptyList.empty[Int]
 
+ */
   // variance problem
 
   class Animal
   class Cat extends Animal
   class Dog extends Animal
   //List of cat extends List of animals this is called covariance
-  class CovariantList[+A](animal:A)
+  class CovariantList[+A](animal:A){
+    def add [B >:A] (element:B):CovariantList[B] = ???
+  }
   //or
   //class CovariantList[Animal](animal:A)
   val animal:Animal=new Cat
@@ -37,7 +41,7 @@ object GenericBasics extends App {
   val animalList: CovariantList[Animal]=new CovariantList[Cat](new Cat)
   //what if we try to add dog element in this list?? As it suggests that it can be extended to List[Animals]
   //pls refer add method of this list above for this question
-  //animallist.add(new Dog)
+  animalList.add(new Dog)
   class InVariantList[A]
 
 
@@ -48,9 +52,9 @@ object GenericBasics extends App {
   class ContraVariant[-A]
   val contraVariantList: ContraVariant[Cat]=new ContraVariant[Animal]
   //Here We have declared the Trainer Type of Cat and passed the Animal
-  class Trainer[-A]
+  class Trainer[-A](animal:A)
 
-  val trainer :Trainer[Cat]= new Trainer[Animal]
+  val trainer :Trainer[Cat]= new Trainer[Animal](new Dog)
 
   // bounded types
   class Cage [A <: Animal](animal:A)
@@ -105,9 +109,11 @@ object GenericBasics extends App {
   trait AnimalCage[-T]{
    def  add(animal :T)
   }
-
-  class AnotherContravariantCage extends AnimalCage[Dog1] {
-    override def add(animal: Dog1): Unit = ???
+// TODO type class instance again
+  class AnotherContravariantCage[Cat](val animal:Cat) extends AnimalCage[Cat] {
+    override def add(animal: Cat): Unit = ()
   }
-  val accCage: AnotherContravariantCage = new AnotherContravariantCage
+  val accCage: AnotherContravariantCage[Dog] = new AnotherContravariantCage(new Dog)
+  accCage.add(new Dog)
+
 }

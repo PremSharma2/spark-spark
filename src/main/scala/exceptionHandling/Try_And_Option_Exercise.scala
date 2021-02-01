@@ -1,4 +1,4 @@
-package exception
+package exceptionHandling
 
 import java.util.Random
 

@@ -8,7 +8,7 @@ object ComposiongASequenceOfFunctions  extends App {
   def f3: Int => Int = _ / 2
 
   def weakenRestrictions[A, B](f: A => B): Option[Any] => Option[Any] = {
-    case Some(x) => x match {
+      case Some(x) => x match {
       case a: A => Some(f(a))
       case _ => None
     }

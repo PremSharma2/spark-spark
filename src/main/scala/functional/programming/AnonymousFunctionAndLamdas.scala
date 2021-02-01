@@ -1,15 +1,25 @@
 package functional.programming
 
+import functional.programming.WhatsAFunction.MyFunction1
+
 /*
  *
  *
  * taste of lambdas and anonymous functions in scala which is alternative to oops way ,Of
  *   defining anonymous function and passing them as reference
  */
-object AnonymousFunction extends App {
+object AnonymousFunctionAndLamdas extends App {
   // anonymous function can be replaced with lambdas or lambda
   //(x) => x * 2 this is apply method implementation
   //val doubler : Function1[Int, Int]
+  val doubler1: MyFunction1[Int, Int] = {
+  new MyFunction1[Int,Int]{
+    override def apply(element:Int):Int=element*2
+  }
+  }
+  // val doubler: MyFunction1[Int, Int] = (x) => x * 2
+  // MyFunction1[Int, Int] this can be replaced with function types
+  //(Int => Int)
   val doubler: (Int => Int) = (x) => x * 2
   //or Function1[Int, Int]
   val product: (Int => Int) = (x) => x * 2

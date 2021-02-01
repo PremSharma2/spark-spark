@@ -3,7 +3,7 @@ package oops
 object ADT {
    // way of structuring the data basically
   // let say we want to model the weather forecast hierarchy
-  trait Weather // This structure is called Sum type
+  sealed  trait Weather // This structure is called Sum type
   case object Sunny extends Weather
   case object Windy extends Weather
   case object Rainy extends Weather

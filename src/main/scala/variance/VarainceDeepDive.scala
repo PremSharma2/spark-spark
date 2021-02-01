@@ -1,7 +1,5 @@
 package variance
 
-import generics.GenericBasics.{Child, ContravariantClass, CovariantClass, Grandparent, InvariantClass, Parent}
-
 
 object VarainceDeepDive extends App {
 
@@ -57,7 +55,7 @@ class SubType extends Context[Int]{
 }
 
 ** Here as we can see that we have declared Int but we are passing AnyVal so it is valid,
-* because t is at contravarient position
+* because t is at contravariant position
 
 object ScalaContravarianceTest {
 
@@ -92,12 +90,16 @@ A type parameter with no variance annotation may be used in any position,
  */
   //covariant positions Constructor Argument
   //Here, T is the type parameter and + is the symbol of Covariance
+  trait Covar[+T]
+  class MyCag[T] extends Covar[T]
   class CovariantCage[+T](val animal: T)
   class MyCage(animal:Animal) extends CovariantCage[Animal](animal)
    val catCage:CovariantCage[Animal]=new CovariantCage[Cat](new Cat)
    val mycage: MyCage = new MyCage(new Cat)
-  //Golden First Thumb Rule for constructor Argument is 
-  // (val aanimal:T) this means that this class will only accept Covarient Types at this position
+
+
+  //TODO constructor Argument is at covariant position
+  // (val aanimal:T) this means that this class will only accept Covariant Types at this position
 
   //class ContraVaraintCage[-T](val animal:T)
   /*here this is the error
@@ -109,11 +111,11 @@ A type parameter with no variance annotation may be used in any position,
    * class ContraVariantCage[-T](val animal:T)
    *
    *
-   * val catcage:ContraVariantCage[Cat]=new ContraVariantCage[Animal](new CrocoDile)
+   * val catcage:ContraVariantCage[Cat]=new ContraVariantCage[Animal](new Tiger)
    * the problem here is that we wanted a specific cage
    * i.e cat cage and we are filling with some other types of animal
    * although it can accept animals so this is logically wrong compiler is not allowing illogical argument
-   * i.e After Declaring it Type[Cat] how can we put CrocoDile in it it is logically Wrong
+   * i.e After Declaring it Type[Cat] how can we put Tiger in it it is logically Wrong
    * so correct will be like this
    * val catcage:ContraVariantCage[Cat]=new ContraVariantCage[Animal](new Cat)
    */
@@ -161,6 +163,7 @@ A type parameter with no variance annotation may be used in any position,
    */
    
    //-------------------------------------------Method Argument types Analysis---------------------------------------------------------------------------
+
   //trait AnotherCovariantCage[+T]{
   // def addAnimal(animal:T) //Method argument are in contravariant position
   //covariant type T occurs in contravariant position in type T of value animal
@@ -171,8 +174,10 @@ A type parameter with no variance annotation may be used in any position,
 
    //Reason :
   //i.e if method argument is declared as cage:CCage[Animal] hence it can accept Cage[Animal] or its sub Types
-  //val cage:CCage[Animal]=new CCage[Dog]
+  //val cage:CCage[Animal]=new CCage[Dog](new Dog)
   //cage.addAnimal(new Cat)
+  // addAnimal(animal: T) here T is covariant in nature and declared as T=Animal
+  // so we  can pass sub type of Animal i.e Dog
   //We do not want cats and dogs are at same place that's why compiler does not allow us
   //this is logically wrong Cats and Dogs cant be in Same Cage it should be either cat or Dog
  // Second Thumb rule for Method arguments is that they are at Contravariant Position
@@ -216,13 +221,14 @@ A type parameter with no variance annotation may be used in any position,
   
   //Third Thumb rule is that Method return type is at covariant Position
 
+
   class PetShop[-T] {
     // def get(isItAPuppy:Boolean):T={   //Method return type are in covariant position
     //contravariant type T occurs in covariant position in type (isItAPuppy: Boolean)T of method get
     //Due to the Third thumb rule we are getting this error
     /*Reason For this Error:
 
-      * val catShop:PetShop[Cat]=new PetShop[Animal]{
+      * val catShop:PetShop[Dog]=new PetShop[Animal]{
       * def get(isItAPuppy: Boolean):Animal=new Cat
       * }
       *if we have allowed contravariant as return type then type safety rule violates for eg:
@@ -244,10 +250,10 @@ A type parameter with no variance annotation may be used in any position,
   }
   // This is again we enforced type restriction that
   // return type of Petshop[dog] will be Dog
-  val shop: PetShop[Dog] = new PetShop[Animal]
+  val doggieshop: PetShop[Dog] = new PetShop[Animal]
   // This is true acc to contravariant
   class RoteWoiler extends Dog
-  val bigFurry=shop.get(true, new RoteWoiler)
+  val bigFurry=doggieshop.get(true, new RoteWoiler)
   //val animal=shop.get(false, new Cat)
   //val catshop:PetShop[Cat]=shop
 }

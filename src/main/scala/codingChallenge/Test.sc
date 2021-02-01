@@ -24,6 +24,11 @@ val string2 = "B"
 val string3 = "C"
 val padLength = 20
 val string4 = string1 + string2.padTo(padLength, ' ') + string3
+val str12 = "aaa,b,cc"
+str12.split("/n")
+val list12= List(1,2,3)
+list12.flatMap(x => list12.map(y=>(x,-(y*2)) ))
+
 
 
 

@@ -25,15 +25,16 @@ trait MyList {
   def add(element:Int) :MyList = new Node(element,EmptyNode)
   def printElements :String =""
 }
-class Node(h: Int, tl: MyList) extends MyList {
+
+class Node(h: Int, nodeTail: MyList) extends MyList {
   def head: Int = return h
-  def tail: MyList =  return tl
+  def tail: MyList =  return nodeTail
   def isEmpty :Boolean = return false
   def add(element:Int):MyList = new Node(element,this)
   def printElements :String ={
-    if(tl.isEmpty) "" + h
+    if(nodeTail.isEmpty) "" + h
     else {
-      h + "" + tl.printElements
+      h + "" + nodeTail.printElements
     }
   }
 }

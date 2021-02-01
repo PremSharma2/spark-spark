@@ -9,17 +9,10 @@ object OptionExercise extends App {
 A collection of type Map that contains given key/value bindings.
 
 
-
-Parameters
-
-elems
-
-the key/value pairs that make up the map
-   *
-   *
+  the key/value pairs that make up the map
    */
-  val serverConfig: Map[String, String] = Map.apply(
-
+  val serverConfig: Map[String, String] =
+    Map.apply(
     "host" -> "176.45.36.1",
     "port" -> "2020")
 
@@ -76,8 +69,9 @@ the key/value pairs that make up the map
   // if (status !=null)
   //println(status)
   connectionStatus.foreach(println)
-  val x: Option[String] = serverConfig.get("host").
-    flatMap(host => serverConfig.get("port").
+  val x: Option[String] =
+    serverConfig.get("host").
+      flatMap(host => serverConfig.get("port").
       flatMap(port => Connection.apply(host, port)).
       map(connection => connection.connect))
 

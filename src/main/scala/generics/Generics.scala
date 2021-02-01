@@ -1,10 +1,5 @@
 package generics
 
-import generics.MyPredicate
-import generics.MyTransformer
-
-import scala.annotation.tailrec
-
 //always use covariance when you have collection of things,Hence We are making Covariant List
 trait MyGenericList[+A] {
   /*
@@ -53,15 +48,15 @@ trait MyGenericList[+A] {
   def filter(predicate: MyPredicate[Nothing]): MyGenericList[Nothing] = EmptyList
   def ++[B >: Nothing](list: MyGenericList[B]): MyGenericList[B] = list
 }
-class ListNode[+A](Head: A, nodeTail: MyGenericList[A]) extends MyGenericList[A] {
-  def head: A = return Head
+class ListNode[+A](nodeHead: A, nodeTail: MyGenericList[A]) extends MyGenericList[A] {
+  def head: A = return nodeHead
   def tail: MyGenericList[A] = return nodeTail
   def isEmpty: Boolean = return false
   def add[B >: A](element: B): MyGenericList[B] = new ListNode(element, this)
   def printElements: String = {
-    if (nodeTail.isEmpty) "" + Head
+    if (nodeTail.isEmpty) "" + nodeHead
     else {
-      Head + "," + nodeTail.printElements
+      nodeHead + "," + nodeTail.printElements
     }
   }
 
@@ -77,7 +72,8 @@ class ListNode[+A](Head: A, nodeTail: MyGenericList[A]) extends MyGenericList[A]
 
 
   def filter(predicate: MyPredicate[A]): MyGenericList[A] = {
-    if (predicate.test(this.Head)) new ListNode(this.Head, this.nodeTail.filter(predicate))
+    if (predicate.test(this.nodeHead))
+      new ListNode(this.nodeHead, this.nodeTail.filter(predicate))
     else
       nodeTail.filter(predicate)
   }
@@ -95,7 +91,7 @@ class ListNode[+A](Head: A, nodeTail: MyGenericList[A]) extends MyGenericList[A]
    *
    */
   def map[B](transformer: MyTransformer[A, B]): MyGenericList[B] = {
-    new ListNode(transformer.transform(this.Head), nodeTail.map(transformer))
+    new ListNode(transformer.transform(this.nodeHead), nodeTail.map(transformer))
   }
 
   /*
@@ -107,16 +103,19 @@ class ListNode[+A](Head: A, nodeTail: MyGenericList[A]) extends MyGenericList[A]
    * =new Node(1,new Node(2,new Node(3,new Node(4,new Node(5,Empty)))))
    *
    */
-  def ++[B >: A](list: MyGenericList[B]): MyGenericList[B] = new ListNode(Head, this.nodeTail ++ list)
+  def ++[B >: A](list: MyGenericList[B]): MyGenericList[B] = new ListNode(nodeHead, this.nodeTail ++ list)
 
   /*for eg here let say transformer take int and returns List[Int] i.e a role of flatmap it flatens
    * [1,2].flatMap (n => [n,n+1])
    * this.head.transform(1)= [1,2]
    * [1,2] ++ [2].flatmap(n => [n,n+1])
+   * [2,3] ++ Empty.flatMap(n => [n,n+1])
+   *  Empty
+   * now recursion traces back
+   * [2,3] ++ Empty
    * [1,2] ++ [2,3]
-   * [1,2] ++ [2,3] ++ Empty.flatMap(n => [n,n+1])
-   * [1,2] ++ [2,3] ++ Empty
    * [1,2] ++ [2,3] here final list by using recursion is [2,3] now we will add these two
+   * now using ++ function these two list will be concatenated
    * [1,2,2,3]
    *
    *
@@ -124,7 +123,7 @@ class ListNode[+A](Head: A, nodeTail: MyGenericList[A]) extends MyGenericList[A]
    */
 
   def flatMap[B](transformer: MyTransformer[A, MyGenericList[B]]): MyGenericList[B] = {
-    transformer.transform(this.Head) ++ this.nodeTail.flatMap(transformer)
+    transformer.transform(this.nodeHead) ++ this.nodeTail.flatMap(transformer)
   }
 }
 
@@ -132,9 +131,13 @@ object Listest extends App {
   //val emptytail=EmptyList.tail
   // println(emptytail)
 
-  val listOfIntegers: MyGenericList[Int] = new ListNode(1, new ListNode(2, new ListNode(3, EmptyList)))
-  val anotherListOfIntegers: MyGenericList[Int] = new ListNode(4, new ListNode(5, new ListNode(6, EmptyList)))
-  val listOfString: MyGenericList[String] = new ListNode("Hello", new ListNode("Scala", EmptyList))
+  val listOfIntegers: MyGenericList[Int] =
+    new ListNode(1, new ListNode(2, new ListNode(3, EmptyList)))
+  val anotherListOfIntegers: MyGenericList[Int] = 
+    new ListNode(4, new ListNode(5, new ListNode(6, EmptyList)))
+  val listOfString: MyGenericList[String] =
+    new ListNode("Hello", new ListNode("Scala", EmptyList))
+
   println(listOfIntegers.toString())
   println(listOfString.toString())
 

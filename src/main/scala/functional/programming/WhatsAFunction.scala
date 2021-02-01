@@ -4,15 +4,19 @@ object WhatsAFunction extends App {
   
   //use functions as first class elements 
   
-  //in ooops
-  /*class Action{
-    def execute(element:Int):String= ??? 
+  //in oops
+  /*
+  TODO
+   class Action{
+    def execute(element:RequestObject):String= ???
     we cannot pass function as a argument
+    here as we can see that Objects are treated as First class citizens
 
     Functions in scala are represented by Function traits
   }*/
-  
-  val doubler: MyFunction1[Int, Int] =new MyFunction1[Int,Int]{
+  // TODO : in FP functions are treated as first class citizens
+  val doubler: MyFunction1[Int, Int] =
+  new MyFunction1[Int,Int]{
     override def apply(element:Int):Int=element*2
   }
   trait MyFunction1[-A, +B]{
@@ -21,7 +25,12 @@ object WhatsAFunction extends App {
   trait MyFunction[A,B]{
     def apply(element:A):B
   }
-  // here we passed function as method argument although it is implemented via anonymus class
+
+  // TODO also we can call the apply method like we call functions
+   val result: Int = doubler(20)
+
+  // here we passed function as method argument although
+  // it is implemented via anonymous class
 
   
   // function types in scala

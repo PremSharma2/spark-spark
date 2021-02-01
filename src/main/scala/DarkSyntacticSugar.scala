@@ -35,9 +35,9 @@ object DarkSyntacticSugar extends App {
     : means left associative
 
    */
-  1 :: 2 :: 3 :: 4 :: List(6, 7)
+  1 :: 2 :: 3 :: 4 :: List(5, 6)
   // it will be compiled like this due to right associativity
-  List(6, 7).::(4).::(3).::(2).::(1)
+  List(5, 6).::(4).::(3).::(2).::(1)
 
 
   class MyStream[T] {
