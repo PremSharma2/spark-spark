@@ -69,7 +69,14 @@ Complexity is O(min(N,index))
      else tailRecApply(this,0)
   }
 
-  override def length: Int = 1 + tail.length
+  override def length: Int = {
+    @tailrec
+    def lengthTailRec(remaining:RList[T], accumulator:Int):Int ={
+      if(remaining.isEmptyList) accumulator
+      else lengthTailRec(remaining.tail , accumulator +1 )
+    }
+    lengthTailRec(this, 0)
+  }
 }
   def main(args: Array[String]): Unit = {
     val listOfIntegers: RList[Int] = new Node(1, new Node(2, new Node(3, RNil)))
