@@ -81,9 +81,11 @@ On the other hand a partial function from A to B is not defined for some inputs 
   // Both are Same because as we aware that Partial Function works on pattern match
   //Although i not partial function but because as we are aware that Partial Function Extends Function
   // Then they also can be used for the same purpose if we want to
-  val aTotalFuntion1: Int => Int = x => x match {
+  // we have Converted match statement to pattern matching anonymous function
+  val aTotalFuntion1: Int => Int = {
     case 1 => 99
   }
+  val mypf: PartialFunction[Int, Int] =PartialFunction.apply(aTotalFuntion)
   //HoFs also accepts Partial Functions
   val MappedList = List(1, 2, 3).map {
     case 1 => 42

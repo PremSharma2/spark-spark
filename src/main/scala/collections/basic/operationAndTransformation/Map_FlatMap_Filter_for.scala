@@ -11,13 +11,19 @@ object Map_FlatMap_Filter_for  extends App{
   val l = List(1,2,3,4)
   val l1 = List(5,6,7,8)
   val alist = List(2, 3, 5, 7)
-  val prepended = 1 +: alist
+  val prepended = 1 +: alist  // List(1,2,3,5,7)
+
   val appended = alist :+ 9
   println(appended)
   println(l ++ l1)
 
   //List(List(1, 2, 3, 4), 5, 6, 7, 8)
+  //Adds an element at the beginning of this list
+  // you can pass list or any value
+  //1 :: List(2, 3) = List(2, 3).::(1) = List(1, 2, 3)
   println(l :: l1)
+
+  println(l.::(0))
 
   val test: Seq[Int] =(1 to 5).toList                  // # List(1, 2, 3, 4, 5)
   (1 until 5).toList                //# List(1, 2, 3, 4)
@@ -35,12 +41,15 @@ object Map_FlatMap_Filter_for  extends App{
   println(list.filter(x => x%2 ==0))
   println(list.filter(_%2 ==0))
   //flatmap
-  val toPair = (x:Int) => List(x,x+1)
+  // ETw pattern
+  val transform: Int => (Int, Int) = x => (x,x+1)
+  val toPair = (x:Int) => List(transform.apply(x))
   println(list.flatMap(toPair))
   val numbers=List(1,2,3,4)
   val chars=List('a','b','c','d')
   //iteration logic 
-  val combinations: Seq[String] = numbers.flatMap(n => chars.map(c => ""+c + n))
+  val combinations: Seq[String] = numbers.
+    flatMap(n => chars.map(c => ""+c + n))
   
   println(combinations)
   val forcomprehension: Seq[String] = for{
@@ -120,7 +129,7 @@ init	All elements except the last one
   takeWhile(p)	The first subset of elements that matches the predicate p
    */
   val takeWhileSeq= Seq(2,4,6,8)
-  val takenWhile = takeWhileSeq.takeWhile(x=>{x % 2 != 0})
+  val takenWhile: Seq[Int] = takeWhileSeq.takeWhile(x=>{x % 2 == 0})
   println(lastOption.get)
   println(takenWhile)
 }

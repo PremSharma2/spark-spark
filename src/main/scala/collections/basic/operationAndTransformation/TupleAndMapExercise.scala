@@ -1,5 +1,7 @@
 package collections.basic.operationAndTransformation
 
+import scala.annotation.tailrec
+
 object TupleAndMapExercise extends App {
   
   
@@ -9,8 +11,8 @@ object TupleAndMapExercise extends App {
   }
 
   def friend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] = {
-    val friendsA = network.apply(a)
-    val friendsB = network.apply(b)
+    val friendsA: Set[String] = network.apply(a)
+    val friendsB: Set[String] = network.apply(b)
     network + (a -> (friendsA + b)) + (b -> (friendsB + a))
   }
 
@@ -21,7 +23,8 @@ object TupleAndMapExercise extends App {
   }
 
   def remove(network: Map[String, Set[String]], person: String): Map[String, Set[String]] = {
-    // to remove this person from the network we need to unfriend this person from the all network  entries of  the persons 
+    // to remove this person from the network we need to unfriend this person from the all network  entries of  the persons
+    @tailrec
     def removeAux(friends: Set[String], networkAccm: Map[String, Set[String]]): Map[String, Set[String]] = {
       if (friends.isEmpty) networkAccm
       //we need to unfriend the person to be deleted with the listoffriends head and
@@ -31,6 +34,7 @@ object TupleAndMapExercise extends App {
 
     }
     val unfriended = removeAux(network.apply(person), network)
+    //TODO And at last we will remove the person from network
     unfriended - person
   }
 

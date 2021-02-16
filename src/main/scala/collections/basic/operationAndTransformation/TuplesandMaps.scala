@@ -33,9 +33,9 @@ object TuplesandMaps extends App {
   println(newPhonebook)
 //Builds a new collection by applying a function to all elements of this immutable map
   println(phonebook.map(pair => pair._1.toLowerCase() -> pair._2))
-//Filters this map by retaining only keys satisfying a predicate
+//Filters this map by retaining only key-value  satisfying a predicate
   println(phonebook.filterKeys(x => x.startsWith("J")))
-  //Transforms this map by applying a function to every retrieved value
+  //Transforms this map by applying a function to every retrieved value from Key-Value
   println(phonebook.mapValues(phonenumber => "03256--" + phonenumber))
   //conversions
   val tupledList= phonebook.toList

@@ -1,4 +1,5 @@
 package collections.basic.operationAndTransformation
+
 /*
 s an important note,
 I use Seq in the following examples to keep things simple,
@@ -13,11 +14,12 @@ IndexedSeq and LinearSeq,
   but also has a fast tail operation.”
 
 Also, please see the “Seq is not Vector” section at the end of this post,
-because as that name implies, Seq behaves differently than Vector in almost all of these examples.
+because as that name implies,
+ Seq behaves differently than Vector in almost all of these examples.
  */
 object Sequences extends App {
 
-  val asequnce = Seq(1, 4, 3, 2)
+  val asequnce: Seq[Int] = Seq.apply(1, 4, 3, 2)
 
   println(asequnce)
 
@@ -29,17 +31,17 @@ object Sequences extends App {
   val arange: Seq[Int] = 1 to 10
 
   arange.foreach(x => println(x))
-  (1 to 5).toSeq                   //# List(1, 2, 3, 4, 5)
-  (1 until 5).toSeq               // # List(1, 2, 3, 4)
+ val seq1: Seq[Int] = (1 to 5)                   //# List(1, 2, 3, 4, 5)
+  (1 until 5)               // # List(1, 2, 3, 4)
 
-  (1 to 10 by 2).toSeq            // # List(1, 3, 5, 7, 9)
-  (1 until 10 by 2).toSeq         // # List(1, 3, 5, 7, 9)
-  (1 to 10).by(2).toSeq           // # List(1, 3, 5, 7, 9)
+  (1 to 10 by 2)            // # List(1, 3, 5, 7, 9)
+  (1 until 10 by 2)         // # List(1, 3, 5, 7, 9)
+  (1 to 10).by(2)           // # List(1, 3, 5, 7, 9)
 
-  ('d' to 'h').toSeq               //# List(d, e, f, g, h)
-  ('d' until 'h').toSeq           // # List(d, e, f, g)
+  ('d' to 'h')               //# List(d, e, f, g, h)
+  ('d' until 'h')           // # List(d, e, f, g)
 
-  ('a' to 'f').by(2).toSeq        // # List(a, c, e)
+  ('a' to 'f').by(2)        // # List(a, c, e)
 
   //# range method
   Seq.range(1, 3)                  //# List(1, 2)
@@ -62,4 +64,5 @@ object Sequences extends App {
   //# prepend
   val v4 = 3 +: v3                 //# List(3, 4, 5, 6, 7, 8, 9)
   val v5 = Seq(1,2) ++: v4         //# List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
 }

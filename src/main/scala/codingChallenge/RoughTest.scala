@@ -6,8 +6,6 @@ import java.time.ZonedDateTime
 import option.OptionExercise.{Connection, serverConfig}
 
 import scala.collection.SeqView
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 object RoughTest  extends App{
 
   def countDuplicates(numbers: Seq[Int]): Map[Int,Int] = {
@@ -68,7 +66,8 @@ object RoughTest  extends App{
     c <- letters
   } yield (n, c)
 
-  val monthlyConsumptionAmount = Seq(437.8,3339.5,0.0,0.0,0.0,0.0,75.0,99.0,0.0,20.0,66.0)
+  val monthlyConsumptionAmount =
+    Seq(437.8,3339.5,0.0,0.0,0.0,0.0,75.0,99.0,0.0,20.0,66.0)
   val monthNames: Array[String] = Array("Jan", "Feb", "Mar", "Apr", "May",
     "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 

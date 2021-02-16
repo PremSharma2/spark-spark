@@ -6,7 +6,7 @@ object OddOccurencesInArray  extends App {
     def getUnpaired(list: List[Int]): Int = {
       //def count(p: (A) => Boolean): Int
       // creating a match pair
-      val occHead = list.count(_ == list.head)
+      val occHead: Int = list.count(_ == list.head)
       if (occHead % 2 == 0) getUnpaired(list.filter(_ != list.head))
       else list.head
     }

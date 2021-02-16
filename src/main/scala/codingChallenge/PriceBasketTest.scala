@@ -32,10 +32,13 @@ sealed trait Item {
 
 
 //Constants Are declared here as case Objects
-final case object Apple extends Item
-final case object Milk extends Item
-final case object Bread extends Item
-final case object Soup extends Item
+case object Apple extends Item
+
+case object Milk extends Item
+
+case object Bread extends Item
+
+case object Soup extends Item
 
 //Now we want create that Domain related constants objects
 // so need companion object of this sealed trait which will act as factory
@@ -72,7 +75,8 @@ These are constant declaration
 Again here we used enums to convert object constant into string representation
  */
   override def toString: String = this match {
-    case Percentage(discountFactor, item) => s"$item ${discountFactor * 100}% off: -${discountedAmount}"
+    case Percentage(discountFactor, item) =>
+      s"$item ${discountFactor * 100}% off: -${discountedAmount}"
     case HalfPrice(halvedItem, reason) =>
       s"two $reason gives $halvedItem 50% off: -${discountedAmount}"
   }

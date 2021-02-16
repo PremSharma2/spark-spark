@@ -1,14 +1,12 @@
 package ListWithLambdas
 
-import scala.annotation.tailrec
-
 /*
  *
  *
  * List implementation with Functional Programming Flavour,with Transformer and predicate replacing the inbuilt functional interfaces
  */
 
-abstract class MyList[+A] {
+trait  MyList[+A] {
   /*
    *
    * head: first element of list
@@ -87,7 +85,8 @@ case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
    * = new new Node(2,EmptyList.filter(n%2==0)
    * =new Node(2,EmptyList)
    */
-/*here no need to heck the compiler bcz we are using Function1 which is already have input arguent as contravarient
+/*here no need to heck the compiler bcz
+ we are using Function1 which is already have input arguent as contravarient
   Here as we can see that -T1 as contravarient
 trait Function1[ -T1,+R]
     
@@ -209,7 +208,7 @@ trait Function1[ -T1,+R]
     val list= insert(h, sortedTail)
     println("returned list"+list)
     println("sorted-tail"+sortedTail)
-     return list;
+      list
   }
 
   def zipWith[B, C](list: MyList[B], zipfunction: (A, B) => C): MyList[C] =
@@ -226,6 +225,7 @@ trait Function1[ -T1,+R]
   * =6 is the final output
   *
   */
+
   def fold[B](start: B)(operator: (B, A) => B): B = {
     val accumulator = operator.apply(start, this.h)
     t.fold(accumulator)(operator)

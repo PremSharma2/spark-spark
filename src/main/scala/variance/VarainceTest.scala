@@ -138,22 +138,26 @@ object VarainceTest extends App {
 /*
 
 This example is from the last project I was working on.
- Say you have a type-class PrettyPrinter[A] that provides logic for pretty-printing objects of type A.
+ Say you have a type-class PrettyPrinter[A]
+  that provides logic for pretty-printing objects of type A.
   Now if B >: A (i.e. if B is superclass of A)
-   and you know how to pretty-print B (i.e. have an instance of PrettyPrinter[B] available)
-   then you can use the same logic to pretty-print A. In other words, B >: A implies PrettyPrinter[B] <: PrettyPrinter[A].
+   and you know how to pretty-print B
+    (i.e. have an instance of PrettyPrinter[B] available)
+   then you can use the same logic to pretty-print A.
+   In other words, B >: A implies PrettyPrinter[B] <: PrettyPrinter[A].
     So you can declare PrettyPrinter[A] contravariant on A.
  */
-  trait PrettyPrinter[-A] {
-       def pprint(a: A): String
+  trait Printer[-A] {
+       def print(a: A): String
     }
 
-  def pprint[A](a: A)(implicit p: PrettyPrinter[A]) = p.pprint(a)
+  def printApi[A](a: A)(implicit p: Printer[A]) = p.print(a)
 
-  implicit object AnimalPrettyPrinter extends PrettyPrinter[Animal] {
-      def pprint(a: Animal) = "[Animal : %s]" format (a)
+  implicit object AnimalPrinter$ extends Printer[Animal] {
+      def print(a: Animal) = "[Animal : %s]" format (a)
      }
-  pprint(Dog("Tom"))
-  // TODO : here as we can see that we have declared the PrettyPrinter[Dog] but we have passed
-  // TODO the reference of Animal because of contravariance
+  printApi(Dog("Tom"))
+  // TODO : here as we can see that
+  //  we have declared the PrettyPrinter[Dog] but we have passed
+  // TODO the reference of Animal because of contravariance implicitly
 }

@@ -286,7 +286,7 @@ List(("HONDA", hondaCount), ("TOYOTA", toyotaCount))
 
   // Get single model details
   assert(
-    getSingleVehicleModelDetails(Vehicle(40, "HONDA", 3, None)) == Some(ModelDetails(
+    getSingleVehicleModelDetails(Vehicle(40, "HONDA", 3, None)).contains(ModelDetails(
       100,
       4
     ))

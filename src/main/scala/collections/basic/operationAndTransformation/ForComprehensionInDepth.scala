@@ -29,7 +29,8 @@ for ( seq ) { expr }
 Let's try to understand this structure.If you learned other languages,
 the above structure should look familiar.
 The things inside the parenthesis will control the number of iterations,
-and those curly braces represent the body of the loop. That's how it is in most of the languages.
+and those curly braces represent the body of the loop.
+That's how it is in most of the languages.
 
 for (i <- 1 to 10) {
   statement - 1;
@@ -39,7 +40,8 @@ for (i <- 1 to 10) {
 
 You can have one or more expressions within the body.
 If you have a single expression, curly braces are optional.
- We don't have any complexity for the body of the loop. It is almost same as any other language.
+ We don't have any complexity for the body of the loop.
+ It is almost same as any other language.
 But the seq is somewhat complicated. It keeps confusing a lot of people.
 
 The sequence generator in Scala for loop
@@ -48,7 +50,8 @@ The simplest form of seq is a generator that looks something like below.
 
 e <- col
 
-The col is a Scala collection, and e is a value that binds to each element of the collection.
+The col is a Scala collection,
+and e is a value that binds to each element of the collection.
 Let's take an example.
 
 val seq = 1 to 5
@@ -61,59 +64,28 @@ for (i <- 1 to 5) println(i)
 // or we can write this
   val seq= List("India", "USA", "China", "Japan")
 
+  for (i <- seq) println(i)
+  // TODO we can also write like this like we use to do in traditional for loop in java
+  for (i <- seq){
+    println(i)
+  }
+  // compiler will write this like that
+  seq.foreach(println(_))
+
+  //TODO or we can write this and we will using this in FP way not the last one
+
   for{
-     element <-seq
+     element <- seq
 
   } println(element)
-  // or we can use pattern match for every iteration
-  val result =for (country <- List("India", "USA", "China", "Japan"))  {
-    country match {
-      case "India" => println("Delhi")
-      case "USA"   => println("Washington D.C.")
-      case "Japan" => println("Tokyo")
-      case _       => println("I don't know")
-    }
-  }
-  // or for pattern match on every iteration this is the correct syntax
-  for(element <-seq)  element match {
+  // TODO :-> or we can use pattern match for every iteration
+  val pf: PartialFunction[String,Unit] = {
     case "India" => println("Delhi")
     case "USA"   => println("Washington D.C.")
     case "Japan" => println("Tokyo")
     case _       => println("I don't know")
   }
-
-
-
-  /*
-  The Scala for loop is just a syntactic sugar for Higher Order Control Abstractions.
-  Internally, both are same. What does it mean?
-That means the Scala compiler will convert the for loop to a combination of following control abstractions.
-
-foreach
-map
-flatMap
-withFilter
-
-
-In other words, Scala doesn't have a for loop.
-It's just a syntactic sugar for a set of these methods. So,
-if you don't like the for loop, you can manage to code in Scala without even worrying about the for loops.
- The real purpose of the Scala for expression is to write the code in a way that makes more sense.
-  You should use the for expression when you think your code is getting
-too cryptic using these methods and it would make more sense if you implement it using a for expression.
-
-The Yield in Scala for expression
-Now let's bring the yield back into the structure.
-
-for ( seq ) yield { expr }
-in the absence of yield for comprehension behaves like forEach control abstraction
-because forEach returns the unit where as when yield comes it becomes like
-we applying map function after each iteration
-IT WILL be liek seq.flatmap(s => _).map
-   */
-
-
-  val result1: Seq[Unit] =for (country <- List("India", "USA", "China", "Japan")) yield {
+  val result: Unit =for (country <- List("India", "USA", "China", "Japan"))  {
     country match {
       case "India" => println("Delhi")
       case "USA"   => println("Washington D.C.")
@@ -121,8 +93,73 @@ IT WILL be liek seq.flatmap(s => _).map
       case _       => println("I don't know")
     }
   }
+  // compiler will convert it into this like
+  List("India", "USA", "China", "Japan").foreach(pf)
 
-// here As we can see yield  is working as we are applying the map function to each single element
+  // or for pattern match on every iteration this is the correct syntax
+  val rs: Unit =for(element <-seq)  element match {
+    case "India" => ""
+    case "USA"   => ""
+    case "Japan" => ""
+    case _       => ""
+  }
+
+
+
+  /*
+  TODO
+     Internal mechanics for the scala for loop
+    The Scala for loop is just a syntactic sugar for Higher Order Control Abstractions.
+    Internally, both are same. What does it mean?
+    That means the Scala compiler will convert the for loop to a combination of following control abstractions.
+  todo
+    foreach
+   map
+   flatMap
+   withFilter : ITS FOR  lazy
+
+TODO
+     In other words, Scala doesn't have a for loop.
+    It's just a syntactic sugar for a set of these methods. So,
+   if you don't like the for loop,
+ you can manage to code in Scala without even worrying about the for loops.
+ The real purpose of the Scala for expression is to write the code in a way that makes more sense.
+  You should use the for expression when you think your code is getting
+  too cryptic using these methods and it would make more sense if you implement it using a for expression.
+TODO
+ The Yield in Scala for expression
+ Now let's bring the yield back into the structure.
+TODO
+ for ( seq ) yield { expr }
+ in the absence of yield for comprehension behaves like forEach control abstraction
+ because forEach returns the unit where as when yield comes it becomes like
+ we applying map function after each iteration
+ IT WILL be liek seq.flatmap(s => _.map) or seq.map(f)
+   */
+
+// TODO Its similar like we have used partial function inside map
+  // TODO yield converterd <- to map earlier it was foreach
+  val result1: Seq[String] =for (country <- List("India", "USA", "China", "Japan"))
+    yield {
+    country match {
+      case "India" => "Delhi"
+      case "USA"   => "Washington D.C."
+      case "Japan" => "Tokyo"
+      case _       => "I don't know"
+    }
+  }
+//Compiler will convert this into
+val pf1: PartialFunction[String,Unit] = {
+  case "India" => "Delhi"
+  case "USA"   => "Washington D.C."
+  case "Japan" => "Tokyo"
+  case _       => "I don't know"
+}
+  //TODO : compiler will convert this into like this
+     val list = List("India", "USA", "China", "Japan")
+     list.map(pf1)
+// here As we can see yield  is working as we are applying the map function
+  // to each single element
   // of Seq and transforming that into another Seq[String]
   // speciality of yield is that it will return a value for those pattern which are not matched also
     // we say some default values will be returned This one is correct syntax for pattern match on every iteration
@@ -143,6 +180,12 @@ println(result2)
     val fields = line.split(",")
     println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
   }
+  // TODO : here compiler will convert this into the following
+  dataSeq.foreach{
+    line =>
+      val fields=line.split(",")
+      println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
+  }
   //Lets put assignment inside the For not in the body this is more clean code
   // make body as simple as possible
 
@@ -153,10 +196,12 @@ println(result2)
 
 // applying if filter inside for
   /*
-  In crux For Comprehension has three components
+  TODO
+    In crux For Comprehension has three components
    A generator
-   B Filter
-   C a defination or assignment
+   B a defination or assignment
+   C Filter
+
    like this in the
    line <- dataSeq
      fields = line.split(",")
@@ -170,14 +215,25 @@ println(result2)
   } yield (record.apply(0) + "----"+ record.apply(1)+ "----"+ record.apply(2))
 
   // or for complex map and flatmap combination we can use this approach as well
+  // TODO : here we are calculating sum
   val resultn: Seq[Long] =for{
     line <- dataSeq // generateor
-    fields = line.split(",").toList.  // assignent
-      filter(_.equals("SALESMAN")).  // filter
-         map(_.apply(2).toLong).sum
-
-
+    fields = line.split(",").  // assignent
+             filter(_.equals("SALESMAN")).  // filter
+             map(_.apply(2).toLong).sum
   } yield fields
+dataSeq.map{
+  record =>
+    val tokenizedRecord: Array[String] =record.split(",")
+    val filteredRecord =tokenizedRecord.contains("SALESMAN")
+    tokenizedRecord.map(_.apply(2).toLong).sum
+}
+
+  val resultn1: Seq[Long] =for{
+    line <- dataSeq // generateor
+    record: List[String] = line.split(",").toList // assignment  // assignent
+    if(record.apply(2).equals("SALESMAN"))
+  } yield (record.apply(2).toLong)
 //
 val monthlyConsumptionAmount = Seq(437.8,3339.5,0.0,0.0,0.0,0.0,75.0,99.0,0.0,20.0,66.0)
   val monthNames: Array[String] = Array("Jan", "Feb", "Mar", "Apr", "May",
@@ -188,16 +244,17 @@ val monthlyConsumptionAmount = Seq(437.8,3339.5,0.0,0.0,0.0,0.0,75.0,99.0,0.0,20
       i <- 1 to 12
       snapShotView = snapshots.view
       monthWiseTotal: Double = snapShotView .
-        withFilter { case (d, _) => d.getMonthValue() == i } .
+        withFilter { case (d, _) => d.getMonthValue == i } .
         map ( t=> t._2).sum
     } yield monthWiseTotal
     println(netResult)
     netResult
   }
 
+
   val forresult1: Unit =for {
     (xs, i) <- monthlyConsumptionAmount.view.zipWithIndex
-  } println(s"Energy use for ${monthNames(i)}: ${"%.2f".format(xs)}")
+  } println(s"Energy use for ${monthNames.apply(i)}: ${"%.2f".format(xs)}")
     //yield monthNames(i) ->  "%.2f".format(xs)
 
 
