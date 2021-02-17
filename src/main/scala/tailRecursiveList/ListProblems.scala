@@ -14,6 +14,7 @@ object ListProblems {
     def ::[S >: T](element: S): RList[S] = new Node(element, this)
     def apply(index : Int): T
     def length :Int
+    def reverse :RList[T]
   }
 
 case object RNil extends RList[Nothing] {
@@ -25,6 +26,8 @@ case object RNil extends RList[Nothing] {
   override def apply(index: Int): Nothing = throw new NoSuchElementException
 
   override def length: Int = 0
+
+  override def reverse: RList[Nothing] = RNil
 }
 //TODO here as we can see that def can be overridden as val
   /*
@@ -49,6 +52,7 @@ case object RNil extends RList[Nothing] {
 
    override def apply(index : Int): T= {
      /*
+   TODO
       List(1,2,3,4,5).apply(index=2)
     tailRecApply(  [1,2,3,4],currentIndex=0)
     again tail recursive call because  if(currentIndexAccumlator==index) condition does not met
@@ -68,7 +72,22 @@ Complexity is O(min(N,index))
      if (index<0) throw new NoSuchElementException
      else tailRecApply(this,0)
   }
-
+/*
+TODO
+   [1,2,3,4,5].length = lengthTailRec( [1,2,3,4,5],0)
+   this list is not Empty then we will make a recursive call lengthTailRec( [2,3,4,5],1)
+   lengthTailRec( [2,3,4,5],1)
+   again we will check if this list is Empty which is not
+   lengthTailRec( [3,4,5],2)
+  again we will check if this list is Empty which is not
+   lengthTailRec( [4,5],3)
+     again we will check if this list is Empty which is not
+  lengthTailRec( [5],4)
+ again we will check if this list is Empty which is Empty now i.e tail is empty
+ so as we know that it is tail recursive recursion will not trace back
+  and will return accumulator from here
+  complexity is O(N)
+ */
   override def length: Int = {
     @tailrec
     def lengthTailRec(remaining:RList[T], accumulator:Int):Int ={
@@ -77,12 +96,51 @@ Complexity is O(min(N,index))
     }
     lengthTailRec(this, 0)
   }
+/*
+TODO
+  [1,2,3,4].reverse = this will  call to
+  reverseTailRec([1,2,3,4],RNil)
+  now inside reverseTailRec we will check condtion
+  that if(remaining.isEmptyList) and it is not empty then again recursive call
+   reverseTailRec([2,3,4],[1])
+   now inside reverseTailRec we will check condtion
+  that if(remaining.isEmptyList) and it is not empty then again recursive call
+  reverseTailRec([3,4],[2,1])
+  now inside reverseTailRec we will check condtion
+  that if(remaining.isEmptyList) and it is not empty then again recursive call
+  reverseTailRec([4],[3,2,1])
+  now inside reverseTailRec we will check condtion
+  that if(remaining.isEmptyList) and it is not empty then again recursive call
+  reverseTailRec([],[4,3,2,1])
+   now inside reverseTailRec we will check condition
+  that if(remaining.isEmptyList) and it is empty this time so we will return accumulator
+  Now what is the complexity of this Algorithm
+  O(N)
+ */
+  override def reverse: RList[T] = {
+    @tailrec
+    def reverseTailRec(remaining:RList[T],accumulator:RList[T]):RList[T] ={
+      if(remaining.isEmptyList) accumulator
+      else reverseTailRec(remaining.tail, remaining.head :: accumulator)
+    }
+    reverseTailRec(this,RNil)
+  }
 }
+  object RList{
+    def from[T](iterable:Iterable[T]) :RList[T]= {
+      @tailrec
+      def convertToRListTailRec(remaining:Iterable[T], accumulator: RList[T]):RList[T] = {
+        if(remaining.isEmpty) accumulator
+        else convertToRListTailRec(remaining.tail, remaining.head :: accumulator)
+      }
+      convertToRListTailRec(iterable,RNil).reverse
+    }
+  }
   def main(args: Array[String]): Unit = {
-    val listOfIntegers: RList[Int] = new Node(1, new Node(2, new Node(3, RNil)))
+    val listOfIntegers: RList[Int] =  Node(1, new Node(2, new Node(3, RNil)))
     val list: RList[Int] = 1 :: 2 :: 3 :: RNil
-    // This expression is right associative by default in scala
-    //RNil.::3.::2.:: 1 == 1 :: 2 :: 3 :: RNil
+    // TODO This expression is right associative by default in scala
+    // TODO RNil.::3.::2.:: 1 == 1 :: 2 :: 3 :: RNil
     println(listOfIntegers)
     def testApi(list:RList[Animal]) = {
       list.::(new Dog)
@@ -90,5 +148,9 @@ Complexity is O(min(N,index))
     val animalList: RList[Dog] = new Dog :: RNil
     testApi(animalList)
     println(list.apply(2))
+    println(list.length)
+    println("hello")
+    println(list.reverse)
+    println(RList.from(1 to 10))
   }
 }
