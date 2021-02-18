@@ -3,24 +3,26 @@ package tailRecursiveList
 import caseClass.Factory.Animal.{Animal, Dog}
 
 import scala.annotation.tailrec
+import scala.collection.immutable
 
 object ListProblems {
   sealed trait RList[+T]{
     def head: T
     def tail: RList[T]
-    def isEmptyList: Boolean
+    def isEmpty: Boolean
     def headOption: Option[T]
     override def toString: String = "[]"
     def ::[S >: T](element: S): RList[S] = new Node(element, this)
     def apply(index : Int): T
     def length :Int
     def reverse :RList[T]
+    def ++[S>:T](anotherList:RList[S]):RList[S]
   }
 
-case object RNil extends RList[Nothing] {
+  case object RNil extends RList[Nothing] {
   override def head: Nothing = throw new NoSuchElementException
   override def tail: RList[Nothing] = throw new NoSuchElementException
-  override def isEmptyList: Boolean = true
+  override def isEmpty: Boolean = true
   override def headOption: Option[Nothing] = None
 
   override def apply(index: Int): Nothing = throw new NoSuchElementException
@@ -28,6 +30,8 @@ case object RNil extends RList[Nothing] {
   override def length: Int = 0
 
   override def reverse: RList[Nothing] = RNil
+
+  override def ++[S >: Nothing](anotherList: RList[S]): RList[S] = anotherList
 }
 //TODO here as we can see that def can be overridden as val
   /*
@@ -37,13 +41,13 @@ case object RNil extends RList[Nothing] {
         they can be overridden in the constructor directly as well.
    */
   case class Node[+T](override val head:T, override  val tail:RList[T]) extends RList[T] {
-    override def isEmptyList: Boolean = false
+    override def isEmpty: Boolean = false
     override def headOption: Option[T] = Some(head)
   override def toString: String= {
     @tailrec
     def toStringTailRecursion(remaining: RList[T], result :String):String={
-      if(remaining.isEmptyList) result
-      else if(remaining.tail.isEmptyList) s"$result ${remaining.head}"
+      if(remaining.isEmpty) result
+      else if(remaining.tail.isEmpty) s"$result ${remaining.head}"
         // recursice call  is the last expression in code branch basically
       else toStringTailRecursion(remaining.tail,s"$result ${remaining.head}, ")
     }
@@ -91,7 +95,7 @@ TODO
   override def length: Int = {
     @tailrec
     def lengthTailRec(remaining:RList[T], accumulator:Int):Int ={
-      if(remaining.isEmptyList) accumulator
+      if(remaining.isEmpty) accumulator
       else lengthTailRec(remaining.tail , accumulator +1 )
     }
     lengthTailRec(this, 0)
@@ -120,10 +124,40 @@ TODO
   override def reverse: RList[T] = {
     @tailrec
     def reverseTailRec(remaining:RList[T],accumulator:RList[T]):RList[T] ={
-      if(remaining.isEmptyList) accumulator
+      if(remaining.isEmpty) accumulator
       else reverseTailRec(remaining.tail, remaining.head :: accumulator)
     }
     reverseTailRec(this,RNil)
+  }
+// TODO this is not stack recursive because here recursive call is not the last thing  here
+  // in  head :: (this.tail ++ anotherList) ++ is evaluated on top of ++
+  /*
+  override def ++[S >: T](anotherList: RList[S]): RList[S] =
+    head :: (this.tail ++ anotherList)
+
+   */
+  /*
+   [1,2,3] ++ [4,5] = concatTailRec([1,2,3], [4,5])
+   now inside concatTailRec we will check whether [1,2,3].isEmpty which is false
+   now we will make again recursive call to iterate further
+   concatTailRec([2,3], [1,4,5])
+   now inside concatTailRec we will check whether [2,3].isEmpty which is false
+   now we will make again recursive call to iterate further
+   concatTailRec([3], [2,1,4,5])
+   now inside concatTailRec we will check whether [3].isEmpty which is false
+   now we will make again recursive call to iterate further
+    concatTailRec([], [3,2,1,4,5])
+    now inside concatTailRec we will check whether [].isEmpty which is true
+    now we will return accumlator = [3,2,1,4,5]
+    But this is wrong order of elements
+    to fix this we need to reverse the current list i.e this.reverse
+   */
+  override def ++[S >: T](anotherList: RList[S]): RList[S] ={
+    def concatTailRec(remaining:RList[S], accumlator:RList[S]):RList[S] ={
+      if(remaining.isEmpty) accumlator
+      else concatTailRec(remaining.tail,remaining.head :: accumlator)
+    }
+    concatTailRec(this.reverse,anotherList)
   }
 }
   object RList{
@@ -139,6 +173,10 @@ TODO
   def main(args: Array[String]): Unit = {
     val listOfIntegers: RList[Int] =  Node(1, new Node(2, new Node(3, RNil)))
     val list: RList[Int] = 1 :: 2 :: 3 :: RNil
+    val list1: RList[Int] = 4 :: 5 :: 6 :: RNil
+    val iterable: immutable.Seq[Int] = 1 to 10000
+    Iterable.apply(2,3,4)
+    val aLargeList= RList.from(1 to 10000)
     // TODO This expression is right associative by default in scala
     // TODO RNil.::3.::2.:: 1 == 1 :: 2 :: 3 :: RNil
     println(listOfIntegers)
@@ -152,5 +190,8 @@ TODO
     println("hello")
     println(list.reverse)
     println(RList.from(1 to 10))
+    println(aLargeList.length)
+    println(aLargeList.apply(8735))
+    println(list ++ list1)
   }
 }
