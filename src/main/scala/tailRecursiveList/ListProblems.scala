@@ -151,6 +151,12 @@ TODO
     now we will return accumlator = [3,2,1,4,5]
     But this is wrong order of elements
     to fix this we need to reverse the current list i.e this.reverse
+    Complexity:As we know that complexity is directly proportional to the
+    length of traversing list
+    So if the length of the current list or traversing list   is N
+    and  the length of the another list is M
+    O(2N)
+
    */
   override def ++[S >: T](anotherList: RList[S]): RList[S] ={
     def concatTailRec(remaining:RList[S], accumlator:RList[S]):RList[S] ={
