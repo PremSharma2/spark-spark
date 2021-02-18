@@ -17,6 +17,7 @@ object ListProblems {
     def length :Int
     def reverse :RList[T]
     def ++[S>:T](anotherList:RList[S]):RList[S]
+    def removeAt(index:Int):RList[T]
   }
 
   case object RNil extends RList[Nothing] {
@@ -32,7 +33,9 @@ object ListProblems {
   override def reverse: RList[Nothing] = RNil
 
   override def ++[S >: Nothing](anotherList: RList[S]): RList[S] = anotherList
-}
+
+    override def removeAt(index: Int): RList[Nothing] = RNil
+  }
 //TODO here as we can see that def can be overridden as val
   /*
    TODO
@@ -165,7 +168,41 @@ TODO
     }
     concatTailRec(this.reverse,anotherList)
   }
+// stack recursive implementation
+  /*
+  override def removeAt(index: Int): RList[T] =
+    if(index ==0) tail
+    else head :: tail.removeAt(index- 1)
+
+   */
+  // tail recursive implementation
+  /*
+  [1,2,3,4,5].removeAt(2) = this will call to
+  removeAtTailRec([1,2,3,4,5], 0, [])
+  now inside this def we will check whether index==currentIndex and its not
+so we will jump over and make recursive call
+= removeAtTailRec([2,3,4,5], 1, [1])
+again we will check teh same condition index==currentIndex which is not true
+so we will jump over and make recursive call
+= removeAtTailRec([3,4,5], 2, [2,1])
+again we will check teh same condition index==currentIndex which is  true
+now we will reverse the predecessor list i.e [1,2] ad concatinate with tail of remaining
+[1,2] ++ [4,5]
+Complexity is O(N) N is the length of the current list
+   */
+  override def removeAt(index: Int): RList[T] = {
+    @tailrec
+    def removeAtTailRec(remaining:RList[T], currentIndex:Int, predecessor:RList[T]):RList[T] ={
+     if(currentIndex == index) predecessor.reverse ++ remaining.tail
+     else if (remaining.isEmpty) predecessor.reverse
+      else removeAtTailRec(remaining.tail, currentIndex+1 , remaining.head:: predecessor)
+    }
+    removeAtTailRec(this,0,RNil)
+  }
 }
+
+
+
   object RList{
     def from[T](iterable:Iterable[T]) :RList[T]= {
       @tailrec
@@ -180,6 +217,7 @@ TODO
     val listOfIntegers: RList[Int] =  Node(1, new Node(2, new Node(3, RNil)))
     val list: RList[Int] = 1 :: 2 :: 3 :: RNil
     val list1: RList[Int] = 4 :: 5 :: 6 :: RNil
+    val listz= list ++ list1
     val iterable: immutable.Seq[Int] = 1 to 10000
     Iterable.apply(2,3,4)
     val aLargeList= RList.from(1 to 10000)
@@ -199,5 +237,6 @@ TODO
     println(aLargeList.length)
     println(aLargeList.apply(8735))
     println(list ++ list1)
+    println(listz.removeAt(4))
   }
 }
