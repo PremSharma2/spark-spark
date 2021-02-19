@@ -18,6 +18,10 @@ object ListProblems {
     def reverse :RList[T]
     def ++[S>:T](anotherList:RList[S]):RList[S]
     def removeAt(index:Int):RList[T]
+    def map[S](f: T => S):RList[S]
+    //ETW pattern
+    def flatmap[S](f: T => RList[S]):RList[S]
+    def filter(f: T => Boolean):RList[T]
   }
 
   case object RNil extends RList[Nothing] {
@@ -35,6 +39,12 @@ object ListProblems {
   override def ++[S >: Nothing](anotherList: RList[S]): RList[S] = anotherList
 
     override def removeAt(index: Int): RList[Nothing] = RNil
+
+    override def map[S](f: Nothing => S): RList[S] = RNil
+
+    override def flatmap[S](f: Nothing => RList[S]): RList[S] = RNil
+
+    override def filter(f: Nothing => Boolean): RList[Nothing] = RNil
   }
 //TODO here as we can see that def can be overridden as val
   /*
@@ -199,6 +209,92 @@ Complexity is O(N) N is the length of the current list
     }
     removeAtTailRec(this,0,RNil)
   }
+// stack recursive implementation
+  //override def map[S](f: T => S): RList[S] = f.apply(this.head) :: this.tail.map(f)
+ // tail recursive impl
+  /*
+   [1,2,3].map(x=>x+1) = this will call to mapTailRec
+  mapTailRec([2,3],f(1)::accumulator = [2] )
+  again mapTailRec([3],f(2)::accumulator = [3,2] )
+  again mapTailRec([],f(3)::accumulator = [6,3,2] )
+  now this time  remaining is Empty so we will return accumulator
+  i.e [6,3,2].reverse
+  Comp
+   */
+  override def map[S](f: T => S): RList[S] = {
+    @tailrec
+    def mapTailRec(remaining:RList[T],accumulator:RList[S]):RList[S] ={
+        if(remaining.isEmpty) accumulator.reverse
+        else mapTailRec(remaining.tail,f(remaining.head):: accumulator)
+    }
+    mapTailRec(this,RNil)
+  }
+  //TODO stack recursive impl
+ // override def flatmap[S](f: T => RList[S]): RList[S] = f.apply(this.head) ++ tail.flatmap(f)
+  /*
+    [1,2,3].flatMap(x => [x, 2*x]) = that will call to
+    flatmapTailRec([1,2,3],[])
+    inside this we will check if(remaining.isEmpty) accumulator here its not empty
+    hence we will make again tail recursive call
+    flatmapTailRec([2,3],f(1)= [1,2].reverse=[2,1] ++ [] = [2,1])
+inside this we will check if(remaining.isEmpty) accumulator here its not empty
+hence we will make again tail recursive call
+    flatmapTailRec([3],f(2)= [2,4].reverse= [4,2] ++ [2,1] =[4,2,2,1])
+    inside this we will check if(remaining.isEmpty) accumulator here its not empty
+hence we will make again tail recursive call
+flatmapTailRec([],f(3)= [3,6].reverse= [6,3] ++ [4,2,2,1] = )
+inside this we will check if(remaining.isEmpty) accumulator and its empty now
+so we will return accumulator [6,3,4,2,2,1].reverse
+[1,2,2,4,3,6]
+Complexity is here
+O(sum of all the  lengths of f(x) = Z) i.e f(x) will produce n list and we are concatenating them
+
+O(z^2)
+Let's say in a simple case you have n lists of size k each.
+First operation is k + k = 2k
+Second is 2k + k = 3k
+Third is 3k + k = 4k
+and so on, n times.
+The total complexity strictly speaking is 2k + 3k + 4k + ... + n*k =
+k * (2 + 3 + ... + n) = k * ( n * (n + 1) / 2 - 1) = O(k * n^2)
+\ /
+Now because I defined that Z quantity as the sum of the lengths of the list, we have Z = k * n, so the complexity is O(Z^2)
+   */
+ override def flatmap[S](f: T => RList[S]): RList[S] = {
+   @tailrec
+    def flatmapTailRec(remaining:RList[T], accumulator:RList[S]):RList[S]={
+      if(remaining.isEmpty) accumulator.reverse
+      else flatmapTailRec(remaining.tail , f.apply(remaining.head).reverse ++ accumulator)
+    }
+   flatmapTailRec(this,RNil)
+ }
+/*
+ [1,2,3,4].filter(_%2==0) = this will make a call to
+ filterTailRec([1,2,3,4],[]) inside that we will check if(remaining.isEmpty) which is false
+ then we will check whether current head passes the predicate  else if (predicate.apply(remaining.head)) which fails to pass
+ then we will make recursive call filterTailRec([2,3,4],[])
+ inside that we will check if(remaining.isEmpty) which is false
+ then we will check whether current head passes the predicate  else if (predicate.apply(remaining.head)) which actually passes
+  then we will make recursive call filterTailRec([3,4],[2])
+   inside that we will check if(remaining.isEmpty) which is false
+ then we will check whether current head passes the predicate  else if (predicate.apply(remaining.head)) which fails
+ then we will make recursive call filterTailRec([4],[2])
+
+ inside that we will check if(remaining.isEmpty) which is false
+ then we will check whether current head passes the predicate  else if (predicate.apply(remaining.head)) which actually passes
+  filterTailRec([],[4,2])
+ inside that we will check if(remaining.isEmpty) which is true then we wil return accumlator.reverse
+ [2,4]
+ */
+  override def filter(predicate: T => Boolean): RList[T] = {
+    @tailrec
+    def filterTailRec(remaining:RList[T], accumulator:RList[T]):RList[T] ={
+      if(remaining.isEmpty) accumulator.reverse
+      else if (predicate.apply(remaining.head)) filterTailRec(remaining.tail, remaining.head:: accumulator)
+      else filterTailRec(remaining.tail,accumulator)
+    }
+    filterTailRec(this,RNil)
+  }
 }
 
 
@@ -238,5 +334,10 @@ Complexity is O(N) N is the length of the current list
     println(aLargeList.apply(8735))
     println(list ++ list1)
     println(listz.removeAt(4))
+    println(list.map(_+1))
+    val time= System.currentTimeMillis
+   val x= aLargeList.flatmap(x => x :: (2*x)::RNil)
+    println(System.currentTimeMillis()-time)
+    println(aLargeList.filter(_%2==0))
   }
 }
