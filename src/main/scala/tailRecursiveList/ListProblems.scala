@@ -7,11 +7,16 @@ import scala.collection.immutable
 
 object ListProblems {
   sealed trait RList[+T]{
+    /**
+     * easy Impls
+     * @return
+     */
     def head: T
     def tail: RList[T]
     def isEmpty: Boolean
     def headOption: Option[T]
     override def toString: String = "[]"
+    // todo prepend operator
     def ::[S >: T](element: S): RList[S] = new Node(element, this)
     def apply(index : Int): T
     def length :Int
@@ -22,8 +27,20 @@ object ListProblems {
     //ETW pattern
     def flatmap[S](f: T => RList[S]):RList[S]
     def filter(f: T => Boolean):RList[T]
+
+    /**
+     * Medium and difficult Impls
+     */
+    def rle:RList[(T,Int)]
+    // duplicate
+    def duplicateEach(k:Int):RList[T]
   }
 
+  /**
+   * For two reasons:
+   * 1) we need to return the type Nothing, and the only expressions returning Nothing are throwing exceptions
+   * 2) if there's no element to return, what can we do?
+   */
   case object RNil extends RList[Nothing] {
   override def head: Nothing = throw new NoSuchElementException
   override def tail: RList[Nothing] = throw new NoSuchElementException
@@ -45,6 +62,13 @@ object ListProblems {
     override def flatmap[S](f: Nothing => RList[S]): RList[S] = RNil
 
     override def filter(f: Nothing => Boolean): RList[Nothing] = RNil
+
+    /**
+     * Medium and difficult Impls
+     */
+    override def rle: RList[(Nothing, Int)] = RNil
+// duplicate each element a number of times in each row
+    override def duplicateEach(k: Int): RList[Nothing] = RNil
   }
 //TODO here as we can see that def can be overridden as val
   /*
@@ -58,11 +82,11 @@ object ListProblems {
     override def headOption: Option[T] = Some(head)
   override def toString: String= {
     @tailrec
-    def toStringTailRecursion(remaining: RList[T], result :String):String={
-      if(remaining.isEmpty) result
-      else if(remaining.tail.isEmpty) s"$result ${remaining.head}"
+    def toStringTailRecursion(remaining: RList[T], accumlator :String):String={
+      if(remaining.isEmpty) accumlator
+      else if(remaining.tail.isEmpty) s"$accumlator ${remaining.head}"
         // recursice call  is the last expression in code branch basically
-      else toStringTailRecursion(remaining.tail,s"$result ${remaining.head}, ")
+      else toStringTailRecursion(remaining.tail,s"$accumlator ${remaining.head}, ")
     }
     "["+ toStringTailRecursion(this,"") + "]"
   }
@@ -78,8 +102,7 @@ object ListProblems {
      tailRecApply(  [3,4],currentIndex=2)
      now this time condition is met we will fetch the head and return
      i.e remaining.head i.e 3 we will return and this tail recursive so recursion will trace back
-
-Complexity is O(min(N,index))
+    Complexity is: O(min(N,index))
       */
      @tailrec
      def tailRecApply(remaining:RList[T], currentIndexAccumlator:Int):T={
@@ -168,7 +191,7 @@ TODO
     length of traversing list
     So if the length of the current list or traversing list   is N
     and  the length of the another list is M
-    O(2N)
+    O(2N) OR O(M+N)
 
    */
   override def ++[S >: T](anotherList: RList[S]): RList[S] ={
@@ -248,7 +271,8 @@ so we will return accumulator [6,3,4,2,2,1].reverse
 [1,2,2,4,3,6]
 Complexity is here
 O(sum of all the  lengths of f(x) = Z) i.e f(x) will produce n list and we are concatenating them
-
+++ has complexity O(M+N)
+so it will be O(Sum of all M+N)
 O(z^2)
 Let's say in a simple case you have n lists of size k each.
 First operation is k + k = 2k
@@ -295,6 +319,141 @@ Now because I defined that Z quantity as the sum of the lengths of the list, we 
     }
     filterTailRec(this,RNil)
   }
+
+  /**
+   * Medium and difficult Impls
+   *
+   */
+    /*
+      TODO
+         [1,1,1,2,2,3,4,4,4,5].rle= that will call to
+         rleTailRec([1,1,2,2,3,4,4,4,5],(1,1),[])
+         inside this method we will check if(remaining.isEmpty && currentTuple._2==0) and it is false
+         then we will check else if(remaining.isEmpty) currentTuple :: accumulator
+         else if (remaining.head == currentTuple._1) this is  the case
+        rleTailRec([1,2,2,3,4,4,4,5],(1,2),[])
+
+        TODO
+           rleTailRec([1,2,2,3,4,4,4,5],(1,2),[])
+         inside this method we will check if(remaining.isEmpty && currentTuple._2==0) and it is false
+         then we will check else if(remaining.isEmpty) currentTuple :: accumulator
+         else if (remaining.head == currentTuple._1) this  the case
+         rleTailRec([2,2,3,4,4,4,5],(1,3),[])
+
+        TODO
+         rleTailRec([2,2,3,4,4,4,5],(1,3),[])
+         inside this method we will check if(remaining.isEmpty && currentTuple._2==0) and it is false
+         then we will check else if(remaining.isEmpty) currentTuple :: accumulator
+         else if (remaining.head == currentTuple._1) this is not  the case
+         will go else mode
+         rleTailRec([2,3,4,4,4,5],(2,1),[(1,3)])
+
+       TODO
+          rleTailRec([2,2,3,4,4,4,5],(2,1),[(1,3)])
+         inside this method we will check if(remaining.isEmpty && currentTuple._2==0) and it is false
+         then we will check else if(remaining.isEmpty) currentTuple :: accumulator
+         else if (remaining.head == currentTuple._1) this  the case
+         rleTailRec([3,4,4,4,5],(2,2),[(1,3)])
+
+        TODO
+         rleTailRec([3,4,4,4,5],(2,2),[(1,3)])
+         inside this method we will check if(remaining.isEmpty && currentTuple._2==0) and it is false
+         then we will check else if(remaining.isEmpty) currentTuple :: accumulator
+         else if (remaining.head == currentTuple._1) this is not the case
+         we will go in else mode
+         rleTailRec([4,4,5],(4,1),[(1,3),(2,2),(3,1)])
+
+         TODO
+             rleTailRec([4,4,5],(4,1),[(1,3),(2,2),(3,1)])
+          inside this method we will check if(remaining.isEmpty && currentTuple._2==0) and it is false
+          then we will check else if(remaining.isEmpty) currentTuple :: accumulator
+          else if (remaining.head == currentTuple._1) this is   the case
+          rleTailRec([4,5],(4,2),[(1,3),(2,2),(3,1)])
+
+
+           TODO
+             rleTailRec([4,5],(4,2),[(1,3),(2,2),(3,1)])
+            inside this method we will check if(remaining.isEmpty && currentTuple._2==0) and it is false
+            then we will check else if(remaining.isEmpty) currentTuple :: accumulator this is not the case
+            else if (remaining.head == currentTuple._1) this is   the case
+            rleTailRec([5],(4,3),[(1,3),(2,2),(3,1)])
+
+           TODO
+             rleTailRec([5],(4,3),[(1,3),(2,2),(3,1)])
+            inside this method we will check if(remaining.isEmpty && currentTuple._2==0) and it is false
+            then we will check else if(remaining.isEmpty) currentTuple :: accumulator
+              else if (remaining.head == currentTuple._1) this is  not the case
+              will go to else mode
+            rleTailRec([],(5,1),[(1,3),(2,2),(3,1),(4,3)])
+
+         TODO
+          rleTailRec([],(5,1),[(1,3),(2,2),(3,1),(4,3)])
+            inside this method we will check if(remaining.isEmpty && currentTuple._2==0) and it is false
+            then we will check else if(remaining.isEmpty) currentTuple :: accumulator and this time this is the case
+               [(1,3),(2,2),(3,1),(4,3),(5,1)]
+            after reversing the accumlator we will get this
+     */
+  override def rle: RList[(T, Int)] = {
+    @tailrec
+    def rleTailRec(remaining:RList[T], currentTuple:(T,Int),accumulator:RList[(T, Int)]  ) : RList[(T, Int)]={
+      if(remaining.isEmpty && currentTuple._2==0) accumulator
+      else if(remaining.isEmpty) currentTuple :: accumulator
+      else if (remaining.head == currentTuple._1)
+        rleTailRec(remaining.tail,currentTuple.copy(_2=currentTuple._2+1) ,  accumulator)
+      else rleTailRec(remaining.tail,(remaining.head,1), currentTuple::accumulator)
+    }
+    rleTailRec(this.tail,(this.head,1),RNil)
+  }
+/*
+  [1,2].duplicateEach(3) =
+  duplicateEachTailRec([2],1,0,[])
+       if(remaining.isEmpty && nDuplications==k) accumulator
+       else if(remaining.isEmpty) duplicateEachTailRec(remaining,currentElement,nDuplications+1,currentElement:: accumulator)
+       else if(nDuplications == k) duplicateEachTailRec(remaining.tail,remaining.head,0,accumulator)
+       none of the conditions are met so we will go to the else branch
+       duplicateEachTailRec([2],1,1,[1,])
+       if(remaining.isEmpty && nDuplications==k) accumulator
+       else if(remaining.isEmpty) duplicateEachTailRec(remaining,currentElement,nDuplications+1,currentElement:: accumulator)
+       else if(nDuplications == k) duplicateEachTailRec(remaining.tail,remaining.head,0,accumulator)
+       none of the conditions are met so we will go to the else branch
+        duplicateEachTailRec([2],1,2,[1,1])
+
+       if(remaining.isEmpty && nDuplications==k) accumulator
+       else if(remaining.isEmpty) duplicateEachTailRec(remaining,currentElement,nDuplications+1,currentElement:: accumulator)
+       else if(nDuplications == k) duplicateEachTailRec(remaining.tail,remaining.head,0,accumulator)
+       none of the conditions are met so we will go to the else branch
+        duplicateEachTailRec([2],1,3,[1,1,1])
+
+         else if(nDuplications == k) duplicateEachTailRec(remaining.tail,remaining.head,0,accumulator)
+         this condition matches
+          duplicateEachTailRec([],2,0,[1,1,1])
+
+          if(remaining.isEmpty && nDuplications==k) accumulator
+        else if(remaining.isEmpty) duplicateEachTailRec(remaining,currentElement,nDuplications+1,currentElement:: accumulator)
+       duplicateEachTailRec([],2,1,[1,1,1,2])
+
+        if(remaining.isEmpty && nDuplications==k) accumulator
+       else if(remaining.isEmpty) duplicateEachTailRec(remaining,currentElement,nDuplications+1,currentElement:: accumulator)
+        duplicateEachTailRec([],2,2,[1,1,1,2,2])
+
+        if(remaining.isEmpty && nDuplications==k) accumulator
+       else if(remaining.isEmpty) duplicateEachTailRec(remaining,currentElement,nDuplications+1,currentElement:: accumulator)
+        duplicateEachTailRec([],2,3,[1,1,1,2,2,2])
+         if(remaining.isEmpty && nDuplications==k) accumulator
+         hence o/p is [1,1,1,2,2,2]
+         Complexity is O(N*K) because N*K is the dimension of the resultant list
+         here N is the length of Current list and K is the number of times we need to duplicate
+ */
+  override def duplicateEach(k: Int): RList[T] = {
+    @tailrec
+    def duplicateEachTailRec(remaining:RList[T],currentElement:T,nDuplications:Int, accumulator:RList[T]):RList[T] ={
+       if(remaining.isEmpty && nDuplications==k) accumulator.reverse
+       else if(remaining.isEmpty) duplicateEachTailRec(remaining,currentElement,nDuplications+1,currentElement:: accumulator)
+       else if(nDuplications == k) duplicateEachTailRec(remaining.tail,remaining.head,0,accumulator)
+       else duplicateEachTailRec(remaining,currentElement,nDuplications+1,currentElement::accumulator)
+    }
+    duplicateEachTailRec(this.tail,this.head,0,RNil)
+  }
 }
 
 
@@ -313,6 +472,7 @@ Now because I defined that Z quantity as the sum of the lengths of the list, we 
     val listOfIntegers: RList[Int] =  Node(1, new Node(2, new Node(3, RNil)))
     val list: RList[Int] = 1 :: 2 :: 3 :: RNil
     val list1: RList[Int] = 4 :: 5 :: 6 :: RNil
+    val list3: RList[Int] = 1 :: 1 :: 1 :: 2 :: 3 :: 3 :: 4 :: 5 :: 5 :: 5 :: RNil
     val listz= list ++ list1
     val iterable: immutable.Seq[Int] = 1 to 10000
     Iterable.apply(2,3,4)
@@ -320,24 +480,32 @@ Now because I defined that Z quantity as the sum of the lengths of the list, we 
     // TODO This expression is right associative by default in scala
     // TODO RNil.::3.::2.:: 1 == 1 :: 2 :: 3 :: RNil
     println(listOfIntegers)
-    def testApi(list:RList[Animal]) = {
-      list.::(new Dog)
+    def testEasyFunctions: Unit ={
+      def testApi(list:RList[Animal]) = {
+        list.::(new Dog)
+      }
+      val animalList: RList[Dog] = new Dog :: RNil
+      testApi(animalList)
+      println(list.apply(2))
+      println(list.length)
+      println("hello")
+      println(list.reverse)
+      println(RList.from(1 to 10))
+      println(aLargeList.length)
+      println(aLargeList.apply(8735))
+      println(list ++ list1)
+      println(listz.removeAt(4))
+      println(list.map(_+1))
+      val time= System.currentTimeMillis
+      val x= aLargeList.flatmap(x => x :: (2*x)::RNil)
+      println(System.currentTimeMillis()-time)
+      println(aLargeList.filter(_%2==0))
+      println(list3.rle)
     }
-    val animalList: RList[Dog] = new Dog :: RNil
-    testApi(animalList)
-    println(list.apply(2))
-    println(list.length)
-    println("hello")
-    println(list.reverse)
-    println(RList.from(1 to 10))
-    println(aLargeList.length)
-    println(aLargeList.apply(8735))
-    println(list ++ list1)
-    println(listz.removeAt(4))
-    println(list.map(_+1))
-    val time= System.currentTimeMillis
-   val x= aLargeList.flatmap(x => x :: (2*x)::RNil)
-    println(System.currentTimeMillis()-time)
-    println(aLargeList.filter(_%2==0))
+    def testMedium(): Unit ={
+      println(list.duplicateEach(3))
+    }
+    testEasyFunctions
+    testMedium()
   }
 }
