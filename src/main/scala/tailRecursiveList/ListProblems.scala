@@ -34,6 +34,8 @@ object ListProblems {
     def rle:RList[(T,Int)]
     // duplicate
     def duplicateEach(k:Int):RList[T]
+    //rotation by number of positions to the left
+    def rotate(k:Int):RList[T]
   }
 
   /**
@@ -69,6 +71,8 @@ object ListProblems {
     override def rle: RList[(Nothing, Int)] = RNil
 // duplicate each element a number of times in each row
     override def duplicateEach(k: Int): RList[Nothing] = RNil
+
+    override def rotate(k: Int): RList[Nothing] = RNil
   }
 //TODO here as we can see that def can be overridden as val
   /*
@@ -454,6 +458,77 @@ Now because I defined that Z quantity as the sum of the lengths of the list, we 
     }
     duplicateEachTailRec(this.tail,this.head,0,RNil)
   }
+/*
+TODO
+  if(remaining.isEmpty && rotationsLeft==0) this
+  this condition i have used here becuase let say
+  [1,2,3].rotate(3) where k is divisible by the length of List
+  so [1,2,3].rotate(3) == [1,2,3]
+  [1,2,3].rotate(6) == [1,2,3]
+   else if(remaining.isEmpty) rotateTailRec(this,rotationsLeft,RNil)
+   this condition will occur when
+    [1,2,3].rotate(4) =
+    then we have traversed all the list and all rotated elements are stored in accumulator
+    i.e [1,2,3].rotateTailRec(3) == [1,2,3]
+    at this stage remaining is Empty but still
+     still  1 rotation is pending so what we will do this.(1)
+    i.e [1,2,3].rotateTailRec(1)
+
+    TODO
+     Lets run through some examples
+      [1,2,3].rotate(1) = this will call to
+      rotateTailRec([1,2,3],1,R[])
+      we will get into this case: else rotateTailRec(remaining.tail,rotationsLeft-1,remaining.head :: accumulator)
+      rotateTailRec([2,3],0,[1])
+      now will get into this case: else if(rotationsLeft==0) remaining ++ accumulator.reverse
+       [2,3] ++ [1] = [2,3,1] this is the o/p
+       because [3,2] it get reversed in ++
+
+
+       TODO
+        Now lets take an example of [1,2,3].rotate(3)
+        rotateTailRec([1,2,3],3,[])
+          we will get into this case: else rotateTailRec(remaining.tail,rotationsLeft-1,remaining.head :: accumulator)
+           rotateTailRec([2,3],2,[1])
+        we will get into this case: else rotateTailRec(remaining.tail,rotationsLeft-1,remaining.head :: accumulator)
+        rotateTailRec([3],1,[2,1])
+        we will get into this case: else rotateTailRec(remaining.tail,rotationsLeft-1,remaining.head :: accumulator)
+         rotateTailRec([],0,[3,2,1])
+          if(remaining.isEmpty && rotationsLeft==0) this
+          so we will get the original list
+          [1,2,3]
+
+    TODO
+         Now lets take the case [1,2,3].rotate(4)
+          rotateTailRec([1,2,3],4,[])
+          we will get inti else part
+          rotateTailRec([2,3],3,[1])
+           we will get inti else part
+            rotateTailRec([3],2,[2,1])
+             we will get inti else part
+              rotateTailRec([],1,[3,2,1])
+              now we will get into  else if(remaining.isEmpty) rotateTailRec(this,rotationsLeft,RNil)
+              rotateTailRec([1,2,3],1,[])
+              we will get inti else part
+               rotateTailRec([2,3],0,[1])
+               now we will get into  else if(rotationsLeft==0) remaining ++ accumulator.reverse
+               [2,3] ++ [1] but it will turned into by ++ def [3,2] ++ [1] = [2,3,1]
+               Complexity(O(max(N,K))
+               becase if k<N
+               then complexity will depend upon  else if(rotationsLeft==0) remaining ++ accumulator.reverse this case
+               and this has the complexity O(M+N)
+               and if k>N then we need to iterate till if(remaining.isEmpty && rotationsLeft==0) case
+ */
+  override def rotate(k: Int): RList[T] ={
+    @tailrec
+    def rotateTailRec(remaining:RList[T],rotationsLeft:Int, accumulator:RList[T]):RList[T]={
+      if(remaining.isEmpty && rotationsLeft==0) this
+      else if(remaining.isEmpty) rotateTailRec(this,rotationsLeft,RNil)
+      else if(rotationsLeft==0) remaining ++ accumulator.reverse
+      else rotateTailRec(remaining.tail,rotationsLeft-1,remaining.head :: accumulator)
+    }
+    rotateTailRec(this,k,RNil)
+  }
 }
 
 
@@ -504,6 +579,8 @@ Now because I defined that Z quantity as the sum of the lengths of the list, we 
     }
     def testMedium(): Unit ={
       println(list.duplicateEach(3))
+      println(list.rotate(4))
+      println(list.rotate(6))
     }
     testEasyFunctions
     testMedium()
