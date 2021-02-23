@@ -4,6 +4,7 @@ import caseClass.Factory.Animal.{Animal, Dog}
 
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.util.Random
 
 object ListProblems {
   sealed trait RList[+T]{
@@ -36,6 +37,7 @@ object ListProblems {
     def duplicateEach(k:Int):RList[T]
     //rotation by number of positions to the left
     def rotate(k:Int):RList[T]
+    def sample(k:Int):RList[T]
   }
 
   /**
@@ -73,6 +75,8 @@ object ListProblems {
     override def duplicateEach(k: Int): RList[Nothing] = RNil
 
     override def rotate(k: Int): RList[Nothing] = RNil
+
+    override def sample(k: Int): RList[Nothing] = RNil
   }
 //TODO here as we can see that def can be overridden as val
   /*
@@ -528,6 +532,44 @@ TODO
       else rotateTailRec(remaining.tail,rotationsLeft-1,remaining.head :: accumulator)
     }
     rotateTailRec(this,k,RNil)
+  }
+ /*
+ TODO
+   [1,2,3,4,5]. sample(3) =
+   sampleTailRec(3,[])
+   will go else branch
+   val index = random.nextInt(maxIndex) ==1 lets assume
+   val newNumber= this.apply(index)  ==2
+    sampleTailRec(2,[2])
+    will go else branch
+   val index = random.nextInt(maxIndex) ==2 lets assume
+   val newNumber= this.apply(index)  ==3
+   sampleTailRec(1,[3,2])
+   will go else branch
+   val index = random.nextInt(maxIndex) ==3 lets assume
+   val newNumber= this.apply(index)  ==4
+    sampleTailRec(0,[4,3,2])
+    we will go  if(nRemaining==0) accumulator branch
+    and return accumulator over here
+    Complexity is O(N*K)
+    because for each  val newNumber= this.apply(index) the complxity is O(N)
+    and we doing k samples then it should be O(N*K)
+  */
+  override def sample(k: Int): RList[T] = {
+    val  random= new Random(System.currentTimeMillis())
+    val maxIndex= this.length
+    @tailrec
+    def sampleTailRec(nRemaining:Int, accumulator:RList[T]):RList[T]={
+           if(nRemaining==0) accumulator
+           else{
+             // deriving the index where i need to generate the sample value
+             val index = random.nextInt(maxIndex)
+             val newNumber= this.apply(index)
+             sampleTailRec(nRemaining-1,newNumber :: accumulator)
+           }
+    }
+    if(k<0) RNil
+    else sampleTailRec(k,RNil)
   }
 }
 
