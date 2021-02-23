@@ -340,18 +340,19 @@ Now because I defined that Z quantity as the sum of the lengths of the list, we 
                   Complexity for betterflatmap is O(n)
                   so total complexity is O(n+z)
  */
+
    @tailrec
-   def betterflatmap[S](remaining:RList[T], accumulator:RList[RList[S]]): RList[S] ={
-      if(remaining.isEmpty) concatenateAll(accumulator,RNil,RNil)
-      else betterflatmap(remaining.tail , f.apply(remaining.head).reverse :: accumulator)
+   def betterFlatMap(remaining: RList[T], accumulator: RList[RList[S]]): RList[S] = {
+     if (remaining.isEmpty) concatenateAll(accumulator, RNil, RNil)
+     else betterFlatMap(remaining.tail, f(remaining.head).reverse :: accumulator)
    }
    @tailrec
-   def concatenateAll(elements:RList[RList[S]],currentList:RList[S] ,accumulator :RList[S]):RList[S] = {
-     if(elements.isEmpty && currentList.isEmpty) accumulator
-     else if(currentList.isEmpty) concatenateAll(elements.tail,elements.head,accumulator)
-     else concatenateAll(elements,currentList.tail,currentList.head :: accumulator)
+   def concatenateAll(elements: RList[RList[S]], currentList: RList[S], accumulator: RList[S]): RList[S] = {
+     if (currentList.isEmpty && elements.isEmpty) accumulator
+     else if (currentList.isEmpty) concatenateAll(elements.tail, elements.head, accumulator)
+     else concatenateAll(elements, currentList.tail, currentList.head :: accumulator)
    }
-   flatmapTailRec(this,RNil)
+   betterFlatMap(this,RNil)
 
  }
 
@@ -675,9 +676,6 @@ TODO
       println(list ++ list1)
       println(listz.removeAt(4))
       println(list.map(_+1))
-      val time= System.currentTimeMillis
-      val x= aLargeList.flatmap(x => x :: (2*x)::RNil)
-      println(System.currentTimeMillis()-time)
       println(aLargeList.filter(_%2==0))
       println(list3.rle)
     }
@@ -687,6 +685,10 @@ TODO
       println(list.rotate(6))
       val onToTen= RList.from(1 to 10)
       println(onToTen.sample(3))
+      println("calculating flatmap")
+      val time= System.currentTimeMillis
+      aLargeList.flatmap(x => x :: (2*x):: RNil)
+      println(System.currentTimeMillis()-time)
     }
     testEasyFunctions
     testMedium()
