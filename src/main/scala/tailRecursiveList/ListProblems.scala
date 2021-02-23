@@ -298,8 +298,64 @@ Now because I defined that Z quantity as the sum of the lengths of the list, we 
       if(remaining.isEmpty) accumulator.reverse
       else flatmapTailRec(remaining.tail , f.apply(remaining.head).reverse ++ accumulator)
     }
+/*
+ TODO
+    What we are trying to do here is that
+    [1,2,3].flatmap(x => [x,2*x]) = concatinateall([[6,4],[4,2],[2,1],[]])
+    i.e we need to get list of list first in reverse order
+      [1,2,3].flatmap(x => [x,2*x]) = betterflatmap([1,2,3],[])
+
+  TODO
+      betterflatmap([1,2,3],[])
+      will go into else branch
+       betterflatmap([2,3],[[1,2]])
+         will go into else branch
+      betterflatmap([3],[[4,2],[2,1]])
+       will go into else branch
+       betterflatmap([],[[6,3],[4,2],[2,1])
+       it will go if branch
+       concatenateAll([[6,3], [4,2], [2,1]], [],[])
+       it will go else if(currentList.isEmpty) concatenateAll(elements.tail,elements.head,accumulator) branch
+       concatenateAll([ [4,2], [2,1]], [6,3],[])
+       it will go to else branch
+        concatenateAll([[4,2], [2,1]], [3],[6])
+        it will go to else branch
+       concatenateAll([[4,2], [2,1]], [],[3,6])
+       it will go else if(currentList.isEmpty) concatenateAll(elements.tail,elements.head,accumulator) branch
+          concatenateAll([[2,1]], [4,2],[3,6])
+          it will go to else branch
+          concatenateAll([[2,1]], [2],[4,3,6])
+           it will go to else branc h
+            concatenateAll([[2,1]], [],[2,4,3,6])
+          it will go else if(currentList.isEmpty) concatenateAll(elements.tail,elements.head,accumulator) branch
+           concatenateAll([[]], [2,1],[2,4,3,6])
+            it will go to else branch
+              concatenateAll([[]], [1],[2,2,4,3,6])
+               it will go to else branch
+               concatenateAll([[]], [],[1,2,2,4,3,6])
+               it will go to if branch and return accumulator= [1,2,2,4,3,6]
+
+               TODO
+                 Complexity for concatenateAll is O(z)
+                  Complexity for betterflatmap is O(n)
+                  so total complexity is O(n+z)
+ */
+   @tailrec
+   def betterflatmap[S](remaining:RList[T], accumulator:RList[RList[S]]): RList[S] ={
+      if(remaining.isEmpty) concatenateAll(accumulator,RNil,RNil)
+      else betterflatmap(remaining.tail , f.apply(remaining.head).reverse :: accumulator)
+   }
+   @tailrec
+   def concatenateAll(elements:RList[RList[S]],currentList:RList[S] ,accumulator :RList[S]):RList[S] = {
+     if(elements.isEmpty && currentList.isEmpty) accumulator
+     else if(currentList.isEmpty) concatenateAll(elements.tail,elements.head,accumulator)
+     else concatenateAll(elements,currentList.tail,currentList.head :: accumulator)
+   }
    flatmapTailRec(this,RNil)
+
  }
+
+
 /*
  [1,2,3,4].filter(_%2==0) = this will make a call to
  filterTailRec([1,2,3,4],[]) inside that we will check if(remaining.isEmpty) which is false
@@ -568,9 +624,13 @@ TODO
              sampleTailRec(nRemaining-1,newNumber :: accumulator)
            }
     }
+    def sampleElegent={
+      RList.from((1 to k).map(_=> random.nextInt(maxIndex)).map(index => this.apply(index)))
+    }
     if(k<0) RNil
-    else sampleTailRec(k,RNil)
+    else sampleElegent
   }
+
 }
 
 
@@ -587,12 +647,14 @@ TODO
   }
   def main(args: Array[String]): Unit = {
     val listOfIntegers: RList[Int] =  Node(1, new Node(2, new Node(3, RNil)))
+
     val list: RList[Int] = 1 :: 2 :: 3 :: RNil
     val list1: RList[Int] = 4 :: 5 :: 6 :: RNil
     val list3: RList[Int] = 1 :: 1 :: 1 :: 2 :: 3 :: 3 :: 4 :: 5 :: 5 :: 5 :: RNil
     val listz= list ++ list1
     val iterable: immutable.Seq[Int] = 1 to 10000
     Iterable.apply(2,3,4)
+
     val aLargeList= RList.from(1 to 10000)
     // TODO This expression is right associative by default in scala
     // TODO RNil.::3.::2.:: 1 == 1 :: 2 :: 3 :: RNil
@@ -623,6 +685,8 @@ TODO
       println(list.duplicateEach(3))
       println(list.rotate(4))
       println(list.rotate(6))
+      val onToTen= RList.from(1 to 10)
+      println(onToTen.sample(3))
     }
     testEasyFunctions
     testMedium()
