@@ -816,7 +816,10 @@ TODO
           if(bigList.isEmpty) RNil
           else if(bigList.tail.isEmpty) bigList.head
           else mergeSortTailRec(bigList,RNil)
-        }else if(smallList.tail.isEmpty) mergeSortTailRec(smallList.head :: bigList , RNil)
+        }else if(smallList.tail.isEmpty) {
+          if(bigList.isEmpty) smallList.head
+          else  mergeSortTailRec(smallList.head :: bigList , RNil)
+        }
         else {
           val first= smallList.head
           val second = smallList.tail.head
@@ -911,6 +914,8 @@ TODO
        println(list1.insertionSort(ordering))
        println(System.currentTimeMillis()-time)
        println(list1.mergeSort(ordering))
+       // testing the edge case
+       println( 3 :: RNil.mergeSort(ordering))
     }
     testEasyFunctions
     testMedium()
