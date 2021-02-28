@@ -1,5 +1,7 @@
 package codingChallenge
 
+import scala.annotation.tailrec
+
 object ScalaListDistinct extends App {
 
   def distinct[A](ls: List[A]) = {
@@ -12,4 +14,14 @@ object ScalaListDistinct extends App {
     loop(Set(), ls)
   }
 
+  def distinct1(ls: List[Int]) = {
+    @tailrec
+    def distinctTailRec(remaining:List[Int] , accumlator:List[Int]) :List[Int] ={
+      if(remaining.isEmpty) accumlator
+      else if(accumlator.contains(remaining.head)) distinctTailRec(remaining.tail, accumlator)
+      else distinctTailRec(remaining.tail,remaining.head :: accumlator)
+    }
+    distinctTailRec(ls,Nil)
+  }
+  distinct1(List(1,2,3,3,5))
 }

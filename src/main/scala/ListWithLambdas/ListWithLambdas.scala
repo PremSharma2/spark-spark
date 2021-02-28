@@ -1,5 +1,7 @@
 package ListWithLambdas
 
+import scala.annotation.tailrec
+
 /*
  *
  *
@@ -32,6 +34,7 @@ trait  MyList[+A] {
   def sort(comparator: (A, A) => Int): MyList[A]
   def zipWith[B, C](list: MyList[B], zipfunction: (A, B) => C): MyList[C]
   def fold[B](start: B)(operator: (B, A) => B): B
+  def sum[B>:A](implicit num: Numeric[B]) : B
 }
 /*
  *
@@ -62,6 +65,7 @@ case object EmptyList extends MyList[Nothing] {
 
   def fold[B](start: B)(operator: (B, Nothing) => B): B = start
 
+  override def sum[B >: Nothing](implicit num: Numeric[B]): B = num.zero
 }
 
 case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
@@ -226,10 +230,16 @@ trait Function1[ -T1,+R]
   *
   */
 
-  def fold[B](start: B)(operator: (B, A) => B): B = {
-    val accumulator = operator.apply(start, this.h)
-    t.fold(accumulator)(operator)
+   def fold[B](start: B)(operator: (B, A) => B): B = {
+     @tailrec
+    def foldTailRec(remaining:MyList[A],accumulator:B) : B ={
+      if(remaining.isEmptyList) accumulator
+      else  foldTailRec(remaining.tail,operator.apply(accumulator, this.h))
+    }
+  foldTailRec(this,start)
   }
+
+  override def sum[B >: A](implicit num: Numeric[B]): B = fold(num.zero)(num.plus)
 }
 
 object Listest extends App {

@@ -1,6 +1,6 @@
 package codingChallenge
 
-object ScalaTest  extends App {
+object ScalaTestAuden  extends App {
 
 
 

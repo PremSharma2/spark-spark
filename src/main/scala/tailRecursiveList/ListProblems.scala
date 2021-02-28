@@ -3,7 +3,6 @@ package tailRecursiveList
 import caseClass.Factory.Animal.{Animal, Dog}
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.util.Random
 
 object ListProblems {
@@ -28,6 +27,8 @@ object ListProblems {
     //ETW pattern
     def flatmap[S](f: T => RList[S]):RList[S]
     def filter(f: T => Boolean):RList[T]
+    def distinct[S>:T](ls: RList[S]):RList[S]
+    def contains[S >: T](elem: S): Boolean
 
     /**
      * Medium and difficult Impls
@@ -38,6 +39,16 @@ object ListProblems {
     //rotation by number of positions to the left
     def rotate(k:Int):RList[T]
     def sample(k:Int):RList[T]
+
+    /**
+     * Hard Problems
+     * @param ordering
+     * @tparam S
+     * @return: RList[S]
+     */
+    // sorting the list in the order defined by Ordering object
+    def insertionSort[S>:T](ordering:Ordering[S]):RList[S]
+    def mergeSort[S>:T](ordering:Ordering[S]):RList[S]
   }
 
   /**
@@ -77,6 +88,23 @@ object ListProblems {
     override def rotate(k: Int): RList[Nothing] = RNil
 
     override def sample(k: Int): RList[Nothing] = RNil
+
+    /**
+     * Hard Problems
+     *
+     * @param ordering : Ordering[S]
+     * @tparam S
+     * @return: RList[S]
+     */
+    override def insertionSort[S >: Nothing](ordering: Ordering[S]): RList[S] = RNil
+
+    override def mergeSort[S >: Nothing](ordering: Ordering[S]): RList[S] = RNil
+
+    override def distinct[S >: Nothing](ls: RList[S]): RList[S] = RNil
+
+    override def contains[S >: Nothing](elem: S): Boolean = false
+
+
   }
 //TODO here as we can see that def can be overridden as val
   /*
@@ -93,7 +121,7 @@ object ListProblems {
     def toStringTailRecursion(remaining: RList[T], accumlator :String):String={
       if(remaining.isEmpty) accumlator
       else if(remaining.tail.isEmpty) s"$accumlator ${remaining.head}"
-        // recursice call  is the last expression in code branch basically
+        // recursive call  is the last expression in code branch basically
       else toStringTailRecursion(remaining.tail,s"$accumlator ${remaining.head}, ")
     }
     "["+ toStringTailRecursion(this,"") + "]"
@@ -118,7 +146,7 @@ object ListProblems {
        else tailRecApply(remaining.tail , currentIndexAccumlator + 1 )
      }
      if (index<0) throw new NoSuchElementException
-     else tailRecApply(this,0)
+     else tailRecApply(this,   0)
   }
 /*
 TODO
@@ -317,7 +345,7 @@ Now because I defined that Z quantity as the sum of the lengths of the list, we 
        concatenateAll([[6,3], [4,2], [2,1]], [],[])
        it will go else if(currentList.isEmpty) concatenateAll(elements.tail,elements.head,accumulator) branch
        concatenateAll([ [4,2], [2,1]], [6,3],[])
-       it will go to else branch
+       it will go to else branch else  else concatenateAll(elements, currentList.tail, currentList.head :: accumulator)
         concatenateAll([[4,2], [2,1]], [3],[6])
         it will go to else branch
        concatenateAll([[4,2], [2,1]], [],[3,6])
@@ -626,13 +654,199 @@ TODO
            }
     }
     def sampleElegent={
-      RList.from((1 to k).map(_=> random.nextInt(maxIndex)).map(index => this.apply(index)))
+      RList.
+            from((1 to k).
+            map(_=> random.nextInt(maxIndex))  // generating Rlist of random indexes
+           .map(index => this.apply(index)))   // mapping these indexes with values
     }
     if(k<0) RNil
     else sampleElegent
   }
 
-}
+  /**
+   * Hard Problems
+   *
+   * @param ordering: Ordering[S]
+   * @tparam S
+   * @return: RList[S]
+   */
+  override def insertionSort[S >: T](ordering: Ordering[S]): RList[S] = {
+    /*
+     insertSorted(4,[],[1,2,3,5])
+     here check is 4>1 so it will stay before 4 we will add up in before list
+     insertSorted(4,[1],[2,3,5])
+      here check is 4>2 so it will stay before 4 we will add up in before list
+     insertSorted(4,[3,2,1],[5])
+      here check is 4>3 so it will stay before 4 we will add up in before list
+      insertSorted(4,[3,2,1],[4,5])
+      here check is 4<5 so it will stay after 4 we will add up in after list
+      [3,2,1].reverse ++ (4 :: 5)
+      [1,2,3,4,5]
+      complexity is O(n) where n is the size if after list because we dont know where this element will be placed
+      we need to traverse the whole after list
+     */
+    @tailrec
+    def insertSorted(element:T, before:RList[S],after:RList[S]):RList[S] ={
+      //insertSorted(4,[3,2,1],[4,5]) we are in this stage
+       if(after.isEmpty || ordering.lteq(element,after.head)) before.reverse ++ (element :: after)
+       else insertSorted(element , after.head :: before, after.tail)
+    }
+    /*
+    pseudo code for the algo i.e our approach should be like that
+
+     [3,1,4,2].sorted = insertSortTailRec([3,1,4,2,5],[])
+                      insertSortTailRec([1,4,2,5],[3])
+                      insertSortTailRec([4,2,5],[1,3])
+                       insertSortTailRec([2,5],[1,3,4])
+                       insertSortTailRec([5],[1,2,3,4])
+                       insertSortTailRec([],[1,2,3,4,5])
+                       now return accumulator
+                       Complexity is O(n^2) because the insertSortTailRec calls
+                       insertSorted n times for each single iteration
+     */
+    @tailrec
+    def insertSortTailRec(remaining:RList[T],accumulator:RList[S]):RList[S] ={
+         if(remaining.isEmpty) accumulator
+         else insertSortTailRec(remaining.tail,insertSorted(remaining.head,RNil,accumulator))
+    }
+    insertSortTailRec(this,RNil)
+  }
+
+  override def mergeSort[S >: T](ordering: Ordering[S]): RList[S] = {
+    /*
+    As merge sorting approach we now that it breaks the list into two parts
+    left and right it means left contains all elements less then the middle element and
+    after contains all elements which are greater then middle element let say 3
+     merge([1,2,3],[4,5,6],[]) = ......
+     .....
+      [1,2,3,4,5,6]
+  TODO
+      Merge Explanation
+      merge([1,3], [2,4,5,6,7]) =
+      now else if(ordering.lteq(listA.head,listB.head)) says 1<2
+      merge([3], [2,4,5,6,7] , [1])
+      now else case
+      merge([3], [4,5,6,7] , [2,1])
+      now else if(ordering.lteq(listA.head,listB.head)) says 3<4
+       merge([], [4,5,6,7] , [3,2,1])
+       now  if(listA.isEmpty) accumulator.reverse ++ listB
+       o/p will [1,2,3,4,5,6,7]
+     */
+    @tailrec
+    def merge(listA:RList[S] ,listB:RList[S], accumulator:RList[S]) :RList[S] ={
+      if(listA.isEmpty) accumulator.reverse ++ listB
+      else if(listB.isEmpty) accumulator.reverse ++ listA
+      else if(ordering.lteq(listA.head,listB.head)) merge(listA.tail , listB , listA.head::accumulator)
+      else merge(listA, listB.tail,listB.head :: accumulator)
+    }
+    /*
+   TODO
+    [3,1,2,4,5] => [[3],[1],[2],[5],[4]]
+     and then i will pass this lst to mergeSortTailRec
+      what i will do now i will pick two elements from list of list and will store them in small list
+     and big list will remain empty for first call
+TODO
+     mergeSortTailRec([[3],[1],[2],[5],[4]],[])
+     now inside mergeSortTailRec i will pick two elements from smallList
+     and will pass them to merge i.e
+     merge([3],[1],[]) and job of merge is sort the left list and right list and merge them
+     so it will return [1,3]
+     now i will make a tail recursive call to mergeSortTailRec with o/p of merge method
+     i wil place this o/p in bigList
+TODO
+     mergeSortTailRec([[2],[5],[4]],[[1,3]])
+     now again inside mergeSortTailRec i will pick two elements from smallList
+     and will pass them to merge i.e
+     merge([2],[5],[]) and job of merge is sort the left list and right list and merge them
+     so it will return [2,5]
+     now i will make a tail recursive call to mergeSortTailRec with o/p of merge method
+     i wil place this o/p in bigList i.e prepended to the earlier version of big list
+     i.e [[2,5],[1,3]]
+TODO
+     mergeSortTailRec([[4]],[[2,5],[1,3]])
+     now as we can see that there are no more elents left only [4] is there
+     so we will not call merge now we will prepend this list to bigList and make one more recursive call to
+     mergeSortTailRec
+
+  TODO
+     mergeSortTailRec([],[[4],[2,5],[1,3]])
+     now when i get the smallList.isEmpty i will swap the list around i.e bigList with smalllist
+     so smallList==[[4],[2,5],[1,3]] after swapping
+     and will make one more recursive call
+   TODO
+      mergeSortTailRec([[4],[2,5],[1,3]],[])
+      now again i will pick two elements from smallList and will merge them
+      so two elemnts are [4],[2,5] i will call merge to merge them
+      merge([4],[2,5]) i will get [2,4,5] i will use this o/p now to make recursive call
+      to
+    TODO
+      mergeSortTailRec([[1,3]],[[2,4,5]])
+      now inside mergeSortTailRec as we can see that there no two list to merge
+      we will simply prepend the head to bigList and again will make recursive call
+
+   TODO
+      mergeSortTailRec([],[[1,3],[2,4,5]])
+      now i will swap the arguments one more time
+      smallList == [[1,3],[2,4,5]] and
+      bigList == []
+      and make one more recursive call
+
+  TODO
+        mergeSortTailRec([[1,3],[2,4,5]],[])
+        now again i will pick first two elements from smallList
+        and will pass to merge method to merge them
+        merge([1,3],[2,4,5]) ==> [1,2,3,4,5]
+        and will make one more recursive call mergeSortTailRec
+
+   TODO
+          mergeSortTailRec([],[[1,2,3,4,5]])
+          now as we can see that i can see there is only one list in List of list
+          named bigList:RList[RList[S]] and smallList is Empty now
+          so thats what i wanted now i will simply going to return [1,2,3,4,5]
+          Complexity:
+          As we know that complexity of merge sort O(n*log(n))
+          because complexity(n) = 2 * complexity(n/2) + n
+          because first we half the list so its size is n/2
+          and + n means merge function complexity is O(n)
+          this mathematical computation leads to O(n*log(n))
+     */
+    @tailrec
+    def mergeSortTailRec(smallList:RList[RList[S]], bigList:RList[RList[S]]):RList[S] ={
+        if(smallList.isEmpty){
+          if(bigList.isEmpty) RNil
+          else if(bigList.tail.isEmpty) bigList.head
+          else mergeSortTailRec(bigList,RNil)
+        }else if(smallList.tail.isEmpty) mergeSortTailRec(smallList.head :: bigList , RNil)
+        else {
+          val first= smallList.head
+          val second = smallList.tail.head
+          val merged = merge(first,second, RNil)
+          mergeSortTailRec(smallList.tail.tail, merged :: bigList)
+        }
+    }
+    mergeSortTailRec(this.map(x => x :: RNil),RNil)
+  }
+
+  override def contains[S >: T](elem: S): Boolean = {
+    @tailrec
+    def containsTailRec(remaining: RList[S]): Boolean = {
+      if (remaining.isEmpty) false
+      else if (remaining.head == elem) true
+      else containsTailRec(remaining.tail)
+    }
+    containsTailRec(this)
+  }
+  override def distinct[S >:T](ls: RList[S]): RList[S] ={
+    @tailrec
+    def distinctTailRec(remaining:RList[S], accumulator:RList[S]) :RList[S] ={
+      if(remaining.isEmpty) accumulator
+      else if(accumulator.contains(remaining.head)) distinctTailRec(remaining.tail, accumulator)
+      else distinctTailRec(remaining.tail,remaining.head :: accumulator)
+    }
+    distinctTailRec(this,RNil)
+  }
+  }
+
 
 
 
@@ -653,7 +867,7 @@ TODO
     val list1: RList[Int] = 4 :: 5 :: 6 :: RNil
     val list3: RList[Int] = 1 :: 1 :: 1 :: 2 :: 3 :: 3 :: 4 :: 5 :: 5 :: 5 :: RNil
     val listz= list ++ list1
-    val iterable: immutable.Seq[Int] = 1 to 10000
+    val iterable:Iterable[Int] = 1 to 10000
     Iterable.apply(2,3,4)
 
     val aLargeList= RList.from(1 to 10000)
@@ -690,7 +904,17 @@ TODO
       aLargeList.flatmap(x => x :: (2*x):: RNil)
       println(System.currentTimeMillis()-time)
     }
+     def testhardFunctions ={
+       val list1: RList[Int] = 5 :: 4 :: 6 :: 1 :: 2:: RNil
+       implicit val ordering: Ordering[Int] = Ordering.fromLessThan[Int](_<_)
+       val time= System.currentTimeMillis
+       println(list1.insertionSort(ordering))
+       println(System.currentTimeMillis()-time)
+       println(list1.mergeSort(ordering))
+    }
     testEasyFunctions
     testMedium()
+    testhardFunctions
+
   }
 }

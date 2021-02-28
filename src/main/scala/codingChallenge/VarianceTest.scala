@@ -7,7 +7,7 @@ object VarianceTest extends App {
       def transform(element: A): B
     }
     // Hence it is conform that Variance is jst to add Type Restriction at compile time
-    class  Transform extends MyTransformer[Animal,Dog]{
+    object  Transform extends MyTransformer[Animal,Dog]{
       override def transform(element: Animal): Dog = new Dog
     }
     class Animal
@@ -15,5 +15,5 @@ object VarianceTest extends App {
 
   def useContra( transf:MyTransformer[Dog,Dog] ) =
     transf.transform(new Dog)
-  useContra(new Transform)
+  useContra( Transform)
 }
