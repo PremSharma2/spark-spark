@@ -71,6 +71,7 @@ object MonadTransformers  extends App {
   //TODO use of for comprehension here
   val optionList: List[Option[Int]] = List(Option(1), Option(2), Option(3))
     val listOfOptions: OptionT[List ,Int] =OptionT.apply(optionList)
+    val sum: Int =listOfOptions.foldLeft(0)((a, b) => a + b)
     val listOfOptionChars: OptionT[List ,Char] =OptionT.
                      apply(List(Option('a'), Option('b'), Option('c'),Option.empty[Char]))
     val listOfTuples: OptionT[List, (Int, Char)] = {

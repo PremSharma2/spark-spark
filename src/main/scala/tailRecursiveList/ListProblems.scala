@@ -49,6 +49,7 @@ object ListProblems {
     // sorting the list in the order defined by Ordering object
     def insertionSort[S>:T](ordering:Ordering[S]):RList[S]
     def mergeSort[S>:T](ordering:Ordering[S]):RList[S]
+    def quickSort[S>:T](ordering:Ordering[S]):RList[S]
   }
 
   /**
@@ -104,7 +105,7 @@ object ListProblems {
 
     override def contains[S >: Nothing](elem: S): Boolean = false
 
-
+    override def quickSort[S >: Nothing](ordering: Ordering[S]): RList[S] = RNil
   }
 //TODO here as we can see that def can be overridden as val
   /*
@@ -848,7 +849,112 @@ TODO
     }
     distinctTailRec(this,RNil)
   }
+/*
+ TODO
+     Understanding partition method:
+     partition([1,2,3,4,5],3,[],[]) = it will return this tuple ([1,2,3],[4,5] )
+
+ TODO
+     quickSort understanding and internal mechanics
+     [3,1,2,5,4].quickSort
+      first of all i need to convert this list into List[List]]
+      now i will call quickSortTailRec with this List[List]]
+       quickSortTailRec(remainingLists:RList[RList[T]], accumulator:RList[RList[T]])
+       quickSortTailRec([[3,1,2,5,4]],[]) =
+       now as we can see that remainingLists = [[3,1,2,5,4]]
+       is not Empty then we will do partitioning first
+       i will call partition  first   [3,1,2,5,4].partition(  [1,2,5,4],3 , [] , [])
+       while calling partition i have head of this list as pivot
+      and it will result the o/p  -> ([1,2],[4,5])
+      now again i will make recursive call to quickSortTailRec
+      so what i will do i will put the
+       [1,2] and [5,4] and pivot ==3 as well into this remainingLists
+       while making a recursive call
+
+  TODO
+      quickSortTailRec([[1,2],[3],[5,4]],[])
+      again inside the quickSortTailRec
+      what i will do  i will partition the head of this list
+      i.e [1,2] i will make pivot 1
+      partition([2],1,[],[]) -> ([],[2])
+      this is the o/p now i will use this o/p
+
+TODO
+      now i will extract this list out and put back the o/p of partition
+      into the remainingList while making the recursive call
+      [[1,2],[3],[5,4]]
+      i added  smallerlist==[] , pivot == [1] and largerList == [2]
+      into the remainingList and accumlator is empty
+      quickSortTailRec([[],[1],[2],[3],[5,4]],[])
+
+TODO   now again i will make the recursive call
+       as we can see that elements are List are single element and
+        first element is empty list so i will skip the head and make a recursive call
+        now after skipping the head
+       so i will add the current head  into accumulator
+       quickSortTailRec([[1],[2],[3],[5,4]],[])
+
+TODO   now again i will make the recursive call
+       and will add the first element to the   accumulator
+        quickSortTailRec([[2],[3],[5,4]],[[1]])
+
+TODO   now again i will make recursive call
+        quickSortTailRec([[3],[5,4]],[[2],[1]])
+
+
+TODO   now again i will make recursive call
+        quickSortTailRec([[5,4]],[[3],[2],[1]])
+        now as we can see that this first element is neither Empty nor single element
+        then we will use partitioning here inside quickSortTailRec
+        partition([4],5,[],[]) -> ([4],[]) this will be the o/p
+        now before making the recursive call here we will extract the items from
+        list and will put the o/p of partitioning into the list
+        quickSortTailRec([[4],[5],[]],[[3],[2],[1]])
+
+
+TODO   now again i will make the recursive call
+       as we can see that elements are List are single element and
+        third element is empty list
+       so i will add  that into accumulator
+      quickSortTailRec([[]],[[5],[4],[3],[2],[1]])
+      now again as we can see that list is Empty now
+      we will return the accumulator with flatten it and reverse it
+      [1,2,3,4,5]
+
+
+TODO : Lets understand the mechanics of  partition over here
+       partition([1,2,5,4],3,[],[])
+       partition([2,5,4],3,[1],[])
+       partition([5,4],3,[2,1],[])
+       partition([4],3,[2,1],[5])
+       partition([],3,[2,1],[4,5])
+       now list is Empty then return this tuple ([2,1],[4,5])
+       Complexity is O(n^2) for worst case when list already sorted
+       for anaavreahge O(N * log(N))
+ */
+  override def quickSort[S >: T](ordering: Ordering[S]): RList[S] = {
+    @tailrec
+    def partition(list:RList[T],pivot:T,smallerList:RList[T],largerList:RList[T]):(RList[T],RList[T]) ={
+          if(list.isEmpty) (smallerList,largerList)
+          else if(ordering.lteq(list.head,pivot)) partition(list.tail,pivot,list.head:: smallerList,largerList)
+          else partition(list.tail,pivot, smallerList,list.head::largerList)
+    }
+    @tailrec
+    def quickSortTailRec(remainingLists:RList[RList[T]], accumulator:RList[RList[T]]):RList[T] ={
+      if(remainingLists.isEmpty) accumulator.flatmap(smallList => smallList).reverse
+      else if(remainingLists.head.isEmpty) quickSortTailRec(remainingLists.tail , accumulator)
+      else if(remainingLists.head.tail.isEmpty) quickSortTailRec(remainingLists.tail,remainingLists.head :: accumulator)
+      else{
+        val list= remainingLists.head
+        val pivot = list.head
+        val listToSplit= list.tail
+        val (smaller,larger) = partition(listToSplit,pivot,RNil,RNil)
+        quickSortTailRec(smaller :: (pivot :: RNil):: larger :: remainingLists.tail , accumulator)
+      }
+    }
+    quickSortTailRec(this :: RNil ,RNil)
   }
+}
 
 
 
@@ -916,6 +1022,7 @@ TODO
        println(list1.mergeSort(ordering))
        // testing the edge case
        println( 3 :: RNil.mergeSort(ordering))
+       println(list1.quickSort(ordering))
     }
     testEasyFunctions
     testMedium()

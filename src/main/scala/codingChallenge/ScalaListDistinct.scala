@@ -24,4 +24,11 @@ object ScalaListDistinct extends App {
     distinctTailRec(ls,Nil)
   }
   distinct1(List(1,2,3,3,5))
+// sum the list of Option[Int]
+  def sumList[ T ] (list: List[Option[T]])(implicit ev: Numeric[T]): Option[T] = {
+    list.foldLeft(Option(ev.zero)) { case (acc, el) =>
+      el.flatMap(value => acc.map(ac => ev.plus(ac, value)))
+    }
+  }
+
 }
