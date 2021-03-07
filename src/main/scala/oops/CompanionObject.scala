@@ -57,4 +57,24 @@ val mystring = MyString("hello", "world")
    case MyString(str, str1) => println(str)
 
  }
+
+ //TODO Companion object more examples
+  // TODO this worls like helper or utility
+ object Clusterconfiguration{
+   val MAX_NODES= 20
+   def getNumberOfNodes= {42}
+ }
+  val max= Clusterconfiguration.MAX_NODES
+  //TODO here class + object = companion object
+  // instance level logic goes here
+  class Kid(name:String,age:Int){
+    def greet():String = s"Hello, my name is $name and I am $age  years old ,Do I like vegetables ${Kid.LIKES_VEGETABLES}   "
+  }
+  // class level or static logic goes here
+  // in short companion objects are for static fields and methods
+  object Kid{ // all class level or static stuff will go here
+    // its like static boolean LIKES_VEGETABLES = false
+    private val LIKES_VEGETABLES= false
+
+  }
 }
