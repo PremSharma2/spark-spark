@@ -47,7 +47,7 @@ TODO
     alice.age = 25 // compiler will re write this as
     // alice.age_+=(25)
     val name = alice(0) // alice.apply(0)
-    alice(1) = 33 // alice.update(1,24)
+    alice(1) = 33 // alice.update(1,33)
   }
 
 }
