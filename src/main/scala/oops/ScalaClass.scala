@@ -3,16 +3,18 @@ package oops
 object ScalaClass {
 
 
- // # a basic class
+ // # a basic class this sngle line works like java multiple line code
+  // which will create the constructor here basically and setter getter
   class Person(var name: String, var age: Int)
 
 //  # use the class
   val al = new Person("Al", 42)
   al.name                        // "Al"
-  al.age                         // 42
+  al.age                        // 42 it is getter age
+  al.age=45
   //A bit more real-world:
 
-  // define the class
+  // define the class with immutable filed values there will no setters
   class Person1(val firstName: String, val lastName: String) {
 
     println("the constructor begins")
@@ -26,7 +28,7 @@ object ScalaClass {
       // access the fullName field, which is created above
       println(fullName)
     }
-
+//-----constructor again begins--------------------
     printFullName
     println("still in the constructor")
 
@@ -50,9 +52,15 @@ object ScalaClass {
   //p.name = "Fred Flintstone"              // error: reassignment to val
 
   // 'name' is neither var or val
+  /*
+   If a field doesn’t have a var or val modifier,
+    Scala gets conservative, and doesn’t generate a getter or setter method for the field.
+    so no getter is there thats why its complaning
+   */
   class User(name: String)
   val u = new User("Alvin Alexander")
- // p.name                                  // error: value name is not a member of Person
+
+ // u.name                                  // error: value name is not a member of Person
 
   // 'name' is 'private var'
   class Staff(private var name: String) { def printName {println(name)}  }
@@ -162,7 +170,8 @@ object ScalaClass {
 
   // so use an abstract class
  // abstract class Animal(name: String)
- // In the following example the methods save, update, and delete are defined in the abstract class BaseController, and the method connect is undefined, and therefore abstract:
+ // In the following example the methods save, update, and delete are defined in the abstract class BaseController,
+  // and the method connect is undefined, and therefore abstract:
 /*
   abstract class BaseController(db: Database) {
     def save { db.save }

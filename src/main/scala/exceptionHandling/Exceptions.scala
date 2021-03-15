@@ -7,8 +7,8 @@ object Exceptions extends App {
 
   // throwing and catching Exceptions
   // as we are aware that every thing in scala is expression
-  // so throwing an exception will also be an expression which has some value
-  // val weirdValue= throw new NullPointerException
+  // so throwing an exception will also be an expression which has some return value
+  // val weirdValue:Nothing = throw new NullPointerException
 
   // throwable classes extend the Throwable class
   //Exception  and Error are the major Throwable subtypes

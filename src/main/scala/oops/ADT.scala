@@ -4,6 +4,7 @@ object ADT {
    // way of structuring the data basically
   // let say we want to model the weather forecast hierarchy
   sealed  trait Weather // This structure is called Sum type
+  //TODO these are the possible constants for Weather
   case object Sunny extends Weather
   case object Windy extends Weather
   case object Rainy extends Weather

@@ -2,7 +2,7 @@ package exceptionHandling
 
 import scala.util.{Failure, Success, Try}
 
-//TODO : -> Exception handling using Try API
+//TODO : -> Exception handling using Scala  Try API
 object HandlingFailure extends App {
   // Try is parent interface for both of them
   //Success and Failure  are  case classes so it has apply method 
@@ -12,6 +12,7 @@ object HandlingFailure extends App {
   println(aSuccess)
   println(aFailure)
   val nothing :Nothing = throw new RuntimeException("No String For You Buster")
+  //TODO it shows that Nothing is sub class of every class
   def unsafeMethod() : String= nothing
   //Try will wrap it into Success or Failure
   val potentialFailuer: Try[String] =Try.apply(unsafeMethod)
@@ -31,9 +32,9 @@ object HandlingFailure extends App {
   //orElse
   def backupMethod: String = "A valid backup Result"
   // if it is failure then return Try with Success
-  val fallbackTry: Try[String] = Try.apply(unsafeMethod).orElse(Try.apply(backupMethod))
+  val fallbackTry: Try[String] = Try.apply(unsafeMethod) orElse (Try.apply(backupMethod))
   println(fallbackTry.isSuccess)
-  def betterUnsafeMethod():Try[String]=Failure.apply(new RuntimeException("Failure ocuured,throwing an exception"))
+  def betterUnsafeMethod():Try[String]= Failure.apply(new RuntimeException("Failure ocuured,throwing an exception"))
   def betterBackUpMethod() : Try[String]= Success.apply("Method succesfully executed : Returning a Valid Result")
   val betterFallBack: Try[String] = betterUnsafeMethod orElse betterBackUpMethod
    println(betterFallBack.isSuccess)

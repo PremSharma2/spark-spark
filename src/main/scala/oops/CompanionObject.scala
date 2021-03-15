@@ -23,14 +23,18 @@ So copy the following example into a file and run it in script mode:
  *
  *
  */
-object CompanionObject extends App{
+object CompanionObject extends App {
 
   class MyString(val jString: String) {
     private var extraData = ""
+
     override def toString = jString + extraData
   }
-// this is companion object for Mystring class
+
+  // this is companion object for Mystring class
   object MyString {
+    // all static fields or class level attributes goes here
+    val staticField=22
     /*
      * Constructor of Factory Pattern for MyString  class
      */
@@ -39,42 +43,66 @@ object CompanionObject extends App{
       s.extraData = extras
       s
     }
+
     def apply(base: String) = new MyString(base)
+
     /*
      * extractor pattern for Mystringclass 
      * using pattern matching
      */
     def unapply(p: MyString): Option[(String, String)] =
-      Some(p.jString,p.extraData)
+      Some(p.jString, p.extraData)
 
   }
-val mystring = MyString("hello", "world")
+
+  val mystring = MyString("hello", "world")
   println(MyString("hello", "world"))
   println(MyString("hello"))
-  println(MyString.unapply(MyString.apply("Tom","Jerry")).getOrElse(Some("tom","jerry")))
+  println(MyString.unapply(MyString.apply("Tom", "Jerry")).getOrElse(Some("tom", "jerry")))
 
- mystring match {
-   case MyString(str, str1) => println(str)
+  mystring match {
+    case MyString(str, str1) => println(str)
 
- }
+  }
 
- //TODO Companion object more examples
+
+  //scala singleton pattern using scala singleton objects
+  class Brain private {
+    override def toString = "This is the brain."
+  }
+
+  object Brain {
+    val brain = new Brain
+
+    def getInstance: Brain = {
+      brain
+    }
+  }
+
+  //TODO Companion object more examples
   // TODO this worls like helper or utility
- object Clusterconfiguration{
-   val MAX_NODES= 20
-   def getNumberOfNodes= {42}
- }
-  val max= Clusterconfiguration.MAX_NODES
+  object Clusterconfiguration {
+    val MAX_NODES = 20
+
+    def getNumberOfNodes = {
+      42
+    }
+  }
+
+  val max = Clusterconfiguration.MAX_NODES
+
   //TODO here class + object = companion object
   // instance level logic goes here
-  class Kid(name:String,age:Int){
-    def greet():String = s"Hello, my name is $name and I am $age  years old ,Do I like vegetables ${Kid.LIKES_VEGETABLES}   "
+  class Kid(name: String, age: Int) {
+    def greet(): String = s"Hello, my name is $name and I am $age  years old ,Do I like vegetables ${Kid.LIKES_VEGETABLES}   "
   }
+
   // class level or static logic goes here
   // in short companion objects are for static fields and methods
-  object Kid{ // all class level or static stuff will go here
+  object Kid { // all class level or static stuff will go here
     // its like static boolean LIKES_VEGETABLES = false
-    private val LIKES_VEGETABLES= false
+    private val LIKES_VEGETABLES = false
 
   }
+
 }

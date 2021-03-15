@@ -20,11 +20,11 @@ object NullVsNothingVsNone  extends App{
   //3 Nil it represents Empty Collection i.e
   // when head and tail is null then we can represent that
   // null reference to Nil i.e both are same that Seq is null
-  //:ImpNote: when in traditional java we use if(list==null)
   // Nil is an singleton object that can be attributed to any EmptyList
   // Like we created a EmptyList, But Nil unlike Null has proper values
   // i.e proper attributes
   val anEmptyList: List[Int] = Nil
+  //Nil.tail is null and Nil.head is also null
     println(Nil.length)
 
  // ImpNote: when in traditional java we use if(list==null)
@@ -41,7 +41,7 @@ object NullVsNothingVsNone  extends App{
   }
 
   //---------------------------------------------------------------------------------------------
-  // 4 None which is subtype of Options
+  // TODO : 4 None which is subtype of Options
 
 
   val anAbsentInt:Option[Int] = None

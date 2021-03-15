@@ -18,11 +18,11 @@ trait MyList {
   override def toString: String= "[" + printElements+"]"
 }
 
- case object EmptyNode extends MyList {
+ case object CNil extends MyList {
   def head :Nothing = throw new  NoSuchElementException
   def tail :Nothing = throw new  NoSuchElementException
   def isEmpty :Boolean = true
-  def add(element:Int) :MyList = new Node(element,EmptyNode)
+  def add(element:Int) :MyList = new Node(element,CNil)
   def printElements :String =""
 }
 
@@ -39,17 +39,28 @@ class Node(h: Int, nodeTail: MyList) extends MyList {
   }
 }
 
+class Cons( override val head:Int, override val  tail: MyList) extends MyList {
+  def isEmpty :Boolean =  false
+  def add(element:Int):MyList = new Node(element,this)
+  def printElements :String ={
+    if(tail.isEmpty) "" + head
+    else {
+      head + "" + tail.printElements
+    }
+  }
+}
 object ListTest extends App{
-
-  val list=new Node(1,EmptyNode)
+ val cons = new Cons(1,new Cons(2,CNil))
+  val list=new Node(1,CNil)
   println(list.head)
   println(list.tail)
   println(list)
   val newlist: MyList =list.add(2)
   println(newlist)
-  val linkedlist=new Node(1,new Node(2,new Node(3,EmptyNode)))
+  val linkedlist=new Node(1,new Node(2,new Node(3,CNil)))
   println(linkedlist.head)
   println(linkedlist.tail.head)
   println(linkedlist.add(4).head)
   println(linkedlist.toString())
+  println(cons.head)
 }

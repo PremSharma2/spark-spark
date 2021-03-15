@@ -1,4 +1,4 @@
-import functors.Functors.Functor
+
 
 object ApplicativeFunctors  extends App {
 

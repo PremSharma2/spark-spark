@@ -29,7 +29,7 @@ trait CafeServices {
     else if (modelItems.exists(_.isHotFood)) standardPrice * 0.2
     else standardPrice * 0.1
   }
-  override def standardBill(items: Seq[MenuItem]) = {
+    override def standardBill(items: Seq[MenuItem]) = {
     toModel(items).view.map(_.price).sum
   }
 

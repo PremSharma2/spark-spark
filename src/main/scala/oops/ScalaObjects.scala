@@ -35,15 +35,5 @@ object ScalaObjects extends App {
   
   val bob=Person(mary,john)
 
-  //scala singleton pattern using scala singleton objects
-  class Brain private {
-    override def toString = "This is the brain."
-  }
 
-  object Brain {
-    val brain = new Brain
-    def getInstance: Brain = {
-      brain
-    }
-  }
 }

@@ -17,19 +17,30 @@ abstract class MyList[+A] {
    */
 
   def head: A
+
   def tail: MyList[A]
+
   def isEmptyList: Boolean
+
   def addElement[B >: A](element: B): MyList[B]
+
   def printListElements: String
+
   override def toString: String = "[" + printListElements + "]"
+
   //these are called higher order functions
   def map[B](transformer: A => B): MyList[B]
+
   def flat_Map[B](transformer: A => MyList[B]): MyList[B]
+
   def filter(predicate: A => Boolean): MyList[A]
+
   def +[B >: A](list: MyList[B]): MyList[B]
+
   //hofs
-  def foreach( f: A => Unit): Unit
+  def foreach(f: A => Unit): Unit
 }
+
 /*
  *
  * No one can create such object like Nothing in Scala
@@ -42,22 +53,36 @@ abstract class MyList[+A] {
  */
 case object EmptyList extends MyList[Nothing] {
   def head: Nothing = throw new NoSuchElementException
+
   def tail: MyList[Nothing] = throw new NoSuchElementException
+
   def isEmptyList: Boolean = true
+
   def addElement[B >: Nothing](element: B): MyList[B] = new Node(element, EmptyList)
+
   def printListElements: String = ""
+
   def map[B](transformer: Nothing => B): MyList[B] = EmptyList
+
   def flat_Map[B](transformer: Nothing => MyList[B]): MyList[B] = EmptyList
+
   def filter(predicate: Nothing => Boolean): MyList[Nothing] = EmptyList
+
   def +[B >: Nothing](list: MyList[B]): MyList[B] = list
+
   //hofs
-  def foreach( f: Nothing => Unit): Unit= ()
+  def foreach(f: Nothing => Unit): Unit = ()
 }
+
 case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
   def head: A = return h
+
   def tail: MyList[A] = return t
+
   def isEmptyList: Boolean = return false
+
   def addElement[B >: A](element: B): MyList[B] = new Node(element, this)
+
   def printListElements: String = {
     if (t.isEmptyList) "" + h
     else {
@@ -123,12 +148,12 @@ case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
   def flat_Map[B](transformer: A => MyList[B]): MyList[B] = {
     transformer.apply(h) + t.flat_Map(transformer)
   }
-  
+
   //hofs
-   def foreach( f: A => Unit): Unit= {
-     f(h)
-     t.foreach(f)
-   }
+  def foreach(f: A => Unit): Unit = {
+    f(h)
+    t.foreach(f)
+  }
 }
 
 object Listest extends App {
@@ -156,6 +181,6 @@ object Listest extends App {
       new Node(elem, new Node(elem + 1, EmptyList))
     }
   }).toString())
-  
-  
+
+
 }

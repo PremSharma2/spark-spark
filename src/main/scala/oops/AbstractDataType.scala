@@ -13,7 +13,7 @@ object AbstractDataType{
 
     override val creatureType: String = "Cannie"
     override def eat = println("crunch crunch")
-
+// def can be overrideen as val instance property
     override val beep  = super.beep
   }
   //trait an Abstract data type represents only behaviour
@@ -46,12 +46,33 @@ object AbstractDataType{
     def foo: String
     def foo_= (s: String): Unit
   }
+  /*
+  TODO
+    “A def can be implemented by either of a def, a val, a lazy val, or an object.
+    So it’s the most abstract form of defining a member.
+    Since traits are usually abstract interfaces,
+    saying you want a val is saying how the implementation should do.”
+   */
+  trait Foo1 {
+    def id: Int
+    protected val b=2
+  }
+
+  class Bar1 extends Foo1 {
+    val id = 1
+    override protected val b=4
+  }
+  // we can override def as var/val as constructor argument as well
+  // but make sure that method in trait shd be accesor only
   class Bar(override var foo: String) extends Foo {
   }
 
   val dog = new Dog
+  dog.creatureType // its is
   val croc = new Crocodile
-
+  val bar = new Bar("foo")
+  bar.foo // this is assessor method
+  bar.foo="hi" // this is update method
   // TODO : Exercise
 /*
   the trait has a member plumage,
@@ -60,6 +81,24 @@ object AbstractDataType{
 if you remove the colours member and just keep plumage, it will work
 t's null because the runtime knows it's going to be overwritten -
 otherwise the runtime will just take that initial value
+TODO
+ Got it - that's because of the order of initialization.
+ Your printColours method uses the colours value defined in the trait,
+ which is null because you've overridden it in the object Goldfinch.
+ because colors is defined in terms of plumage which you've overridden in the object
+ i.e colors and plumage goes hand in hand
+ if you comment both, then it works
+ because plumage and colours are non-null
+ Also the trait has a colours field and the object has a different colours field
+ if you override them, then the colours field from the trait is null at initialization because you've overridden it
+ Solution :
+ change them to defs and they will work if you uncomment your code
+ or override everything in sub class
+TODO:Best practices
+  almost - best practice is to have
+ defs in traits, except constants which you aren't going to override (they should stay in companion objects anyway)
+ override defs with either defs or vals (depending on what you're doing,
+ sometimes your logic will make it impossible to override with val)
  */
   case class Plumage(colours: String*)
   sealed trait Bird {
@@ -79,12 +118,37 @@ otherwise the runtime will just take that initial value
   case object Goldfinch extends Ordering[String] with  Bird {
     override def compare(x: String, y: String): Int = throw new NullPointerException
     override protected val plumage = Plumage("Yellow", "Red", "White", "Black")
-    //override protected val colours: Seq[String] = plumage.colours
+    override protected val colours: Seq[String] = plumage.colours
+    //TODO still it will not work because
   }
 
+  //TODO better Design
+
+  sealed trait Bird1 {
+    // We cannot assign a value the variables in trait in scala
+    protected def plumage: Plumage = Plumage("Yellow", "Red", "White", "Black")
+    protected def colours: Seq[String]  = plumage.colours
+    def printColours(): Unit = {
+      println(s"Bird colours: [${colours.mkString("/")}]")
+    }
+  }
+  case object Kingfisher1 extends Ordering[String] with  Bird {
+    override def compare(x: String, y: String): Int = -1
+
+    //override protected val plumage = Plumage("Green", "Orange")
+    //override protected val colours: Seq[String] = plumage.colours
+  }
+  case object Goldfinch1 extends Ordering[String] with  Bird {
+    override def compare(x: String, y: String): Int = throw new NullPointerException
+    override protected val plumage = Plumage("Yellow", "Red", "White", "Black")
+    override protected val colours: Seq[String] = plumage.colours
+    //TODO still it will not work because
+  }
   def main(args: Array[String]): Unit = {
     //croc.eat(dog)
+  // Kingfisher.printColours()
    Goldfinch.printColours()
+    Goldfinch1.printColours() // this will work
   }
 
 }

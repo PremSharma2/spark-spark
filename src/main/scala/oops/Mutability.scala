@@ -27,7 +27,7 @@ object Mutability {
     }
 
     def update(index: Int, value: Any): Unit = index match {
-      case 0 => name = value.asInstanceOf[String]
+      case 0 => name = value.asInstanceOf[String] // just for type casting we used here
       case 1 => a = value.asInstanceOf[Int]
       case _ => throw new IndexOutOfBoundsException
     }

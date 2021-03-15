@@ -4,11 +4,12 @@ import scala.annotation.tailrec
 
 /*
  *
- *
- * List implementation with Functional Programming Flavour,with Transformer and predicate replacing the inbuilt functional interfaces
+ *TODO
+ * List implementation with Functional Programming Flavour,
+ * with Transformer and predicate replacing the inbuilt functional interfaces
  */
 
-trait  MyList[+A] {
+trait MyList[+A] {
   /*
    *
    * head: first element of list
@@ -19,23 +20,38 @@ trait  MyList[+A] {
    */
 
   def head: A
+
   def tail: MyList[A]
+
   def isEmptyList: Boolean
+
   def addElement[B >: A](element: B): MyList[B]
+
   def printListElements: String
+
   override def toString: String = "[" + printListElements + "]"
+
   //these are called higher order functions
   def map[B](transformer: A => B): MyList[B]
+
   def flatMap[B](transformer: A => MyList[B]): MyList[B]
+
   def filter(predicate: A => Boolean): MyList[A]
-  def +[B >: A](list: MyList[B]): MyList[B]
+
+  def ++ [B >: A](list: MyList[B]): MyList[B]
+
   //hofs
   def foreach(function: A => Unit): Unit
+
   def sort(comparator: (A, A) => Int): MyList[A]
-  def zipWith[B, C](list: MyList[B], zipfunction: (A, B) => C): MyList[C]
+
+  def zip[B, C](list: MyList[B], zipfunction: (A, B) => C): MyList[C]
+
   def fold[B](start: B)(operator: (B, A) => B): B
-  def sum[B>:A](implicit num: Numeric[B]) : B
+
+  def sum[B >: A](implicit num: Numeric[B]): B
 }
+
 /*
  *
  * No one can create such object like Nothing in Scala
@@ -48,18 +64,29 @@ trait  MyList[+A] {
  */
 case object EmptyList extends MyList[Nothing] {
   def head: Nothing = throw new NoSuchElementException
+
   def tail: MyList[Nothing] = throw new NoSuchElementException
+
   def isEmptyList: Boolean = true
+
   def addElement[B >: Nothing](element: B): MyList[B] = new Node(element, EmptyList)
+
   def printListElements: String = ""
+
   def map[B](transformer: Nothing => B): MyList[B] = EmptyList
+
   def flatMap[B](transformer: Nothing => MyList[B]): MyList[B] = EmptyList
+
   def filter(predicate: Nothing => Boolean): MyList[Nothing] = EmptyList
-  def +[B >: Nothing](list: MyList[B]): MyList[B] = list
+
+  def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
+
   //hofs
   def foreach(function: Nothing => Unit): Unit = ()
+
   def sort(comparator: (Nothing, Nothing) => Int): MyList[Nothing] = EmptyList
-  def zipWith[B, C](list: MyList[B], zipfunction: (Nothing, B) => C): MyList[C] =
+
+  def zip[B, C](list: MyList[B], zipfunction: (Nothing, B) => C): MyList[C] =
     if (!list.isEmptyList) throw new RuntimeException("List do not have the same length")
     else EmptyList
 
@@ -68,15 +95,15 @@ case object EmptyList extends MyList[Nothing] {
   override def sum[B >: Nothing](implicit num: Numeric[B]): B = num.zero
 }
 
-case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
-  def head: A = return h
-  def tail: MyList[A] = return t
-  def isEmptyList: Boolean = return false
-  def addElement[B >: A](element: B): MyList[B] = new Node(element, this)
+case class Node[+A](override val head: A, override val tail: MyList[A]) extends MyList[A] {
+  def isEmptyList: Boolean = false
+
+  def addElement[B >: A](element: B): MyList[B] =  Node(element, this)
+
   def printListElements: String = {
-    if (t.isEmptyList) "" + h
+    if (tail.isEmptyList) "" + head
     else {
-      h + "," + t.printListElements
+      head + "," + tail.printListElements
     }
   }
 
@@ -89,17 +116,17 @@ case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
    * = new new Node(2,EmptyList.filter(n%2==0)
    * =new Node(2,EmptyList)
    */
-/*here no need to heck the compiler bcz
- we are using Function1 which is already have input arguent as contravarient
-  Here as we can see that -T1 as contravarient
-trait Function1[ -T1,+R]
-    
- *  
- */
-  def filter(predicate: A => Boolean ): MyList[A] = {
-    if (predicate.apply(this.h)) new Node(h, t.filter(predicate))
-    else
-      t.filter(predicate)
+  /*here no need to heck the compiler bcz
+   we are using Function1 which is already have input arguent as contravarient
+    Here as we can see that -T1 as contravarient
+  trait Function1[ -T1,+R]
+
+   *
+   */
+  def filter(predicate: A => Boolean): MyList[A] = {
+    if (predicate.apply(this.head)) Node(head, tail.filter(predicate))
+    else tail.filter(predicate)
+
   }
 
   /*
@@ -118,7 +145,7 @@ trait Function1[ -T1,+R]
    *
    */
   def map[B](transformer: A => B): MyList[B] = {
-    new Node(transformer.apply(h), t.map(transformer))
+    Node(transformer.apply(head), tail.map(transformer))
   }
 
   /*
@@ -128,10 +155,10 @@ trait Function1[ -T1,+R]
    * =new Node(1, new cons(2, [3,4,5])
    * or
    * =new cons(1,new Node(2,new Node(3,new Node(4,new Node(5,EmptyList)))))
-   * 
+   *
    *
    */
-  def +[B >: A](list: MyList[B]): MyList[B] = new Node(h, this.t + list)
+  def ++ [B >: A](list: MyList[B]): MyList[B] = Node(head, this.tail ++ list)
 
   /*for eg here let say transformer take int and returns List[Int] i.e a role of flatmap it flatens
    * [1,2].flatMap (n => [n,n+1])
@@ -146,14 +173,14 @@ trait Function1[ -T1,+R]
    */
 
   def flatMap[B](transformer: A => MyList[B]): MyList[B] = {
-    transformer.apply(h) + t.flatMap(transformer)
+    transformer.apply(head) ++ tail.flatMap(transformer)
   }
 
   //hofs
   def foreach(function: A => Unit): Unit = {
-    function.apply(h)
+    function.apply(head)
     // recursive call for looping
-    t.foreach(function)
+    tail.foreach(function)
   }
 
   //hof
@@ -168,12 +195,12 @@ trait Function1[ -T1,+R]
    *
    *
    */
-  
-  
+
+
   /*
    * Here also no need to manage the generic stuff bcz we are using Function which takes two argumet and both are at Contravarient
    * trait Function2[-T1, -T2, +R] extends AnyRef
-   * 
+   *
    * eg:
    *  object Main extends Application {
    val max = (x: Int, y: Int) => if (x < y) y else x
@@ -194,31 +221,33 @@ trait Function1[ -T1,+R]
 
 
    */
-  def sort(comparator: (A, A) => Int  ): MyList[A] = {
+  def sort(comparator: (A, A) => Int): MyList[A] = {
     println("Inside sort")
+
     def insert(x: A, sortedList: MyList[A]): MyList[A] = {
       println("inside insert")
       println(" value of x is" + x + "\t" + "value of sortedList" + sortedList)
       //println("value of x is := " + x)
-      if (sortedList.isEmptyList) new Node(x, EmptyList)
-      else if (comparator.apply(x, sortedList.head) <= 0) new Node(x, sortedList)
-      else new Node(sortedList.head, insert(x, sortedList.tail))
+      if (sortedList.isEmptyList) Node(x, EmptyList)
+      else if (comparator.apply(x, sortedList.head) <= 0) Node(x, sortedList)
+      else Node(sortedList.head, insert(x, sortedList.tail))
     }
-    println("head is " + h + "\t" + "tail is" + t)
-    val sortedTail = this.t.sort(comparator)
-    //println(h)
-    println("before calling insert --head is :=" + h + "\t" + "sortedTail is : =" + sortedTail)
 
-    val list= insert(h, sortedTail)
-    println("returned list"+list)
-    println("sorted-tail"+sortedTail)
-      list
+    println("head is " + head + "\t" + "tail is" + tail)
+    val sortedTail = this.tail.sort(comparator)
+    //println(h)
+    println("before calling insert --head is :=" + head + "\t" + "sortedTail is : =" + sortedTail)
+
+    val list = insert(head, sortedTail)
+    println("returned list" + list)
+    println("sorted-tail" + sortedTail)
+    list
   }
 
-  def zipWith[B, C](list: MyList[B], zipfunction: (A, B) => C): MyList[C] =
+  def zip[B, C](list: MyList[B], zipfunction: (A, B) => C): MyList[C] =
     if (list.isEmptyList) throw new RuntimeException("List do not have the same length")
     else {
-      new Node(zipfunction(this.h, list.head), this.t.zipWith(list.tail, zipfunction))
+      Node(zipfunction(this.head, list.head), this.tail.zip(list.tail, zipfunction))
     }
 
   /*
@@ -230,13 +259,14 @@ trait Function1[ -T1,+R]
   *
   */
 
-   def fold[B](start: B)(operator: (B, A) => B): B = {
-     @tailrec
-    def foldTailRec(remaining:MyList[A],accumulator:B) : B ={
-      if(remaining.isEmptyList) accumulator
-      else  foldTailRec(remaining.tail,operator.apply(accumulator, this.h))
+  def fold[B](start: B)(operator: (B, A) => B): B = {
+    @tailrec
+    def foldTailRec(remaining: MyList[A], accumulator: B): B = {
+      if (remaining.isEmptyList) accumulator
+      else foldTailRec(remaining.tail, operator.apply(accumulator, this.head))
     }
-  foldTailRec(this,start)
+
+    foldTailRec(this, start)
   }
 
   override def sum[B >: A](implicit num: Numeric[B]): B = fold(num.zero)(num.plus)
@@ -250,22 +280,22 @@ object Listest extends App {
   val listOfString: MyList[String] = new Node("Hello", new Node("Scala", EmptyList))
   println(listOfIntegers.toString())
   println(listOfString.toString())
-  println(listOfIntegers.map((elem => elem * 2)).toString())
+  println(listOfIntegers.map(elem => elem * 2).toString())
 
   println(listOfIntegers.filter(elem => elem % 2 == 0).toString())
 
-  println((listOfIntegers + anotherListOfIntegers).toString())
-  println(listOfIntegers.flatMap(elem => new Node(elem, new Node(elem + 1, EmptyList))).toString())
+  println((listOfIntegers ++ anotherListOfIntegers).toString())
+  println(listOfIntegers.flatMap(elem =>  Node(elem,  Node(elem + 1, EmptyList))).toString())
   listOfIntegers.foreach(elem => println(elem))
 
   println(clonelistOfIntegers.sort((x, y) => x - y))
-  println(anotherListOfIntegers.zipWith(listOfIntegers, (x: Int, y: Int) => x + y))
+  println(anotherListOfIntegers.zip(listOfIntegers, (x: Int, y: Int) => x + y))
   println(listOfIntegers.fold(0)(_ + _))
   //for comprehension
-  val combinations = for {
+  val combinations: MyList[String] = for {
     n <- listOfIntegers
     string <- listOfString
-  } yield n + "-"  + string + "\t"
+  } yield n + "-" + string + "\t"
 
   println(combinations)
 

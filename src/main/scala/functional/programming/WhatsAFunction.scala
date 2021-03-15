@@ -16,7 +16,7 @@ object WhatsAFunction extends App {
   }*/
   // TODO : in FP functions are treated as first class citizens
   val doubler: MyFunction1[Int, Int] =
-  new MyFunction1[Int,Int]{
+      new MyFunction1[Int,Int]{
     override def apply(element:Int):Int=element*2
   }
   trait MyFunction1[-A, +B]{
@@ -44,6 +44,7 @@ object WhatsAFunction extends App {
     override def apply(a:Int,b:Int):Int=a+b
   }
   println(doubler.apply(10))
+  println(doubler(10))
   println(stringToIntConverter.apply("3").+(4) )
   println(doubler)
   println(stringToIntConverter)

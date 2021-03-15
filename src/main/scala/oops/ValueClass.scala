@@ -61,7 +61,7 @@ TODO
         Advantages of extending AnyVals
          no run time overhead : JVM seeks value class instances as instances of String
          not the BarCodeVc instance
-      Restrictions od Value classes:
+      Restrictions of Value classes:
       1 - only one val constructor argument
       2 - no other vals inside , just methods
       3 cannot be extended
