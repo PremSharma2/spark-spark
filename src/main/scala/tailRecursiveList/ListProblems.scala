@@ -270,9 +270,9 @@ object ListProblems {
 
      */
     override def ++[S >: T](anotherList: RList[S]): RList[S] = {
-      def concatTailRec(remaining: RList[S], accumlator: RList[S]): RList[S] = {
-        if (remaining.isEmpty) accumlator
-        else concatTailRec(remaining.tail, remaining.head :: accumlator)
+      def concatTailRec(remaining: RList[S], accumulator: RList[S]): RList[S] = {
+        if (remaining.isEmpty) accumulator
+        else concatTailRec(remaining.tail, remaining.head :: accumulator)
       }
 
       concatTailRec(this.reverse, anotherList)
@@ -557,7 +557,7 @@ object ListProblems {
            duplicateEachTailRec([2],1,1,[1,])
            if(remaining.isEmpty && nDuplications==k) accumulator
            else if(remaining.isEmpty) duplicateEachTailRec(remaining,currentElement,nDuplications+1,currentElement:: accumulator)
-           else if(nDuplications == k) duplicateEachTailRec(remaining.tail,remaining.head,0,accumulator)
+           else if(nDuplications == k) du plicateEachTailRec(remaining.tail,remaining.head,0,accumulator)
            none of the conditions are met so we will go to the else branch
             duplicateEachTailRec([2],1,2,[1,1])
 
@@ -1043,7 +1043,7 @@ object ListProblems {
     val list3: RList[Int] = 1 :: 1 :: 1 :: 2 :: 3 :: 3 :: 4 :: 5 :: 5 :: 5 :: RNil
     val listz = list ++ list1
     val iterable: Iterable[Int] = 1 to 10000
-    Iterable.apply(2, 3, 4)
+   val iterable1: Iterable[Int] = Iterable.apply(2, 3, 4)
 
     val aLargeList = RList.from(1 to 10000)
     // TODO This expression is right associative by default in scala

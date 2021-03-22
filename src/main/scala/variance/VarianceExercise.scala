@@ -12,25 +12,27 @@ object VarianceExercise  extends App{
    *
    *
    * Imp points for varince
-   *   --------------------------------------------------
-def method(...): SomeType
-that SomeType is in a covariant position. Here are the cases:
-If SomeType is a normal type (e.g. Person), then you're good.
-If SomeType is a generic type argument (e.g. T),
-* then T must at least not be contravariant in the class where the method is being defined.
+   *
+   *TODO --------------------------------------------------
+TODO
+  def method(...): SomeType
+  that SomeType is in a covariant position. Here are the cases:
+  If SomeType is a normal type (e.g. Person), then you're good.
+  If SomeType is a generic type argument (e.g. T),
+ then T must at least not be contravariant in the class where the method is being defined.
  Invariant and covariant is fine.
-
-1 If SomeType is a generic type containing your class' type argument (e.g. List[T]),
-* then the position of SomeType is accepted
-(regardless of whether T is annotated with +/-, much like case 1 above),
-*  but the variance position is now transferred to T. This is the complex part.
-*
-2 If SomeType is covariant in T (e.g. List), then SomeType's variance position transfers to T.
-* In this case, T would be in a covariant position.
-If SomeType is contravariant in T, then SomeType's variance position is transferred backwards to T.
-In this (your) case, T will be in a contravariant position, which matches the original type definition.
-If SomeType is invariant in T, then the position of T is strictly invariant,
-* and T must not have any +/- annotation.
+ *
+TODO what if SomeType is higherKinded type List[T] ??
+ 1 If SomeType is a generic type containing your class' type argument (e.g. List[T]),
+ * then the position of SomeType is accepted
+ (regardless of whether T is annotated with +/-, much like case 1 above),
+ *  but the variance position is now transferred to T. This is the complex part.
+ 2 If SomeType is covariant in T (e.g. List), then SomeType's variance position transfers to T.
+ * In this case, T would be in a covariant position.
+ If SomeType is contravariant in T, then SomeType's variance position is transferred backwards to T.
+ In this (your) case, T will be in a contravariant position, which matches the original type definition.
+ If SomeType is invariant in T, then the position of T is strictly invariant,
+ * and T must not have any +/- annotation.
    */
   class IList[T]
   class Vehicle
@@ -47,6 +49,7 @@ If SomeType is invariant in T, then the position of T is strictly invariant,
   }
   
   //Covariant API Implementation
+  //TODO If your Generic class creates or contains elements of type T it should be +T
   class CParking[+T](vehicles :List[T])   {
     // we need to do the heck the compiler because method argument are in contravariant position
    // def park [S>:T] (vehicle:S):T= ???
@@ -55,20 +58,18 @@ If SomeType is invariant in T, then the position of T is strictly invariant,
     def checkVehicles(conditions:String):List[T] = ???
     def flatMap[S](f : T => CParking[S]): CParking[S] = ???
     // Due to double Variance function input has become covariant and its o/p has become contravariant
-    def transform [S>:T](function : T => S): CParking[T] = ???
+    def transform [S>:T](function : T => S): CParking[S] = ???
   }
-  //Contravariant implementation
+  //TODO Contravariant implementation are majorly used in type class
+  //Todo beacuse we need to take an action on type
   
   class XParking[-T] (vehicles :List[T]){
      def park (vehicle:T):XParking[T]= ???
      def impound (vehicles:List[T]):XParking[T]= ???
-     // here List is covariant to T
-     // and as we know that variance position transfers to T.
-     // In this case, T would be in a covariant position.
      def checkVehicles [S<:T](conditions:String):List[S] = ???
      // def flatMap[S](f : T => CParking[S]): CParking[S] = ???
      /*
-      * 
+     TODO
       * Error:
       * contravariant type T occurs in covariant position in type T ⇒ com.scala.variance.VarianceExercise.CParking[S] of value f
       * contravariant type T occurs in covariant position in type T ⇒ 
@@ -93,6 +94,7 @@ If SomeType is invariant in T, then the position of T is strictly invariant,
   //IList[T] is invariant,So We are making Invariant List to covariant
   
    //Covariant Implementation
+   //TODO If your Generic class creates or contains elements of type T it should be +T
   class CParking2[+T]( vehicles :IList[T])   {
     // we need to do the hacking of compiler to avoid second ThumB Rule for variance i.e to make the method argument is at
      // contravariant position

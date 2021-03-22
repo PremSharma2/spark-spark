@@ -1,5 +1,7 @@
 package generics
 
+import generics.Transformer1.MyTransformer
+
 //always use covariance when you have collection of things,Hence We are making Covariant List
 trait MyGenericList[+A] {
   /*
@@ -142,7 +144,7 @@ object Listest extends App {
   println(listOfIntegers.toString())
   println(listOfString.toString())
 
-  println(listOfIntegers.map(new MyTransformer[Int, Int] {
+  println(listOfIntegers.map[Int](new MyTransformer[Int, Int] {
 
     override def transform(elem: Int): Int = elem * 2
 

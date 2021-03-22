@@ -35,5 +35,25 @@ object ScalaObjects extends App {
   
   val bob=Person(mary,john)
 
+/*
+TODO
+  UTILITY CLASSES
+  Depending on your needs,
+  creating a private class constructor may not be necessary at all.
+ For instance, in Java you’d create a file utilities class by
+  defining static methods in a Java class,
+ but in Scala you do the same thing by putting all the methods in a Scala object:
 
+
+ */
+object FileUtils {
+
+  def readFile(filename: String) = {
+    // code here ...
+  }
+
+  def writeToFile(filename: String, contents: String) {
+    // code here ...
+  }
+}
 }

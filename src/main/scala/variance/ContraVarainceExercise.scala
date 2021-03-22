@@ -1,6 +1,6 @@
 package variance
 
-object VarainceTest extends App {
+object ContraVarainceExercise extends App {
   abstract class Food { val name: String }
   abstract class Fruit extends Food
   case class Banana(name: String) extends Fruit
@@ -153,10 +153,10 @@ This example is from the last project I was working on.
 
   def printApi[A](a: A)(implicit p: Printer[A]) = p.print(a)
 
-  implicit object AnimalPrinter$ extends Printer[Animal] {
+  implicit object AnimalPrinter extends Printer[Animal] {
       def print(a: Animal) = "[Animal : %s]" format (a)
      }
-  printApi(Dog("Tom"))
+  printApi[Dog](Dog("Tom"))
   // TODO : here as we can see that
   //  we have declared the PrettyPrinter[Dog] but we have passed
   // TODO the reference of Animal because of contravariance implicitly

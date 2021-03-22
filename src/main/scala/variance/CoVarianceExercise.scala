@@ -1,18 +1,18 @@
 package variance
 
-object VarianceExercise1 extends App {
-
-  trait Food {
+object CoVarianceExercise extends App {
+//TODO defining ADTs
+  sealed trait Food {
 
     def name: String
 
   }
 
-  class Meat(val name: String) extends Food
+  case class Meat(override val name: String) extends Food
 
-  class Vegetable(val name: String) extends Food
+  case class Vegetable(override val name: String) extends Food
 
-  class WhiteMeat(override val name: String) extends Meat(name)
+  case class WhiteMeat(override val name: String) extends Meat(name)
 
   /*
   We can create some food instances of various type.
@@ -20,6 +20,7 @@ object VarianceExercise1 extends App {
    */
   // Food <- Meat
   val beef = new Meat("beef")
+
 
   // Food <- Meat <- WhiteMeat
   val chicken = new WhiteMeat("chicken")
@@ -36,7 +37,9 @@ object VarianceExercise1 extends App {
 Let's define the covariant type Recipe. It takes a component type that expresses the base food for the recipe -
 that is, a recipe based on meat, vegetable, etc.
    */
-// Here is the contract for the Recipe will look like
+  // Here is the contract for the Recipe will look like
+  //TODO If your Generic class creates or contains elements of type T it should be +T
+  //TODO here recipe contains the elements of type T
   trait Recipe[+A] {
 
     def name: String
@@ -59,35 +62,40 @@ that is, a recipe based on meat, vegetable, etc.
    recipe: Recipe[Food] = new GenericRecipe[Meat]
    */
 
-// TODO it is also type class instance for type Food
-  case class GenericRecipe(ingredients: List[Food]) extends Recipe[Food] {
+  // TODO it is also type class instance for type Food
+  case class GenericRecipe(override val ingredients: List[Food]) extends Recipe[Food] {
 
     def name: String = s"Generic recipe based on ${ingredients.map(_.name)}"
 
   }
+
   // TODO it is also type class instance for type Meat
-  case class MeatRecipe(ingredients: List[Meat]) extends Recipe[Meat] {
+  case class MeatRecipe(override val ingredients: List[Meat]) extends Recipe[Meat] {
 
     def name: String = s"Meat recipe based on ${ingredients.map(_.name)}"
 
   }
 
   // TODO it is also type class instance for type White Food
-  case class WhiteMeatRecipe(ingredients: List[WhiteMeat]) extends Recipe[WhiteMeat] {
+  case class WhiteMeatRecipe(override val ingredients: List[WhiteMeat]) extends Recipe[WhiteMeat] {
 
     def name: String = s"Meat recipe based on ${ingredients.map(_.name)}"
 
   }
+
   //Recipe[Food] <-  Recipe[Meat]
   val recipe: Recipe[Food] = MeatRecipe(List(beef, turkey))
   // Recipe[Food]: Based on Meat or Vegetable
-  val mixRecipe: GenericRecipe =
-     GenericRecipe(List(chicken, carrot, beef, pumpkin))
+  val mixRecipe: Recipe[Food] =
+    GenericRecipe(List(chicken, carrot, beef, pumpkin))
   // Recipe[Food] <- Recipe[Meat]: Based on any kind of Meat
-  val meatRecipe =  MeatRecipe(List(beef, turkey))
+  val meatRecipe: Recipe[Food] = MeatRecipe(List(beef, turkey))
   // Recipe[Food] <- Recipe[Meat] <- Recipe[WhiteMeat]: Based only on WhiteMeat
-  val whiteMeatRecipe =  WhiteMeatRecipe(List(chicken, turkey))
+  val whiteMeatRecipe: Recipe[Food] = WhiteMeatRecipe(List(chicken, turkey))
 
+  def processRecipe(recipe: Recipe[Food]) = {
+    recipe.ingredients.foreach(println(_))
+  }
 
-
+  processRecipe(whiteMeatRecipe)
 }
