@@ -8,11 +8,11 @@ object CoVarianceExercise extends App {
 
   }
 
-  case class Meat(override val name: String) extends Food
+   class Meat(override val name: String) extends Food
 
-  case class Vegetable(override val name: String) extends Food
+   class Vegetable(override val name: String) extends Food
 
-  case class WhiteMeat(override val name: String) extends Meat(name)
+   class WhiteMeat(override val name: String) extends Meat(name)
 
   /*
   We can create some food instances of various type.
