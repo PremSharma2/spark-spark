@@ -113,7 +113,15 @@ object StringProblem {
     if (charCount.values.exists(_ > (string.length + 1) / 2)) ""
     else organizeTailRec(charCount, '\u0000', "")
   }
-
+  /*
+  TODO
+     "Alice loves Scala" => "Scala loves Alice"
+     "    hello      world    " => "world hello"
+    */
+  def reverseWords(string:String):String ={
+    //non emty words from the original string
+    string.split(" ").filter(!_.isEmpty).reverse.mkString(" ")
+  }
 
   def main(args: Array[String]): Unit = {
     println(countCharacters("Scala"))
@@ -133,5 +141,6 @@ object StringProblem {
     println(result)
     println(reorganizeString("aaaaa").isEmpty)
     println(reorganizeString("abbcb"))
+    println(reverseWords("    hello      world    "))
   }
 }

@@ -42,7 +42,7 @@ TODO   now lets talk about a number which is not prime
       isPrimeTailRec(currentDivisor + 1 =3)
       now inside isPrimeTailRec we will check  if(3 > 3.xx) false
       15 % 3 and it is true , now it will not go to else
-      return true from here
+      return false from here
       complexity O(Sqrt(n))
    */
   def isPrime(n: Int): Boolean = {

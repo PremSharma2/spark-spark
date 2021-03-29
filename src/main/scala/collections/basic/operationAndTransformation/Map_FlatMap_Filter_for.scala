@@ -4,6 +4,19 @@ object Map_FlatMap_Filter_for  extends App{
   
   val list=List(1,2,3)
   val input=List("hello-world","scala","prem")
+  /*
+  TODO
+     Tests whether a predicate holds for at least one element of this traversable collection.
+     Note: may not terminate for infinite-sized collections.
+     this can be useful when we want to terminate the iteration here
+     on this condition and return the result
+   */
+  val rExists: Boolean =input.exists(_.matches("hello-world"))
+  /*
+  TODO
+    Finds the first element which yields the largest value measured by function f
+   */
+  val maxby: String = input.maxBy(x => x.length())
   println(input.maxBy(x => x.length()))
   println(list.head)
   println(list.headOption)
@@ -11,8 +24,23 @@ object Map_FlatMap_Filter_for  extends App{
   val l = List(1,2,3,4)
   val l1 = List(5,6,7,8)
   val alist = List(2, 3, 5, 7)
-  val prepended = 1 +: alist  // List(1,2,3,5,7)
+  /*
+   TODO
+      A copy of the general sequence with an element prepended.
+    Note that :-ending operators are right associative (see example).
+     A mnemonic for +: vs. :+ is: the COLon goes on the COLlection side.
+    Also, the original general sequence is not modified, so you will want to capture the result.
+    Example:
+      scala> val x = List(1)
+      x: List[Int] = List(1)
+      scala> val y = 2 +: x
+      y: List[Int] = List(2, 1)
 
+   */
+  val prepended = 1 +: alist  // List(1,2,3,5,7)
+       val prepen= 0 :: alist   // this Right associative basically i.e alist :: 0
+     val associtivoperatorlist=1 :: 2 :: 3 :: Nil
+                 alist.::(0)
   val appended = alist :+ 9
   println(appended)
   println(l ++ l1)
@@ -21,6 +49,7 @@ object Map_FlatMap_Filter_for  extends App{
   //Adds an element at the beginning of this list
   // you can pass list or any value
   //1 :: List(2, 3) = List(2, 3).::(1) = List(1, 2, 3)
+  val listOfIntegerAndList: List[Any] = l :: l1
   println(l :: l1)
 
   println(l.::(0))
@@ -32,6 +61,14 @@ object Map_FlatMap_Filter_for  extends App{
   (1 until 10 by 2).toList         // # List(1, 3, 5, 7, 9)
   (1 to 10).by(2).toList           // # List(1, 3, 5, 7, 9)
   //compiler will rewrite this like this l1 :: l now l will be prepended
+  /*
+   TODO
+      def :::[B >: A](prefix: List[B]): List[B]
+       Adds the elements of a given list in front of this prefix list.
+    Example:
+    List(1, 2) ::: List(3, 4) = List(3, 4).:::(List(1, 2)) = List(1, 2, 3, 4)
+   */
+  val listOfList: List[Int] = l ::: l1
   println(l ::: l1)
   list.foreach(println(_))
   // map
