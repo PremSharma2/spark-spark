@@ -19,6 +19,7 @@ object TuplesandMaps extends App {
   val phonebook = Map.apply(("Jim", 3333), ("Rob", 6666), ("JIM", 999)).withDefaultValue("No value found")
   println(phonebook.contains("Jim"))
   //Optionally returns the value associated with a key.
+  val optionalValue: Option[Any] = phonebook.get("Mary")
   println(phonebook.get("Mary"))
   /*
    * Retrieves the value which is associated with the given key. 
@@ -31,17 +32,17 @@ object TuplesandMaps extends App {
   //new pairing added into the map
   val newPhonebook = phonebook + newPairing
   println(newPhonebook)
-//Builds a new collection by applying a function to all elements of this immutable map
+//TODO : -> Builds a new collection or Map by applying a function to all elements of this immutable map
   println(phonebook.map(pair => pair._1.toLowerCase() -> pair._2))
-//Filters this map by retaining only key-value  satisfying a predicate
+//TODO : -> Filters this map by retaining only key-value  satisfying a predicate
   println(phonebook.filterKeys(x => x.startsWith("J")))
-  //Transforms this map by applying a function to every retrieved value from Key-Value
+  //TODO : Transforms this map by applying a function to every retrieved value from Key-Value
   println(phonebook.mapValues(phonenumber => "03256--" + phonenumber))
   //conversions
   val tupledList= phonebook.toList
   println(tupledList)
   val names = List("Bob", "James", "Angela", "Mary", "Daniel", "Jim")
-  //Partitions this list into a map of lists according to some discriminator function
+  //TODO Partitions this list into a map of lists according to some discriminator function
   println(names.groupBy(name => name.charAt(0)))
   // o/p of this groupBy(name => name.charAt(0)) is Key Value pair where key is o/p of discrimnating function
   // and value is the List

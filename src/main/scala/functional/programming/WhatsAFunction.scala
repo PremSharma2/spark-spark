@@ -45,7 +45,7 @@ object WhatsAFunction extends App {
   }
   println(doubler.apply(10))
   println(doubler(10))
-  println(stringToIntConverter.apply("3").+(4) )
+  println(stringToIntConverter("3").+(4) )
   println(doubler)
   println(stringToIntConverter)
   println(adder)

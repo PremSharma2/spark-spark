@@ -268,7 +268,7 @@ object ScalaContravarianceTest {
         * now dog shop is equal to catShop,Which is illogical here because API is expecting Dog
         and it is coming out Cat
         we cannot have Contravariant in Return Position
-        * dogShop.get(true)
+        *PetShop[Dog] =dogShop.get(true)
         * but this will return me an EVIL CAT!!! which is logically wrong how can PetShop[Dog] return an Cat
         * That is why scala made second golden thumb rule ,
         And MoreOver this is logically wrong so compiler will throw an error
@@ -281,13 +281,20 @@ object ScalaContravarianceTest {
   class PetShop[-T] {
     def get[S <: T](isItAPuppy: Boolean, defaultAnimal: S): S = defaultAnimal
   }
+
+  val animalPetshop: PetShop[Animal] = new PetShop[Animal]{
+    override def get[Cat <: Animal](isItAPuppy: Boolean, defaultAnimal: Cat): Cat = defaultAnimal
+  }
   val animalShop:PetShop[Animal]=new PetShop[Animal]{
     def get(isItAPuppy: Boolean):Animal=new Cat
     }
 def petApi(petShop:PetShop[Dog]) ={
-  petShop.get(true,new RoteWoiler)
+  // todo this arrangement is done by scala to make sure that
+  //  we will receive only Dog and its sub type
+  val myshop: RoteWoiler =petShop.get[RoteWoiler](true,new RoteWoiler)
 }
   petApi(animalShop)
+  petApi(animalPetshop)
   // This is again we enforced type restriction that
   // return type of Petshop[dog] will be Dog
   val doggieshop: PetShop[Dog] = new PetShop[Animal]

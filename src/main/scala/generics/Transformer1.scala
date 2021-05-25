@@ -1,6 +1,6 @@
 package generics
 
-import generics.GenericBasics.{Cat, Dog}
+import generics.GenericBasics.{Animal, Cat, Dog}
 object Transformer1 {
 
   // this is also an action hence it is also Contravrient
@@ -9,14 +9,16 @@ object Transformer1 {
     def transform(element: A): B
   }
 
-  // Hence it is conform that Variance is jst to add Type Restriction at compile time
-  object Transform extends MyTransformer[Dog, Cat] {
-    override def transform(element: Dog): Cat = new Cat
 
-  }
 
   def api(tx: MyTransformer[Dog, Cat]) = {
     val mycat: Cat =tx.transform(new Dog)
+  }
+
+  // Hence it is conform that Variance is jst to add Type Restriction at compile time
+  object Transform extends MyTransformer[Animal, Cat] {
+    override def transform(element: Animal): Cat = new Cat
+
   }
 
   api(Transform)

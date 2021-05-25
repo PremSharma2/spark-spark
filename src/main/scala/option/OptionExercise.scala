@@ -60,8 +60,9 @@ A collection of type Map that contains given key/value bindings.
       * is monad as well as Data type With map Function
       * so idea here is not to transform just get the type
      * if (c !=null)
-     *  return c.connect
+     *  return c.connect or
      *  return None
+      *  i.e we need to map
      */
   val connectionStatus: Option[String] = connection.map(c => c.connect)
   //if (connectionStatus==null) println(None) else (Some(connectionStatus.get))

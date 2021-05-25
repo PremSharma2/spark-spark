@@ -3,7 +3,7 @@ package oops
 object ScalaClass {
 
 
- // # a basic class this sngle line works like java multiple line code
+ // # a basic class this single line works like java multiple line code
   // which will create the constructor here basically and setter getter
   class Person(var name: String, var age: Int)
 
@@ -127,7 +127,7 @@ object ScalaClass {
   class Brain private {
     override def toString = "This is the brain."
   }
-
+//Companion Object
   object Brain {
     val brain = new Brain
     def getInstance: Brain = {
@@ -140,7 +140,7 @@ object ScalaClass {
     // this won't work
     // val brain = new Brain
 
-    // this works
+    // this works A PERFECT SINGLETONDESIGN PATTERN
     val brain = Brain.getInstance
     println(brain)
   }

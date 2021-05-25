@@ -5,8 +5,10 @@ object Expressions extends App {
   val x: Int = 1+2 // Expression
   //printing expression value
   println(x)
+  val booleanExpression1: Boolean = x==1
+  println(booleanExpression1)
   println(x==1)// Boolean Expression
-  // false scenerio boolean expression
+  // false scenario boolean expression
   println(!(1==x)) // Boolean Expression
   //assignment and declaration of an variable in scala they both goes hand in hand
   var a:Int=3

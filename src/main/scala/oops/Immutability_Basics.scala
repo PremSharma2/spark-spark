@@ -16,20 +16,18 @@ References to immutable objects can be cached as they are not going to change. (
  * 
  * 
  */
-class Counter(@BeanProperty val count: Int=0) {
-  def inc :Counter= {
+class Immutability_Basics(@BeanProperty val count: Int=0) {
+  def inc :Immutability_Basics= {
     println("incrementing")
-    new Counter(this.count + 1) // immutability  
+    new Immutability_Basics(this.count + 1) // immutability
   }
   def dec = {
     println("decrementing")
-    new Counter(count - 1)
+    new Immutability_Basics(count - 1)
   }
 @tailrec
-  final def inc(n: Int): Counter = {
-    if (n <= 0) this else 
-      this.inc.inc(n-1)
-  }
+  final def inc(n: Int): Immutability_Basics = if (n <= 0) this else this.inc.inc(n-1)
+
 
   def print = println(count)
 

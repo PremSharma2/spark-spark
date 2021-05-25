@@ -6,8 +6,8 @@ object TupleAndMapExercise extends App {
   
   
   def addtoNetwork(network: Map[String, Set[String]], person: String): Map[String, Set[String]] = {
-     // new entry in the networkMap is represented by (person -> Set())
-    network + (person -> Set())
+     // TODO new entry in the networkMap is represented by (person -> Set())
+    network + (person -> Set.empty[String])
   }
 
   def friend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] = {
@@ -33,7 +33,7 @@ object TupleAndMapExercise extends App {
       else removeAux(friends.tail, unFriend(networkAccm, person, friends.head))
 
     }
-    val unfriended = removeAux(network.apply(person), network)
+    val unfriended: Map[String, Set[String]] = removeAux(network.apply(person), network)
     //TODO And at last we will remove the person from network
     unfriended - person
   }

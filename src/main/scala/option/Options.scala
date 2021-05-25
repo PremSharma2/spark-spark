@@ -29,7 +29,7 @@ object Options extends App {
    def apply[A](x: A): Option[A] = if (x == null) None else Some(x)
         }
    */
-  //val basicOption: Option[Int] = Option.apply(null)
+  val basicOption: Option[Int] = Option.apply[Int](2)
   val myfirstOption: Option[Int] = Some(4)
   val noOption: Option[Int] = None
   val orElse: Int = myfirstOption.getOrElse(3)

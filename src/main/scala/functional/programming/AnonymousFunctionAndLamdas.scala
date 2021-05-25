@@ -52,4 +52,8 @@ object AnonymousFunctionAndLamdas extends App {
     or this can be replaced by lambda this way
    */
   val superAdd :(Int =>Int=>Int)= (x) => (y) => (x + y)
+
+  def api(fx:Function1[Int,Int]) = ???
+  // here we can see api is hof which accept function and we can pass function as an argument
+  api(niceIncrementer)
 }

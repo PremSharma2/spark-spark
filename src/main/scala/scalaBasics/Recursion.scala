@@ -9,7 +9,8 @@ object Recursion extends App {
 
   /*
    *
-   * Recursion Implementation with Outof stack memory error
+   * Recursion Implementation with Out of stack memory error
+   * this is called stack recursion
    */
   def factorial(n: Int): Int = {
     if (n <= 1) 1
@@ -22,7 +23,10 @@ object Recursion extends App {
 
     }
   }
-
+/*
+TODO
+    Recursive call should be the last in ur code branch
+ */
   def anotherFactorial(n: Int): BigInt = {
     @tailrec
     def factHelper(n: Int, accumulator: BigInt): BigInt = {
@@ -66,7 +70,7 @@ object Recursion extends App {
       else {
         var conditionalExpression = n % t != 0
         // if any of these flag is false accumulator value will be false here
-       var accumulator: Boolean =  (conditionalExpression && isNumberPrime)
+        val accumulator: Boolean = (conditionalExpression && isNumberPrime)
         isPrimeTailRec(t - 1, accumulator)
       }
      isPrimeTailRec(n/2, true)

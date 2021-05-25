@@ -146,8 +146,8 @@ TODO:Best practices
   }
   def main(args: Array[String]): Unit = {
     //croc.eat(dog)
-  // Kingfisher.printColours()
-   Goldfinch.printColours()
+   Kingfisher.printColours()
+   //Goldfinch.printColours()
     Goldfinch1.printColours() // this will work
   }
 

@@ -21,7 +21,7 @@ object Function extends App {
 
  // println(aFunction("hello", 3))
 // its is a getter function
-  def parameterLessFunction(): Int = 42
+  def parameterLessFunction: Int = 42
   //we can call paramless function with their names only
 
   println(parameterLessFunction)

@@ -20,8 +20,13 @@ object HofsForOop {
   val incrementer: (Int => Int) = new Function[Int,Int] {
     override def apply(x: Int): Int = x+1
   }
+
+  def incrementer1: (Int => Int) = new Function[Int,Int] {
+    override def apply(x: Int): Int = x+1
+  }
   incrementer.apply(2)
   incrementer(2)
+  incrementer1(3)
   //TODO  now we can use lambda instead of wha we did above
   val incrementeralt: Int => Int = (x:Int) => x+1
   incrementeralt(2)

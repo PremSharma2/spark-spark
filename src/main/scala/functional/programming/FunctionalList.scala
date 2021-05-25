@@ -119,7 +119,7 @@ case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
    *new Node(trasform(this.h), this.tail.map(tx))
    */
   def map[B](transformer: A => B): MyList[B] = {
-    new Node(transformer.apply(h), t.map(transformer))
+     Node(transformer.apply(h), t.map(transformer))
   }
 
   /*

@@ -61,7 +61,11 @@ object Sequences extends App {
        they are currently the default implementation of immutable indexed sequences.
        It is backed by a little endian bit-mapped vector trie with a branching factor of 32.
         Locality is very good, but not contiguous, which is good for very large sequences.
+   An IndexedSeq indicates that random access of elements is efficient,
+   such as accessing an Array element as arr(5000).
+   By default, specifying that you want an IndexedSeq with Scala 2.10.x creates a Vector:
 
+scala> val x = IndexedSeq(1,2,3)
  */
   val vector: IndexedSeq[Int] = Vector.apply(1, 2, 3)
 

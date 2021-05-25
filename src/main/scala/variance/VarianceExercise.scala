@@ -95,7 +95,7 @@ TODO what if SomeType is higherKinded type List[T] ??
   
    //Covariant Implementation
    //TODO If your Generic class creates or contains elements of type T it should be +T
-  class CParking2[+T]( vehicles :IList[T])   {
+  class CParking2[+T](  vehicles :IList[T])   {
     // we need to do the hacking of compiler to avoid second ThumB Rule for variance i.e to make the method argument is at
      // contravariant position
     def park [S>:T] (vehicle:S):CParking2[S]= ???

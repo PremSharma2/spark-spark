@@ -243,10 +243,13 @@ case class Pizza (
     crustType: CrustType,
     toppings: Seq[Topping]
 )
-Sum and Product types can be combined in any ways that are needed to solve the problem at hand. Hopefully this demonstrates the point I made at the beginning of this lesson: ADTs are just a way of formally categorizing the data types in your data model.
+Sum and Product types can be combined in any ways that are needed to solve the problem at hand.
+ Hopefully this demonstrates the point I made at the beginning of this lesson:
+ ADTs are just a way of formally categorizing the data types in your data model.
 
 Pattern matching
-A great benefit of ADTs is that they simplify and encourage the use of pattern matching in your code. For instance, given these Shape types:
+A great benefit of ADTs is that they simplify and encourage the use of pattern matching in your code.
+For instance, given these Shape types:
 
 sealed trait Shape
 final case class Circle(radius: Double) extends Shape

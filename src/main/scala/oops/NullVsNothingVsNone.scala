@@ -7,7 +7,7 @@ object NullVsNothingVsNone  extends App{
   // any null reference in scala or java is represented by Null class
   // Null is replacement for all refrence types
   val ref :Null= null;
-//when there is no string or no object is constructed we can assign the refrence of Null class
+//when there is no string or no object is constructed we can assign the reference of Null class
   //Also Null class is also sub type of the of all the classes
   //AnyRef-> all refrence Types -> Null
   // Null class has special treatment from compiler

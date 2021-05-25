@@ -46,7 +46,7 @@ TODO Explanation
    */
   /*
 TODO Trick 1
-   Trick 1 - reevaluationPermalink
+   Trick 1 - reevaluation
    So this call-by-name mechanism is actually very powerful and
    allows greater expressiveness in Scala.
    he first example I want to show is that

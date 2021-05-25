@@ -14,11 +14,11 @@ object OOBasics extends App {
   println(novel author_age)
   println(novel isWrittenBy author)
   
-  val counter= new Counter
+  val counter= new Immutability_Basics
   counter.inc.print
   //incrementing three times
   counter.inc.inc.inc.print
-  val counter1=new Counter(0)
+  val counter1=new Immutability_Basics(0)
   counter1.inc(10).print
 
   class Stock {
@@ -48,7 +48,7 @@ TODO
   class Foo {
 
     // set 'text' equal to the result of the block of code
-    val text = {
+    val text: String = {
       var lines = ""
       try {
         lines = Source.fromFile("/etc/passwd").getLines.mkString

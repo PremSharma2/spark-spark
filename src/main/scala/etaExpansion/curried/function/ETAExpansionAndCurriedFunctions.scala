@@ -27,7 +27,7 @@ object ETAExpansionAndCurriedFunctions extends App {
   val add5: Int => Int = curriedMethod(5) _ // this will tel the compiler pls dp ETA expansion for me
 
   //Exercise
-  val simpleAddFunction: (Int, Int) => Int = (x: Int, y: Int) => x + y
+  val simpleAddFunction: (Int, Int) => Int = (x, y) => x + y
 
   def simpleAdd(x: Int, y: Int) = x + y
 
@@ -66,7 +66,7 @@ object ETAExpansionAndCurriedFunctions extends App {
   def curriedFormatter(string: String)(number: Double): String = string.format(number)
 
   val numbers = List(Math.PI, Math.E, 1, 9.8, 1.3e-12)
-  val simpleFormat: Double => String = curriedFormatter("%4.2f") _
+  val simpleFormat: Double => String = curriedFormatter("%4.2f") (_)
   // fx: y=> curriedFormatter("%4.2f")(y)
   val seriousFormat: Double => String = curriedFormatter("%8.6f") _
 

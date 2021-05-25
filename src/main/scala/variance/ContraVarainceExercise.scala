@@ -128,8 +128,10 @@ object ContraVarainceExercise extends App {
   val bumpybanana: Banana=>Texture = banana=> Texture.apply(s"This is ${banana.name} and is nice")
   def describeAnFruit(fn: Fruit => Description) = fn.apply(Apple.apply("RoyalApple"))
  // describeAnApple(bumpybanana)
-  //this will not compile bcz method input is at contravarient position and method is declared as it will take Fruit ,but you have passed apple so it will take it
-  // because apple is an fruit,now you rae tryin to pass Banana it will not take it will complain bcz Banana is not super type of Apple
+  //this will not compile bcz method input is at contravarient position and method is declared as it will take Fruit ,
+  // but you have passed apple so it will take it
+  // because apple is an fruit,now you rae tryin to pass Banana it will not take it will complain
+  // bcz Banana is not super type of Apple
   /*
    * type mismatch; found : com.scala.variance.VarainceTest.Banana ⇒ com.scala.variance.VarainceTest.Texture 
    * required: com.scala.variance.VarainceTest.Apple ⇒ com.scala.variance.VarainceTest.Description

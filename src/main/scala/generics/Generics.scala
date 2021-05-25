@@ -14,18 +14,28 @@ trait MyGenericList[+A] {
    */
 
   def head: A
+
   def tail: MyGenericList[A]
+
   def isEmpty: Boolean
+
   //it is a consumer
   def add[B >: A](element: B): MyGenericList[B]
+
   def printElements: String
+
   override def toString: String = "[" + printElements + "]"
+
   //iTS  a double contravariant hence it will become Covariant
   def map[B](transformer: MyTransformer[A, B]): MyGenericList[B]
+
   def flatMap[B](transformer: MyTransformer[A, MyGenericList[B]]): MyGenericList[B]
+
   def filter(predicate: MyPredicate[A]): MyGenericList[A]
+
   def ++[B >: A](list: MyGenericList[B]): MyGenericList[B]
 }
+
 /*
  *
  * No one can create such object like Nothing in Scala
@@ -36,29 +46,39 @@ trait MyGenericList[+A] {
   To denote empty Collection
   so as nothing substitute for anything in scala similar ways EmptyList object  substitutes to all Empty Collection
  */
- object EmptyList extends MyGenericList[Nothing] {
+object EmptyList extends MyGenericList[Nothing] {
   def head: Nothing = throw new NoSuchElementException
+
   def tail: MyGenericList[Nothing] = throw new NoSuchElementException
+
   def isEmpty: Boolean = true
+
   //Here also we enforced type restriction at compile time that element being aded must be
   // of type Nothing i.e both should have same type
   // but herecatch is that Nothing is sub type of Everything and we wnat to make it covarient list
-  def add[B >: Nothing](element: B): MyGenericList[B] = new ListNode(element, EmptyList)
+  def add[B >: Nothing](element: B): MyGenericList[B] = new Node(element, EmptyList)
+
   def printElements: String = ""
+
   def map[B](transformer: MyTransformer[Nothing, B]): MyGenericList[B] = EmptyList
+
   def flatMap[B](transformer: MyTransformer[Nothing, MyGenericList[B]]): MyGenericList[B] = EmptyList
+
   def filter(predicate: MyPredicate[Nothing]): MyGenericList[Nothing] = EmptyList
+
   def ++[B >: Nothing](list: MyGenericList[B]): MyGenericList[B] = list
 }
-class ListNode[+A](nodeHead: A, nodeTail: MyGenericList[A]) extends MyGenericList[A] {
-  def head: A = return nodeHead
-  def tail: MyGenericList[A] = return nodeTail
+
+class Node[+A](override val head: A, override val tail: MyGenericList[A]) extends MyGenericList[A] {
+
   def isEmpty: Boolean = return false
-  def add[B >: A](element: B): MyGenericList[B] = new ListNode(element, this)
+
+  def add[B >: A](element: B): MyGenericList[B] = new Node(element, this)
+
   def printElements: String = {
-    if (nodeTail.isEmpty) "" + nodeHead
+    if (tail.isEmpty) "" + head
     else {
-      nodeHead + "," + nodeTail.printElements
+      head + "," + tail.printElements
     }
   }
 
@@ -74,10 +94,10 @@ class ListNode[+A](nodeHead: A, nodeTail: MyGenericList[A]) extends MyGenericLis
 
 
   def filter(predicate: MyPredicate[A]): MyGenericList[A] = {
-    if (predicate.test(this.nodeHead))
-      new ListNode(this.nodeHead, this.nodeTail.filter(predicate))
+    if (predicate.test(this.head))
+      new Node(this.head, this.tail.filter(predicate))
     else
-      nodeTail.filter(predicate)
+      tail.filter(predicate)
   }
 
   /*
@@ -93,7 +113,7 @@ class ListNode[+A](nodeHead: A, nodeTail: MyGenericList[A]) extends MyGenericLis
    *
    */
   def map[B](transformer: MyTransformer[A, B]): MyGenericList[B] = {
-    new ListNode(transformer.transform(this.nodeHead), nodeTail.map(transformer))
+    new Node(transformer.transform(this.head), tail.map(transformer))
   }
 
   /*
@@ -105,7 +125,7 @@ class ListNode[+A](nodeHead: A, nodeTail: MyGenericList[A]) extends MyGenericLis
    * =new Node(1,new Node(2,new Node(3,new Node(4,new Node(5,Empty)))))
    *
    */
-  def ++[B >: A](list: MyGenericList[B]): MyGenericList[B] = new ListNode(nodeHead, this.nodeTail ++ list)
+  def ++[B >: A](list: MyGenericList[B]): MyGenericList[B] = new Node(head, this.tail ++ list)
 
   /*for eg here let say transformer take int and returns List[Int] i.e a role of flatmap it flatens
    * [1,2].flatMap (n => [n,n+1])
@@ -125,21 +145,22 @@ class ListNode[+A](nodeHead: A, nodeTail: MyGenericList[A]) extends MyGenericLis
    */
 
   def flatMap[B](transformer: MyTransformer[A, MyGenericList[B]]): MyGenericList[B] = {
-    transformer.transform(this.nodeHead) ++ this.nodeTail.flatMap(transformer)
+    transformer.transform(this.head) ++ this.tail.flatMap(transformer)
   }
 }
 
 object Listest extends App {
   //val emptytail=EmptyList.tail
   // println(emptytail)
-   def process(list:MyGenericList[AnyVal]) = ()
+  def process(list: MyGenericList[AnyVal]) = ()
+
   val listOfIntegers: MyGenericList[Int] =
-    new ListNode(1, new ListNode(2, new ListNode(3, EmptyList)))
+    new Node(1, new Node(2, new Node(3, EmptyList)))
 
   val anotherListOfIntegers: MyGenericList[Int] =
-    new ListNode(4, new ListNode(5, new ListNode(6, EmptyList)))
+    new Node(4, new Node(5, new Node(6, EmptyList)))
   val listOfString: MyGenericList[String] =
-    new ListNode("Hello", new ListNode("Scala", EmptyList))
+    new Node("Hello", new Node("Scala", EmptyList))
 
   println(listOfIntegers.toString())
   println(listOfString.toString())
@@ -159,7 +180,7 @@ object Listest extends App {
   println(listOfIntegers.flatMap(new MyTransformer[Int, MyGenericList[Int]] {
 
     override def transform(elem: Int): MyGenericList[Int] = {
-      new ListNode(elem, new ListNode(elem + 1, EmptyList))
+      new Node(elem, new Node(elem + 1, EmptyList))
     }
   }).toString())
 

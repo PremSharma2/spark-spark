@@ -48,7 +48,7 @@ The sequence generator in Scala for loop
 Let’s start with the simplest form of the seq and then expand it step by step.
 The simplest form of seq is a generator that looks something like below.
 
-e <- col
+e <- collection
 
 The col is a Scala collection,
 and e is a value that binds to each element of the collection.
@@ -218,15 +218,17 @@ println(result2)
   // TODO : here we are calculating sum
   val resultn: Seq[Long] =for{
     line <- dataSeq // generateor
-    fields = line.split(",").  // assignent
-             filter(_.equals("SALESMAN")).  // filter
-             map(_.apply(2).toLong).sum
+     fields = line.split(",").  // assignent
+             withFilter(x =>x.equals("SALESMAN")).  // filter
+             map(x=>x.apply(2).toLong).sum
   } yield fields
-dataSeq.map{
+
+
+val salesManSalary: Seq[Long] =dataSeq.map{
   record =>
-    val tokenizedRecord: Array[String] =record.split(",")
-    val filteredRecord =tokenizedRecord.contains("SALESMAN")
-    tokenizedRecord.map(_.apply(2).toLong).sum
+    val tokenizedRecord: Seq[String] =record.split(",").toList
+    val rec: Seq[String] =tokenizedRecord.filter(_.equals("SALESMAN"))
+    rec.apply(2).toLong
 }
 
   val resultn1: Seq[Long] =for{

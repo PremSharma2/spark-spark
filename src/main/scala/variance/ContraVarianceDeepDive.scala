@@ -99,12 +99,12 @@ TODO Explanation of above Code
     def cure(a: A): String
   }
 
-  def printApi[A](a: A)(implicit p: VetDoctor[A]) = p.cure(a)
+  def vetCureApi[A](a: A)(implicit p: VetDoctor[A]) = p.cure(a)
 
-  implicit object AnimalPrinter extends VetDoctor[Animal] {
+  implicit object AnimalDoctor extends VetDoctor[Animal] {
     def cure(a: Animal) = "[Animal : %s]" format (a)
   }
-  printApi[Dog](new Dog("Tom"))
+  vetCureApi[Dog](new Dog("Tom"))
   // TODO : here as we can see that
   //  we have declared the PrettyPrinter[Dog] but we have passed
   // TODO the reference of Animal because of contravariance implicitly

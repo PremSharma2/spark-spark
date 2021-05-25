@@ -93,6 +93,8 @@ that is, a recipe based on meat, vegetable, etc.
   // Recipe[Food] <- Recipe[Meat] <- Recipe[WhiteMeat]: Based only on WhiteMeat
   val whiteMeatRecipe: Recipe[Food] = WhiteMeatRecipe(List(chicken, turkey))
 
+//TODO : Design an API for recipe for Food and i will pass
+  //TODO we wil pass all recipes
   def processRecipe(recipe: Recipe[Food]) = {
     recipe.ingredients.foreach(println(_))
   }

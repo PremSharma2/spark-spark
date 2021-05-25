@@ -51,7 +51,7 @@ object HigherOrderFunctionAndCurries extends App {
    * for example we need to convert
    * fx = (x,y) => x+y
    *  to
-   * or like this fz= x => y => fx(x, y)
+   * or like this f = x => y => fx(x, y)
    * val result =fz(x)(y)
    *
    *TODO
