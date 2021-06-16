@@ -34,6 +34,14 @@ On the other hand a partial function from A to B is not defined for some inputs 
     case 3 => 999
 
   }
+// Partial Function with pattern  matching
+  val anonymousPartialFunction: Int => Int = {
+//TODO this function uses anoumous partial function
+    case 1 => 42
+    case 2 => 43
+    case 3 => 999
+
+  }
  // println(anicerFussyFunction(33))
   //Hence this anicerFussyFunction is a partial function because it is applicable
   // only to subset of Int values {1,2,3}

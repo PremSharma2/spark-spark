@@ -2,11 +2,11 @@ package patterns
 
 import patterns.AdvancedPatternMatching.Person
 
-object InfixPatterns extends App {
+object InternalOfPatternMatching extends App {
 
   case class Or[A, B](a: A, b: B)
 
-  val either = Or(2, "two")
+  val either: Or[Int, String] = Or(2, "two")
   val matchPattern = either match {
     case Or(number, string) => s" Number $number is Written As $string"
 

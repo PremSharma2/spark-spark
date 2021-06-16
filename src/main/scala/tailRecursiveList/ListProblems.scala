@@ -1,6 +1,6 @@
 package tailRecursiveList
 
-import caseClass.Factory.Animal.{Animal, Dog}
+import caseClass.Factory.Animal.{Animal, Cat, Dog}
 
 import scala.annotation.tailrec
 import scala.util.Random
@@ -31,6 +31,7 @@ object ListProblems {
     def length: Int
 
     def reverse: RList[T]
+
 
     def ++[S >: T](anotherList: RList[S]): RList[S]
 
@@ -136,7 +137,7 @@ object ListProblems {
   }
 
   //TODO here as we can see that def can be overridden as val
-  /*
+  /**
    TODO
         Overriding Fields
         Fields, as opposed to methods, have a special property that
@@ -787,7 +788,7 @@ object ListProblems {
         now else case
         merge([3], [4,5,6,7] , [2,1])
         now else if(ordering.lteq(listA.head,listB.head)) says 3<4
-         merge([], [4,5,6,7] , [3,2,1])
+         merge([], [4,5,6,7] , [3,1])
          now  if(listA.isEmpty) accumulator.reverse ++ listB
          o/p will [1,2,3,4,5,6,7]
        */
@@ -871,7 +872,7 @@ object ListProblems {
             this mathematical computation leads to O(n*log(n))
        */
       @tailrec
-      def mergeSortTailRec(smallList: RList[RList[S]], bigList: RList[RList[S]]): RList[S] = {
+      def mergeSortTailRec(smallList: RList[RList[S]], bigList: RList[RList[S]]                                                              ): RList[S] = {
         if (smallList.isEmpty) {
           if (bigList.isEmpty) RNil
           else if (bigList.tail.isEmpty) bigList.head
@@ -1055,7 +1056,7 @@ object ListProblems {
         list.::(new Dog)
       }
 
-      val animalList: RList[Dog] = new Dog :: RNil
+      val animalList: RList[Cat] = new Cat :: RNil
       testApi(animalList)
       println(list.apply(2))
       println(list.length)

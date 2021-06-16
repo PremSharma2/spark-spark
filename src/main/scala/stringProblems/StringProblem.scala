@@ -53,10 +53,11 @@ object StringProblem {
     TODO
      It's a tuple
      (x, y) is a tuple which we deconstruct in the case there
+     override def foldLeft[B](z: B)(op: (B, A) => B): B
      */
     def buildMap(str: String): Map[Char, Int] = {
       str.foldLeft(Map[Char, Int]()) {
-        case (map, char) => map + (char -> (map.getOrElse(char, 0) + 1))
+        case Tuple2(map, char) => map + (char -> (map.getOrElse(char, 0) + 1))
       }
     }
 
@@ -119,7 +120,7 @@ object StringProblem {
      "    hello      world    " => "world hello"
     */
   def reverseWords(string:String):String ={
-    //non emty words from the original string
+    //non empty words from the original string
     string.split(" ").filter(!_.isEmpty).reverse.mkString(" ")
   }
 

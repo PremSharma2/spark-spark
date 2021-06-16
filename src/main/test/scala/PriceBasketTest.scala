@@ -1,4 +1,5 @@
 import scala.math.min
+
 /*
 Enumerations are useful tool for creating groups of constants, such as Numeric Constants or Customized Object Constants ,
 such as  Days of the week, Months of the year,
@@ -18,11 +19,12 @@ You can also use the following approach of using a Scala trait to create the equ
 sealed trait Item {
   val price: Double = this match {
     case Apple => 1
-    case Milk   => 1.3
-    case Bread  => 0.8
-    case Soup   => 0.65
+    case Milk => 1.3
+    case Bread => 0.8
+    case Soup => 0.65
   }
 }
+
 /*
 Because of these features, case objects are primarily used in two places (instead of regular objects):
 
@@ -31,20 +33,23 @@ When creating containers for “messages” that you want to pass between other 
  */
 //Constants Are declared here as case Objects
 final case object Apple extends Item
+
 final case object Milk extends Item
+
 final case object Bread extends Item
+
 final case object Soup extends Item
 
-//Now we want create that Domain related constants objects so need companion object of this sealed trait which will act as factory
+//Now we want create that Domain related constants objects
+// so need companion object of this sealed trait which will act as factory
 object Item {
-  def fromString(str: String): Item = str match {
+  def apply(str: String): Item = str match {
     case "Apples" => Apple
-    case "Milk"   => Milk
-    case "Bread"  => Bread
-    case "Soup"   => Soup
+    case "Milk" => Milk
+    case "Bread" => Bread
+    case "Soup" => Soup
   }
 }
-
 
 
 /*
@@ -55,32 +60,29 @@ Seq[Offer] we want to be put inside the Seq
  */
 sealed trait Offer {
   def discountedAmount: Double = this match {
-    case Percentage(discountFactor, item)   => discountFactor * item.price
+    case Percentage(discountFactor, item) => discountFactor * item.price
     case HalfPrice(halvedItem, _) => halvedItem.price * 0.5
   }
-/*
-final case class Percentage(mult: Double, item: Item) extends Offer
-final case class HalfPrice(halvedPriceItem: Item, reason: Item) extends Offer
-These are constant declaration
- */
 
-/*
-Again here we used enums to convert object constant into string representation
- */
+  /*
+  Again here we used enums to convert object constant into string representation
+   */
   override def toString: String = this match {
     case Percentage(discountFactor, item) => s"$item ${discountFactor * 100}% off: -${discountedAmount}"
     case HalfPrice(halvedItem, reason) =>
       s"two $reason gives $halvedItem 50% off: -${discountedAmount}"
   }
 }
+
 /*
  case class StartSpeakingMessage(textToSpeak: String)
  When you want to use attributes to perform some operation and you want state based pattern matching then always use case class
 Here we are also using the pattern matching
 Case classes are good for modeling immutable data
   */
-
+// TODO hybrid ADTS i.e Product and Sum type all together
 final case class Percentage(discountFactor: Double, item: Item) extends Offer
+
 final case class HalfPrice(halvedPriceItem: Item, reason: Item) extends Offer
 
 final case class Bill(items: Seq[Item], offers: Seq[Offer]) {
@@ -103,16 +105,17 @@ final case class Bill(items: Seq[Item], offers: Seq[Offer]) {
 object PriceBasket extends App {
   //val items = args.map(arg => Item.fromString(arg))
   //val items=Seq(Apples, Apples, Milk, Bread, Soup, Soup, Soup, Soup, Bread, Bread)
-  val items= Seq(Apple, Milk, Bread,Soup,Soup)
-// here we are associating the items with offers also we are preparing  the flat offer of 10%
+  val items = Seq(Apple, Milk, Bread, Soup, Soup)
+  // here we are associating the items with offers also we are preparing  the flat offer of 10%
   val appleOffers: Seq[Percentage] = items.flatMap({
-        // here inside flatmap we are using pattern match
+    // here inside flatmap we are using pattern match
     case Apple => Seq(Percentage(0.1, Apple))
-    case _      => Seq.empty
+    case _ => Seq.empty
   })
 
+  // TODO logic to count number of breads and soups
   val breads: Int = items.filter({ case Bread => true; case _ => false }).size
-  val soups: Int = items.filter({ case Soup   => true; case _ => false }).size
+  val soups: Int = items.filter({ case Soup => true; case _ => false }).size
 
   val soupsBreadOffers: Seq[HalfPrice] =
     (1 to min(breads, soups / 2)).toSeq.map(_ => HalfPrice(Bread, Soup))

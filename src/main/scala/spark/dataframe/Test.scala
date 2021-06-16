@@ -1,6 +1,6 @@
 package spark.dataframe
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{Dataset, Row, SparkSession}
 object Test  extends App {
 
   System.setProperty("hadoop.home.dir", "C:/winutils");
@@ -14,7 +14,7 @@ object Test  extends App {
   val sparksession: SparkSession = SparkSession.builder.master("local").config(spark).getOrCreate()
   import sparksession.sqlContext.implicits._
 
-
+case class Container( dataframe:Dataset[_])
   val studentsDF = Seq(
     ("mario", "italy", "europe"),
     ("stefano", "italy", "europe"),
@@ -24,9 +24,21 @@ object Test  extends App {
     ("vito", "italy", "europe")
   ).toDF("name", "country", "continent")
 
+  val studentsDF1 = Seq(
+    ("mario", "italy", "europe"),
+    ("stefano", "italy", "europe"),
+    ("victor", "spain", "europe"),
+    ("li", "china", "asia"),
+    ("yuki", "japan", "asia"),
+    ("vito", "italy", "europe")
+  ).toDF("name", "country", "continent")
 
   studentsDF
     .groupBy("continent", "country")
 
+val first :: second :: Nil = List(studentsDF,studentsDF1)
 
+  val diffrence: Dataset[Row] = first.except(second)
+  val containerList=List(Container(studentsDF1),Container(studentsDF))
+  val fs :: second1 :: Nil = containerList.map(_.dataframe.toDF)
 }

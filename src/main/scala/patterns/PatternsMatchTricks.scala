@@ -1,23 +1,28 @@
 package patterns
 
 import patterns.Patterns.Person
+import tailRecursiveList.ListProblems.{Node, RList, RNil}
+
+import scala.annotation.tailrec
 
 object PatternsMatchTricks extends App {
 
   val numbersList= List(1,2,3,4,42)
   val mustHavethree= numbersList match {
     case List(_,_,3,somethengelse) => "List has 3rd element 3 "
+    case _ => " "
   }
 
   val startsWithOne= numbersList match {
-    case 1::tail => s"List Starts with 1 and tail is $tail"
+    case 1 :: tail => s"List Starts with 1 and tail is $tail"
   }
-  // this pattern for list is very imp
+  // TODO This pattern for list is very imp
 
   def process(aList: List[Int]): String ={
+
     val matchedresult: String =aList match {
       case Nil => "List Is Empty we should return Nil from here rather string"
-      case head::tail => s"list starts with $head,tail is $tail"
+      case head :: tail => s"list starts with $head,tail is $tail"
     }
     matchedresult
   }
@@ -39,7 +44,7 @@ object PatternsMatchTricks extends App {
   def gimmeAvalue():Any =45
   //  case _: String  This pattern match is for Type Check
   val gimmeAType = gimmeAvalue() match {
-    case _: String => "String is returned form the gimmeValueMethod"
+    case _: String => "String is returned from the gimmeValueMethod"
   }
 
   def requestMoreInfo(p:Person):String = s"The Person is  ${p.name}"
@@ -75,6 +80,20 @@ val ordinalNumber=aNumber match {
     case _ => "I hate This List"
 
   }
+val mylist= 1::2::3::4::RNil
+  mylist match {
+    case RNil | Node(0,_) => " compound pattern"
+  }
+  // TODO if guards
+  mylist match {
+    case Node(head,Node(specailSecondElement,_)) if (specailSecondElement%2==0) =>
+  }
+
+  numbersList match {
+    case listOfStrings:List[String] => "a list of strings "
+    case listOfInt:List[Int] => "a list of Integer "
+    case _ =>
+  }
 // Nice way to do this or optimized way to this
 /*
   val myOptimizedPatternMatch= numbersList match {
@@ -108,6 +127,19 @@ val ordinalNumber=aNumber match {
     }
     tempResult
   }
+
+  // Todo tail rec implementation
+  def incrementRec1(seq: RList[Int]): RList[Int]= {
+    @tailrec
+    def tailRecIncr(remaining: RList[Int], accumlator: RList[Int]): RList[Int] = {
+      if (remaining.isEmpty) accumlator
+      else if (remaining.head == 9 && remaining.tail.isEmpty) 1 :: 0 :: accumlator
+      else if (remaining.head < 9) tailRecIncr(remaining.tail, remaining.head + 1 :: accumlator)
+      else tailRecIncr(remaining.tail, 0 :: accumlator)
+    }
+    tailRecIncr(seq,RNil)
+  }
+
   // pattern match exercise
 
   def listToString(list: List[String]): String = list match {

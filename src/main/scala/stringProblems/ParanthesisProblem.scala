@@ -16,7 +16,7 @@ TODO
      vpt("))",2)
      vpt(")",1)
      vpt(" ",0)
-   now matches the condiotion if (remaining.isEmpty) openParanths == 0
+   now matches the condition if (remaining.isEmpty) openParanths == 0
    returns true
 
 TODO  vpt("())",0)

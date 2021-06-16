@@ -3,14 +3,21 @@ package patterns
 object AdvancedPatternMatching  extends App {
 
   val numbers=List(1)
-  val numbers1=List(1,2)
+  val numbers1=List(1,2,3,42)
+numbers1 match {
+  case List(1,_,_,_) => "extractor"
+  case List(1,_*) => "List of arbitary length"
+  case 1 :: List(_) => "infix pattern"
 
-  val description= numbers match {
+
+}
+  val description: Unit = numbers match {
       // This is called :: Infix Pattern
       // here tail is EmptyList
     case head ::  Nil => println(s"the only element is head $head ")
 
   }
+
 
   val description1: Unit = numbers1 match {
     // This is called :: Infix Pattern
@@ -50,14 +57,14 @@ object AdvancedPatternMatching  extends App {
 //if we have to match pattern on condition basis
   // then we have to do with custom Singleton object rather than
   /*
-  using conditional  statements in match condtions
+  using conditional  statements in match conditions
    */
   val n:Int=45
   // This is not the correct way to pattern match the
   val matchpattern: String = n match {
     case x if x<10 => s"$x is single Digit"
     case x if x%2==0 => s"$x is even number"
-    case _ => "no prpoery"
+    case _ => "no property matched "
   }
   
   object even{
@@ -71,7 +78,7 @@ object AdvancedPatternMatching  extends App {
   val matchpattern1: String = n match {
     case singledigit(myflag) => s" is single Digit : and value returned from unapply is $myflag"
     case even(_) => s" is even number"
-    case _ => "no prpoery"
+    case _ => "no property"
   }
   println(matchpattern)
   println(matchpattern1)
@@ -94,4 +101,11 @@ object AdvancedPatternMatching  extends App {
     case _ => "no prpoery"
   }
   println(matchable2)
+
+  val pf:  PartialFunction[Int, String] = {
+    case singledigit1() => s" is single Digit"
+    case even1() => s" is even number"
+    case _ => "no prpoery"
+  }
+  val list: List[String] =List(1,2,3,4,5) map(pf)
 }

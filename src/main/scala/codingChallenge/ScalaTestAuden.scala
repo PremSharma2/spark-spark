@@ -59,7 +59,36 @@ object ScalaTestAuden  extends App {
      I suggest using iterate instead of cons in that case.
      */
 
+    /*
+   TODO
+     def iterate[T](start: T)(f: T => T): Iterator[T] = new AbstractIterator[T] {
+    private[this] var first = true
+    private[this] var acc = start
+    def hasNext: Boolean = true
+    def next(): T = {
+      if (first) first = false
+      else acc = f(acc)
+
+      acc
+    }
+  }
+  TODO
+    def takeWhile(p: A => Boolean): Iterator[A] = new AbstractIterator[A] {
+    private var hd: A = _
+    private var hdDefined: Boolean = false
+    private var tail: Iterator[A] = self
+TODO
+    def hasNext = hdDefined || tail.hasNext && {
+      hd = tail.next()
+      if (p(hd)) hdDefined = true
+      else tail = Iterator.empty
+      hdDefined
+    }
+    def next() = if (hasNext) { hdDefined = false; hd } else empty.next()
+  }
+     */
     def dayIterator(startDate: LocalDate, endDate: LocalDate) = {
+      //the iterator producing the infinite sequence of values `start, f(start), f(f(start)), ...
       Iterator.iterate(startDate)(_ plusDays 1).takeWhile(d => d.isBefore(endDate) || d.isEqual(endDate))
     }
     dayIterator(startDate,endDate).toList.map(_.toString)
@@ -122,7 +151,6 @@ object ScalaTestAuden  extends App {
   def totalNumberWheelsByModel(
                                 inputVehicles: List[Vehicle]
                               ): List[(String, Int)] = {
-
 
 
     val result: Map[String, List[(String, Int)]] =inputVehicles.map(

@@ -132,6 +132,14 @@ object Map_FlatMap_Filter_for extends App {
   //Method Definition: def dropWhile(p: (A) => Boolean): List[A]
   // drops all elements which satisfy the predicate
   //Return Type: It returns all the elements of the list except the dropped ones.
+  /*
+  TODO
+     dropWhile discards all the items at the start of a collection for which the condition is true.
+     It stops discarding as soon as the first item fails the condition.
+      dropWhile drops 1 but stops when it reaches 2 because the condition _ % 2 != 0 is false.
+      filter discards all the items throughout the collection where the condition is not true.
+       It does not stop until the end of the collection.
+   */
   // Creating a list
   val m2 = List(1, 3, 5, 4, 2)
 
@@ -186,7 +194,7 @@ scala> val x = IndexedSeq(1,2,3)
   /*
   takeWhile(p)	The first subset of elements that matches the predicate p
    */
-  val takeWhileSeq = Seq(2, 4, 6, 8)
+  val takeWhileSeq = Seq(2, 4, 6, 8, 3,5,7,9)
   val takenWhile: Seq[Int] = takeWhileSeq.takeWhile(x => {
     x % 2 == 0
   })

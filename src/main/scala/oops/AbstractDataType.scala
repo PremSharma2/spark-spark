@@ -96,7 +96,7 @@ TODO
  or override everything in sub class
 TODO:Best practices
   almost - best practice is to have
- defs in traits, except constants which you aren't going to override (they should stay in companion objects anyway)
+ defs in traits, except constants i.e all vals which you aren't going to override (they should stay in companion objects anyway)
  override defs with either defs or vals (depending on what you're doing,
  sometimes your logic will make it impossible to override with val)
  */
@@ -132,13 +132,13 @@ TODO:Best practices
       println(s"Bird colours: [${colours.mkString("/")}]")
     }
   }
-  case object Kingfisher1 extends Ordering[String] with  Bird {
+  case object Kingfisher1 extends Ordering[String] with  Bird1 {
     override def compare(x: String, y: String): Int = -1
 
-    //override protected val plumage = Plumage("Green", "Orange")
+    override protected val plumage = Plumage("Green", "Orange")
     //override protected val colours: Seq[String] = plumage.colours
   }
-  case object Goldfinch1 extends Ordering[String] with  Bird {
+  case object Goldfinch1 extends Ordering[String] with  Bird1 {
     override def compare(x: String, y: String): Int = throw new NullPointerException
     override protected val plumage = Plumage("Yellow", "Red", "White", "Black")
     override protected val colours: Seq[String] = plumage.colours
@@ -147,6 +147,7 @@ TODO:Best practices
   def main(args: Array[String]): Unit = {
     //croc.eat(dog)
    Kingfisher.printColours()
+    Kingfisher1.printColours()
    //Goldfinch.printColours()
     Goldfinch1.printColours() // this will work
   }

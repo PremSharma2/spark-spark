@@ -50,7 +50,7 @@ TODO   now lets talk about a number which is not prime
     def isPrimeTailRec(currentDivisor: Int): Boolean = {
       if (currentDivisor > Math.sqrt(Math.abs(n))) true
       else n % currentDivisor != 0 && isPrimeTailRec(currentDivisor + 1)
-      //else if (n % currentDivisor != 0) false
+      //else if (n % currentDivisor == 0) false
       //else isPrimeTailRec(currentDivisor + 1)
     }
 

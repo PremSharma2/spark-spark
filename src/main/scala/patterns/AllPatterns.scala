@@ -1,5 +1,7 @@
 package patterns
 
+import tailRecursiveList.ListProblems.{Node, RNil}
+
 object AllPatterns extends App {
   
   //1 constants
@@ -29,4 +31,11 @@ object AllPatterns extends App {
     
     case (_ , (k,v)) => s"Right combination $k and the value is also Tuple $v"
   }
+  val aList = Node(1,Node(2,RNil))
+
+  aList match{
+    case Node(head, tail ) => s" head is $head and tail is $tail"
+    case Node(head, Node(subhead,subtail)) =>
+  }
+
 }
