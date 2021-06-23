@@ -20,10 +20,8 @@ object CustomMonadRealWorldUSeCase extends App {
 
   def getBetterPerson(firstName:String,lastName:String):Option[Person] ={
     Option(firstName).flatMap{
-      firstName => Option(lastName).flatMap{lastName =>
-        Option(Person.apply(firstName,lastName))
-
-      }
+                      firstName => Option(lastName).
+                        map{lastName => Person.apply(firstName,lastName)}
     }
   }
 
@@ -64,7 +62,7 @@ object CustomMonadRealWorldUSeCase extends App {
   // Because ETW pattern best impl is done by monad flatMap transformer
 // ist step of ETW fetch the value or Extract the value
 val vatInclPrice: Future[Double] = getUSer(myURL).
-  // 2nd step transform it with monadic transformer
+  // 2nd step transform it with monadic transformer i.e flatmap ETW
   flatMap(user => getLastOrder(user.id)).
   // 3rd step is to use that o/p (container wrapped  value)    again  using map
     // i.e we want to map the values

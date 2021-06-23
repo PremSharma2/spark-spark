@@ -16,7 +16,7 @@ of the functors we saw in the last chapter are also monads
   trait Attempt[+A]{
     def flatMap[B](fx: A=> Attempt[B]): Attempt[B]
   }
-//companion object
+//companion object , We are creating container via Companion object
   object Attempt{
     // here we are using callByNAme expression because apply will not immediately fail
     // if dependency is null
@@ -29,6 +29,7 @@ of the functors we saw in the last chapter are also monads
         case e: Throwable => Failure(e)
       }
   }
+  //TODO unit it already has via case class
   case class Success[+A](value: A) extends Attempt[A]{
     override def flatMap[B](fx: A => Attempt[B]): Attempt[B] =
       try{

@@ -8,8 +8,8 @@ object MonadExercise extends App {
   Hence so forth we ned to make changes in map and flatMap functions of Monad
   implement a Lazy[T] monad = computation will only be executed when its needed
   apply
-  flaytMap
-  these contract shuld be implemented
+  flatMap
+  these contract should be implemented
    */
 
   class Lazy[+A](value : => A){

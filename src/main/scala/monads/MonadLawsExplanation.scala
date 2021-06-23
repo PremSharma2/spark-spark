@@ -1,7 +1,7 @@
 package monads
 
 object
-MonadExplanation  extends App{
+MonadLawsExplanation  extends App{
 /*
 Monads are kind of Abstract type which have some fundamental operations
 Like mentioned below
@@ -75,7 +75,7 @@ imp point is here composite function= f.flatMap(g)
   so it can be written as follows
   [a,b,c].flatMap(x=> f(x).flatMap(g))
   hence proved because as we know the composing the functions looks like that
-  x => function1(function2(x))
+  x => function1 andThen function2(x))
   here x=> f(x).flatMap(g) is equal to function2(x)
   --------------------------------------------------------------------------------------------
   Lets Proof all rules using Options

@@ -66,14 +66,15 @@ That means Expression of calculating the next number fibonacci series is lazily 
 
 
  */
-  def eratosthenes(numberStream:MyStream[Int]): MyStream[Int]=
-    if(numberStream.isEmpty) numberStream
-    else new Node[Int](numberStream.head,
-                       eratosthenes(numberStream.tail.
-                         filter(n => n% numberStream.head !=0)))
+  def eratosthenes(infiniteNaturalNumberStream:MyStream[Int]): MyStream[Int]=
+    if(infiniteNaturalNumberStream.isEmpty) infiniteNaturalNumberStream
+    else new Node[Int](infiniteNaturalNumberStream.head,
+                       eratosthenes(infiniteNaturalNumberStream.tail.
+                         filter(n => n% infiniteNaturalNumberStream.head !=0)))
 
 
   val infiniteStreamOfNaturalsNumbersStartingFrom2: MyStream[Int] = MyStream.from(2)(_ + 1)
+  val tail= infiniteStreamOfNaturalsNumbersStartingFrom2.tail
     val infiniteEratosthenesProcessedStream: MyStream[Int] = eratosthenes(infiniteStreamOfNaturalsNumbersStartingFrom2)
     val finiteEratosthenesProcessedStream= infiniteEratosthenesProcessedStream.take(10)
     val eratosthenes_Finite_ProcessedStream_Converted_toList=  finiteEratosthenesProcessedStream.toList()

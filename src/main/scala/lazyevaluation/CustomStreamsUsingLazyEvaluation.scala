@@ -141,6 +141,18 @@ null  i.e call by need
     because it is eager
      */
     override def map[B](fx: A => B): MyStream[B] = new Node[B](fx.apply(head), tail.map(fx))
+/*
+TODO
+ override def ++ [B >: A](anotherStream: => MyStream[B]): MyStream[B] =
+    When flatmap is called then it will return val stream= new Node[B](head, this.tail ++ anotherStream)
+     here anotherStream == this.tail.flatMap(fx)
+     so when someone try to acces the stream.tail then  this.tail ++ anotherStream gets evaluated
+     new Node[B](2, anotherStream)
+     when now some calls tail over it then this.tail.flatMap(fx) it gets evaluated
+     new Node(3,lazytail) ++ anotherstream and so on......
+
+
+ */
 
     override def flatMap[B](fx: A => MyStream[B]): MyStream[B] = fx.apply(this.head) ++ this.tail.flatMap(fx)
 
@@ -208,6 +220,10 @@ null  i.e call by need
   println("finished startFrom0Naturals stream : " + startFrom0Naturals)
   print(startFrom0Naturals.take(2))
 
+  val startNaturalStream: MyStream[Int] = naturals.take(2)
+  // TODO now the lazy tail get evaluated
+  startNaturalStream.tail
+
   //Here When We call take on o/p of map then tail is get eveluated
   // so we are calling take for each tail
   // so what foreach will do fx.apply(head) here fx is println
@@ -264,6 +280,8 @@ println(flatMappedStream)
   println(streamtoList)
   val filteredStream: MyStream[Int] =startFrom0Naturals.filter(_ <10)
   // filteredStream=new Node[A](head, tail.filter(predicate)) = filteredStream
+  //TODO
+  // Here Lazytail is  tail.filter(predicate)
   // now when we will call filteredStream.tail the expression gets executed
   //  tail.filter(predicate)  first tail is evaluated for the current stream
   // because that is also lazy and after that tail.filter(predicate)

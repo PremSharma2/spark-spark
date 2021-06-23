@@ -13,7 +13,8 @@ object MonadicLawsUseCase  extends App {
     Note that the child is also of type User, so it can have a child too.
       Last, but not least —
      we have a simple function getChild which returns the child for a given user.
-     Now let’s say we want to load a user from the database and if they exist we want to see if they have a grandchild. We need to invoke these three functions:
+     Now let’s say we want to load a user from the database and
+     if they exist we want to see if they have a grandchild. We need to invoke these three functions:
     String → Option[User] // load from db
     User → Option[User] // get child
     User → Option[User] // get child’s child
@@ -24,11 +25,19 @@ object MonadicLawsUseCase  extends App {
   object UserService {
     def loadUser(name: String): Option[User] = ???
   }
-  val getChild = (user: User) => user.child
+  def getChild = (user: User) => user.child
 
-  val result = UserService.loadUser("mike")
+  val result: Option[User] = UserService.loadUser("mike")
     .flatMap(getChild)
     .flatMap(getChild)
+
+  //UserService.loadUser(("mike")).flatMap(user => getChild(user).flatMap(user => getChild ))
+  val grandchild=for {
+     user <- UserService.loadUser("mike")
+     child <- user.child
+     grandChild <- child.child
+  } yield grandChild
+
 
   //unit:     User => Option[User]
   //flatMap: (User => Option[User]) => Option[User]
@@ -70,14 +79,14 @@ object MonadicLawsUseCase  extends App {
     def purchaseItem(item: Item): Future[PurchaseResult]  = ???
     def logPurchase(purchaseResult: PurchaseResult): Future[LogResult]  = ???
   }
-  val loadItem: Order => Future[Item] = {
+  def loadItem: Order => Future[Item] = {
     order => ItemService.loadItem(order)
   }
-  val purchaseItem: Item => Future[PurchaseResult] = {
+  def purchaseItem: Item => Future[PurchaseResult] = {
     item => PurchasingService.purchaseItem(item)
   }
 
-  val logPurchase: PurchaseResult => Future[LogResult] = {
+  def logPurchase: PurchaseResult => Future[LogResult] = {
     purchaseResult => PurchasingService.logPurchase(purchaseResult)
   }
 
@@ -88,4 +97,11 @@ object MonadicLawsUseCase  extends App {
       .flatMap(loadItem)
       .flatMap(purchaseItem)
       .flatMap(logPurchase)
+
+  OrderService.loadOrder("customerUsername").flatMap(order => loadItem(order).flatMap(purchaseItem) )
+  val purchasedItem: Future[PurchaseResult] = for {
+    user <- OrderService.loadOrder("customerUsername")
+    item <- loadItem(user)
+    purchase <- purchaseItem(item)
+  } yield purchase
 }

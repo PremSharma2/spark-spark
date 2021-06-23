@@ -46,7 +46,7 @@ object NeedOFMonads extends App {
   val upperString= wrappedString.toUpperCase
   //3
   // no we need to wrap it again in the container so that someone can again access it
-  val upperSafeString= giveMeSafeValue(upperString)
+  val upperSafeString: SafeValueContainer[String] = giveMeSafeValue(upperString)
   // this pattern is called ETW (Extract Transform and Wrap)
   // So we can modify this code as we are doing ETW in three diffrent stages
   // we can define a method which will do the ETW in single shot

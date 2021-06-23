@@ -29,15 +29,15 @@ object LazyEvaluation extends App {
   it will always return the same result, given the same input.
    */
   def sideEffectsCondition: Boolean = {
-    println("Boolean")
+    println("Boolean") // IO side-effect should be made lazy
     true
   }
 
   def simpleCondition: Boolean = false
 
   lazy val lazyCondition = sideEffectsCondition
-  //Here Lazycondition is never evaluated because simpleCondition is already False with And
-  // condition so scala is smart it will not evaluate the lazyCondtion
+  //Here Lazy-Condition is never evaluated because simpleCondition is already False with And
+  // condition so scala is smart it will not evaluate the lazy-Condition
   println(if (simpleCondition && lazyCondition) "YES" else "NO")
 
   //InConjuction With byName
@@ -54,9 +54,9 @@ object LazyEvaluation extends App {
   def retriveMagicValue: Int = {
 
     //side effect or long computation
-    // it is eveluated three times becaus it is call byname
-    println("Waiting")
-    Thread.sleep(1000)
+    // it is evaluated three times because it is call byName
+    println("Waiting") // IO side Effect
+    Thread.sleep(1000) // IO side Effect
     42
   }
 // now retriveMagicValue is evaluated only once here
@@ -65,12 +65,12 @@ object LazyEvaluation extends App {
   // filtering without lazy vals
   def lessThan30(i: Int): Boolean = {
     //This function has a local side effect
-    println(s"$i is less then 30")
+    println(s"$i is less then 30") // IO side Effect
     i < 30
   }
 
   def greaterThan20(i: Int): Boolean = {
-    println(s"$i is greter then 20")
+    println(s"$i is greter then 20") // IO side Effect
     i > 20
   }
 
@@ -81,15 +81,29 @@ object LazyEvaluation extends App {
   // Filtering With Lazy vals
   // withFilter works with lazy values
   //def withFilter(p: (A) ⇒ Boolean): FilterMonadic[A, Repr]
+  /*
+  TODO
+       The easiest way is probably f.map(identity), which doesn't necessarily return a List,
+       but an appropriate type of sequence, based on the original sequence type before filtering.
+       If you want strictly a List, convert the result to List afterwards: f.map(identity).toList.
+       As for the difference, for most collections filter immediately performs the filtering,
+        builds a new collection in memory and returns it,
+        and withFilter returns an object,
+        which stores the original collection and does the filtering only when an element is requested.
+
+
+   */
   val lt30Lazy: FilterMonadic[Int, List[Int]] = numbers.withFilter(lessThan30)
   val gt20Lazy: FilterMonadic[Int, List[Int]] = lt30Lazy.withFilter(greaterThan20)
   println(gt20Lazy)
   println()
+
   // Because gt20Lazy is lazy so everything will be evaluated from here and that will be need basis
   // i.e it apply both filters together now
   gt20Lazy.foreach(println)
   for {
-    a <- List(1, 2, 3) if a % 2 == 0 // if filter use lazy vals using withFilter
+    a <- List(1, 2, 3)
+    if a % 2 == 0 // if filter use lazy vals using withFilter
   } yield a + 1 // yield uses map
   //this will translates to
   val forComprehension: Seq[Int] = List(1, 2, 3).withFilter(_ % 2 == 0).map(_ + 1)
