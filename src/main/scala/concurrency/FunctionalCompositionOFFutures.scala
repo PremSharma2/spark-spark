@@ -5,7 +5,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 /*
 Based on this, we can assume that we are dealing with a monad.
- Moreover, Future meats all three monad laws. But! Only if we use it
+ Moreover, Future meets all three monad laws. But! Only if we use it
  for pure in-memory computation without side-effects
 However, in real life, Future is almost always used for asynchronous IO
  with a web service or a database.

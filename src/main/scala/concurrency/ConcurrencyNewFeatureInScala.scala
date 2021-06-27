@@ -116,7 +116,7 @@ we can recover from a network error returning the previous retrieved forecast:
           Try(retrieved)
         case Failure(exception) =>
           println(s"Something went wrong, ${exception.getMessage}")
-          Try(Sunny)
+         Failure(new RuntimeException)
       }
   }
     /*

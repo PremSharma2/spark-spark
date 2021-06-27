@@ -9,6 +9,7 @@ object FutureWithPromiseBasicExercise  extends App {
   // i.e promise has a member future i.e promise. so promise is managing the future
   // future which hold the future object so future is managed by promise
   val future: Future[Int] = promise.future
+
   /*
   thread1 - consumer thread
 

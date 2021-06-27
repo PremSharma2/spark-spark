@@ -1,6 +1,7 @@
 package concurrency
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.util.control.NonFatal
 object ControllableFuture  extends App {
   /*
   Idea behind Controllable Future
@@ -44,15 +45,16 @@ and there's no other way to do it: the Promise API is essential.
 //making of  Controllable Future Step 1:
   val promise = Promise[String]()
   // step 2  extract its Future
+ //promise.complete()
   val extractedFuture = promise.future
-  // step3 consume the future
+  // step3 consume the future using map of flatMap
   /*
   map function:
   It also uses onComplete call back and inside the onComplete it then uses
   map function so this map function i s wrapper
   Like this :
   val p = Promise[S]()
-    onComplete { v => p complete (v map f) }
+    this.onComplete { v => p complete (v map f) }
     p.future
 
   Creates a new future by applying a function to the successful result of this future.
@@ -68,7 +70,8 @@ Example:
   } yield x + y
 
    */
-  val furtherProcessing = extractedFuture.map(_.toUpperCase)
+  //TODO because map returns a promise.future
+  val furtherProcessing: Future[String] = extractedFuture.map(_.toUpperCase)
 
   // step 4 Async call
   def asyncCall(promise:Promise[String]): Unit ={
@@ -89,6 +92,9 @@ Example:
       x:Int =>
         // step 4- producer logic
         val preciousValue= MyService.produceAPreciousValue(x)
+        // Full-fill the desired promise with this value
+        //or it Completes the promise with either an exception or a value
+        //it will call tryComplete
         thePromise.success(preciousValue)
     }
     // step 2 - etract the Future
@@ -96,7 +102,30 @@ Example:
      theFuture
   }
 
+
+  //TODO or we can produce  like this way ie at producer side
+
+  def runByPromise[T](block: => T)(implicit ec: ExecutionContext): Future[T] = {
+    val p = Promise[T]
+    ec.execute { () =>
+      try {
+        p.success(block)
+      } catch {
+        case NonFatal(e) => p.failure(e)
+      }
+    }
+    p.future
+  }
+
+  //TODO ------------------------------------------------------------------------------------------
   // step -3 Someone will consume my Future
   // this consumer thread will automatically enalbled once the
   // thePromise.success(preciousValue) is fullfilled
+  def consumeApi(completedFuture:Future[String]) = {
+     completedFuture.map(_.contains('s'))
+  }
+  val completedTask: Future[String] = gimmeMyPreciousValue(2)
+  consumeApi(completedTask)
+
+
 }

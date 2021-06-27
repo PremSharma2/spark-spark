@@ -30,19 +30,30 @@ val aFuture: Future[Int] = Future.apply{
   calculateMeaningOfLife
 }
   // here now it will get executed bcz value is callByname expression calculateMeaningOfLife
+  /*
+  TODO
+      The current value of this Future.
+       Note: using this method yields nondeterministic dataflow programs.
+      If the future was not completed the returned value will be None.
+     If the future was completed the value will be Some(Success(t))
+    if it contained a valid result, or Some(Failure(error)) if it contained an exception.
+   */
    println(aFuture.value) //it returns an option of try Option[Try[Int]]
+  val valueReturnedByThread: Any =aFuture.value.getOrElse(42)
    println("Waiting for the Future ")
   // Here we reomved t => t match {} because it is a partial functionso we can write this way
+  //TODO you can use this call back to return values from the Future
   val futureResult: Unit =aFuture.onComplete{
     case  Success(value) => println(s"Thread is completed with the value $value")
     case  Failure(exception) => println(s"I have failed with exception $exception")
   }
   //or
-  aFuture onComplete futurePartialFunction
-  val futurePartialFunction: PartialFunction[Try[Int], Unit] = {
-    case  Success(value) => println(s"Thread is completed with the value $value")
-    case Failure(exception) => println(s"I have failed with exception $exception")
+
+  val futurePartialFunction: PartialFunction[Try[Int], Option[Int]] = {
+    case  Success(value) => Some(value)
+    case Failure(exception) => None
 
   }
+  val futureResult2: Unit =aFuture.onComplete(futurePartialFunction)
   Thread.sleep(2000)
 }
