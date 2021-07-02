@@ -1,5 +1,5 @@
 package ImplicitsAndTypeClasses
-import java.{util => javaCollection}
+import java.{util, util => javaCollection}
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -35,7 +35,7 @@ val javaSet:javaCollection.Set[Int] = new javaCollection.HashSet[Int]()
   val javaCollectionBuffer = numbersBuffer.asJava
 println(javaCollectionBuffer.asScala  eq numbersBuffer)
   val numbers: Seq[Int] = List(1,2,3,4)
-  val javaNumbers = numbers.asJava
+  val javaNumbers: util.List[Int] = numbers.asJava
   val backToScala: mutable.Seq[Int] = javaNumbers.asScala
 
   println(backToScala eq numbers)
