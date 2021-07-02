@@ -43,6 +43,7 @@ like this
  content: "Scala Rocks"
  createdAt: 23-june-2019
  }
+ }
 This is basically the whole DO which represent whole json
 which contains all json values i,e Collection of key value pair of JsonValues
 because Custom object in json are represented as Key, Value pairs
@@ -54,7 +55,7 @@ Like this i.e the final JSon representation which is going to serialize now
  this is nested object Post which again a key value pair
  latestPost : {
  content: "Scala Rocks"
- createdAt: 23-june-2019
+ creat edAt: 23-june-2019
  }
  }
  or
@@ -66,11 +67,23 @@ Like this i.e the final JSon representation which is going to serialize now
   */
 
   /*
+TODO
+  JSON
+  {
+ name:"Prem"
+ age: 22
+ friends : [......]
+ this is nested object Post which again a key value pair
+ posts : {
+ content: ["Scala Rocks","spark"]
+ }
+ }
+ TODO API representation of this
   Lets take an basic example
   val jsonData= JsonDataObject.apply{
   //    Map(
   //      "user" -> JsonString("Prem"),
-  //      "posts" -> JsonArray(List(JsonString("Jai Mata De"),JsonNumber(111)))
+  //      "posts" -> JsonArray(List(JsonString("Scala Rocks"),JsonNumber(spark)))
    */
 final case class JsonDataObject(keyValuePair: Map[String,JSONValue]) extends JSONValue {
   override def toJSONString: String = keyValuePair.map{
@@ -78,7 +91,7 @@ final case class JsonDataObject(keyValuePair: Map[String,JSONValue]) extends JSO
         // first iteration of user will give
         // List("user" :"{"name":"John","age":43,"email":"john@outlook.com"})
     case (key,value) => "\"" + key + "\":" + value.toJSONString
-  }// so for every lement in this iterable we are calling mkString
+  }// so for every element in this iterable we are calling mkString
     .mkString("{",",","}")
 }
   final case class JsonString(value: String) extends JSONValue{
@@ -100,10 +113,11 @@ final case class JsonDataObject(keyValuePair: Map[String,JSONValue]) extends JSO
     // you can also define a prefix, suffix, and element separator, as shown in these examples:
     //[{"content":"Hello- Scala","createdDate:":"Mon Sep 07 10:25:07 BST 2020"}]
     override def toJSONString: String = {
-      // output of this is {"content":"Hello- Scala","createdDate:":"Tue Sep 08 09:25:05 BST 2020"}
+      // output of this is [{"content":"Hello- Scala","createdDate:":"Tue Sep 08 09:25:05 BST 2020"}]
       val convertedJsontoJsonString: Seq[String] =value.map(_.toJSONString)
-     val jsonString= convertedJsontoJsonString.mkString("[",",","]")
-      jsonString
+      // output of this is [{"content":"Hello- Scala","createdDate:":"Tue Sep 08 09:25:05 BST 2020"}]
+     val jsonStringRepresentaionOfJsonarray= convertedJsontoJsonString.mkString("[",",","]")
+      jsonStringRepresentaionOfJsonarray
     }
   }
   //---------------------------------------------------------------------------------------------------
@@ -155,12 +169,12 @@ implicit object StringConverter extends JsonConverter[String]{
       // List of key value pair it will give List of Json data object of post type
       //List(JsonDataObject(Map(content -> JsonString(Hello- Scala),
       //                  createdDate: -> JsonString(Mon Sep 07 07:40:32 BST 2020))))
-      val jsonValuelist: List[JSONValue] =feed.posts.map(PostConverter.convert(_)).toList
+      val postJson: List[JSONValue] =feed.posts.map(PostConverter.convert)
       val userJson= UserConverter.convert(feed.user)
       // populating feedjson for feed DO
       JsonDataObject(Map(
       "user:" -> userJson,
-      "posts:"  -> JsonArray(jsonValuelist)
+      "posts:"  -> JsonArray(postJson) // because psots hase Arrayof JSON
     ))
   }}
   // now step 2.3 is immplicit conversion
@@ -171,7 +185,7 @@ implicit object StringConverter extends JsonConverter[String]{
   }
   val now = new Date(System.currentTimeMillis())
 
-  val jsonData= JsonDataObject.apply{
+  val jsonData: JsonDataObject = JsonDataObject.apply{
     Map(
       "user" -> JsonString("Prem"),
       "posts" -> JsonArray(List(JsonString("Jai Mata De"),JsonNumber(111)))
@@ -180,7 +194,12 @@ implicit object StringConverter extends JsonConverter[String]{
   }
   println(jsonData.toJSONString)
 
-
+  val user= User("John",43,"john@outlook.com")
+  // so we need to convert the Feed object and inside feed we have post and user
+  val feed= Feed(user, List(
+    Post("Hello- Scala", now)
+  ))
+  println(feed.toJSON.toJSONString)
   /*
   {"user":"Prem","posts":["Jai Mata De",111]}
    */

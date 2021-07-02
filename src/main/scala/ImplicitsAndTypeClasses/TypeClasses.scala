@@ -32,7 +32,7 @@ case class User(name:String, age:Int , email:String) extends HtmlSerializable {
   We need to modify the code every time we add new match
    */
 
-  object HtmlSerializablePM{
+  object HtmlSerializable{
     def serializableToHtml(value :Any) = value match{
       case User(n,a,e) =>
       case _ =>

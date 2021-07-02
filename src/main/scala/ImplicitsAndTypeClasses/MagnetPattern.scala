@@ -15,20 +15,28 @@ object MagnetPattern extends App {
     def receive[T](message:T)(implicit serializer:Serializer[T]):Int
     def receive [T : Serializer](message:T,statusCode:Int):Int
     def receive(future : Future[P2PRequest]): Int
+    //val recive: Future[P2PResponse] => Int =  receive(_: Future[P2PResponse])
     // Problems with overloading
   // 1:  def receive(future : Future[P2PResponse]): Int
     // this is not compiling because of the  type erasure
     // what happens here is that type of Generics is removed at run time
-    // so it will look same
+    // so it will look same  as this one
+    // def receive(future : Future[P2PRequest]): Int hence it results in ambiguity
     /*
-    2: Lifting doesnot work for all overloads
+    TODO
+        //val recive: Future[P2PResponse] => Int =  receive(_: Future[P2PResponse])
+        This will not work as well because complier
+     */
+    /*
+    2: Lifting doesn't work for all overloads
     val receive= receive _ // compiler will be confused at this case
+
     3: Code duplication : bcz impl for all these methods will be more or less same
     4: type inference and default arguments
       actor.receive(default argument we cant give bcz compiler again will get confuse)
      */
   }
-  // this problem can be solved implicit conversion
+  // TODO : -> this problem can be solved implicit conversion
   trait MessageMagnet[Result]{
     def apply():Result
   }
@@ -65,7 +73,8 @@ def receive[R](magnet: MessageMagnet[R]):R= magnet.apply()
 
   implicit class FromRequestFuture(future : Future[P2PRequest]) extends MessageMagnet[Int]{
     override def apply(): Int = {
-      // all logic to handle  P2PRequest
+      //TODO all logic to handle  P2PRequest i.e once the future gets completed here
+       future.value
       println("handling Future of P2PRequest")
       204
     }
@@ -80,6 +89,9 @@ def receive[R](magnet: MessageMagnet[R]):R= magnet.apply()
 
   println(receive(Future(new P2PRequest)))
   println(receive(Future(new P2PResponse)))
+  val future: Future[P2PResponse] =Future.apply[P2PResponse]( new P2PResponse)
+  receive[Int](new FromResponseFuture(future))
+
   // 2 Lifting also Works in this case
   trait MAthLib{
     def add(x:Int) = x+1
@@ -89,6 +101,7 @@ def receive[R](magnet: MessageMagnet[R]):R= magnet.apply()
     def apply(): Int
   }
   def add(magnet:AddMagnet):Int= magnet.apply()
+
   implicit class AddInt(x:Int) extends AddMagnet{
     def apply(): Int= x+1
   }

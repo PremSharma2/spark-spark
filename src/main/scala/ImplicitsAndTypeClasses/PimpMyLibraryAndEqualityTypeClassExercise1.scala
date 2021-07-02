@@ -29,8 +29,9 @@ object PimpMyLibraryAndEqualityTypeClassExercise1 extends App {
   case class User(name:String, age:Int , email:String)
   val user=User("Prem", 34, "prem.kaushik@outlook.com")
   val anotherUser= User("Prem", 34, "prem.kaushik@outlook.com")
-  println(user.===(anotherUser))
+  println(user ===(anotherUser))
   println(user === anotherUser)
+ // println(user === 43)
   /*
   Here are the steps which compiler will take to do implicit type conversion
   user.===(anotherUSer)

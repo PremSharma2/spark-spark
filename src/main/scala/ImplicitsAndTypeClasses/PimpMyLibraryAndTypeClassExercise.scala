@@ -5,7 +5,7 @@ import ImplicitsAndTypeClasses.TypeClassAndImplicits.HtmlSerializer
 
 
 object PimpMyLibraryAndTypeClassExercise  extends App {
-// exercise of Type class pattern and PimpMylibrary mixuture
+// exercise of Type class pattern and Pimp-My-library mixture
   // this is an implicit value class for implicit conversion
 // it will covert Buisness DO to HTML
   // serializable form
