@@ -7,22 +7,26 @@ object TypeMember extends App {
   class Cat extends Animal
 
   class AnimalCollection{
-    // this abstract type member declaration is alternative to use of Generics
-    type Animaltype // abstract type member
-    type BundedAnimal<:Animal
-    type SuperBundedAnimal >:Dog <:Animal
-    // this is type aliasing
+    // TODO this abstract type member declaration is alternative to use of Generics
+    // TODO but at the same time it is also the member of class
+    type Animaltype // abstract type member or we can say T instead of Aniamltype
+    type BundedAnimal<:Animal   // T<: Animal
+    type T >:Dog <:Animal
+    // Todo this is type aliasing
     type catType = Cat
   }
 val ac = new AnimalCollection
- val dog : ac.SuperBundedAnimal = new Dog
+  //TODO accessing the abstract type member class and assigning the type to it
+ val dog : ac.T = new Dog
   // this is not useful as such but type aliasing very much useful
   val cat : ac.catType = new Cat
   type catTypeAlias = Cat
+  // TODO : -> use of type aliasing
   val pussycat : catTypeAlias = new Cat
   val mycat :Cat= new Cat
 // alternatives to generics when
-// we design APIS we can use type aliases and abstract type members
+// we design APIS we can use type a
+// liases and abstract type members
   trait Mylist{
     type T
     def add(element :T):Mylist
@@ -35,8 +39,9 @@ val ac = new AnimalCollection
   //.type this is type alias to already define type like cat refrence variable is of whateva tyep
   type CatsType = cat.type
   //val blackCat: CatsType = cat
-// Exercise is some other team have developed this api and u are using it
-  // but u considered this is bad design
+
+//TODO Exercise is some other team have developed this api and u are using it
+  // TODO but u considered this is bad design
 
   trait MList{
     //type A<: String // we can use this like as well as typeconstraint 26262
@@ -44,12 +49,12 @@ val ac = new AnimalCollection
     def head: A
     def tail : MList
   }
-  class CustomList(hd: String, tl:CustomList) extends MList {
+  class StringList(hd: String, tl:StringList) extends MList {
     override type A = String
 
     override def head: String = hd
 
-    override def tail: CustomList = tl
+    override def tail: StringList = tl
   }
 // no you wanted to compile this guy only not the above
 // one because this API is designed for
@@ -62,9 +67,9 @@ val ac = new AnimalCollection
 
     override def tail: IntList = tl
   }
-//Lets fix this design by using bounded type
-  trait ApllicableToNumbers{
-  // abstract type bounded member
+//TODO : -> Lets fix this design by using bounded type
+  trait ApplicableToNumbers{
+  //TODO : ->  abstract type bounded member
     type A<: Int
   }
 
@@ -81,10 +86,14 @@ val ac = new AnimalCollection
 
     override def tail: CustomSeq = tl
   }*/
-  // no you wanted to compile this guy only not the above one because this API is designed for
-  //Integers not for Strings
-  // So we want to enforce this limitation to compile time also so that code should not compile
-  class IntSeq(hd: Int, tl:IntSeq) extends Seq with ApllicableToNumbers{
+  /*
+ TODO
+   no you wanted to compile this guy only not the above one because this API is designed for
+  Integers not for Strings
+   So we want to enforce this limitation to compile time also so that code should not compile
+
+   */
+  class IntSeq(hd: Int, tl:IntSeq) extends Seq with ApplicableToNumbers{
     override type A = Int
 
     override def head: Int = hd

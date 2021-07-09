@@ -13,11 +13,11 @@ object PathDependentTypes  extends App {
   def aMethod:Int ={
     // we can define classes inside the method
     class HelperClass
-    // we can't define type members but only type aliases
+    // TODO we can't define type members but only type aliases in methods
     type Helper = String
     2
   }
-  //we can access the abstract type member of Outer or we say it path dependent abstract Type
+  //TODO we can access the abstract type member of Outer or we say it path dependent abstract Type
   val abstrattypeMember : Outer#abstractMemberType = ???
   val outer= new Outer
   val oo= new Outer

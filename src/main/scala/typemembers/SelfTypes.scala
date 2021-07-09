@@ -6,8 +6,8 @@ object SelfTypes  extends App {
     def play(): Unit
   }
 trait Singer{ self: InstrumentList => //whoever implement Singer he has to implement InstrumentList also
-def sing():Unit
-  self.play()
+def sing():Unit = self.play()
+
 }
 // It is the correct impl which say that whoever extends Singer has to implement InstrumentList
   class LeadSinger extends Singer with InstrumentList{
@@ -24,7 +24,7 @@ def sing():Unit
   }
   */
   // this anonymus class inmpl also correct
-   val jamesHAtfield= new Singer with InstrumentList {
+   val jamesHAtfield: Singer with InstrumentList = new Singer with InstrumentList {
     override def sing(): Unit = ???
 
     override def play(): Unit = ???
@@ -52,7 +52,7 @@ val ericClapton= new Guitarist with Singer{
   // Self types are used in cake pattern
 
 // This is classical Dependency injection Pattern
-  class Component{
+  trait Component{
 // API
   }
   class ComponentA extends Component
@@ -67,7 +67,7 @@ val ericClapton= new Guitarist with Singer{
   // ScalaDependentComponent Requires ScalaComponent
   trait ScalaDependentComponent{self: ScalaComponent=>
     // Hence it clearly shows that i am calling Dependent Component action hence dependency has been injected
-   def dependentAction(x:Int):String = action(x) + "Scala-Dependency"
+   def dependentAction(x:Int):String = self.action(x) + "Scala-Dependency"
 
   }
   //fundamental difference between Spring DI and Scala cake pattern is that
@@ -77,6 +77,7 @@ val ericClapton= new Guitarist with Singer{
 // Cake pattern Impl
   // layer 1 : -> small components
   // In this layer the components declared are lowest small components of any Application
+  //TODO They could be ADTS
   trait Picture extends ScalaComponent
   trait Stats  extends ScalaComponent
 
@@ -95,4 +96,8 @@ val ericClapton= new Guitarist with Singer{
   // here we have used the cake pattern As DI pattern to inject the required Component dependencies
   // into the Component of one layer from the another layer
   trait AnalyticsApplicationLayer extends ScalaDependentComponent with Analytics
+  class MyAnalyticsApplicationLayer extends AnalyticsApplicationLayer {
+    override def action(arg: Int): String = "String"
   }
+  }
+

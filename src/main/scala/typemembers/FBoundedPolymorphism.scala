@@ -41,27 +41,33 @@ object FBoundedPolymorphism extends App {
    */
 
   // Solution number 2
-
-  // Here we have used in type parameter as Animal type i.e recursive type
-  // This means that the type you will pass here it must Extend Animal i.e self Type and animal is typed to A i.e A<: Animal[A]
-  // for example if we pass Cat then Cat must extend  the Animal of Type Cat Cat< : Animal[Cat]
   /*
+TODO
+  // Here we have used in type parameter as Animal type i.e recursive type
+  // This means that the type you will pass here it must Extend Animal i.e self Type and animal is typed to A
+  // i.e Animal also takes type parameter A<: Animal[A]
+  // for example if we pass Cat then Cat must extend  the Animal of Type Cat Cat< : Animal[Cat]
+
+ */
+  /*
+
+TODO
   trait Animal[A <: Animal[A]]{ // this is called recursive Type and A <: Animal[A] is called F bounded Polymorphism
     def breed:List[Animal[A]]
   }
-
+TODO
   class Cat extends Animal[Cat]{
     // this type recursive forces the type restriction now it will return only List[Cat]
     override def breed: List[Animal[Cat]] = ???
   }
 
-
+TODO
   class Dog extends Animal[Dog]{
     override def breed: List[Animal[Dog]] = ???
   }
   // practical Example of this approach
   // most of the ORM framework uses this Approach to enforce the Correct type Restriction
-
+TODO
   trait Entity[E  <: Entity[E]]
   // another example of F bounded Polymorphism
   class Person extends Comparable[Person] { // this is one more Example F bounded Polymorphism
@@ -69,13 +75,15 @@ object FBoundedPolymorphism extends App {
   }
   // But Still Problem is not solved Completely
   //It is solved partially it is still Compiling but it needs to return Crocodile not Dog
-
+TODO
   class Crocodile extends Animal[Dog]{
     override def breed: List[Animal[Dog]] = ???
   }
 
    */
+  /*
 
+ TODO
   // This introduces Solution number 3 Here we will use FBP + Self Types
   //Idea here is that Type How do i will enforce compiler the class i am defining and the
   // type i am annotating i.e A <: Animal[A]  are same
@@ -86,21 +94,25 @@ object FBoundedPolymorphism extends App {
   trait Animal[A <: Animal[A]]{ self: A=>
     def breed:List[Animal[A]]
   }
+/*
 
+TODO
   class Cat extends Animal[Cat]{
     // this type recursive forces the type restriction now it will return only List[Cat]
     override def breed: List[Animal[Cat]] = ???
   }
 
-
+TODO
   class Dog extends Animal[Dog]{
     override def breed: List[Animal[Dog]] = ???
   }
 
+ */
+TODO
   class Crocodile extends Animal[Crocodile]{
     override def breed: List[Animal[Crocodile]] = ???
   }
-
+TODO
   // But still problem is not solved Lets explain this with example
   //Lets say we have a new hierarchy based on above hierarchy
   // Hence Once we down the class Hierarchy one level then
@@ -110,12 +122,12 @@ object FBoundedPolymorphism extends App {
       // again same problem it should Return List[Animal[Shark]]
       override def breed: List[Animal[Fish]] = List(new Cod)
     }
-
+TODO
   class Cod extends Fish{
     // again same problem it should Return List[Animal[Shark]]
     override def breed: List[Animal[Fish]] = ???
   }
-
+TODO
  */
   //Solution is with Type Classes
   // class hierarchy of Animal which type-class will use to perform operation
@@ -129,6 +141,8 @@ object FBoundedPolymorphism extends App {
   }
 // Design will be like this we did before
   /*
+
+TODO
   object HtmlSerializer{
     // it take type class instance as argument and the type T
     def serialize[T](value : T)(implicit serializer:HtmlSerializer[T]):String=
@@ -137,7 +151,9 @@ object FBoundedPolymorphism extends App {
     def apply [T](implicit serializer: HtmlSerializer[T]) = serializer
   }
    */
-//Animal instance
+
+TODO
+ //Animal instance
   object Dog {
   // type class instance
   implicit object DogCanBreed extends CanBreed[Dog] {
@@ -168,13 +184,13 @@ object FBoundedPolymorphism extends App {
   // Lets Modify this Code
 
 
-   */
+TODO   */
   // Lets Modify this Code
   // Lets make animal itself type class
   trait Animal[A] { // This is pure Type Class
     def breed(animal: A): List[A]
   }
-// This is the type on which Type Class applies the operation i.e A = Dog
+ This is the type on which Type Class applies the operation i.e A = Dog
     class Dog
     object Dog {
       // type class instance
@@ -182,11 +198,16 @@ object FBoundedPolymorphism extends App {
         override def breed(a: Dog): List[Dog] = List()
       }
     }
-// last component to complete type class pattern
+ last component to complete type class pattern
   implicit class AnimalOps[A](animal:A){
   def breed (implicit animalTypeClassInstance: Animal[A]): List[A] =
     animalTypeClassInstance.breed(animal)
 }
+
+ TODO
   val dog= new Dog
   val x: Seq[Dog] =dog.breed
+}
+
+ */
 }
