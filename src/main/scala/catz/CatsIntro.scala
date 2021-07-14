@@ -4,7 +4,7 @@ package catz
 object CatsIntro extends App {
 
 // TODO : -> this is Eq type class here working behind the scene
-  val aComparison= 2 == "aString"
+  val aComparison: Boolean = 2 == "aString"
   //TODO : -> Steps to use type Class Api of cats
 // TODO : -> Step    lets import the type class
   // TODO : ->  import the type class  Eq these type classes are scala in built
@@ -64,7 +64,7 @@ object CatsIntro extends App {
 
    */
   // TODO : calling eqv def over typeclass instance
-   intEqualityTypeClassInstance.eqv(2,2)
+   val eqResult: Boolean =intEqualityTypeClassInstance.eqv(2,2)
   /*
   Like this : ->
 //TODO : This example making  us understand that how scala Work internally
@@ -130,6 +130,7 @@ object CatsIntro extends App {
     (car1,car2) => car1.price == car2.price
   }
 
+  val toyCarrs: Boolean =toyCar.eqv(ToyCar("ferari", 29.99), ToyCar("ferari", 29.99))
   val compareToyCars= ToyCar("ferari", 29.99) === ToyCar("Baleno" , 39.99)
   println(compareToyCars)
 }

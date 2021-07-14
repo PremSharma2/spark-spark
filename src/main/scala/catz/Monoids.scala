@@ -88,7 +88,7 @@ TODO trait Monoid[A] extends Semigroup[A] {
 
   // TODO : As Monoid are also Semigroup we can test combine function as well
 
-  val combineString= stringMonoidTypeClassInstance.combine("Hello", "Scala")
+  val combineString: String = stringMonoidTypeClassInstance.combine("Hello", "Scala")
 
   // TODO: Lets test Monoids for Options i.e Higher Kinded types
      import cats.instances.option._
@@ -100,15 +100,19 @@ TODO trait Monoid[A] extends Semigroup[A] {
    */
 // TODO : Monoids are also higher kinded type becuse they extend MonoidFunctions
   /*
+  TODO
      there is type enrichment, but not with higher kinded types
-
-  so the implicit def available  is able to create a Monoid[Option[Int]]
-  given that there is an implicit Semigroup[Int] in scope
+     because we have already type class instance available for Monoid[Option[Int]]
+     so the implicit def available  is able to create a Monoid (Monoid[Option[Int]]) type class instance
+     of Type Option
+     given that there is an implicit Semigroup[Int] in scope
    */
-  // final def apply[A](implicit ev: Monoid[A]): Monoid[A] = ev
+  //TODO  final def apply[A](implicit ev: Monoid[A]): Monoid[A] = ev
   // so compiler will rewrite this
-  //Monoid.apply[Option[Int]](instance:OptionMonoid[Int](instance1:Semigroup[Int]))
-  val optionMonoidTypeClassInstance= Monoid.apply[Option[Int]]
+  // TODO : -> Monoid.apply[Option[Int]](implicit instance:OptionMonoid[Option[Int]])(instance1:Semigroup[Int]))
+
+  val optionMonoidTypeClassInstance: Monoid[Option[Int]] = Monoid.apply[Option[Int]]
+
   /*
      TODO  Companion Object of Monoid type class looks like this
        object Monoid extends MonoidFunctions[Monoid] {
@@ -118,7 +122,7 @@ TODO trait Monoid[A] extends Semigroup[A] {
 /*
 TODO : signature of type class instance of  Monoid[Option[A]]
 TODO
- implicit object OptionMonoid [A](implicit A: Semigroup[A]) extends Monoid[Option[A]]{
+ class OptionMonoid [A](implicit A: Semigroup[A]) extends Monoid[Option[A]]{
  def empty: Option[A] = None
   def combine(x: Option[A], y: Option[A]): Option[A] =
     x match {
@@ -164,9 +168,9 @@ implicit class SemigroupOps[A: Semigroup](lhs: A) {
 
   println(combineFold(numbers))
   println(combineFold(List("I", "Like" , "Monoids")))
-
+  println(combineFold(numbers.map(Option(_))))
   //TODO : Exercise combine a list of phone books as Maps[String,Int]
-
+// TODO task is reduce the List[Map] to Map
 val phoneBook= List(
   Map(
     "Alice" -> 235,
@@ -186,9 +190,14 @@ val phoneBook= List(
 
   //TODO: import cats.instances.map._
   import cats.instances.map._
+
   /*
+ TODO
+   implicit def catsKernelStdCommutativeMonoidForMap[K, V: CommutativeSemigroup]: CommutativeMonoid[Map[K, V]] =
+    new MapMonoid[K, V] with CommutativeMonoid[Map[K, V]]
+
      TODO
-      implicit object  MapMonoid[K, V](implicit V: Semigroup[V]) extends Monoid[Map[K, V]] {
+      class  MapMonoid[K, V](implicit V: Semigroup[V]) extends Monoid[Map[K, V]] {
         def empty: Map[K, V] = Map.empty
        def combine(xs: Map[K, V], ys: Map[K, V]): Map[K, V] =
         if (xs.size <= ys.size) {
@@ -204,7 +213,17 @@ val phoneBook= List(
       }
     }
    */
-  // combineFold[Map[String,Int](List[Map[K,V]])(instance : MapMonoid[String,Int](implicit V: Semigroup[Int])
+  /*
+ TODO
+      instance : MapMonoid[String,Int] this will be evaluated by the implicit def
+      implicit def catsKernelStdMonoidForOption[Int: Semigroup]: MapMonoid[String, Int] =
+       new MapMonoid[String, Int](v:Semigroup[Int] )
+       so in combineFold compiler will look for implicit def and will make a call to implicit def
+       like that we have mentioned above this def will return type cass instance
+       of Monoid as MapMonoid
+
+   */
+  //TODO  combineFold[Map[String,Int](List[Map[String,Int]])(instance : MapMonoid[String,Int](implicit V: Semigroup[Int])
   println(combineFold(phoneBook))
 
   //TODO: Exercise 3:-> Shopping Cart and online stores  problem by monoids
@@ -214,11 +233,17 @@ val phoneBook= List(
 
 
   // TODO Monoid type-class instance of type Monoid[ShoppingCart]
-
+/*
+TODO
+      @inline def instance[A](emptyValue: A, cmb: (A, A) => A): Monoid[A] = new Monoid[A] {
+    override val empty: A = emptyValue
+    override def combine(x: A, y: A): A = cmb(x, y)
+  }
+ */
   implicit val shoppingCartMonoidTypeClassInstance: Monoid[ShoppingCart] =
     Monoid.instance[ShoppingCart](
     ShoppingCart(List.empty, 0.0) ,
-    (sa, sb) => ShoppingCart(sa.items ++ sb.items , sa.total + sb.total)
+    (sa, sb) => ShoppingCart.apply(sa.items ++ sb.items , sa.total + sb.total)
   )
 
 

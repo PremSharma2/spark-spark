@@ -1,11 +1,11 @@
 package typemembers
-import examples.example1._
-import junit.framework.Test
 import junit.framework.TestCase.assertEquals
+import org.junit
+import typemembers.examples.example1._
 
-@Test
+@junit.Test
 class CakePatternTest {
-  @Test
+  @junit.Test
   def demonstrateRuntimeUsageOfCakePattern{
     println("using production ComponentRegistry")
     println ("a.value="+ Registry.a.value)

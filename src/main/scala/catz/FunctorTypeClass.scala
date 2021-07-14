@@ -5,6 +5,8 @@ import scala.util.Try
 /*
 TODO :cats api encodes  functors as a type- class
   which provides map method which works on
+  As we know that it works on Containers of different kind
+  then it will only accept higher kinded type as type value for this type class
  TODO : Higher Kinded types Functor[F[_]] which are in nature functors
  i.e Bag with map
  */
@@ -42,30 +44,34 @@ val aModifed: Seq[Int] = List(1,2,3).map(_ +1)
 object MyFunctor{
   def apply[F[_]](implicit instance : MyFunctor[F]): MyFunctor[F] = instance
 }
+
   //TODO : Example implementation for Functor type-class instance for higher-kinded-type
   // [Option[_]]
   implicit val mycatsStdInstancesForOption: MyFunctor[Option] = new MyFunctor[Option] {
     override def map[A, B](option: Option[A])(f: A => B): Option[B] =
       option.map(f)
   }
+  mycatsStdInstancesForOption.map[String,Int](Some("a"))(_.toInt)
    val functorForOption: MyFunctor[Option] = new MyFunctor[Option] {
     def map[A, B](fa: Option[A])(f: A => B): Option[B] = fa match {
       case None    => None
       case Some(a) => Some(f(a))
     }
   }
+
   // TODO : basic expample for type class instance for Functor type class for List type
   implicit val mycatsStdInstancesForList: MyFunctor[List] = new MyFunctor[List] {
     override def map[A, B](fa: List[A])(f: A => B): List[B] =
       fa.map(f)
   }
 
-
+  val functortypeClassInstance= MyFunctor.apply[Option]
   // TODO : Test our own Custom Functor
   //val listTypeClassInstaceforCustomFunctor= MyFunctor.apply[List]
  // println(listTypeClassInstaceforCustomFunctor.map(List(1,2,2))(_+1))
 
 
+  val functorTypeClasInsatnce= MyFunctor.apply[Option]
   //TODO ---------------------------cats API Functor type class------------------------------------------------------
 
 
@@ -73,8 +79,8 @@ object MyFunctor{
   // TODO First of all import the typeclass and type-class instances
   //  of Functor type-class
   // TODO : for the type List
-   import cats.Functor // type class
-  import cats.instances.list._ // type class instance for type List like i gave example above
+   import cats.Functor
+   import cats.instances.list._ // type class instance for type List like i gave example above
 
   // TODO : def apply[F[_]](implicit instance : cats.Functor[F])
   // TODO here as we can see that apply method takes higherkinded type
@@ -88,7 +94,7 @@ object MyFunctor{
   // TODO Lets test this Functor Type class for the type Try
   // TODO this is also higherKinded type i.e Functor[Try[Int]]
   import cats.instances.try_._
-  val anFunctorTypeClassInstanceForTrytype: Try[Int] = Functor[Try].map(Try(41))(_+1)
+  val anFunctorTypeClassInstanceForTrytype: Try[Int] = Functor[Try].map[Int,Int](Try(41))(_+1)
 
 
   //TODO : need of Functors type class is that when we want to genralize the API
@@ -166,12 +172,12 @@ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
   TODO: Type Enrichment API or extension methods or imp the library API is here
     implicit def toFunctorOps[F[_], A](target : F[A])(implicit tc : cats.Functor[F])
     : Functor.Ops[F, A] {
-
+TODO
   implicit trait Ops[F[_], A] extends scala.AnyRef {
     type TypeClassType <: cats.Functor[F]
     val typeClassInstance : Ops.this.TypeClassType
     def self : F[A]
-    def map[B](f : A => B) : F[B] = { /* compiled code */ }
+    def map[B](f : A => B) : F[B] = typeClassInstance.map(F)(f)
    */
   val tree: Tree[Int] = Tree.branch(2,Tree.leaf(2),Tree.leaf(2))
   tree.map(_ + 1)

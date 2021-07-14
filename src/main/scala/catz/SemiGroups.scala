@@ -1,6 +1,4 @@
 package catz
-
-import cats.Semigroup
 // TODO : -> Semigroup is a type class that combines the Element of same type
 // TODO and what it combines that depends on type of type class instance
 /*
@@ -15,6 +13,8 @@ TODO
 
 //lets import the type class
 object SemiGroups  extends App {
+  //TODO import the type class
+  import cats.Semigroup
   // TODO lets import type class instances for Int type
   import cats.instances.int._
   // naturalIntSemiGroupTypeClassInstance is an type class instance
@@ -40,7 +40,14 @@ object SemiGroups  extends App {
   // type Enrichment by making it implicit class
 
   //TODO : Use case -> General API for Reduction of any type using type class
-
+/*
+TODO
+ def reduce[A1 >: A](op: (A1, A1) => A1): A1
+ Description copied from class: GenTraversableOnce
+ Reduces the elements of this collection or iterator using the specified associative binary operator.
+ The order in which operations are performed on elements is unspecified and may be nondeterministic.
+ */
+  Tuple2
   def reduceThings[T](list:List[T])(implicit semiGroup:Semigroup[T]) = {
     list.reduce(semiGroup combine)
 
@@ -62,13 +69,13 @@ val fx : (Int,Int) => Int = (x,y) => x+ y
 
   // TODO : -> by using Reduce things API
 
-  val myList= (1 to 4).toList
+  val numberList: List[Int] = (1 to 4).toList
 
-  println(reduceThings(myList))
+  println(reduceThings[Int](numberList))
 
   // TODO : -> converting List[Int] to List[Option[Int]]
 
-  val numberOptions: List[Option[Int]] = myList.map(Option(_))
+  val numberOptions: List[Option[Int]] = numberList.map(Option(_))
 
   // TODO :-> importing the implicit  Semigroup type class instance of Type Option[Int]
   // TODO it is an higher kinded type so we will
@@ -95,7 +102,7 @@ val fx : (Int,Int) => Int = (x,y) => x+ y
    */
   import cats.instances.option._
   // TODO : -> it will sum all elements of List  and wrap them in Monad Option
-  val result: Option[Int] = reduceThings(numberOptions)
+  val result: Option[Int] = reduceThings[Option[Int]](numberOptions)
   println(reduceThings(numberOptions).getOrElse(23))
 
 val strings= List("I am" , "starting" ,"to like " , "SemiGroup")
@@ -117,7 +124,7 @@ val strings= List("I am" , "starting" ,"to like " , "SemiGroup")
 
   val expenses= List(Expense(1,60),Expense(2,70), Expense(3,80), Expense(4,90))
 
-  println(reduceThings(expenses))
+  println(reduceThings[Expense](expenses))
 
   //TODO : -> USe of type Enrichment or Extension Methods from Semi Group , or pimping
   // lets import the correct package
