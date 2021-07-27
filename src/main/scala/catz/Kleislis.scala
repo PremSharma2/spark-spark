@@ -11,6 +11,8 @@ object Kleislis {
 
   val plainfunc1 : Int => String = x => if(x%2==0) "Validation Passed" else "Failed"
 
+  val fx: Int => Int=>Int =x => y => x+y
+
   val plainfunc2 : Int => Int = x =>   x*3
   //def andThen[A](g: R => A): T1 => A = { x => g(f.apply(x)) }
 
@@ -26,18 +28,45 @@ object Kleislis {
   // TODO that will be painful task
   //TODO There is concept of Kleisli in cats which handles these situation in scala
   // TODO Kleisli Represents a function A => F[B]. i.e a wrapper over function
+  /*
+ TODO
+      The Kleisli type is a wrapper around A => F[B],
+      where F is some context that is a Monad.
+      What helps us with our composition of contextual results,
+       is that Kleisli has a compose function with the following signature (simplified for clarity):
+      def compose(g: A => F[B], f: B => F[C])(implicit M: Monad[F]): A => F[C]
+      What the above signature tells us is that
+      we can join together functions that return results in a context F
+     (for which we have a Monad instance) with functions that work on the simple uncontextualised value:
+       A => F[B] //g
+       B => F[C] //f
+        A => F[C] //f compose g
 
-  //final case class Kleisli[F[_], -A, B](run: A => F[B])
-  import cats.data.Kleisli
-  import cats.instances.option._ // this will fetch the implicit FlatMap[Option] type class instance
+   */
+
+  //final case class Kleisli[F[_], -A, B](run: A => F[B]) // this will fetch the implicit FlatMap[Option] type class instance
 //func1 : Int => Option[String]
+def stringToNonEmptyString: String => Option[String] = value =>
+  if (value.nonEmpty) Option(value) else None
+
+  def stringToNumber: String => Option[Int] = value =>
+    if (value.matches("-?[0-9]+")) Option(value.toInt) else None
+
+  import cats.data.Kleisli
+  import cats.implicits._ //Brings in a Monadic instance for Option
+
+  val stringToNonEmptyStringK: Kleisli[Option, String, String] = Kleisli(stringToNonEmptyString) //Kleisli[Option, String, String]
+  val stringToNumberK: Kleisli[Option, String, Int] = Kleisli(stringToNumber) //Kleisli[Option, String, Int]
+
+  val pipeline = stringToNumberK compose stringToNonEmptyStringK //Kleisli[Option, String, Int]
+
   val func1K: Kleisli[Option, Int, String] = Kleisli(func1)
   val func2K: Kleisli[Option, Int, Int] = Kleisli(func2)
   // now we can compose using Kleisli
   //TODO FlatMap[Option] is required bcz Kleisli will apply flatMap to the Kleisli
   // Data structure TO COMPOSE THESE FUNCTIONS
   // func2 : Int => Option[Int] inside the andThen function
-  // TODO like that a => F.flatMap(func2.apply(a))(b => func1.apply(b))
+  // TODO like that a => F.flatMap(func2.apply(a))(b:B => func1.apply(b))
   /*
   //final case class Kleisli[F[_], -A, B](run: A => F[B])
 
@@ -56,9 +85,11 @@ object Kleislis {
     }
    */
   // This is the abstract form of Resultant composed function
+   val function0: Int => Option[String] = func1K.run
+  val function2: Int => Option[Int] = func2K.run
   val func3K: Kleisli[Option, Int, String] = func2K andThen func1K
     val function: Int => Option[String] = func3K.run
-    val function2: Int => Option[Int] = func2K.run
+
 
   // TODO : Some convenient API to handle Kleisli data-structure
   // TODO but remember these API exposed by Kleisli is just to
@@ -92,14 +123,16 @@ object Kleislis {
      f(b) is a Kleisli[F, AA, C] where AA <: A
       so in order to obtain a F[C] you pass an argument of type AA which is a
    */
-  // val function2: Int => Option[Int] = func2K.run
+  val function3: Int => Option[Int] = func2K.run
   val function1: Int => Option[String] = func1K.run
-  val chain: Kleisli[Option, Int, String] = func2K.flatMap(x => func1K)
+  //TODO Kleisli.shift(a => F.flatMap[B, C](this.run.apply(a))((b: B) => f.apply(b).run.apply(a)))
+  val chain: Kleisli[Option, Int, String] = func2K.flatMap(_ => func1K)
   val chainResult: Int => Option[String] = chain.run
 
   // TODO Lets Explore the Identeitytype Id[A]=A
   import cats.Id
   type IntrestingKleisli[A,B] = Kleisli[Id,A,B]// wrapper over f: A => Id[B]
+  //f: Int => Id[Int]
   val times: Kleisli[Id, Int, Int] = Kleisli[Id,Int,Int](x => x*2)
   val plus4: Kleisli[Id, Int, Int] = Kleisli[Id,Int,Int](y => y+4)
   /*
@@ -112,9 +145,12 @@ object Kleislis {
    Its like two Kleisli executed in parallel
    */
   // f= 4 => t2 + p4
+  //val times: Kleisli[Id, Int, Int] = Kleisli[Id,Int,Int](x => x*2)
   val fz: Int => Kleisli[Id, Int, Int] = (t2:Int) => plus4.map(p4 => t2 + p4)
   //  Kleisli(a => F.map(this.run.apply(a))(a =>f(a)))
+  //a => F.map(this.run.apply(a))(a =>f(a)) ==  f.apply(b).run.apply(a)
   //   Kleisli.shift(a => F.flatMap[B, C](this.run.apply(a))((b: B) => f.apply(b).run.apply(a)))
+  //Kleisli.shift(a => F.flatMap[B, C](this.run.apply(a))((b: B) => (a => F.map(this.run.apply(a))(a =>f(a))))
   val compose: Kleisli[Id, Int, Int] = times.flatMap(fz)
   val forComposed: Kleisli[Id, Int, Int] = for{
     t2 <- times

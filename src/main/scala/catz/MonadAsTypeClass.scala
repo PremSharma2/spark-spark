@@ -17,11 +17,11 @@ object MonadAsTypeClass  extends App {
    bind (>>= in Haskell, flatMap in Scala)
    */
    //TODO:
-    // The bag with unit, map and flatten makes a Monad.
+    //TODO: ->  The bag with unit, map and flatten makes a Monad.
    case class Sugar(weight: Double)
   case class Bag[A](content: A) {
     def map[B](f: A => B): Bag[B] = Bag(f(content))
-  // ETW pattern
+  //TODO : ->  ETW pattern
     def flatMap[B](f: A => Bag[B]): Bag[B] = f(content)
 
     def flatten = content

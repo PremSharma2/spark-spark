@@ -45,7 +45,7 @@ object MonadTransformers  extends App {
     TODO : OptionT flatMap impl
       def flatMap[B](f: A => OptionT[F, B])(implicit F: Monad[F]): OptionT[F, B] =
       // here value =  F[Option[A]] i.e List[Option[Int]]
-      flatMapF(a => f(a).value)
+      OptionT(F.flatMap(this.value)(_.fold(F.pure[Option[B]](None))(f)))
 
      def flatMapF[B](f: A => F[Option[B]])(implicit F: Monad[F]): OptionT[F, B] =
       OptionT(F.flatMap(value)(_.fold(F.pure[Option[B]](None))(f)))
@@ -53,7 +53,7 @@ object MonadTransformers  extends App {
     // TODO : final case class OptionT[F[_], A](value: F[Option[A]])
 
     import cats.data.OptionT
-    import cats.instances.list._ //fetch an implicit type-class Monad , functor instances
+    import cats.instances.list._ //TODO : -> fetch an implicit type-class instance for  Monad , functor type classes
     // it actually means that its a List[Option[Int]]
     /*
      TODO

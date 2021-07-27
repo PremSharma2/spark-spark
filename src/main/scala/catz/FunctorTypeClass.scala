@@ -114,7 +114,7 @@ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
   // TODO: Use of functor Type class to expose API or end point which accepts any kind of Monad
   def do10x[F[_]](container:F[Int])(implicit functortypeClassInstance:Functor[F]):F[Int] ={
     functortypeClassInstance.map(container)(_+1)
-  }
+}
 
   println(do10x(List(1,2,3,4)))
   println(do10x(Option(1)))

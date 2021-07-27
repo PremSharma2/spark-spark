@@ -22,17 +22,19 @@ TODO
   and you can treat any Either that has a left type of Throwable as a Try.
   It is conventional to use Left for failures and Right for successes.
 
-Of course, you can also use Either more broadly,
-not only in situations with missing or exceptional values.
-There are other situations where
-Either can help express the semantics of a simple union type (where value is one of two types).
+TODO
+ Of course, you can also use Either more broadly,
+ not only in situations with missing or exceptional values.
+ There are other situations where
+ Either can help express the semantics of a simple union type (where value is one of two types).
 
-Semantically, you might use Try to indicate that the operation might fail.
-You might similarly use Either in such a situation,
-especially if your "error" type is something other than
-Throwable (e.g. Either[ErrorType, SuccessType]).
-And then you might also use Either when you are operating
-over a union type (e.g. Either[PossibleType1, PossibleType2]).
+TODO
+ Semantically, you might use Try to indicate that the operation might fail.
+ You might similarly use Either in such a situation,
+ especially if your "error" type is something other than
+ Throwable (e.g. Either[ErrorType, SuccessType]).
+ And then you might also use Either when you are operating
+ over a union type (e.g. Either[PossibleType1, PossibleType2]).
  */
   //TODO : Right Hand type is desirable value and the Left hand type is undesirable value
   // TODO because either returns either Left or Right case class instance
@@ -79,17 +81,22 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
     This is where the right bias came into the picture.
     Right biased means that functions such as map and flatMap only apply to the
      "right side" or the "happy scenario", leaving the other side untouched
-      We  have to use "right projectable" to make it right-biased and flatmappable
+      We  have to use "right projectable" to make it right-biased and flat-mappable
    */
-  val either1: Either[Exception, Int] = Right(1)
+  val either1: Either[Exception, Int] = Right.apply(1)
   val either2: Either[Exception, Int] = Right(2)
   val x: Either.RightProjection[Exception, Int] =either1.right
-  x.flatMap(e1 =>either2.right.map(e2 => (e1,e2)) )
+  either1.flatMap(e1 =>either2.map(e2 => (e1,e2)) )
   for {
-    one <- either1.right
-    two <- either2.right
+    one <- either1
+    two <- either2
   } yield one + two
-  //TODO ----------------------------------------------------------------------------------
+
+
+
+
+
+  //TODO ------------------------------Monad-Error Type class For either Monad ----------------------------------------------------
 
   // TODO We can import the Monad type class instances for Either
    import cats.instances.either._
@@ -103,13 +110,46 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
          def flatMap[B, C](fa: Either[A, B])(f: B => Either[A, C]): Either[A, C] =
           fa.flatMap(f)
    */
-  val eitherMonadTypeClassInstance: Monad[LoadingOr] = Monad.apply[LoadingOr]
-  val anEither: LoadingOr[Int] = eitherMonadTypeClassInstance.pure(42) // Loading[Int]==Right(45)
+/*
+TODO
+  implicit def catsStdInstancesForEither[A]: MonadError[Either[A, *], A] with Traverse[Either[A, *]] =
+    new MonadError[Either[A, *], A] with Traverse[Either[A, *]] {
+      def pure[B](b: B): Either[A, B] = Right(b)
+
+      TODO: flatMap Impl
+         def flatMap[B, C](fa: Either[A, B])(f: B => Either[A, C]): Either[A, C] =
+          fa.flatMap(f)
+
+ */
+  //type LoadingOr[T] = Either[String,T]
+//val eitherMonadTypeClassInstance1: Monad[Either] = Monad.apply[Either] // (catsStdInstancesForEither[String])
+  val eitherMonadTypeClassInstance: Monad[LoadingOr] = Monad.apply[LoadingOr] // (catsStdInstancesForEither[String])
+  val anEither: LoadingOr[Int] = eitherMonadTypeClassInstance.pure[Int](42) // Loading[Int]==Right(45)
    anEither.right
-  val aTransformedEither: LoadingOr[Int] =
-    eitherMonadTypeClassInstance.
-       flatMap(anEither)(n => if (n%2==0) Right(42)
-                          else Left("Loading Not Desirable Value of Either"))
+   anEither.map[String](int=> int.toString)
+  /*
+ TODO
+  def map[B1](f: B => B1): Either[A, B1] = this match {
+    case Right(b) => Right(f(b))
+    case _        => this.asInstanceOf[Either[A, B1]]
+  }
+
+TODO
+  implicit def catsStdInstancesForEither[A]: MonadError[Either[A, *], A] with Traverse[Either[A, *]] =
+    new MonadError[Either[A, *], A] with Traverse[Either[A, *]] {
+      def pure[B](b: B): Either[A, B] = Right(b)
+
+      TODO: flatMap Impl
+         def flatMap[B, C](fa: Either[A, B])(f: B => Either[A, C]): Either[A, C] =
+          fa.flatMap(f)
+ */
+  //type LoadingOr[T] = Either[String,T]
+  //val eitherMonadTypeClassInstance: Monad[LoadingOr] = Monad.apply[LoadingOr] // (catsStdInstancesForEither[String])
+  val fx : Int => Either[String,Int] = n => if (n%2==0) Right(42)  else Left("Loading Not Desirable Value of Either")
+  val aTransformedEither: LoadingOr[Int]=eitherMonadTypeClassInstance.flatMap[Int,Int](anEither)(fx)
+
+
+//TODO ------------------Exercises on Either Monad----------------------------------------------------------------
 
   // TODO :Exercise for Custom types
   case class OrderStatus(orderID: Long , status:String)
@@ -132,11 +172,26 @@ final case class Right[+A, +B](b: B) extends Either[A, B] {
       case Right(b) => f(b)
     }
    */
+  /*
+TODO
+  trait MyMonadError[F[_], E]
+  implicit def catsStdInstancesForEither[A]: MyMonadError[Either[A,*], A] =
+    new MyMonadError[Either[A,*], A] {
+      // Define flatMap using either's flatten method
+       def flatMap[A,B, C](fa: Either[A, B])(f: B => Either[A, C]): Either[A, C]  =
+        fa.flatMap(f)
+      // Reuse this definition from Applicative.it gives the value wrapped into Monad
+       def pure[B](b: B): Either[A, B] = Right(b)
+    }
+
+ */
+  // val eitherMonadTypeClassInstance: Monad[LoadingOr] = Monad.apply[LoadingOr](catsStdInstancesForEither[String]())
 val orderLocation: LoadingOr[String] = eitherMonadTypeClassInstance.
-           flatMap(getOrderStatus(ordreId = 101))(trackLocation)
+           flatMap[OrderStatus,String](getOrderStatus(ordreId = 101))(trackLocation)
 
   //TODO  : To use for comprehension we need to import the extension methods
   val orderStatus: LoadingOr[OrderStatus] = getOrderStatus(101)
+
   /*
  TODO:  Using implicit type Enrichment by using implicit class Ops[F[_]]
    */
@@ -160,6 +215,10 @@ val orderLocation: LoadingOr[String] = eitherMonadTypeClassInstance.
     getOrderStatus(ordreId = 101).flatMap(os => trackLocation(os))
   TODO : compiler re writes our code Like this
    eg : new FlatMapOps[Either[OrderStatus]](fa).flatMap(f: OrderStatus => Either[B])(implicit F: FlatMap[Either])
+   def flatMap[A1 >: A, B1](f: B => Either[A1, B1]): Either[A1, B1] = e match {
+      case Right(b) => f(b)
+      case _        => e.asInstanceOf[Either[A1, B1]]
+    }
 
  TODO    ----------------------type class instance for monad-------------------------------
      implicit def catsStdInstancesForEither[A]: MonadError[Either[A, *], A] with Traverse[Either[A, *]] =
@@ -176,7 +235,7 @@ import cats.syntax.functor._
     getOrderStatus(ordreId = 101).flatMap(os => trackLocation(os))
   }
   val orderLocationForComprehension: LoadingOr[String] = for{
-    os <-getOrderStatus(101)
+     os      <-getOrderStatus(101)
     location <-trackLocation(os)
   } yield location
 
@@ -209,7 +268,7 @@ import cats.syntax.functor._
   }
   //TODO Provide a real implementation for http service with using Option, Either , Future
  // Todo : this is Type-class instance  for type HttpService[Option]
-  object OptionHttpService extends HttpService[Option]{
+  implicit object OptionHttpService extends HttpService[Option]{
     override def getConnection(config: Map[String, String]): Option[Connection] = {
       for{
         host <- config.get("host")
@@ -242,7 +301,9 @@ println(optionHttpResponse)
 
   println(responseHttpOptionFor)
 
-  // TODO Implement HttpService for Either Monad typeclass instance
+
+  //TODO -------------------------------------------------------------------------------------------------------------
+  // TODO Implement HttpService for Either Monad typeclass instance for either monad
   // Either[Throwable,Connection]
   implicit object AggresiveHttpService extends HttpService[ErrorOr]{
     override def getConnection(config: Map[String, String]): ErrorOr[Connection] =
@@ -259,22 +320,23 @@ println(optionHttpResponse)
   //TODO Lets test this HttpService API
   // import cats.syntax.flatMap._
     //TODO import cats.syntax.functor._
-  // We are able to do For comprehension here because of the extension method import
-  // because Either does not have flatmap ,RightProjection have flat-map
 
   /*
+  TODO
    final class FlatMapOps[F[_], A](private val fa: F[A]) extends AnyVal {
      def flatMap=[B](f: A => F[B])(implicit F: FlatMap[F]): F[B] = F.flatMap(fa)(f)
-
+TODO
     you write this and compiler wil transform this into as shown below eg
-    gAggresiveHttpService.getConnection(config).flatMap(con =>
+    AggresiveHttpService.getConnection(config).flatMap(con =>
     AggresiveHttpService.issueRequest(conn,"Http-Payload"))
+
   TODO : compiler re writes our code Like this
-   eg : new FlatMapOps[ErrorOr[Connection]](fa).
-   flatMap(f: Connection => Either[throwable,String])(implicit F: Monad[Either])
+   eg : new FlatMapOps[ErrorOr[Connectio]](fa).
+   flatMap(f: Connection => ErrorOr[String])(implicit F: Monad[ErrorOr]) catsStdInstancesForEither[Throwable]
 
     TODO implicit type class instance in scope
-      implicit object MonadError[Either[A, *], A] with Traverse[Either[A, *]] {
+     implicit def catsStdInstancesForEither[A]: MonadError[Either[A, *], A] with Traverse[Either[A, *]] =
+     new MonadError[Either[A, *], A] with Traverse[Either[A, *]] {
       def pure[B](b: B): Either[A, B] = Right(b)
 
       TODO: flatMap Impl
