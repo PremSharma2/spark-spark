@@ -14,7 +14,8 @@ object MonadTransformers  extends App {
        So F[Option[A]] can be turned into a OptionT[F, A] (where F is any monad),
        which is much easier to work with.
 
-      TODo For example : -> Nested Monad List[Option[Int]]
+      TODo For example : -> Nested Monad List[Option[Int]] F is replaced here by List
+       so List is outer Monad here
        When we have nested Monad and we want to iterate the values in nested  monad
         and apply any function over it i.e we are summing all the option values here
         normally we need to unwrap all the option values sum them up and rewrap these
@@ -22,6 +23,7 @@ object MonadTransformers  extends App {
           then we have /monad transformers
           Scala provides API as Monad Transformer to handle nested monads
           final case class OptionT[F[_], A](value: F[Option[A]])
+          OptionT is for where nested monad is Option basically
    */
   /*
 
@@ -71,7 +73,33 @@ object MonadTransformers  extends App {
   //TODO use of for comprehension here
   val optionList: List[Option[Int]] = List(Option(1), Option(2), Option(3))
     val listOfOptions: OptionT[List ,Int] =OptionT.apply(optionList)
+  /*
+  TODO
+        def foldLeft[B](b: B)(f: (B, A) => B)(implicit F: Foldable[F]): B =
+        F.compose(Foldable[Option]).foldLeft(value, b)(f)
+   */
     val sum: Int =listOfOptions.foldLeft(0)((a, b) => a + b)
+  /*
+  TODO
+        def map[B](f: A => B)(implicit F: Functor[F]): OptionT[F, B] =
+         OptionT( F.map(value)(_.map(f)) )
+   */
+     val rs: OptionT[List, Int] = listOfOptions.map(_*1)
+
+  /*
+  TODO
+       def flatMap[B](f: A => OptionT[F, B])(implicit F: Monad[F]): OptionT[F, B] =
+    flatMapF(a => f(a).value)
+
+ TODO
+  def flatMapF[B](f: A => F[Option[B]])(implicit F: Monad[F]): OptionT[F, B] =
+    OptionT(  F.flatMap(value)( b => value.fold( F.pure[Option[B]](None) )(f))   )
+
+    this is Option fold method
+    final def fold[B](ifEmpty: => B)(f: A => B): B =
+    if (isEmpty) ifEmpty else f(this.get)
+   */
+     val rs2= listOfOptions.flatMap(a => OptionT(List.apply(Option(a+1))))
     val listOfOptionChars: OptionT[List ,Char] =OptionT.
                      apply(List(Option('a'), Option('b'), Option('c'),Option.empty[Char]))
     val listOfTuples: OptionT[List, (Int, Char)] = {
@@ -100,11 +128,16 @@ object MonadTransformers  extends App {
   // its like
 final case class MyT[F[_], Int](value: F[Int])
   val x: MyT[List, Int] =MyT.apply(List(1,2,3))
+
+  //TODO final case class EitherT[F[_], A, B](value: F[Either[A, B]])
+
   val listOfEiterT: EitherT[List, String, Int] =
     EitherT.apply(listOfEither)
   // it is wrapper over   Future[Either[String,Int]] nested monad
   val futureOfEiterT: EitherT[Future, String, Int] =
     EitherT.apply(Future.apply[Either[String,Int]](Right(42)))
+
+  val rs1 = futureOfEiter.map(_*1)
 /*
   TODO : Exercise
       We have multi machine cluster for your businesses which will receive a traffic

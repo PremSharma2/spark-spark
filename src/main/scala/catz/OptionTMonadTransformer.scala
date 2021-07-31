@@ -136,8 +136,9 @@ TODO
     p.future
    */
 
-  val greeting: Future[String] = customGreeting1.flatMap(custom =>
-    custom.map(str =>Future.successful(str)).getOrElse(defaultGreeting))
+  val greeting: Future[String] = customGreeting1.
+    flatMap(custom =>
+    custom.map(str => Future.successful(str)).getOrElse(defaultGreeting))
   /*
     def getOrElseF[B >: A](default: => F[B])(implicit F: Monad[F]): F[B] =
     F.flatMap(value)(_.fold(default)(F.pure))

@@ -11,7 +11,11 @@ object SemiGroupalTypeClass {
 //TODO type class Semigroupal
   // which gives product method
   // Monad also extends Semigroupal product in monad comes form Semigroupal
-
+/*
+TODO
+      Semigroupal defines product function,
+      which produces a pair of (A, B) wrapped in effect F[_] out of F[A] and F[B].
+ */
   trait MySemiGroupal[F[_]]{
     def product [A,B](fa:F[A],fb:F[B]):F[(A,B)]
   }
