@@ -5,7 +5,7 @@ object Applicatives {
 /*
  TODO
     Applicatives are the extension of functors
-    Applicatves = Functors map method + pure method
+    Applicatives = Functors map method + pure method
     Also /Monad extends Applicative because they get pure form Applicatives
     also Applicatives extends Semigroupal so they also have product method
     import cats.Applicative
@@ -18,14 +18,15 @@ object Applicatives {
   import cats.instances.option._
   val optionApplicativeTypeClassInstance: Applicative[Option] = Applicative.apply[Option]
   val anOption: Option[Int] = optionApplicativeTypeClassInstance.pure(2)
-  // pure extension methods for Applicatives or type Enrichment
+  // TODO pure extension methods for Applicatives or type Enrichment
  import cats.syntax.applicative._
   /*
+TODO
   implicit class ApplicativeIdOps[A](private val a: A) extends AnyVal {
   def pure[F[_]](implicit F: Applicative[F]): F[A] = F.pure(a)
 }
    */
-  val aSweetList: List[Int] = 2.pure[List]
+  val aSweetList: List[Int] = 2.pure[List[Int]]
   val aSweetOption: Option[Int] = 2.pure[Option]
   //TODO Monads extends Applicatives pure method of Monads comes from the Applicatives
     // TODo so applicatives are weaker monads so they are rarely used
@@ -60,9 +61,9 @@ object Applicatives {
   type ErrorsOr[T] = Validated[List[String],T]
   val avalidValue: ErrorsOr[Int] = Validated.valid(2)// its like applicative pure method
   val amodifiedValidated: ErrorsOr[Int] = avalidValue.map(_+1)// map of Functor
+
   // TODO so we can say that the Validated looks like applicative type class instance
-  // because it has pure and map compiler will make this arrange ment and will make available Validated as Type class
-  // instance because it satis fies all the properties of Applicatives
+
   val validatedApllicative: Applicative[ErrorsOr] = Applicative.apply[ErrorsOr]
 
   /*

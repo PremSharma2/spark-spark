@@ -86,7 +86,8 @@ object FuturePromiseExercise extends App {
     Tries to complete the promise with either a value or the exception.
     Note: Using this method may result in non-deterministic concurrent programs.
      */
-    def tryCompletePromise(promise: Promise[A], result: Try[A]) = result match {
+    def tryCompletePromise(promise: Promise[A], result: Try[A]) =
+      result match {
       case Success(value) => try {
         promise.success(value)
       } catch {

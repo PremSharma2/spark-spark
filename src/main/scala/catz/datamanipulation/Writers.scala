@@ -11,6 +11,7 @@ object Writers  extends App {
 import cats.data.Writer
   List(1,2).distinct
   /*
+ TODO
     Writer is wrapper over some kind of valuable value denoted by V here
     but you also want keep track of some sought of modifications
     like the Sequence of modification of this valuable value
@@ -26,14 +27,16 @@ import cats.data.Writer
    */
   val aWriter: Writer[List[String],Int] = Writer.apply(List("hello scala"),43)
   /*
+TODO
   def map[Z](fn: V => Z)(implicit functorF: Functor[F]): WriterT[F, L, Z] =
     WriterT {
-      functorF.map(run) { z =>
+      functorF.map(this.run) { z =>
         (z._1, fn(z._2))
       }
     }
    */
   val increasedWriter: WriterT[Id, List[String], Int] = aWriter.map(_+1)
+  val rs: Id[(List[String], Int)] = increasedWriter.run
   // TODO and if we want to modify only logs then we will use mapWritten
   /*
     def mapWritten[M](f: L => M)(implicit functorF: Functor[F]): WriterT[F, M, V] =
@@ -44,6 +47,10 @@ import cats.data.Writer
    */
   val aLogWriter: WriterT[Id, List[String], Int] = aWriter.
     mapWritten(_ :+"Found-interesting ")
+  /*
+  def bimap[M, U](f: L => M, g: V => U)(implicit functorF: Functor[F]): WriterT[F, M, U] =
+    mapBoth((l, v) => (f(l), g(v)))
+   */
   val aWriterWithBoth: WriterT[Id, List[String], Int] = aWriter.
     bimap(_ :+"Found interesting " , _+1)
   val aWriterWithBoth1: WriterT[Id, List[String], Int] = aWriter.mapBoth{
@@ -58,7 +65,7 @@ import cats.data.Writer
      3 Dump either the value or the Logs
    */
   /*
-
+ TODO
       def value(implicit functorF: Functor[F]): F[V] =
     functorF.map(run)(_._2)
    */
@@ -69,7 +76,9 @@ import cats.data.Writer
   val bothLogsAndValue: (List[String], Int) = aWriterWithBoth.run
   val writerA= Writer.apply(Vector("a","b"),44)
   val writerB= Writer.apply(Vector("c","d"),40)
-  // Here problem here is that the
+  /*
+TODO
+  // Here problem here is that the:
   // Writer Monad is that is has two components Logs and value
   // we have combined values but Writer flatmap also combines the Logs as well
   // because it has to wrap both value and log into Writer context alias bag
@@ -80,6 +89,8 @@ import cats.data.Writer
   // take a transformer function to implement ETW pattern
    // so f: A=> Writer[B]
   // like that so in that case we have to merge logs of earlier Writer to new writer
+
+   */
  /*
  TODO Semigroup type class instance for Vector monoid
   implicit object VectorMonoid[A] extends Monoid[Vector[A]] {
@@ -89,6 +100,7 @@ import cats.data.Writer
   */
   // TODO Lets take a loook at flatmap impl
   /*
+ TODO
   def flatMap[U](f: V => WriterT[F, L, U])(implicit flatMapF: FlatMap[F], semigroupL:
    Semigroup[L]): WriterT[F, L, U] =
     WriterT {
@@ -102,8 +114,11 @@ import cats.data.Writer
   import cats.instances.vector._
 
   // For example
- val finalValue: (Vector[String], Int) = writerA.
-   flatMap(intValue => Writer(writerB.written,intValue+1)).run
+  //  val writerA= Writer.apply(Vector("a","b"),44)
+  val fx : Int => Writer[Vector[String],Int]=
+  intValue => Writer(Vector("Logs Getting appended !!"),intValue+1)
+ val finalValue: (Vector[String], Int) = writerA.flatMap(fx).run
+
   // Here Semigroup will combine the logs of writerA and writerB
   writerA.flatMap(valueA => writerB.map(valueB=> valueA + valueB))
   // OR
@@ -114,15 +129,22 @@ import cats.data.Writer
   //Lets test this
   println(compositeWriter.run)
 
-  // What if we want to clear the Logs
+  //TODO : ->  What if we want to clear the Logs
   import cats.instances.list._ // Monoid[List[Int]]
   /*
+TODO
   Is is used monoid because we dint which Monad is this
   for Example we dint know it is List, Seq , Option ,Vector
   def reset(implicit monoidL: Monoid[L], functorF: Functor[F]): WriterT[F, L, V] =
     mapWritten(_ => monoidL.empty)
+
+TODO
+        def mapWritten[M](f: L => M)(implicit functorF: Functor[F]): WriterT[F, M, V] =
+    mapBoth((l, v) => (f(l), v))
+     def mapBoth[M, U](f: (L, V) => (M, U))(implicit functorF: Functor[F]): WriterT[F, M, U] =
+    WriterT(functorF.map(run)(f.tupled))
    */
-  aWriter.mapWritten(logs=> List.empty)
+  aWriter.mapWritten(_=> List.empty)
   val anEmptyWriter= aWriter.reset // clear the logs , and keep the desired value inside
 
   //TODO
@@ -189,6 +211,7 @@ implicit val ec: ExecutionContext = ExecutionContext.
   val samFuture1= Future(sumWithLogs(3))
   val samFuture: Future[Writer[Vector[String], Int]] = Future(sumWithLogs(2))
   val logs: Future[Id[Vector[String]]] = samFuture.map(_.written)
+  logs.foreach(println(_))
   val logs1: Future[Id[Vector[String]]] = samFuture1.map(_.written)
   // Writers keep separate logs for seprate thread
   println(logs)

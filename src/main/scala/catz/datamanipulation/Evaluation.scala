@@ -1,23 +1,25 @@
 package catz.datamanipulation
 
-object Evaluation extends App {
+object Evaluation  {
 
   /*
   TODO Eager and Lazy Expression evaluation by type Classes : ->
+
   TODO
      cats makes a distinction between
     - evaluating an expression eagerly
     - evaluating lazily  and every time you request it
     - evaluating lazily and keeping the value
     TO implement this feature cats API
-    import cats.Eval
-    Eval is a monad which controls evaluation.
-   This type wraps a value (or a computation that produces a value) and
+    import cats.Eval Monad
+    Eval is a monad which controls evaluation. in three different ways
+    This type wraps a value (or a computation that produces a value) and
    can produce it on command via the .value method.
    There are three basic evaluation strategies:
    Now: evaluated immediately
-   Later: evaluated once when value is needed
-   Always: evaluated every time value is needed
+   Now: eagerly evaluated
+   Later: evaluated once when value is needed and value is cached
+   Always: evaluated every time value is needed by call by name expression
    The Later and Always are both lazy strategies while Now is eager.
    Later and Always are distinguished from each other only by memoization:
    once evaluated Later will save the value to be returned immediately if it is needed again.
@@ -37,12 +39,13 @@ val instantEval: Eval[Int] = Eval.now{
 
      TODO
        Construct a lazy Eval[A] instance.
-       This type can be used for "lazy" values.
+       This type can be used for "lazy" values or expressions.
        In some sense it is equivalent to using a Function0 value.
        This type will evaluate the computation every time the value is required.
+       to be evaluated
        It should be avoided except when laziness is required and caching must be avoided.
       Generally, prefer Later.
-
+TODO
    final class Always[A](f: () => A) extends Eval[A] {
   def value: A = f()
   def memoize: Eval[A] = new Later(f)
@@ -50,17 +53,17 @@ val instantEval: Eval[Int] = Eval.now{
    */
   val redoEval: Eval[String] = Eval.always{
     println("Lazily evaluated Expression !!!!!")
-    "Lazy-Evaluated-Output"
+    "Lazy-Evaluated-Expression-Output"
   }
   //println(redoEval.value)
   //println(redoEval.value)
   /*
+  TODO
    Construct a lazy Eval[A] value with caching (i.e. Later[A]).
-
-  def later[A](a: => A): Eval[A] = new Later(a _)
-  final class Later[A](f: () => A) extends Eval[A]
+    def later[A](a: => A): Eval[A] = new Later(() => a)
+   final class Later[A](f: () => A) extends Eval[A]
    */
-  val delayedEval = Eval.later{
+  val delayedEval: Eval[String] = Eval.later{
     println("evaluating lazily and keeping the value")
      "Evaluated lazily and kept the value in caeche"
   }
@@ -80,13 +83,48 @@ val instantEval: Eval[Int] = Eval.now{
        Computation performed in f is always lazy,
        even when called on an eager (Now) instance.
    */
-  val ComposedEvaluation = instantEval.
+  /*
+TODO
+   FlatMap is a type of Eval[A] that is used to chain computations or Lazy expressions
+   * involving .map and .flatMap. Along with Eval#flatMap it
+   * implements the trampoline that guarantees stack-safety.
+   *
+   * Users should not instantiate FlatMap instances
+   * themselves. Instead, they will be automatically created when
+   * needed.
+   *
+   * Unlike a traditional trampoline, the internal workings of the
+   * trampoline are not exposed. This allows a slightly more efficient
+   * implementation of the .value method.
+TODO
+  sealed abstract class FlatMap[A] extends Eval[A] { self =>
+    type Start
+    val start: () => Eval[Start]
+    val run: Start => Eval[A]
+
+    def memoize: Eval[A] = Memoize(this)
+    def value: A = evaluate(this)
+  }
+
+
+
+
+   */
+
+  val alwaysEval: Eval[Int] = Eval.now{
+    println("eagerly evaluated Expression for Testing !!!!!")
+    404
+  }
+ val alwaysTest: Eval[Int] = alwaysEval.map(ev2 => ev2+1)
+
+
+  val ComposedEvaluation: Eval[String] = instantEval.
     flatMap(value1 => delayedEval.map(value2=> value1 + value2))
   //println(ComposedEvaluation.value)
 
 
   val forcomposedEvaluation: Eval[String] = for{
-    value1 <- instantEval
+    value1 <-  instantEval
     value2 <-  delayedEval
   } yield  (value1 + value2)
 
@@ -106,8 +144,8 @@ val instantEval: Eval[Int] = Eval.now{
 
   val tutorial : Eval[String] = Eval
     .always{ println("Step 1:  !!!!!") ; "put the guitar on your lap" }
-    .map{step1 => println("Step2!!"); s"$step1 then put your left hand on the neck"}
-     .memoize // upto here it will be evaluated only once because we have used memoize
+    .map   {step1 => println("Step2!!"); s"$step1 then put your left hand on the neck"}
+    .memoize // upto here it will be evaluated only once because we have used memoize
     .map{step12 => println("Step3 !!"); s"$step12 then with right hand strike the strings!!!"}
 
  // println(tutorial.value)
@@ -131,9 +169,9 @@ val instantEval: Eval[Int] = Eval.now{
   }).value
 
   /*
+ TODO
     Scala cats implementation if Defer APi
     sealed abstract class Defer[A](val thunk: () => Eval[A]) extends Eval[A] {
-
     def memoize: Eval[A] = Memoize(this)
     def value: A = evaluate(this)
   }
@@ -151,8 +189,14 @@ val instantEval: Eval[Int] = Eval.now{
     else defer(reverseEval(list.tail).map(_:+list.head))
 
   }
-  // defer(reverseEval(list.tail).map(_:+list.head))
-  // This will create a chain of  Eval.later(()).flatMap(_ => eval) in stack
-  // which is by nature stack safe so that in turn makes this stack safe
-  println(reverseEval((1 to 5).toList).value)
+
+  def main(args: Array[String]): Unit = {
+    // defer(reverseEval(list.tail).map(_:+list.head))
+    // This will create a chain of  Eval.later(()).flatMap(_ => eval) in stack
+    // which is by nature stack safe so that in turn makes this stack safe
+    println(reverseEval((1 to 5).toList).value)
+
+ //println(alwaysTest.value)
+  }
+
 }

@@ -11,25 +11,35 @@ object FunctionalState  extends App {
   // from a state initial S we obtain new  state S i.e of same type plus we get the
   // result A of single computation
   //val f: Int => (Int, String) = ???  // or Function1[Int, Tuple[Int, String]] so we type alisaes with MState[Int,String]
+  type MStat[S,A] = Function1[S, Tuple2[S, A]]
      val f: Int => (Int, String) = (x:Int)=> (x+1,"Hello")
   type MState[Int,String] =  Int => (Int, String)  // // or Function1[Int, Tuple[Int, String]]
   type MyState[S,A] = S => (S,A)
+  val s1:MyState[Int,String] = f
+
  import cats.data.State
   /*
+TODO
   final class IndexedStateT[F[_], SA, SB, A](val runF: F[SA => F[(SB, A)]])
   type StateT[F[_], S, A] = IndexedStateT[F, S, S, A]
   //new MyMonad[Option]
   type State[S, A] = StateT[Eval, S, A]
-
+  //-------------------------------------------------------------------------
+TODO
+ object State{
    def apply[S, A](f: SA => (SB, A)): State[SB, A] =
     IndexedStateT.applyF(Now((s: S) => Now(f(s))))
-
+    }
+  //------------------------------------------------------------
+TODO
      def applyF[F[_], SA, SB, A](runF: F[SA => F[(SB, A)]]): IndexedStateT[F, SA, SB, A] =
     new IndexedStateT(runF)
-
+TODO
+//------------------------------------------------------------------------------------
     final class IndexedStateT[F[_], SA, SB, A](val runF: F[SA => F[(SB, A)]])
    */
-  // state is a wrapper over function the idea here is that we are changing the state via pure FP
+  //TODO State is a wrapper over function which manages the state
+  // the idea here is that we are changing the state via pure FP
   /*
    def apply[S, A](f: SA => (SB, A)): State[SB, A] =
     IndexedStateT.applyF(Now((s: S) => Now(f(s))))
@@ -50,8 +60,8 @@ object FunctionalState  extends App {
  */
   val result: Eval[(Int, String)] = countAndSay.run(10)
 
-  // Eval.value will execute this Fx : (s: S) => Now(f(s))
-val tuple: (Int, String) = countAndSay.run(10).value
+  //TODO : ->  Eval.value will execute this Fx : (10: Int) => Now(f(10))
+val newState: (Int, String) = countAndSay.run(10).value
 
 
   println(result.value)
@@ -64,7 +74,8 @@ val tuple: (Int, String) = countAndSay.run(10).value
   val secondMutation= s"Multiplied with 5 , obtained $a"
 
 //TODO But what if we have to implement the same computation In pure FP
-  // TODO As we know that state are manged by functions in FP so we have created two functions
+  // TODO As we know that state can manged by functions in FP
+  //  so we have created two functions
   // TODO fx and fz both are involved in state transformation
   // so now task is to run fx and fz in chain two compute
   // the state transformation or state change
@@ -74,20 +85,27 @@ val tuple: (Int, String) = countAndSay.run(10).value
   val secondTransformation: State[Int, String] = State.apply(fz)
 
 /*
-TODO in map scala have chained  compposing two functions using andThen def i.e composed two functions
+TODO in map scala have chained  composing two functions using andThen def
+ i.e composed two functions
 // TODO : chaining of transformation can only be dine via flatMap
 
 //TODO Lets talk about map function first
-firstTransformation.map(s=> "state-changed")
-val fx= (s:Int) => (s+1, s"Added 1 to 4, and obtained ${s+1}" )
+
+TODO
+ val fx= (s:Int) => (s+1, s"Added 1 to 4, and obtained ${s+1}" )
   val firstTransformation: State[Int, String] = State.apply(fx)
+  firstTransformation.map(s=> "state-changed")
 
-def map[B](f: A => B)(implicit F: Functor[F]): IndexedStateT[F, SA, SB, B] =
+// TODO map function internals
+
+TODO
+ def map[B](f: A => B)(implicit F: Functor[F]): IndexedStateT[F, SA, SB, B] =
     transform { case (s, a) => (s, f(a)) }
-
+TODO
     def transform[B, SC](f: (SB, A) => (SC, B))(implicit F: Functor[F]): IndexedStateT[F, SA, SC, B] =
-    IndexedStateT.applyF(F.map(this.runF) { sfsa =>  //SA => F[(SB, A)]
-      AndThen(sfsa).andThen { fsa => //Eval[(SB, A)]
+    IndexedStateT.applyF(
+       F.map(this.runF) { sfsa =>  //SA => Now((SB, A))
+      AndThen(sfsa).andThen { fsa => // Now((SB, A))
         F.map(fsa) { case (s, a) => f.apply(s, a) }
       }
     })
@@ -101,15 +119,18 @@ def map[B](f: A => B)(implicit F: Functor[F]): IndexedStateT[F, SA, SB, B] =
   val tansformedComputation = firstTransformation.map(s=> "state-changed")
   val transfrmedresult: Eval[(Int, String)] =tansformedComputation.run(2)
 
-//composing two transformations
+//TODO : -> composing two transformations
   // TODO here first computation will run
   // and the o/p of i.e (Int,String) will be given second transformation
   // i.e state as well as value returned by single computation as input
   // so 5 will be given to second transformation
+
+
   /*
+TODO
    def flatMap[B, SC](fas: A => IndexedStateT[F, SB, SC, B])(implicit F: FlatMap[F]): IndexedStateT[F, SA, SC, B] =
-    IndexedStateT.applyF(F.map(this.runF) { safsba => //  SA => F[(SB, A)]
-      AndThen(safsba).andThen { fsba => // F[(SB, A)]
+    IndexedStateT.applyF(F.map(this.runF) { safsba => //  SA => Now((SB, A))
+      AndThen(safsba).andThen { fsba => // Now((SB, A))
         F.flatMap(fsba) {
           case (sb, a) =>
             fas(a).run(sb)
@@ -136,7 +157,7 @@ val composedTransformation:State[Int,(String,String)] = firstTransformation.flat
   val FirstTransformation: State[Int, String] = State.
     apply((s:Int) => (s+1, s"Added 1 to 4, and obtained ${s+1}" ))
 
-
+//TODO using for comprehension
   val compositeTransformation: State[Int, (String, String)] = for {
       firstResult <- FirstTransformation
       secondResult <-  secondTransformation
@@ -145,15 +166,17 @@ val composedTransformation:State[Int,(String,String)] = firstTransformation.flat
   // TODO and that's what scala does internally
   val func1: Int => (Int, String) = (s:Int) => (s+1, s"Added 1 to 4, and obtained ${s+1}" )
   val func2: Int => (Int, String) = (s:Int) => (s*5, s"Multiplied with 5 and  obtained  ${s*5}" )
-/*
 
-Composes two instances of Function1 in a new Function1, with this function applied first.
-Params:
-g – a function R => A
-Type parameters:
-A – the result type of function g
-Returns:
-a new function f such that f(x) == g(apply(x))
+
+/*
+TODO
+ Composes two instances of Function1 in a new Function1, with this function applied first.
+ Params:
+ g – a function R => A
+ Type parameters:
+ A – the result type of function g
+ Returns:
+ a new function f such that f(x) == g(apply(x))
  def andThen[A](g: R => A): T1 => A = { x => g(this.apply(x)) }
  */
   val composeFunction: Int => (String, (Int, String)) = func1.andThen{
@@ -183,17 +206,17 @@ a new function f such that f(x) == g(apply(x))
    cartState.run(ShoppingCart(List.empty[String],0.0))
 
   val compositeCart: State[ ShoppingCart, Double] =
-    addtoCart("Apple",20)
-    .flatMap(fr => addtoCart("banana",30).
-      flatMap{ sr => addtoCart("ElectricOven",50)
+     addtoCart("Apple",20)
+    .flatMap(_ => addtoCart("banana",30).
+      flatMap{ _ => addtoCart("ElectricOven",50)
   })
   val totalValue: State[ShoppingCart, Double] = compositeCart.map(tr=> tr)
   totalValue.run(ShoppingCart(List.empty[String],0.0))
 
 val premcart:State[ShoppingCart,Double] = for{
-  a <- addtoCart("Apple",20)
-  b <- addtoCart("banana",30)
-  total <- addtoCart("ElectricOven",50)
+  _ <- addtoCart("Apple",20)
+  _ <- addtoCart("banana",30)
+  total<- addtoCart("ElectricOven",50)
 } yield total
 
   println(premcart.run(ShoppingCart(List(),0.0)).value)

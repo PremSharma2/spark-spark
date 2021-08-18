@@ -23,6 +23,7 @@ case class Configuration(dbUserName:String, dbPassword:String , host:String, por
     def getLastOrderId(userName:String):Long= 101
   }
 
+  // TODO Service Layer
   case class HttpService(host:String, port:Int){
     def start():Unit = println("Server started")// this service will start the server
   }
@@ -30,8 +31,9 @@ case class Configuration(dbUserName:String, dbPassword:String , host:String, por
   // TODO : -> now boot strapping the application
   // TODO : -> we need to read the configuration from file
   val configuration= Configuration("prem","sharma" , "localhost" , 1234 , 2 , "prem.kaushik@outlook.com")
-  // now lets introduce Reader data processor API which is used to handle these situation i.e it will compose the functions
-  // i.e this api will handle all this in functional way
+  // TODO : ->  lets introduce Reader data processor API which is used to handle these situation
+  // TODO i.e it will compose the functions
+  //TODO  i.e this api will handle all this in functional way
   import cats.data.Reader
   // This API has one input and one output here as we can see that
   // Reader apply method takes function which consumes the input and
@@ -48,7 +50,7 @@ case class Configuration(dbUserName:String, dbPassword:String , host:String, por
   }
    val funtion1: Configuration => Id[DbConnection] = dbReader.run
   // Actually the mechanics here is that we have to derive the Output DbConnection
-  // from the input Configuration via this function here we passed to apply
+  // from the input Configuration via this function here we passed to apply method
   // to fetch the derived output from the Reader we will call run on dbReader
 // now this run method will run the function we passed in Reader apply method
   // hence readers are wrapper over function here we also can compose the function
@@ -80,12 +82,13 @@ def map[C](f: B => C)(implicit F: Functor[F]): Kleisli[F, A, C] =
 // the flow will be like that here first original function will run i.e original run
 // and we will get dbReader
   // and then dbReader map will run like this Reader(  a => F.map(run(a))(b:B => f.apply(b)))    )
+  //TODO a => F.map(run(a))(b:B => f.apply(b))) this composed function will return String
   //TODO now we wanted to run these two composed functions  a => F.map(run(a))(b:B => f.apply(b)))
   val orderStatus: Id[String] = myOrderStatusReader.run(configuration)
   /*
   TODO
       This pattern goes like this
-      1 you create the initial data structure
+      1 you create the initial data structure : for eg Configuration here
       2 you create a Reader which specifies  how that data structure will be manipulated initially
       3 you can then map or Flatmap the reader to produce derived information
       4 When you need the final piece of information you call the run on the reader
@@ -99,9 +102,10 @@ def map[C](f: B => C)(implicit F: Functor[F]): Kleisli[F, A, C] =
   }
    */
 def getLastOrderStatus(userName:String): String = {
-  val usersLastOrderIdReader: Reader[ Configuration, Long] =   dbReader.
-    map(_.getLastOrderId(userName))
 
+  val usersLastOrderIdReader: Reader[ Configuration, Long] = {
+    dbReader.map(_.getLastOrderId(userName))
+  }
     /*
     def map[C](f: B => C)(implicit F: Functor[F]): Kleisli[F, A, C] =
     Kleisli( a => F.map(run(a))((a:A)=> f(a) )

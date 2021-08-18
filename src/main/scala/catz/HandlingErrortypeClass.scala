@@ -8,27 +8,84 @@ import cats.{Applicative, ApplicativeError, Monad, MonadError}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-/*
-A monad that also allows you to raise and or handle an error value.in Pure FP
-This type class allows one to abstract over error-handling monads.
+/**
+
+ *A monad that also allows you to raise and or handle an error value.in Pure FP
+ *This type class allows one to abstract over error-handling monads.
  */
 object HandlingErrortypeClass {
 
 //TODO : this type class takes two arguments M[_] which is higher-kinded type
   // TODO and another one is Error type E because this monad also handles the error if occurred
-  //MonadError  is  A monad that also allows you to raise and or handle an error value.
-  trait MyMonadError[M[_],E] extends Monad[M] {
-    // this type class has fundamental method raiseError to handle the error
-    def raiseError[A] (e:E):M[A]
+  //TODO MonadError  is  A monad that also allows you to raise and or handle an error value.
+  trait MyMonadError[M[_],E] extends Monad[M] with MyApplicativeError[M,E] {
+  // this type class has fundamental method raiseError to handle the error
+  override def raiseError[A](e: E): M[A] = ???
+    def pure[B](b: B):M[B]
   }
+
+  object MyMonadError {
+    def apply[F[_], E](implicit F: MyMonadError[F, E]): MyMonadError[F, E] = F
+  }
+
+  type ErrorOR[T] = Either[String,T]
+
+  implicit object EitherError extends MyMonadError[ErrorOR, String]{
+    override def raiseError[A](e: String): ErrorOR[A] = super.raiseError(e)
+
+    override def pure[B](b: B): ErrorOR[B] = ???
+
+    override def flatMap[A, B](fa: ErrorOR[A])(f: A => ErrorOR[B]): ErrorOR[B] = ???
+
+    override def tailRecM[A, B](a: A)(f: A => ErrorOR[Either[A, B]]): ErrorOR[B] = ???
+
+    override def handleError[A](fa: ErrorOR[A])(f: String => A): ErrorOR[A] = handleErrorWith(fa)(f.andThen(pure))
+
+  override  def handleErrorWith[B](fea: ErrorOR[ B])(f: String => ErrorOR[ B]): ErrorOR[B] = {
+      fea match {
+        case Left(e)      => f(e)
+        case r @ Right(_) => r
+      }
+    }
+  }
+
+ val errorTypeclassInstance: MyMonadError[ErrorOR, String] =MyMonadError.apply[ErrorOR,String]
+  val value: ErrorOR[Int] = errorTypeclassInstance.pure(32)
+  val errorRiased: ErrorOR[String] = errorTypeclassInstance.raiseError("WrongPassword")
+  val erHandled= errorTypeclassInstance.handleError[Int]{
+    case "badness" => 44
+    case _ => 89
+  }
+
+
+
   /*
+ TODO
+  implicit object EitherError extends MonadError[Either[E, *], E] {
+TODO
+   def raiseError[B](e: E): Either[E, B] = Left(e)
+     // as this monad so this must have pure
+      def pure[B](b: B): Either[A, B] = Right(b)
+TODO
+     def handleError[A](fa: F[A])(f: E => A): F[A] = handleErrorWith(fa)(f.andThen(pure))
+      def handleErrorWith[B](fea: Either[A, B])(f: A => Either[A, B]): Either[A, B] =
+        fea match {
+          case Left(e)      => f(e)
+          case r @ Right(_) => r
+        }
+  }
+
+
+
+
+TODO
     implicit def catsStdInstancesForEither[A]: MonadError[Either[A, *], A] with Traverse[Either[A, *]] =
     new MonadError[Either[A, *], A]  {
-
      def raiseError[B](e: A): Either[A, B] = Left(e)
      // as this monad so this must have pure
       def pure[B](b: B): Either[A, B] = Right(b)
-
+TODO
+     def handleError[A](fa: F[A])(f: E => A): F[A] = handleErrorWith(fa)(f.andThen(pure))
       def handleErrorWith[B](fea: Either[A, B])(f: A => Either[A, B]): Either[A, B] =
         fea match {
           case Left(e)      => f(e)
@@ -39,7 +96,7 @@ object HandlingErrortypeClass {
   import cats.implicits.catsStdInstancesForEither
   type ErrorOr[A] = Either[String,A]
   val typeClassinstanceMonadError: MonadError[ErrorOr, String] =
-    MonadError.apply[ErrorOr,String]
+    MonadError.apply[ErrorOr,String] // (catsStdInstancesForEither)
 // Lets test monad error type class
   val success: ErrorOr[Int] = typeClassinstanceMonadError.pure[Int](2) // it will give Right[Int]
   // TODO to raise error MonadError or Monad gives this method while processing
@@ -59,21 +116,56 @@ object HandlingErrortypeClass {
       case "badness" => typeClassinstanceMonadError.pure(44)
       case _ => Left("Inavlid Result")
     }
-  //filter Turns a successful value into an error if it does not satisfy a given predicate.
+  //TODO : filter Turns a successful value into an error if it does not satisfy a given predicate.
+  /*
+ TODO
+  def ensure[A](fa: F[A])(error: => E)(predicate: A => Boolean): F[A] =
+    flatMap(fa)(a => if (predicate(a)) pure(a) else raiseError(error))
+   */
   val filteredSuccess: ErrorOr[Int] = typeClassinstanceMonadError
     .ensure(success)("Number-too-Small-error")(_>100)
 
+
+
+
+
   //Todo MonadError type class instances for Try
+
+  implicit object TryError extends MyMonadError[Try, Throwable]{
+    override def pure[B](b: B): Try[B] = ???
+
+    override def handleErrorWith[A](fa: Try[A])(f: Throwable => Try[A]): Try[A] = ???
+
+    override def flatMap[A, B](fa: Try[A])(f: A => Try[B]): Try[B] = ???
+
+    override def tailRecM[A, B](a: A)(f: A => Try[Either[A, B]]): Try[B] = ???
+  }
+
+  val myinstance: MyMonadError[Try, Throwable] =MyMonadError.apply[Try[Int],Throwable]
+  val tryerror: Try[Int] =myinstance.pure(34)
+  val errorRaised: Try[Int] =myinstance.raiseError[Int](new RuntimeException)
+  /*
+  TODO
+
+      def handleErrorWith[A](ta: Try[A])(f: Throwable => Try[A]): Try[A] =
+        ta.recoverWith { case t => f(t) }
+
+      def raiseError[A](e: Throwable): Try[A] = Failure(e)
+
+      override def handleError[A](ta: Try[A])(f: Throwable => A): Try[A] =
+        ta.recover { case t => f(t) }
+   */
   import cats.instances.try_._//implicit MonadError[Try,E] where E= throwable
   val exception= new RuntimeException("Really bad ")
   val MonaderrortypeclassinstanceforTry: MonadError[Try, Throwable] =
     MonadError.apply[Try,Throwable]
   /*
+ TODO
   type class instance
   implicit object MError extends MonadError[Try,Throwable]
    def handleErrorWith[A](ta: Try[A])(f: Throwable => Try[A]): Try[A] =
         ta.recoverWith { case t => f(t) }
-
+ TODO
       def raiseError[A](e: Throwable): Try[A] = Failure(e)
 
 
@@ -81,6 +173,11 @@ object HandlingErrortypeClass {
   // val exception= new RuntimeException("Really bad ")
   val pureValue: Try[Int] = MonaderrortypeclassinstanceforTry.pure[Int](2)
   val pureException: Try[Int] = MonaderrortypeclassinstanceforTry.raiseError[Int](exception) // Failure(e)
+
+
+  //TODO -------------------------------------------------------------------------------------------------
+
+
 
   //TODO : Monad Error Type class instance for Future
 
@@ -93,7 +190,7 @@ object HandlingErrortypeClass {
   TODO implicit type class instance for MonadError[Future,Throwable]
   TODO
     implicit object ErrorFuture extends MonadError[Future, Throwable]{
-   def pure[B](x: B): Future[B] = Future.successful(x)
+     def pure[B](x: B): Future[B] = Future.successful(x)
      def handleErrorWith[A](fea: Future[A])(f: Throwable => Future[A]): Future[A] = fea.recoverWith { case t => f(t) }
        def raiseError[A](e: Throwable): Future[A] = Future.failed(e)
       override def handleError[A](fea: Future[A])(f: Throwable => A): Future[A] = fea.recover { case t => f(t) }
@@ -107,13 +204,14 @@ object HandlingErrortypeClass {
    def raiseError[A](e: Throwable): Future[A] = Future.failed(e)
 
 --------------------------------------------------------------------------------------------------------------------------------
-Use Future.apply() or simply Future() (i.e., Future block): In the situations,
+TODO
+ Use Future.apply() or simply Future() (i.e., Future block): In the situations,
  where something to be done asynchronously that can complete sometime in future
  and may deal with some time consuming operations such as network calls, database operations communicate
   with one or many other services, processing huge data by consuming multiple cores and etc.
 
-Use Future.successful: When a literal or already computed value to be passed back as a successful future response.
-Use Future.failed: When a known and literal exception to be thrown back without performing any further actions in the future.
+TODO Use Future.successful: When a literal or already computed value to be passed back as a successful future response.
+TODO Use Future.failed: When a known and literal exception to be thrown back without performing any further actions in the future.
 --------------------------------------------------------------------------------------------------------------------------------
    TODO
     Returns:
@@ -130,16 +228,23 @@ TODO
       }
   }
   final class Failed[T](val result: Failure[T]) extends Kept[T]
+  An already completed Future is given its result at creation.
+   *
+   *  Useful in Future-composition when a value to contribute is already available.
+  private[this] sealed trait Kept[T] extends Promise[T] {
    */
   val monadErrortypeclassInstanceForFuture: MonadError[Future, Throwable] =
     MonadError[Future,Throwable]
    val future: Future[Int] = monadErrortypeclassInstanceForFuture.pure(2)
+  //TODO Already completed future with the Error wrapped inside
    val futureOfException: Future[Int] = monadErrortypeclassInstanceForFuture.
      raiseError[Int](exception)
   val handledFuture: Future[Int] = monadErrortypeclassInstanceForFuture.handleError(futureOfException){
     case exceptionthrown => 44
     case _ => 89
   }
+
+
 
 //TODO Monad Error Type class instance for Validated
 
@@ -169,14 +274,17 @@ TODO
     }
    */
   type ErrorsOR[T] = Validated[List[String],T]
-  val applicativeErrorTypeclass: ApplicativeError[ErrorsOR, List[String]] =
-    ApplicativeError.apply[ErrorsOR, List[String]]
+  val applicativeErrorTypeclass: ApplicativeError[ErrorsOR, List[String]] = ApplicativeError.apply[ErrorsOR, List[String]]
 
-    /*
-   TODO
-     Actually the diffrence between ApplicativeError and MonadError is that raiseError is fundamental method of
-     Applicative error not the monad error
-   */
+    val error: ErrorsOR[Int] =applicativeErrorTypeclass.raiseError[Int](List("hi"))
+
+
+
+  /*
+ TODO
+   Actually the diffrence between ApplicativeError and MonadError is that raiseError is fundamental method of
+   Applicative error not the monad error
+ */
 
     trait MyApplicativeError[M[_], E] extends Applicative[M] {
       // this type class has fundamental method raiseError

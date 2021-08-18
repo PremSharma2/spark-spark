@@ -33,9 +33,12 @@ object WeakerApplicatives {
       // so we can use inbuilt ap as well
       this.ap(functionWrapper)(fb)
     }
-    // special method which helps to implement product of two higher kinded types
+    // TODO : -> special method which helps to implement product of two higher kinded types
+    //TODO comes from Apply type class
     // as Applicatives are not monads
     def ap [B,A] (functionWrapper : F[B=> (A,B)])(wa:F[B]): F[(A,B)]
+
+    override def map[A, B](fa: F[A])(f: A => B): F[B] = ???
   }
 
 
@@ -43,13 +46,13 @@ object WeakerApplicatives {
  TODO: ->
      Thing is that  Applicative main fundamental method is pure rest all are auxillary
       because they comes from
-     Functor (map) , Semigroupal (product)
-     so what cats API did they put these auxillary methods into Apply trait or type class
+     Functor (map) , Semigroupal (product) and ap comes from Apply
+     so what cats API did they put these auxiliary methods into Apply trait or type class
      this makes the Applicative clean with pure only so we have created
      Applicative1
      TODO
        Hence this Weaker applicative Apply is basically
-       by defination is combo Functor+Semigroupal + ap method
+       by defination is combo Functor+Semigroupal + ap (method main fundamental method of Apply)
        ap is the only fundamental operation of this Apply type class
  */
 // TODO this is the final structure now which is used by scala
@@ -72,6 +75,8 @@ object WeakerApplicatives {
     // special method which helps to implement product of two higher kinded types
     // as Applicatives are not monads and this is the fundamental method of Apply type class
     def ap [B,A] (functionWrapper : F[B=> (A,B)])(wa:F[B]): F[(A,B)]
+
+
 
   def manpN[A,B,C](tuple:(F[A],F[B]))(f:(A,B) => C) = {
     val tupleWrapper: F[(A, B)] = product(tuple._1,tuple._2)
@@ -112,7 +117,7 @@ object WeakerApplicatives {
 
   def apWith[Z](f: F[(A0, A1, A2) => Z])(implicit apply: Apply[F]): F[Z] = apply.ap3(f)(t3._1, t3._2, t3._3)
   TODO
-   def imap3[F[_], A0, A1, A2, Z](f0:F[A0], f1:F[A1], f2:F[A2])(f: (A0, A1, A2) => Z)(g: Z => (A0, A1, A2))(implicit semigroupal: Semigroupal[F], invariant: Invariant[F]):F[Z] =
+   def imap3[F[_], A0, A1, A2, Z](f0:F[A0], f1:F[A1 ], f2:F[A2])(f: (A0, A1, A2) => Z)(g: Z => (A0, A1, A2))(implicit semigroupal: Semigroupal[F], invariant: Invariant[F]):F[Z] =
     invariant.imap(semigroupal.product(f0, semigroupal.product(f1, f2))) { case (a0, (a1, a2)) => f(a0, a1, a2) }{ z => val (a0, a1, a2) = g(z); (a0, (a1, a2)) }
 
     def imap[A, B](fa: F[A])(f: A => B)(g: B => A): F[B]

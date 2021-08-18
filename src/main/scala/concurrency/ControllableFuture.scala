@@ -4,6 +4,7 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.util.control.NonFatal
 object ControllableFuture  extends App {
   /*
+TODO
   Idea behind Controllable Future
 
   Promise allow completing Futures based on external events/triggers.
@@ -60,6 +61,8 @@ and there's no other way to do it: the Promise API is essential.
   Creates a new future by applying a function to the successful result of this future.
    If this future is completed with an exception then
     the new future will also contain this exception.
+
+
 Example:
 
   val f = Future { 5 }
@@ -75,6 +78,8 @@ Example:
 
   // step 4 Async call
   def asyncCall(promise:Promise[String]): Unit ={
+    //Completes the promise with a value.
+
     promise.success("Your value your majesty")
   }
 // step 5 call the producer

@@ -1,7 +1,7 @@
 package catz.datamanipulation
 
+import cats.Semigroup
 import cats.data.Validated
-import cats.kernel.Semigroup
 
 import scala.annotation.tailrec
 import scala.util.Try
@@ -14,12 +14,12 @@ TODO
 object DataValidation  {
 // import cats.data.Validated
 val aValidValue:Validated[String,Int] = Validated.
-  valid(42) // this will be equivalent to Right(42)
+  valid(42) // this will be equivalent to Right(42) Valid(42)
 
   val aInvalidValue: Validated[String, Int] =  Validated.
-    invalid("Validation failed returning Invalid value!!")// this is equivalent to Left()
-  // cond is used to to validate the Expression using Validated API !!!
-  //so it will return Valid alias Right or Left alias Invalid
+    invalid("Validation failed returning Invalid value!!")// this is equivalent to Left("Validation failed returning Invalid value!!")
+  //
+  //so it will return Valid alias Right or Left cond is used to to validate the Expression using Validated API !!! alias Invalid
   val aTest: Validated[String, Int] = Validated.cond(42>22 , 42 , "Validation failed!!")
 
   // TODO Exercise
@@ -68,9 +68,10 @@ val aValidValue:Validated[String,Int] = Validated.
 
    */
   implicit val combineIntMax:Semigroup[Int] = Semigroup.instance[Int](Math.max)
+  //TODO composing multiple validations
   def validateNumber(n:Int):Validated[List[String],Int] =
-    Validated.cond(n%2 ==0 ,n,List("Number Must be Prime!!") ).
-      combine( Validated.cond(n>= 0 ,n,List("Number is negetive!!") ))
+      Validated.cond(n%2 ==0 ,n,List("Number Must be Prime!!") ).
+      combine[List[String],Int]( Validated.cond(n>= 0 ,n,List("Number is negetive!!") ))
       .combine(Validated.cond(n<=100 ,n,List("Number is too big !!") ))
       .combine(Validated.cond(testPrime(n) ,n,List("Number is not Prime!!!!") ))
       // chain of functions
@@ -108,7 +109,7 @@ This function is similar to flatMap on Either.
   // we also transform both together
   aValidValue.bimap(_+"invalid value" , _+1)
   //interpolate with stdlib
-  val eitherToValidated: Validated[List[String], Int] = Validated.fromEither(Right(42))
+  val eitherToValidated: Validated[List[String], Int] = Validated.fromEither(Right[List[String], Int](42))
   val optionToValidated: Validated[List[String], Int] = Validated.fromOption(Some(42),List("Its is None value"))
   val tryToValidated: Validated[Throwable, Int] = Validated.fromTry(Try("something".toInt))
 
@@ -136,8 +137,8 @@ This function is similar to flatMap on Either.
 
      */
     def validateForm(form:Map[String,String]): FormValidation[String] ={
-          getValue(form,"Name").
-          andThen(name=> nonBlank(name,"Name"))
+           getValue(form,"Name").
+           andThen(name=> nonBlank(name,"Name"))
           .combine(getValue(form,"Email")).andThen(emailProperForm)
           .combine(getValue(form,"Password")).andThen(passwordCheck)
           .map(_=> "User is Validated Successfully")

@@ -4,7 +4,7 @@ import cats.{Applicative, Apply, FlatMap}
 
 object FlatMapTypeClass {
 //TODO : FlatMap type class it is also called Weaker monad because
-  // in this family of monads we have stronger monad is Monad Type class
+  // TODO in this family of monads we have stronger monad is Monad Type class
   // TODO : Note : -> Apply extends Semigroupal and Functors
   //TODO cats encode flatMap as type class which accepts the higher Kinded type
 trait MyFlatMap[M[_]] extends Apply[M]{
@@ -39,23 +39,64 @@ trait MyFlatMap[M[_]] extends Apply[M]{
   import cats.syntax.functor._ // map extension method
   // TODO : now we can use for comprehension
 /*
-trait Ops[F[_], A] extends scala.AnyRef {
+TODO
+ object ops {
+    implicit def toAllFunctorOps[F[_], A](target: F[A])(implicit tc: Functor[F]): AllOps[F, A] {
+      type TypeClassType = Functor[F]
+    } =
+      new AllOps[F, A] {
+        type TypeClassType = Functor[F]
+        val self: F[A] = target
+        val typeClassInstance: TypeClassType = tc
+      }
+  }
+  trait Ops[F[_], A] extends Serializable {
+    type TypeClassType <: Functor[F]
+    def self: F[A]
+    val typeClassInstance: TypeClassType
+    def map[B](f: A => B): F[B] = typeClassInstance.map[A, B](self)(f)
+
+
+TODO
+ trait Ops[F[_], A] extends scala.AnyRef {
     type TypeClassType <: cats.Functor[F]
     val typeClassInstance : Ops.this.TypeClassType
     def map[B](f : A=>B : F[B] = typeClassInstance.map(F[A])(fx)
 
+
+TODO
     trait Ops[F[_], C] extends scala.AnyRef {
     type TypeClassType <: cats.FlatMap[F]
     val typeClassInstance : Ops.this.TypeClassType
     def self : F[C]
-    def flatMap[B](f : C=> F[B]) : F[B] = typeClassInstance.flatMap(fa:F[Int])(f)
+    def flatMap[B](f : C=> F[B]) : F[B] = typeClassInstance.flatMap(fa:F[B])(f)
  */
+  //TODO Design an API end point for all kind of higher kinded type
   def getPairs [M[_]:FlatMap] (numbers:M[Int],chars:M[Char]):M[(Int,Char)] ={
     for{
       n <- numbers
       char <- chars
     }yield(n,char)
   }
+  //TODO Design an API end point for all kind of higher kinded type
+  /*
+TODO
+ Compiler will rewrite this as follows
+ object ops {
+    implicit def toAllFunctorOps[F[_], A](target: F[A])(implicit tc: Functor[F]): AllOps[F, A] {
+      type TypeClassType = Functor[F]
+    } =
+    val ops=new AllOps[F, A] {
+        type TypeClassType = Functor[F]
+        val self: F[A] = target
+        val typeClassInstance: TypeClassType = tc
+      }
+      ops.map[Int](f : Int=>Int) : F[Int] = typeClassInstance.map(F[Int])(fx)
+   */
+   def getFlatmap [M[_]] (fa :M[Int])(implicit typeClassInstance: FlatMap[M]) ={
+    //TODO : -> ops.map[Int](f : Int=>Int) : M[Int] = typeClassInstance.map(M[Int])(fx)
+     fa.map(_+1)
+   }
 
   def main(args: Array[String]): Unit = {
     FlatMap

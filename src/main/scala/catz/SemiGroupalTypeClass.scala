@@ -21,7 +21,7 @@ TODO
   }
 
    import cats.Semigroupal
-  import cats.instances.option._
+   import cats.instances.option._
 
   val optionSemigroupalTypeClassInstance: Semigroupal[Option] = Semigroupal.apply[Option]
   val aTupledValue: Option[(Int, Int)] = optionSemigroupalTypeClassInstance
@@ -44,7 +44,52 @@ TODO
   val tupledList: List[(Int, String)] = alistSemigroupaltypeclassInstance
                      .product(List(1,2),List("a","b"))
 
+ val tuple3: Option[(Int, Int, Int)] = Semigroupal.tuple3(Option(1), Option(2), Option(3))
+  val tuple3WithNone: Option[(Int, Int, Int)] =Semigroupal.tuple3(Option(1), Option(2), Option.empty[Int])
+  // res5: Option[(Int, Int, Int)] = None
+  val mappedValue= Semigroupal.map3(Option(1), Option(2), Option(3))(_ + _ + _)
+  //// res6: Option[Int] = Some(6)
 
+  import cats.instances.option._
+  import cats.syntax.apply._     // for tupled and mapN
+  /*
+TODO
+  The tupled method is implicitly added to the tuple of Options.
+  It uses the Semigroupal for Option to zip the values inside the Options, creating a single Option of a tuple:
+   */
+  val tupled: Option[(Int, String)] = (Option(123), Option("abc")).tupled
+  // res8: Option[(Int, String)] = Some((123, "abc"))
+/*
+Internally mapN uses the Semigroupal
+to extract the values from the Option
+and the Functor to apply the values to the function.
+private[syntax] final class Tuple3SemigroupalOps[F[_], A0, A1,A2](private val t2: Tuple3[F[A0], F[A1],F[A2]]) extends Serializable {
+
+ def mapN[Z](f: (A0, A1, A2) => Z)(implicit functor: Functor[F], semigroupal: Semigroupal[F]): F[Z]
+ = Semigroupal.map3(t3._1, t3._2, t3._3)(f)
+
+
+def map3[F[_], A0, A1, A2, Z](f0:F[A0], f1:F[A1], f2:F[A2])(f: (A0, A1, A2) => Z)(implicit semigroupal: Semigroupal[F], functor: Functor[F]): F[Z] =
+    functor.map(semigroupal.product(f0, semigroupal.product(f1, f2))) { case (a0, (a1, a2)) => f(a0, a1, a2) }
+ */
+  final case class Cat(name: String, born: Int, color: String)
+
+  (
+    Option("Garfield"),
+    Option(1978),
+    Option("Orange & black")
+    ).mapN(Cat.apply)
+  // res10: Option[Cat] = Some(Cat("Garfield", 1978, "Orange & black"))
+  /*
+TODO
+  There is only one law for Semigroupal: the product method must be associative.
+ product(a, product(b, c)) == product(product(a, b), c)
+   */
+
+  val add: (Int, Int,Int) => Int = (a, b,c) => a + b + c
+  // add: (Int, Int) => Int = <function2>
+
+  (Option(1), Option(2), Option(3)).mapN(add)
   /*
     TODO Exercise Lts generalize this API using monad in pure FP way
    */
@@ -59,10 +104,10 @@ implicit class  Ops[F[_], C] extends scala.AnyRef {
     def self : F[C]
     def flatMap[B](f : C => F[B]) : F[B] = { /* compiled code */ }
  */
+  import cats.syntax.flatMap._
   import cats.syntax.functor._ // for implicit map
-  import cats.syntax.flatMap._ // for implicit flatMap
   def productWithMonadsAnExtensionMethods[F[_],A,B](fa:F[A],fb:F[B])(implicit monad:Monad[F]): F[(A, B)] =
-   fa.flatMap(a => fb.map(b => (a,b)))
+    fa.flatMap(a => fb.map(b => (a,b)))
 
   def productWithMonadsAnExtensionMethodsfor[F[_],A,B](fa:F[A],fb:F[B])(implicit monad:Monad[F]): F[(A, B)] ={
     for{
@@ -82,12 +127,12 @@ implicit class  Ops[F[_], C] extends scala.AnyRef {
   }
 /*
  TODO
-   Note: As we have proved that Monads extends Semigroupal and product of two Monads
-   also when we imported the cats.instances.list._ // Monad[List] bcz monad is semigroupal
-   and Monad list runs product in terms of for comprehension
+    Note: As we have proved that Monads extends Semigroupal and product of two Monads
+    also when we imported the cats.instances.list._ // Monad[List] bcz monad is semigroupal
+    and Monad list runs product in terms of for comprehension
     that is why we got cartesian product
-   But  this cartesian product is achived using for comprehension i.e using map and flatmap
-  and map and flatMap obeys the so called  monads  laws that is
+    But  this cartesian product is achived using for comprehension i.e using map and flatmap
+   and map and flatMap obeys the so called  monads  laws that is
    monad laws enforce to  follows a particular sequence in operation or execution
    So sometimes we might need to combine values without imposing a particular sequence in operation
    so Semigroupal can used where sequencing is not required
@@ -109,9 +154,10 @@ implicit class  Ops[F[_], C] extends scala.AnyRef {
   type ErrorsOr[T] = Validated[List[String],T]
   val validatedSemigroupaltypeclassinstance: Semigroupal[ErrorsOr] =
     Semigroupal.apply[ErrorsOr]// it requires an implicit instance of Semigroup[List[_]]
-  val invalidCombination: ErrorsOr[(Nothing, Nothing)] = validatedSemigroupaltypeclassinstance
+  val invalidCombination: ErrorsOr[(Nothing, Nothing)] =
+        validatedSemigroupaltypeclassinstance
        .product(Validated.invalid(List("Invalid value"))
-      ,Validated.invalid(List("Second-Invalid-value")))
+               ,Validated.invalid(List("Second-Invalid-value")))
 
 // TODO Now this product of two Either monads using semigroupal
   // will get short circuit because product of these two Semigroupal or Monads
@@ -122,7 +168,9 @@ implicit class  Ops[F[_], C] extends scala.AnyRef {
   import cats.instances.either._ // implicit Monad[Either]
   val eitherSemigroupaltypeclassInstance: Semigroupal[EitherOrError] =
     Semigroupal.apply[EitherOrError]
-    val anEitherCombination = eitherSemigroupaltypeclassInstance.product(
+    val anEitherCombination: EitherOrError[(Nothing, Nothing)] =
+      eitherSemigroupaltypeclassInstance.
+        product(
       Left(List("Something-Wrong","Exception-Occured")),
       Left(List("Key Not found Exception"))
     )
