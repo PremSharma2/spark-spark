@@ -35,10 +35,44 @@ TODO  vpt("())",0)
 
     validParanthesTailRec(str, 0)
   }
+  val OpenToClose: Map[Char, Char] = Map('{' -> '}', '[' -> ']', '(' -> ')')
 
+  val CloseToOpen: Map[Char, Char] = OpenToClose.map(_.swap)
+
+  def parenthesesAreBalanced(s: String): Boolean = {
+    if (s.isEmpty) true
+    else {
+      @scala.annotation.tailrec
+      def go(position: Int, stack: List[Char]): Boolean = {
+        if (position == s.length) stack.isEmpty
+        else {
+          val char = s(position)
+          val isOpening = OpenToClose.contains(char)
+          val isClosing = CloseToOpen.contains(char)
+          if (isOpening) go(position + 1, char :: stack)
+          else if (isClosing) {
+            val expectedCharForMatching = CloseToOpen(char)
+            stack match {
+              case _ :: rest =>
+                go(position + 1, rest)
+              case _ =>
+                false
+            }
+          } else false
+        }
+      }
+      go(position = 0, stack = List.empty)
+    }
+  }
   def main(args: Array[String]): Unit = {
    println(hasValidParanthesis("(())"))
     println(hasValidParanthesis("())"))
-
+    println(parenthesesAreBalanced("()"))
+    println(parenthesesAreBalanced("[()]"))
+    println(parenthesesAreBalanced("{[()]}"))
+    println(parenthesesAreBalanced("([{{[(())]}}])"))
+    println(parenthesesAreBalanced("{{[]()}}}}"))
+    println(parenthesesAreBalanced("{{[](A}}}}"))
+    println(parenthesesAreBalanced("{[(])}"))
   }
 }

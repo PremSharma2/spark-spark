@@ -22,6 +22,6 @@ implicit object NameEquality extends Equal[User] {
   case class User(name:String, age:Int , email:String)
   val user=User("Prem", 34, "prem.kaushik@outlook.com")
   val anotherUser= User("Prem", 34, "prem.kaushik@outlook.com")
-  println(Equal.apply(user,anotherUser))
+  println(Equal(user,anotherUser))
   // this is called adhoc polymorphism, because we can call same  Equals companion object for diffrent types
   }

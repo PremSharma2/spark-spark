@@ -27,7 +27,7 @@ object HofsForOop {
   incrementer.apply(2)
   incrementer(2)
   incrementer1(3)
-  //TODO  now we can use lambda instead of wha we did above
+  //TODO  now we can use lambda instead of Anonymous type
   val incrementeralt: Int => Int = (x:Int) => x+1
   incrementeralt(2)
   def nTimeS(f:Int => Int , n:Int) :Int=> Int = ???

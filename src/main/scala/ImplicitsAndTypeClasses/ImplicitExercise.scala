@@ -5,6 +5,7 @@ object ImplicitExercise extends App {
   case class Purchase(nUnits:Int, unitPrice:Double){
     def totalPrice : Double= unitPrice * nUnits
   }
+
 object Purchase{
   implicit def totalPriceOrdering : Ordering[Purchase] = Ordering.fromLessThan(_.totalPrice< _.totalPrice)
 

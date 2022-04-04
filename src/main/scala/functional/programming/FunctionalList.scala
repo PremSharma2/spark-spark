@@ -81,7 +81,7 @@ case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
 
   def isEmptyList: Boolean = return false
 
-  def addElement[B >: A](element: B): MyList[B] = new Node(element, this)
+  def addElement[B >: A](element: B): MyList[B] =  Node(element, this)
 
   def printListElements: String = {
     if (t.isEmptyList) "" + h

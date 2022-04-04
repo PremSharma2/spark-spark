@@ -1,16 +1,25 @@
 import scala.math.min
 
 /*
-Enumerations are useful tool for creating groups of constants, such as Numeric Constants or Customized Object Constants ,
-such as  Days of the week, Months of the year,
- Items in Shopping cart
-all these are represented by  case Objects as states are represented by case classes/objects in Scala
-But We are intrested  in constants we will use case objects
-and many other situations where you have a group of related, constant values.
-Sealed trait Approach:
-You can also use the following approach of using a Scala trait to create the equivalent of a Java enum.
- Because it uses a “case object” approach it
- And offcourse case object will also help in pattern matching
+TODO
+    Enumerations are useful tool for creating groups of constants,
+    such as Numeric Constants or Customized Object Constants ,
+    such as  Days of the week, Months of the year,
+    Items in Shopping cart
+    all these are represented by
+    case Objects as states are represented by case classes/objects in Scala
+    But We are intrested  in constants we will use case objects
+    and many other situations where you have a group of related, constant values.
+    Sealed trait Approach:
+    You can also use the following approach of using a Scala trait to create the equivalent of a Java enum.
+    Because it uses a “case object” approach it
+    And offcourse case object will also help in pattern matching
+    sealed  trait Weather // This structure is called Sum type
+  //TODO these are the possible constants for Weather
+  case object Sunny extends Weather
+  case object Windy extends Weather
+  case object Rainy extends Weather
+  case object Cloudy extends Weather
  */
 //When we want to compare o an  constant against the all  possible constants in the enum type.
 //then we can implement it using sealed trait

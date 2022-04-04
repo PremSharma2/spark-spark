@@ -44,7 +44,7 @@ object WhatsAFunction extends App {
     override def apply(a:Int,b:Int):Int=a+b
   }
   println(doubler.apply(10))
-  println(doubler(10))
+  println(doubler(10).+(2))
   println(stringToIntConverter("3").+(4) )
   println(doubler)
   println(stringToIntConverter)

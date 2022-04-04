@@ -26,7 +26,7 @@ TODO
   def pure[F[_]](implicit F: Applicative[F]): F[A] = F.pure(a)
 }
    */
-  val aSweetList: List[Int] = 2.pure[List[Int]]
+ val aSweetList: List[Int] = 2.pure[List]
   val aSweetOption: Option[Int] = 2.pure[Option]
   //TODO Monads extends Applicatives pure method of Monads comes from the Applicatives
     // TODo so applicatives are weaker monads so they are rarely used

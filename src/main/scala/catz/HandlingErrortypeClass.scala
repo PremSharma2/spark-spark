@@ -52,10 +52,10 @@ object HandlingErrortypeClass {
  val errorTypeclassInstance: MyMonadError[ErrorOR, String] =MyMonadError.apply[ErrorOR,String]
   val value: ErrorOR[Int] = errorTypeclassInstance.pure(32)
   val errorRiased: ErrorOR[String] = errorTypeclassInstance.raiseError("WrongPassword")
-  val erHandled= errorTypeclassInstance.handleError[Int]{
-    case "badness" => 44
-    case _ => 89
-  }
+  //val erHandled= errorTypeclassInstance.handleError[Int]{
+  //  case "badness" => 44
+   // case _ => 89
+  //}
 
 
 
@@ -141,7 +141,7 @@ TODO
     override def tailRecM[A, B](a: A)(f: A => Try[Either[A, B]]): Try[B] = ???
   }
 
-  val myinstance: MyMonadError[Try, Throwable] =MyMonadError.apply[Try[Int],Throwable]
+  val myinstance: MyMonadError[Try, Throwable] =MyMonadError.apply[Try,Throwable]
   val tryerror: Try[Int] =myinstance.pure(34)
   val errorRaised: Try[Int] =myinstance.raiseError[Int](new RuntimeException)
   /*

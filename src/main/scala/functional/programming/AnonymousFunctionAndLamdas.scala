@@ -13,7 +13,7 @@ object AnonymousFunctionAndLamdas extends App {
   //(x) => x * 2 this is apply method implementation
   //val doubler : Function1[Int, Int]
   val doubler1: MyFunction1[Int, Int] = {
-  new MyFunction1[Int,Int]{
+         new MyFunction1[Int,Int]{
     override def apply(element:Int):Int=element*2
   }
   }
@@ -28,19 +28,19 @@ object AnonymousFunctionAndLamdas extends App {
   //Function2[Int, Int,Int]
   val adder: (Int, Int) => Int = (a, b) => a + b
   //no params lamda or zero lambda
-  val justDoSomething: (() => Int) = () => 3
+  val justDoSomething: () => Int = () => 3
 
   println(justDoSomething)
   println(justDoSomething())
   // curlybraces with lambdas or syntacticsugar
-
+//todo if we have multiple computations in function we can use syntactic Sugar
   val stringtoInt :(String => Int) = { 
     (str) => str.toInt
-
+      if(str.toInt %2==0) 1 else 0
   }
 
   //MoAR syntactic sugar
-  val niceIncrementer: (Int => Int) = (x) => x + 1
+  val niceIncrementer: Int => Int = (x) => x + 1
   val niceAdder: (Int, Int) => Int = _ + _ // equivalent to (a,b)=> a+b
   //lambda with curried function
 //val superAdd: Function1[Int, Function[Int, Int]]

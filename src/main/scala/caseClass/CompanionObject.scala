@@ -28,7 +28,7 @@ object CompanionObject extends App {
     private var extraData = ""
     override def toString = jString + extraData
   }
-
+//companion Object
   object MyString {
     /*
      * Constructor of Factory Pattern for MyString class

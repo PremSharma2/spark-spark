@@ -74,6 +74,9 @@ TODO
      you also do something else (printing a respect line to the boss).
    You can’t replace the expression with its value because the meaning of your program changes
     (showing respect once instead of twice).
+
+
+TODO
  Here’s another example. You’ve just been kidnapped,
  and your kidnappers decide to play a game of Russian roulette with you.
  You rely on the current time of the system,

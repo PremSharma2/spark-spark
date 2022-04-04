@@ -77,8 +77,7 @@ TODO Explanation
    */
 
 /*
-TODO Trick 2 callbyNeed
-  Trick 2 - manageable infinityPermalink
+TODO Trick 2 callbyNeed: ->
  Call-by-name used in conjunction with lazy evaluation -
  which is another beast - allows us to manage infinite data structures in Scala:
  If your Generic class creates or contains elements of type T it should be +T

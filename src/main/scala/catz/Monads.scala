@@ -18,7 +18,7 @@ TODO
   }
   So List , Future , Try all are Monads
  */
-object Monads extends App {
+object lMonads extends App {
   val numbersList= List(1,2,3,4) // List Bag
   val charsList: Seq[Char] =List('a','b','c')
 

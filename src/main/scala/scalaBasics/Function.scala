@@ -4,6 +4,7 @@ import scala.annotation.tailrec
 
 
 /*
+tODO
  * Single Object which exposes some functions
  * 
  * @author psharma
@@ -22,14 +23,14 @@ object Function extends App {
  // println(aFunction("hello", 3))
 // its is a getter function
   def parameterLessFunction: Int = 42
-  //we can call paramless function with their names only
+  //TODO : -> we can call paramless function with their names only
 
   println(parameterLessFunction)
 
-  //Always use Recursive function in case of looping rather then using For loop or while loop we use recursion with accumlator
+  //Always use Recursive function in case of looping rather then using For loop or while loop we use recursion with accumulator
   //to make it tail recursive
 
-//this is not tail recursive because there is an pending computation in each call
+//this is not tail recursive because there is an pending computation in each recursive call
   def aRecursiveFunction(accumulator: String, n: Int): String = {
 
     if (n == 1) accumulator else accumulator + aRecursiveFunction(accumulator, n - 1)
@@ -40,6 +41,7 @@ object Function extends App {
   //nested function example
   def aBigFunction(n: Int): Int = {
     def aSmallFunction(a: Int, b: Int): Int = a + b
+    //TODO this is tail rec bcz this last thing in your code branch i.e recursive call
     aSmallFunction(n, n - 1)
   }
 

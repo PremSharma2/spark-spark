@@ -9,8 +9,8 @@ object UseOFUnderScore  extends App {
 
   def processList(list : List[Option[_]] ): Int = list.length
 
-  // another scenario is the  default initializer
-  // let say i ave a string variable i want let teh jvm decide what the variable will have
+  // TODO another scenario is the  default initializer
+  //TODO:->  let say i have a string variable i want let the jvm decide what value the variable will have
   var mystring:String = _
 
 
@@ -28,7 +28,7 @@ makeSentence("I","Love","Scala")
   val words= Array("I","Love","Akka")
   //I,Love,Akka
   //val vararg: Array[String] = words : _*
-  // it automatically converts this into varargs
+  // it automatically converts array into this into varargs
   println(makeSentence(words : _*))
 
 }

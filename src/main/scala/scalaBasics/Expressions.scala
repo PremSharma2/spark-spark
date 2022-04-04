@@ -23,10 +23,10 @@ object Expressions extends App {
   
 
   val aCondition: Boolean =true
-  //Example of Conditional expression returns a value on condition basis
+  //TODO Example of Conditional expression returns a value on condition basis
   // use of if else as ternary operator as expression i.e conditional expression
-  //if (aCondition) 5 else 3 this is conditional expression
-  val conditionalExpressionOutput: Int =if (aCondition) 5 else 3
+  //TODO if (aCondition) 5 else 3 this is conditional expression
+  val conditionalExpressionOutput: Int = if (aCondition) 5 else 3
   println(conditionalExpressionOutput)
   
 

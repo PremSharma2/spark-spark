@@ -4,7 +4,7 @@ object ImplicitIntro extends  App {
 // Here "Prem " -> this expression is "Prem" first get converted into AroowAsosc
   //Instance and then on ArrowAssoc Instance we will call -> method of that
   //ArrowAssoc implicit class
-  val pair = "Prem " -> "222"
+  val pair: (String, String) = "Prem " -> "222"
   val intpair: (Int, Int) = 1 -> 2
 
   case class Person(name:String){
