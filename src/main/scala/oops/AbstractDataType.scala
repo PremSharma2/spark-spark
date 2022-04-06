@@ -10,10 +10,11 @@ object AbstractDataType{
   }
 
   class Dog extends Animal {
-
+// todo : -> This is everything inside constructor
     override val creatureType: String = "Cannie"
     override def eat = println("crunch crunch")
-// def can be overrideen as val instance property
+
+// todo def can be overridden as val instance property
     override val beep  = super.beep
   }
   //trait an Abstract data type represents only behaviour
@@ -146,10 +147,10 @@ TODO:Best practices
   }
   def main(args: Array[String]): Unit = {
     //croc.eat(dog)
-   Kingfisher.printColours()
-    Kingfisher1.printColours()
-   //Goldfinch.printColours()
-    Goldfinch1.printColours() // this will work
+  // Kingfisher.printColours()
+   // Kingfisher1.printColours()
+   Goldfinch.printColours()
+    //Goldfinch1.printColours() // this will work
   }
 
 }

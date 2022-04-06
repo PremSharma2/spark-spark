@@ -214,7 +214,8 @@ case class Person (
     mother: Person,
     father: Person
 )
-If you answered, “Infinite,” that’s a good answer. Because a String has an infinite number of possibilities, Person can have an infinite number of concrete instances.
+If you answered, “Infinite,” that’s a good answer. Because a String has an infinite number of possibilities,
+ Person can have an infinite number of concrete instances.
 
 While I don’t concern myself with ADTs too much, this particular point had a significant impact on me. When I first saw this, I realized that any time a function accepted a String, that String had an infinite number of possibilities. That’s a lot to account for. Similarly, a boolean value has two possibilities, a Byte has 256 possible values, and the Direction Sum type has four possibilities. The lesson for me is that the fewer possibilities you have to deal with, the simpler your code will be. (At the very least, this was the last time I ever used a series of string constants instead of enumerations.)
 
@@ -227,52 +228,65 @@ The number of possible values of a Product type is the product of all possible c
 We use the phrases “has a” and “and” when talking about Product types. Pair has a a and a b; Person has a firstName, lastName, mother, and father.
 As shown in the Person example, Product types can be recursive; mother and father are declared as Person types inside the Person definition.
 Hybrid types
-The Sum and Product types are the two base ADTs; all other ADTs are hybrids created from those base types. As the book Essential Scala states, “An algebraic data type is any data that uses the above two patterns” (Sum and Product).
+The Sum and Product types are the two base ADTs;
+all other ADTs are hybrids created from those base types.
+ As the book Essential Scala states, “An algebraic data type is any data that uses the above two patterns” (Sum and Product).
 
-One formally-defined hybrid type is known as the “Sum of Products” type. With a few minor changes to reflect modern Scala practices, Mario Gleichmann created a good example of this in 2011:
+One formally-defined hybrid type is known as the “Sum of Products” type.
+ With a few minor changes to reflect modern Scala practices, Mario Gleichmann created a good example of this in 2011:
+TODO
+ sealed trait Shape
+ final case class Circle(radius: Double) extends Shape
+ final case class Rectangle(width: Double, height: Double) extends Shape
+ These types represent a Sum type because Shape is a Circle or a Rectangle;
+ Circle is a Product type because it has a radius;
+ and Rectangle is also Product type because it has a width and a height.
+TODO
+ There are other variations of these possibilities,
+ which is why I refer to all other combinations as “hybrid” types.
+ For instance, the Pizza class in the domain modeling lessons is a Product type that contains three Sum types:
 
-sealed trait Shape
-final case class Circle(radius: Double) extends Shape
-final case class Rectangle(width: Double, height: Double) extends Shape
-These types represent a Sum type because Shape is a Circle or a Rectangle; Circle is a Product type because it has a radius; and Rectangle is also Product type because it has a width and a height.
-
-There are other variations of these possibilities, which is why I refer to all other combinations as “hybrid” types. For instance, the Pizza class in the domain modeling lessons is a Product type that contains three Sum types:
-
-case class Pizza (
+TODO
+ case class Pizza (
     crustSize: CrustSize,
     crustType: CrustType,
     toppings: Seq[Topping]
-)
+ )
 Sum and Product types can be combined in any ways that are needed to solve the problem at hand.
  Hopefully this demonstrates the point I made at the beginning of this lesson:
  ADTs are just a way of formally categorizing the data types in your data model.
 
-Pattern matching
-A great benefit of ADTs is that they simplify and encourage the use of pattern matching in your code.
-For instance, given these Shape types:
+TODO
+ Pattern matching
+ A great benefit of ADTs is that they simplify and encourage the use of pattern matching in your code.
+ For instance, given these Shape types:
+TODO
+ sealed trait Shape
+ final case class Circle(radius: Double) extends Shape
+ final case class Rectangle(width: Double, height: Double) extends Shape
+ you can easily write an isRound function using pattern matching:
 
-sealed trait Shape
-final case class Circle(radius: Double) extends Shape
-final case class Rectangle(width: Double, height: Double) extends Shape
-you can easily write an isRound function using pattern matching:
-
-def isRound(s: Shape): Boolean = s match {
+TODO
+ def isRound(s: Shape): Boolean = s match {
     case Circle(_) => true
     case _ => false
-}
-Similarly, using the Bool type I created earlier:
+ }
 
-sealed trait Bool
-case object True extends Bool
-case object False extends Bool
-you can define and and or functions with pattern matching:
+TODO
+ Similarly, using the Bool type I created earlier:
+TODO
+ sealed trait Bool
+ case object True extends Bool
+ case object False extends Bool
+ you can define and and or functions with pattern matching:
 
-def and(a: Bool, b: Bool): Bool = (a,b) match {
+TODO
+ def and(a: Bool, b: Bool): Bool = (a,b) match {
     case (True, True)   => True
     case (False, False) => True
     case (True, False)  => False
     case (False, True)  => False
-}
+ }
 
 def or(a: Bool, b: Bool): Bool = (a,b) match {
     case (True, _) => True

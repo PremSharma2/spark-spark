@@ -42,12 +42,9 @@ TODO
 
   /*
   TODO
-       The Variance Positions ProblemPermalink
+       The Variance Positions
      Now that we’ve found that a collection should be covariant,
       we get to work and write our own list, because of course we can:
-  TODO
-    Now that we’ve found that a collection should be covariant,
-     we get to work and write our own list, because of course we can:
 
   TODO
      We start from the very basics. But before we even write a proper subtype for MyList, we hit a wall:
@@ -59,12 +56,12 @@ TODO
 
     def tail: MyList[T]
 
-    //def add(elem: T): MyList[T]
+    //def add(elem: T): MyList[T] // todo this we wil discuss in covariant and contravariant positions
   }
 
   /*
   TODO
-       Types of vals Are in Covariant PositionPermalink
+       Types of vals Are in Covariant
        Let’s say we had a Vet. As discussed before, a Vet should be a contravariant type.
        Let’s also imagine this vet had a favorite animal val field, of the same type she can treat:
    */
@@ -90,9 +87,9 @@ TODO
    class PetBox[-T](val favoriteAnimal: T)
    Error : ->  contravariant type T occurs in covariant position in type T of value favoriteAnimal
    val garfield = new Cat
-   val theVet: PetBox[Animal] = new PetBox[Animal](garfield)
-   def petApi(petBox: PetBox[Dog]) = {
-    // here petBox of Dog is having the Cat
+   val theVet: PetBox[Cat] = new PetBox[Animal](garfield)
+   def petApi(petBox: PetBox[Animal]) = {
+    // here petBox of Dog is having the Cat and we expect here Dog
     val petBox: PetBox[Dog] = theVet // type conflict if we access that pet it will cat
    }
    val lassiesVet: PetBox[Dog] = theVet
@@ -100,7 +97,7 @@ TODO
    */
 /*
 TODO
-    Types of vars Are Also in Contravariant PositionPermalink
+    Types of vars Are Also in Contravariant
    If our contravariant Vet example had a var field,
    we’d have the exact same problem right at initialization.
   Therefore, types of var members are in covariant position as well.
@@ -141,7 +138,7 @@ TODO
 
 /*
 TODO
-     Types of Method Arguments Are in Contravariant PositionPermalink
+     Types of Method Arguments Are in Contravariant position
    This says it all. How do we prove it? We try the reverse and see how it’s wrong.
   Let’s take the (now) classical example of a list. A list is covariant, we know that. So what would be wrong with
 
@@ -165,9 +162,9 @@ TODO
   def add(elem: T): ContraList[T]
 }
 TODO
-  val animals: ContraList[Animal] = new ContraList[Cat]
+  val animals: ContraList[Animal] = new ContraList[Cat](new Cat)
   def ContraApi(list:ContraList[Animal])={
-    list.add(new Cat)
+    list.add(new Cat) // dogs and cat are intermixed together this is wrong
   }
   ContraApi(new ContraList[Dog])
   val moreAnimals = animals.add(new Dog) // Wrong adding Dog into list of cats
@@ -193,11 +190,11 @@ class ContraVet[-T] {
 
 /*
 TODO
-  Method Return Types Are in Covariant PositionPermalink
+  Method Return Types Are in Covariant
  Again, we can prove the title by trying the reverse.
  Assume a contravariant type (again, our favorite Vet) and write a method returning a T:
 
-abstract class Vet[-T] {
+abstract class Vet[+T] {
   def rescueAnimal(): T
 }
  */
@@ -206,7 +203,7 @@ TODO
    abstract class CovVet[-T] {
     def rescueAnimal(): T
   }
-  val covet: CovVet[Animal] = new CovVet[Animal] {
+  val covet: CovVet[Dog] = new CovVet[Animal] {
     override def rescueAnimal(): Animal = new Cat // because cat is animal
   }
   def CovVetApi(vet:CovVet[Dog])={
@@ -220,10 +217,35 @@ TODO
   so when we finally invoke the CovVetApi method on covet (which is declared as Vet[Dog]),
   the type checker expects a Dog but we get a Cat per its real implementation! Not funny.
   Therefore, we say method return types are in covariant position. A covariant example works fine for this case.
+
+TODO
+   abstract class CovVet[+T] {
+    def rescueAnimal(): T
+  }
+  val covet: CovVet[Animal] = new CovVet[Dog] {
+    override def rescueAnimal(): Animal = new Dog // because Dog is animal
+  }
+  def CovVetApi(vet:CovVet[Animal])={
+    val rescuedDog: Dog = vet.rescueAnimal // This code will blow expecting Dog but got Cat
+  }
+  CovVetApi(covet)
+
+
  */
+
+  abstract class CovVet[+T] {
+    def rescueAnimal(): T
+  }
+  val covet: CovVet[Dog] = new CovVet[Dog] {
+    override def rescueAnimal(): Dog = new Dog // because Dog is animal
+  }
+  def CovVetApi(vet:CovVet[Dog])={
+    val rescuedDog: Dog = vet.rescueAnimal // This code will blow expecting Dog but got Cat
+  }
+  CovVetApi(covet)
 /*
 TODO
-    How to Solve the Variance Positions ProblemPermalink
+    How to Solve the Variance Positions
   We proved that a covariant list cannot have an add(elem: T) method
    because it breaks type guarantees. However, does that forbid us from ever adding an element to a list?!
  Hell, no.
@@ -252,12 +274,14 @@ This is how we solve the cryptic “covariant type T occurs in contravariant pos
   //Similarly, we can solve the opposite “contravariant type occurs in covariant position” with the opposite type bound:
 
    class VetContra[-T] {
-    def rescueAnimal[S <: T](): S = ???
+    def rescueAnimal[S <: T]: S = ???
   }
   //Assuming we can actually implement this method in such general terms,
   // the compiler would be happy: we can force the Vet to return an instance of a particular type:
 
-  val vetContra: VetContra[Dog] = new VetContra[Animal]
+  val vetContra: VetContra[Dog] = new VetContra[Animal] {
+     def rescueAnimal: Cat = new Cat // because Dog is animal
+  }
   def contraApi(vet:VetContra[Dog]) ={
     val rescuedDog: Dog = vet.rescueAnimal[Dog] // type checking passes now this code will not blow
   }

@@ -13,7 +13,7 @@ object OOBasics extends App {
   val novel=new Novel( "bounce-back",2019,author)
   println(novel author_age)
   println(novel isWrittenBy author)
-  
+
   val counter= new Immutability_Basics
   counter.inc.print
   //incrementing three times
@@ -26,7 +26,7 @@ object OOBasics extends App {
     // by the current instance who owns the feild
     private[this] var price: Double = _
 
-    def setPrice(p: Double) { price = p }
+    def setPrice(p: Double) { this.price = p }
 
     // error: this method won't compile because price is now object-private
     //def isHigher(that: Stock): Boolean = this.price > that.price
@@ -72,7 +72,7 @@ TODO
     // assign the xml field to the result of the load method
     val xml = XML.load("http://example.com/foo.xml")
 
-    // more code here ...
+    // more code here like def etc.. ...
   }
 // smart assignment
   class Foo2 {

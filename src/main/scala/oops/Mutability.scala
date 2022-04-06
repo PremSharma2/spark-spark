@@ -27,8 +27,8 @@ object Mutability {
     }
 
     def update(index: Int, value: Any): Unit = index match {
-      case 0 => name = value.asInstanceOf[String] // just for type casting we used here
-      case 1 => a = value.asInstanceOf[Int]
+      case 0 => this.name = value.asInstanceOf[String] // just for type casting we used here
+      case 1 => this.a = value.asInstanceOf[Int]
       case _ => throw new IndexOutOfBoundsException
     }
   }
@@ -43,7 +43,7 @@ TODO
   def main(args: Array[String]): Unit = {
     val alice = new Person("alice", 25)
     //alice.age not accesible here
-    val age = alice.age // this is called accesor or getter methods
+    val age = alice.age // this is called accessor or getter methods
     alice.age = 25 // compiler will re write this as
     // alice.age_+=(25)
     val name = alice(0) // alice.apply(0)

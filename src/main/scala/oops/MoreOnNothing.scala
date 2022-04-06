@@ -24,7 +24,7 @@ object MoreOnNothing  extends App {
   trait MyGenericList[+A] {
 
   }
-  object EmptyList extends MyGenericList[Nothing]
+  case object EmptyList extends MyGenericList[Nothing]
   // now here it is clear that MyGenericList[Nothing] can be supplied to MyGenericList[String]
   // is acting like nothing as in above cases
   val listOfstrings :MyGenericList[String]= EmptyList

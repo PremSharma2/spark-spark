@@ -75,11 +75,11 @@ case object EmptyList extends MyList[Nothing] {
 }
 
 case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
-  def head: A = return h
+  def head: A =  h
 
-  def tail: MyList[A] = return t
+  def tail: MyList[A] =  t
 
-  def isEmptyList: Boolean = return false
+  def isEmptyList: Boolean =  false
 
   def addElement[B >: A](element: B): MyList[B] =  Node(element, this)
 
@@ -101,7 +101,7 @@ case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
    */
 
   def filter(predicate: A => Boolean): MyList[A] = {
-    if (predicate.apply(h)) new Node(h, t.filter(predicate))
+    if (predicate.apply(h))  Node(h, t.filter(predicate))
     else
       t.filter(predicate)
   }
@@ -131,7 +131,7 @@ case class Node[+A](h: A, t: MyList[A]) extends MyList[A] {
    * =new cons(1,new Node(2,new Node(3,new Node(4,new Node(5,EmptyList)))))
    *
    */
-  def +[B >: A](list: MyList[B]): MyList[B] = new Node(h, t + list)
+  def +[B >: A](list: MyList[B]): MyList[B] =  Node(h, t + list)
 
   /*for eg here let say transformer take int and returns List[Int] i.e a role of flatmap it flatens
    * [1,2].flat_Map (n => [n,n+1])
@@ -178,7 +178,7 @@ object Listest extends App {
   println(listOfIntegers.flat_Map(new Function1[Int, MyList[Int]] {
 
     override def apply(elem: Int): MyList[Int] = {
-      new Node(elem, new Node(elem + 1, EmptyList))
+       Node(elem,  Node(elem + 1, EmptyList))
     }
   }).toString())
 

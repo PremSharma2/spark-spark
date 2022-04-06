@@ -7,10 +7,12 @@ object ValueClass {
 
 //TODO online store
   case class Product(code:String,description:String)
+
   trait BackendService{
     def findByCode(code:String):Option[Product]
     def findByDescription(description:String):List[Product]
   }
+
   val acode= "12345-65-456"
   val aDescription="foam mattress"
   val backend= new BackendService {
@@ -71,7 +73,7 @@ TODO
 TODO
     But this run time advantage also fails here basically
     for the following example
-    here in this api show the value class advantgae of runtine is not come into the picture
+    here in this api show, the value class advantgae of runtine is not come into the picture
     because JVM is confused whteher T is to be cosidered as String or object
     as we are using generics which will be erased at run time
    */

@@ -28,6 +28,7 @@ TODO
   }
 
   object Pizza {
+    //static constants or class level constants are defined here
     val DEFAULT_CRUST_SIZE = 12
     val DEFAULT_CRUST_TYPE = "THIN"
   }

@@ -3,24 +3,24 @@ package oops
 object ScalaClass {
 
 
- // # a basic class this single line works like java multiple line code
-  // which will create the constructor here basically and setter getter
+ // #todo : a basic class this single line works like java multiple line code
+  //todo: which will create the constructor here basically and setter getter
   class Person(var name: String, var age: Int)
 
 //  # use the class
   val al = new Person("Al", 42)
   al.name                        // "Al"
   al.age                        // 42 it is getter age
-  al.age=45
+  al.age=45                     // it is a setter method in person class
   //A bit more real-world:
 
-  // define the class with immutable filed values there will no setters
+  //TODO: ->  define the class with immutable filed values there will no setters
   class Person1(val firstName: String, val lastName: String) {
 
     println("the constructor begins")
     val fullName = firstName + " " + lastName
 
-    val HOME = System.getProperty("user.home");
+    val HOME = System.getProperty("user.home")
 
     // define some methods
     def foo { println("foo") }
@@ -28,7 +28,7 @@ object ScalaClass {
       // access the fullName field, which is created above
       println(fullName)
     }
-//-----constructor again begins--------------------
+//TODO-----constructor again begins--------------------
     printFullName
     println("still in the constructor")
 
@@ -123,11 +123,11 @@ object ScalaClass {
 
 
    */
-  //scala singleton pattern
+  //todo scala singleton pattern implementation
   class Brain private {
     override def toString = "This is the brain."
   }
-//Companion Object
+//todo Factory or Companion Object
   object Brain {
     val brain = new Brain
     def getInstance: Brain = {

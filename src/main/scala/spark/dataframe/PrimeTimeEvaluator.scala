@@ -40,6 +40,7 @@ class PrimeTimeEvaluator {
      */
     var renamedColumns = movieDataframe.columns.
       map(c => movieDataframe(c).as(s"orig_$c"))
+
     val df_orig_with_col_renamed = movieDataframe.select(renamedColumns: _*)
 
     /**

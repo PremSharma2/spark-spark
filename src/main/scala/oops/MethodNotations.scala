@@ -17,8 +17,8 @@ object MethodNotations extends App {
   }
   val mary = new Person("mary", "Inception")
   println(mary.likes("Inception"))
-  //Infix notation
-  //this is called infixnotation or
+  //todo:Infix notation
+  //this is called infix-notation or
   // operator notation or syntactic sugar and
   // it only works with method having single parameter
   println(mary likes "Inception")
@@ -31,7 +31,7 @@ object MethodNotations extends App {
   val a= 1.+(2)
   println(a)
   
-  //uniary_ prefix operations in scala
+  //todo uniary_ prefix operations in scala
   val x: Int = -1 // equivalet with 1.uniary_-
   val y = 1.unary_-
   val z= 1.unary_+
@@ -41,7 +41,7 @@ object MethodNotations extends App {
   println(!mary)
   val c= mary.unary_+.age
   println(c)
-  //post fix notation works when the method does not have any argument
+  //todo post fix notation works when the method does not have any argument
   println(mary.isAlive)
   //or
   println(mary isAlive)

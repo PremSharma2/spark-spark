@@ -66,7 +66,7 @@ object CompanionObject extends App {
   }
 
 
-  //scala singleton pattern using scala singleton objects
+  //todo scala singleton pattern using scala singleton objects
   class Brain private {
     override def toString = "This is the brain."
   }
@@ -74,7 +74,7 @@ object CompanionObject extends App {
   object Brain {
     val brain = new Brain
 
-    def getInstance: Brain = {
+    def apply: Brain = {
       brain
     }
   }
