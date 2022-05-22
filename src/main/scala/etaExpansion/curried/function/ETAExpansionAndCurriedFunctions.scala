@@ -2,7 +2,7 @@ package etaExpansion.curried.function
 
 object ETAExpansionAndCurriedFunctions extends App {
   // This is called currying or series of Function Calls in Scala
-  val superAddition: Int => (Int => Int) = (x) => (y) => x + y
+  val superAddition: Int => (Int => Int) = x => y => x + y
 
   val add: Int = superAddition(3).apply(2)
 
@@ -54,7 +54,8 @@ object ETAExpansionAndCurriedFunctions extends App {
 
 
   def concatenate(a: String, b: String, c: String): String = a + "\t" + b + "\t" + c
-
+   val fn: (String, String, String) => String = concatenate(_: String, _: String, _: String)
+  val fn1: String => String => String => String = fn.curried
   val insertName: String => String = concatenate("Hello I am  ", _: String, "How Are you")
   // y => concatenate("Hello Iam ", y , "How Are you")
   val fillInTheBlanks: (String, String) => String = concatenate(_: String, _: String, "di")
@@ -64,7 +65,6 @@ object ETAExpansionAndCurriedFunctions extends App {
 
   //Exercise
   def curriedFormatter(string: String)(number: Double): String = string.format(number)
-
   val numbers = List(Math.PI, Math.E, 1, 9.8, 1.3e-12)
   val simpleFormat: Double => String = curriedFormatter("%4.2f") (_)
   // fx: y=> curriedFormatter("%4.2f")(y)

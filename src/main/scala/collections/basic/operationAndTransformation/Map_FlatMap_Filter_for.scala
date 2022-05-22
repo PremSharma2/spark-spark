@@ -1,5 +1,7 @@
 package collections.basic.operationAndTransformation
 
+import scala.util.matching.Regex
+
 object Map_FlatMap_Filter_for extends App {
 
   val list = List(1, 2, 3)
@@ -12,6 +14,15 @@ object Map_FlatMap_Filter_for extends App {
      on this condition and return the result
    */
   val rExists: Boolean = input.exists(_.matches("hello-world"))
+  val numPattern = new Regex("[0-9]+")
+  val address = "123 Main Street Suite 101"
+  //TODO the findFirstIn method finds the first match in the String and returns an Option[String]:
+  //123 is Ans
+  val match1 = numPattern.findFirstIn(address)
+  match1 match {
+    case Some(s) => println(s"Found: $s")
+    case None =>
+  }
   /*
   TODO
     Finds the first element which yields the largest value measured by function f
@@ -87,6 +98,11 @@ object Map_FlatMap_Filter_for extends App {
    */
   println(list.filter(x => x % 2 == 0))
   println(list.filter(_ % 2 == 0))
+  val regex = "a.c".r
+  val tokens = List("abc", "axc", "abd", "azc")
+  tokens filter (x => regex.pattern.matcher(x).matches)
+  //result: List[String] = List(abc, axc, azc)
+
   //flatmap
   // ETw pattern
   val transform: Int => (Int, Int) = x => (x, x + 1)

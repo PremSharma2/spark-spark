@@ -7,11 +7,12 @@ import scala.annotation.tailrec
  *TODO
  * List implementation with Functional Programming Flavour,
  * with Transformer and predicate replacing the inbuilt functional interfaces
+ * we will use functional Types
  */
 
 trait MyList[+A] {
   /*
-   *
+   *TODO
    * head: first element of list
    * tail: remainder of list
    * isEmptyList:Is this list empty
@@ -57,38 +58,40 @@ trait MyList[+A] {
  * No one can create such object like Nothing in Scala
 
   Basically it is used to,
-
+TODO
  Give signal of abnormal termination, like while throwing an Error from the application
   To denote empty Collection
-  so as nothing substitute for anything in scala similar ways EmptyList object  substitutes to all EmptyList Collection
+  so as nothing substitute for anything in scala similar
+  *  ways Nil represents Singleton object  substitutes to all EmptyList Collection
+  * case object i have used for pattern matching
  */
-case object EmptyList extends MyList[Nothing] {
+case object Nil extends MyList[Nothing] {
   def head: Nothing = throw new NoSuchElementException
 
   def tail: MyList[Nothing] = throw new NoSuchElementException
 
   def isEmptyList: Boolean = true
 
-  def addElement[B >: Nothing](element: B): MyList[B] = new Node(element, EmptyList)
+  def addElement[B >: Nothing](element: B): MyList[B] =  Node(element, Nil)
 
   def printListElements: String = ""
 
-  def map[B](transformer: Nothing => B): MyList[B] = EmptyList
+  def map[B](transformer: Nothing => B): MyList[B] = Nil
 
-  def flatMap[B](transformer: Nothing => MyList[B]): MyList[B] = EmptyList
+  def flatMap[B](transformer: Nothing => MyList[B]): MyList[B] = Nil
 
-  def filter(predicate: Nothing => Boolean): MyList[Nothing] = EmptyList
+  def filter(predicate: Nothing => Boolean): MyList[Nothing] = Nil
 
   def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
 
   //hofs
   def foreach(function: Nothing => Unit): Unit = ()
 
-  def sort(comparator: (Nothing, Nothing) => Int): MyList[Nothing] = EmptyList
+  def sort(comparator: (Nothing, Nothing) => Int): MyList[Nothing] = Nil
 
   def zip[B, C](list: MyList[B], zipfunction: (Nothing, B) => C): MyList[C] =
     if (!list.isEmptyList) throw new RuntimeException("List do not have the same length")
-    else EmptyList
+    else Nil
 
   def fold[B](start: B)(operator: (B, Nothing) => B): B = start
 
@@ -228,7 +231,7 @@ case class Node[+A](override val head: A, override val tail: MyList[A]) extends 
       println("inside insert")
       println(" value of x is" + x + "\t" + "value of sortedList" + sortedList)
       //println("value of x is := " + x)
-      if (sortedList.isEmptyList) Node(x, EmptyList)
+      if (sortedList.isEmptyList) Node(x, Nil)
       else if (comparator.apply(x, sortedList.head) <= 0) Node(x, sortedList)
       else Node(sortedList.head, insert(x, sortedList.tail))
     }
@@ -247,7 +250,7 @@ case class Node[+A](override val head: A, override val tail: MyList[A]) extends 
   def zip[B, C](list: MyList[B], zipfunction: (A, B) => C): MyList[C] =
     if (list.isEmptyList) throw new RuntimeException("List do not have the same length")
     else {
-      Node(zipfunction(this.head, list.head), this.tail.zip(list.tail, zipfunction))
+      Node(zipfunction(this.head, list.head), this.tail.zip(list. tail, zipfunction))
     }
 
   /*
@@ -274,10 +277,10 @@ case class Node[+A](override val head: A, override val tail: MyList[A]) extends 
 
 object Listest extends App {
 
-  val listOfIntegers: MyList[Int] = new Node(4, new Node(2, new Node(3, EmptyList)))
-  val clonelistOfIntegers: MyList[Int] = new Node(4, new Node(2, new Node(3, EmptyList)))
-  val anotherListOfIntegers: MyList[Int] = new Node(4, new Node(5, new Node(6, EmptyList)))
-  val listOfString: MyList[String] = new Node("Hello", new Node("Scala", EmptyList))
+  val listOfIntegers: MyList[Int] = new Node(4, new Node(2, new Node(3, Nil)))
+  val clonelistOfIntegers: MyList[Int] = new Node(4, new Node(2, new Node(3, Nil)))
+  val anotherListOfIntegers: MyList[Int] = new Node(4, new Node(5, new Node(6, Nil)))
+  val listOfString: MyList[String] = new Node("Hello", new Node("Scala", Nil))
   println(listOfIntegers.toString())
   println(listOfString.toString())
   println(listOfIntegers.map(elem => elem * 2).toString())
@@ -285,7 +288,7 @@ object Listest extends App {
   println(listOfIntegers.filter(elem => elem % 2 == 0).toString())
 
   println((listOfIntegers ++ anotherListOfIntegers).toString())
-  println(listOfIntegers.flatMap(elem =>  Node(elem,  Node(elem + 1, EmptyList))).toString())
+  println(listOfIntegers.flatMap(elem =>  Node(elem,  Node(elem + 1, Nil))).toString())
   listOfIntegers.foreach(elem => println(elem))
 
   println(clonelistOfIntegers.sort((x, y) => x - y))

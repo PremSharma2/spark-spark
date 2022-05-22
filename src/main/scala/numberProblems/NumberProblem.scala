@@ -15,6 +15,8 @@ object NumberProblem {
    */
   /*
  TODO
+      square_root : a number which produces a specified quantity when multiplied by itself:
+      7 is square root of 49
       Explanation: isPrime(11)
       = isPrimeTailRec(2)
       now inside isPrimeTailRec we will check  if(currentDivisor > Math.sqrt(Math.abs(n)))

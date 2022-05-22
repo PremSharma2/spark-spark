@@ -74,9 +74,9 @@ TODO Explanation of above Code
   }
 
   def gimmeAVet: Vet[Dog] = new Vet[Animal] {
-    override def heal(animal: Animal): Boolean = {
-      true
-    }
+      override def heal(animal: Animal): Boolean = {
+        true
+      }
   }
 
   val myDog = new Dog("Buddy")
@@ -87,7 +87,7 @@ TODO Explanation of above Code
   This example is from the last project I was working on.
     Say you have a type-class PrettyPrinter[A]
   that provides logic for pretty-printing objects of type A.
-    Now if B >: A (i.e. if B is superclass of A)
+    Now if B >: A (i.e. if B is superType of A)
   and you know how to pretty-print B
     (i.e. have an instance of PrettyPrinter[B] available)
   then you can use the same logic to pretty-print A.

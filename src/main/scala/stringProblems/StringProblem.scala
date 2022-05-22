@@ -1,9 +1,12 @@
 package stringProblems
 
+import stringProblems.ParanthesisProblem.hasValidParanthesis
+
 import scala.annotation.tailrec
 
 object StringProblem {
   /*
+TODO
    countCharacterTailRec("Scala, []) =
    countCharacterTailRec("cala, ["s"->1,])
     countCharacterTailRec("ala, ["s"->1,"c"->1])
@@ -17,12 +20,12 @@ object StringProblem {
       if (remaining.isEmpty) accumulator
       else if (accumulator.contains(remaining.head)) {
         val currentChar = remaining.head
-        val currentOccurences = accumulator(currentChar)
-        countCharacterTailRec(remaining.tail, accumulator + (currentChar -> (currentOccurences + 1)))
+        val currentOccurrences = accumulator(currentChar)
+        countCharacterTailRec(remaining.tail, accumulator + (currentChar -> (currentOccurrences + 1)))
       } else countCharacterTailRec(remaining.tail, accumulator + (remaining.head -> 1))
     }
 
-    countCharacterTailRec(string, Map())
+    countCharacterTailRec(string, Map.empty)
   }
 
   def checkAnagrams(sa: String, sb: String): Boolean = countCharacters(sa) == countCharacters(sb)
@@ -53,7 +56,7 @@ object StringProblem {
     TODO
      It's a tuple
      (x, y) is a tuple which we deconstruct in the case there
-     override def foldLeft[B](z: B)(op: (B, A) => B): B
+     override def foldLeft[B](z: B)(op: Tuple2(B, A) => B): B
      */
     def buildMap(str: String): Map[Char, Int] = {
       str.foldLeft(Map[Char, Int]()) {
@@ -93,7 +96,7 @@ object StringProblem {
       The TreeMap should be used when we require key-value pair in sorted (ascending) order.
      */
   def reorganizeString(string: String) = {
-    //'\u0000' is unicode char for null character
+    //TODO : -> '\u0000' is unicode char for null character
     @tailrec
     def organizeTailRec(charCount: Map[Char, Int], forbiddenChar: Char = '\u0000', accumlator: String): String = {
       if (charCount.isEmpty) accumlator
@@ -124,6 +127,8 @@ object StringProblem {
     string.split(" ").filter(!_.isEmpty).reverse.mkString(" ")
   }
 
+
+
   def main(args: Array[String]): Unit = {
     println(countCharacters("Scala"))
     println(checkAnagrams("scala", "haskel"))
@@ -143,5 +148,10 @@ object StringProblem {
     println(reorganizeString("aaaaa").isEmpty)
     println(reorganizeString("abbcb"))
     println(reverseWords("    hello      world    "))
+
+// TODO Paranthesis test
+    println(hasValidParanthesis("(())"))
+    println(hasValidParanthesis("())"))
+
   }
 }

@@ -24,7 +24,7 @@ object ListProblems {
     override def toString: String = "[]"
 
     // todo prepend operator
-    def ::[S >: T](element: S): RList[S] = new Node(element, this)
+    def ::[S >: T](element: S): RList[S] =  Node(element, this)
 
     def apply(index: Int): T
 
@@ -351,20 +351,23 @@ object ListProblems {
   inside this we will check if(remaining.isEmpty) accumulator and its empty now
   so we will return accumulator [6,3,4,2,2,1].reverse
   [1,2,2,4,3,6]
-  Complexity is here
-  O(sum of all the  lengths of f(x) = Z) i.e f(x) will produce n list and we are concatenating them
-  ++ has complexity O(M+N)
-  so it will be O(Sum of all M+N)
-  O(z^2)
-  Let's say in a simple case you have n lists of size k each.
-  First operation is k + k = 2k
-  Second is 2k + k = 3k
-  Third is 3k + k = 4k
-  and so on, n times.
-  The total complexity strictly speaking is 2k + 3k + 4k + ... + n*k =
-  k * (2 + 3 + ... + n) = k * ( n * (n + 1) / 2 - 1) = O(k * n^2)
-  \ /
-  Now because I defined that Z quantity as the sum of the lengths of the list, we have Z = k * n, so the complexity is O(Z^2)
+  TODO
+   Complexity is here
+   O(sum of all the  lengths of f(x) = Z) i.e f(x) will produce n list and we are concatenating them
+   ++ has complexity O(M+N)
+   so it will be O(Sum of all M+N)
+   O(z^2)
+   Let's say in a simple case you have n lists of size k each.
+   First operation is k + k = 2k
+   Second is 2k + k = 3k
+   Third is 3k + k = 4k
+   and so on, n times.
+   The total complexity strictly speaking is 2k + 3k + 4k + ... + n*k =
+   k * (2 + 3 + ... + n) = k * ( n * (n + 1) / 2 - 1) = O(k * n^2)
+   \ /
+   Now because I defined that
+    Z quantity as the sum of the lengths of the list,
+   we have Z = k * n, so the complexity is O(Z^2)
      */
     override def flatmap[S](f: T => RList[S]): RList[S] = {
       @tailrec
@@ -467,7 +470,16 @@ object ListProblems {
      *
      */
     /*
-      TODO
+     TODO
+          Consecutive duplicates of elements are
+
+//        todo
+           encoded as tuples (N, E) where N is the number of duplicates of the  element E.
+           encode(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
+//         res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c
+), (2,'a), (1,'d), (4,'e))
+       TODO
+         [1,1,1,2,2,3,4,4,4,5].rle =  [(1,3),(2,2),(3,1),(4,3),(5,1)]
          [1,1,1,2,2,3,4,4,4,5].rle= that will call to
          rleTailRec([1,1,2,2,3,4,4,4,5],(1,1),[])
          inside this method we will check if(remaining.isEmpty && currentTuple._2==0) and it is false
@@ -549,7 +561,9 @@ object ListProblems {
     }
 
     /*
-      [1,2].duplicateEach(3) =
+  TODO
+        // duplicate each element a number of times in a row
+      [1,2].duplicateEach(3) =[2,2,2,1,1,1] -> desired o/p
       duplicateEachTailRec([2],1,0,[])
            if(remaining.isEmpty && nDuplications==k) accumulator
            else if(remaining.isEmpty) duplicateEachTailRec(remaining,currentElement,nDuplications+1,currentElement:: accumulator)
@@ -601,6 +615,11 @@ object ListProblems {
     }
 
     /*
+    TODO
+      [1,2,3].rotate(3) == [1,2,3]
+      [1,2,3].rotate(6) == [1,2,3]
+      [1,2,3].rotate(4) == [1,2,3].rotate(1)
+
     TODO
       if(remaining.isEmpty && rotationsLeft==0) this
       this condition i have used here becuase let say
@@ -708,6 +727,7 @@ object ListProblems {
           val newNumber = this.apply(index)
           sampleTailRec(nRemaining - 1, newNumber :: accumulator)
         }
+
       }
 
       def sampleElegent = {
@@ -733,7 +753,7 @@ object ListProblems {
        insertSorted(4,[],[1,2,3,5])
        here check is 4>1 so it will stay before 4 we will add up in before list
        insertSorted(4,[1],[2,3,5])
-        here check is 4>2 so it will stay before 4 we will add up in before list
+        here check is 4>2 so it w ill stay before 4 we will add up in before list
        insertSorted(4,[3,2,1],[5])
         here check is 4>3 so it will stay before 4 we will add up in before list
         insertSorted(4,[3,2,1],[4,5])

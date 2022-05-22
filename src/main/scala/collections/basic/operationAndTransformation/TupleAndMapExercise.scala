@@ -11,9 +11,9 @@ object TupleAndMapExercise extends App {
   }
 
   def friend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] = {
-    val friendsA: Set[String] = network.apply(a)
+    val friendsOFA: Set[String] = network.apply(a)
     val friendsB: Set[String] = network.apply(b)
-    network + (a -> (friendsA + b)) + (b -> (friendsB + a))
+    network + (a -> (friendsOFA + b)) + (b -> (friendsB + a))
   }
 
   def unFriend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] = {

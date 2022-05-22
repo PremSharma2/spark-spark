@@ -1,6 +1,11 @@
 package stringProblems
 
+import scala.annotation.tailrec
+
 object ParanthesisProblem {
+  val OpenToClose: Map[Char, Char] = Map('{' -> '}', '[' -> ']', '(' -> ')')
+  val CloseToOpen: Map[Char, Char] = OpenToClose.map(_.swap)
+
   /*
    "()" => true
    "()()"=> true
@@ -35,38 +40,80 @@ TODO  vpt("())",0)
 
     validParanthesTailRec(str, 0)
   }
-  val OpenToClose: Map[Char, Char] = Map('{' -> '}', '[' -> ']', '(' -> ')')
 
-  val CloseToOpen: Map[Char, Char] = OpenToClose.map(_.swap)
+  /*
+ TODO
+  Compiler will not allow this Logic because it will prompt that return Type is AnyVal
+   where as Required is Boolean
+   Soln: is Put everything in else Condition and if there are many if and else conditions
+  in else block then use pattern match otherwise Exception will come
+   java.lang.UnsupportedOperationException: tail of empty list
+
+   TODO
+    def parenthesesAreBalancedModified(s: String): Boolean = {
+      if (s.isEmpty) true
+      else {
+        @tailrec
+        def go(position: Int, accumulator: List[Char]): Boolean = {
+          if (position == s.length) accumulator.isEmpty
+          else if(OpenToClose.contains(s.head)) go(position+1 ,s.head :: accumulator)
+          else if(CloseToOpen.contains(s.head)) go(position+1 , accumulator.tail)
+          else false
+        }
+        go(position = 0, accumulator = List.empty)
+      }
+    }
+
+    //TODO or
+    TODO
+     def parenthesesAreBalancedModified(s: String): Boolean = {
+      if (s.isEmpty) true
+      else {
+        @tailrec
+        def go(position: Int, accumulator: List[Char]): Boolean = {
+          if (position == s.length) accumulator.isEmpty
+          else {
+          if (if(OpenToClose.contains(s.head)) go(position+1 ,s.head :: accumulator))
+          else if(CloseToOpen.contains(s.head)) go(position+1 , accumulator.tail)
+          else false
+          }
+
+        }
+        go(position = 0, accumulator = List.empty)
+      }
+    }
+
+   */
 
   def parenthesesAreBalanced(s: String): Boolean = {
     if (s.isEmpty) true
     else {
-      @scala.annotation.tailrec
-      def go(position: Int, stack: List[Char]): Boolean = {
-        if (position == s.length) stack.isEmpty
+      @tailrec
+      def go(position: Int, accumulator: List[Char]): Boolean = {
+        if (position == s.length) accumulator.isEmpty
         else {
           val char = s(position)
           val isOpening = OpenToClose.contains(char)
           val isClosing = CloseToOpen.contains(char)
-          if (isOpening) go(position + 1, char :: stack)
+          if (isOpening) go(position + 1, char :: accumulator)
           else if (isClosing) {
-            val expectedCharForMatching = CloseToOpen(char)
-            stack match {
-              case _ :: rest =>
-                go(position + 1, rest)
+            accumulator match {
+              case _ :: tail =>
+                go(position + 1, tail)
               case _ =>
                 false
             }
           } else false
         }
       }
-      go(position = 0, stack = List.empty)
+
+      go(position = 0, accumulator = List.empty)
     }
   }
+
   def main(args: Array[String]): Unit = {
-   println(hasValidParanthesis("(())"))
-    println(hasValidParanthesis("())"))
+    println(parenthesesAreBalanced("(())"))
+    println(parenthesesAreBalanced("())"))
     println(parenthesesAreBalanced("()"))
     println(parenthesesAreBalanced("[()]"))
     println(parenthesesAreBalanced("{[()]}"))

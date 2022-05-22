@@ -54,6 +54,8 @@ object ScalaTestAuden  extends App {
   // generate a list of dates from the start date forward to the end of the range
   def generateListOfDates(startDate: LocalDate, range: Int): List[String] = {
     val endDate: LocalDate = startDate.plusDays(range)
+
+
     /*
     If you do need a lazily-evaluated list, then Stream is appropriate.
      I suggest using iterate instead of cons in that case.

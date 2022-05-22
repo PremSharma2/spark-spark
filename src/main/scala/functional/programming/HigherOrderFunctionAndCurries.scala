@@ -52,7 +52,7 @@ object HigherOrderFunctionAndCurries extends App {
    * fx = (x,y) => x+y
    *  to
    * or like this f = x => y => fx(x, y)
-   * val result =fz(x)(y)
+   * val result =fz.(x).(y)
    *
    *TODO
    * In mathematics and computer science, currying is the technique of translating the evaluation of a function
@@ -138,6 +138,7 @@ TODO
     else (x: Int) => nTimesBetter(f, n - 1)(f(x))
   }
 
+  //TODO : Object representation of curried function
   def nTimesOriginal(function1: Function1[Int, Int], n: Int): Function1[Int, Int] = {
     if (n <= 0)
       new Function[Int, Int] {
@@ -201,14 +202,15 @@ val f3: (Int, Int) => String = ???
   val f1: (Int, Int) => Int = (a, b) => a + b
   val f2: Int => String = _.toString
   val f3: (Int, Int) => String = (x, y) => f2(f1(x, y))
-  // val f5: (Int, Int) => String = (x, y) =>  f2.compose(f1)
+  val fx11 : String => Int = x => x.toInt
+   //val f5: (Int, Int) => String =   f2.compose(f1)
   /*
    TODO
        Compose more live examples here
 
    */
 
-  def convert: String => String = (value: String) => "converted"
+  def convert: String => String = (value: String) => value+"converted"
   def verify: String => String = (value: String) => if (value == "converted") "valid" else "invalid"
     val finalfx= (x:String) => convert(verify(x))
   def vc: String => String = convert compose verify
@@ -225,7 +227,7 @@ val f3: (Int, Int) => String = ???
   println(plus10.getClass.getName)
   println(plus10.apply(1))
   // curried function
-  val superAddition: Int => Int => Int = (x) => (y) => x + y
+  val superAddition: Int => Int => Int = x => y => x + y
   val adder: (Int, Int) => Int = (x, y) => x + y
   // here we converted adder function which is normal function to curried function
   val superAdder: Int => Int => Int = toCurry(adder)

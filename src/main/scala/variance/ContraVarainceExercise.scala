@@ -128,10 +128,8 @@ object ContraVarainceExercise extends App {
   val bumpybanana: Banana=>Texture = banana=> Texture.apply(s"This is ${banana.name} and is nice")
   def describeAnFruit(fn: Fruit => Description) = fn.apply(Apple.apply("RoyalApple"))
  // describeAnApple(bumpybanana)
-  //this will not compile bcz method input is at contravarient position and method is declared as it will take Fruit ,
+  //this will not compile bcz method input is at contravarient position and method is declared as it will take Apple ,
   // but you have passed apple so it will take it
-  // because apple is an fruit,now you rae tryin to pass Banana it will not take it will complain
-  // bcz Banana is not super type of Apple
   /*
    * type mismatch; found : com.scala.variance.VarainceTest.Banana ⇒ com.scala.variance.VarainceTest.Texture 
    * required: com.scala.variance.VarainceTest.Apple ⇒ com.scala.variance.VarainceTest.Description
@@ -162,4 +160,25 @@ This example is from the last project I was working on.
   // TODO : here as we can see that
   //  we have declared the PrettyPrinter[Dog] but we have passed
   // TODO the reference of Animal because of contravariance implicitly
+
+ /*
+ TODO
+      USe case
+      Contravariant type parameter is usually used as method argument type,
+      therefore, contravariance is most commonly associated with consumers
+  */
+
+
+//Covariance in Consumers
+  class GarbageCan[-A] {
+    // compiles because of object private scope
+    private[this] var items: List[A] = List.empty
+
+    def put(item: A): Unit = this.items :+= item
+
+    def putAll(items: List[A]): Unit = this.items ++= items
+
+    def itemsCount: Int = this.items.size
+
+  }
 }

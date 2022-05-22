@@ -16,6 +16,7 @@ object VarianceDeepDive extends App {
   // like we substitute in inheritance when A extends B  , where B is super class
   //Its all about substituting the Type of Generic Class or FuntionParameter at Run Time
   /*
+TODO
    * Variance defines Inheritance relationships of Parameterized Types. Variance is all about Sub-Typing.
    *
    * For List[T], if we use List[Int], List[AnyVal], etc. then these List[Int] and List[AnyVal] are known as “Parameterized Types”
@@ -23,35 +24,38 @@ object VarianceDeepDive extends App {
    *
    * Types of Variance in Scala
      Scala supports the following three kinds of Variance.
-
+TODO
     Covariant
     Invariant
     Contravariant
 
-
+TODO
     Covariant in Scala
-     If “S” is subtype of “T”  i.e S -> T , then List[S] is is a subtype of List[T].
+     If “S” is supertype of “T”  i.e S -> T , then List[S] is is a subtype of List[T].
+     val list List[AnyVal] = new List[Int]
      This kind of Inheritance Relationship between two Parameterized Types is known as “Covariant”
-
+TODO
      Contravariant in Scala
-     If “S” is superType of “T” then List[T] is is a subtype of List[S].
-
+     If “S” (AnyVal) is superType of “T” (Int) then List[T] is is a superType of List[S].
+     val list List[Int] = new List[AnyVal](2.0,3.0)
+TODO
     This kind of Inheritance Relationship between two Parameterized Types is known as “Contravariant”
-
     abstract class Context [-T]{
   def typeName : Unit
 }
 
-class SuperType extends Context[AnyVal]{
+TODO
+ class SuperType extends Context[AnyVal]{
   override def typeName: Unit = {
     println("SuperType")
   }
 }
-class SubType extends Context[Int]{
+TODO
+ class SubType extends Context[Int]{
   override def typeName: Unit = {
     println("SubType")
   }
-
+TODO
   class TypeCarer{
   def display(t: Context[Int]){
     t.typeName
@@ -212,6 +216,7 @@ object ScalaContravarianceTest {
     // Acc to Second Thumb rule this is fine this will compile
     def addAnimal(animal: T) = true
   }
+  //TODO Here covarient relationship ensuring the type restriction
  def mangeAnotherCage(cage :AnotherContravariantCage[Cat] )={
    cage.addAnimal(new Kitty)
  }

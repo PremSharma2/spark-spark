@@ -78,6 +78,7 @@ for (i <- 1 to 5) println(i)
      element <- seq
 
   } println(element)
+
   // TODO :-> or we can use pattern match for every iteration
   val pf: PartialFunction[String,Unit] = {
     case "India" => println("Delhi")
@@ -138,7 +139,7 @@ TODO
    */
 
 // TODO Its similar like we have used partial function inside map
-  // TODO yield converterd <- to map earlier it was foreach
+  // TODO yield converted <- to map , earlier it was foreach
   val result1: Seq[String] =for (country <- List("India", "USA", "China", "Japan"))
     yield {
     country match {
@@ -148,6 +149,9 @@ TODO
       case _       => "I don't know"
     }
   }
+
+  val output1 =for (country <- List("India", "USA", "China", "Japan")) yield {pf}
+
 //Compiler will convert this into
 val pf1: PartialFunction[String,Unit] = {
   case "India" => "Delhi"
@@ -192,6 +196,7 @@ println(result2)
   for{
     line <- dataSeq
      fields = line.split(",")
+
   }  println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
 
 // applying if filter inside for
@@ -236,6 +241,7 @@ val salesManSalary: Seq[Long] =dataSeq.map{
     record: List[String] = line.split(",").toList // assignment  // assignent
     if(record.apply(2).equals("SALESMAN"))
   } yield (record.apply(2).toLong)
+  val sum: Long = resultn1.sum
 //
 val monthlyConsumptionAmount = Seq(437.8,3339.5,0.0,0.0,0.0,0.0,75.0,99.0,0.0,20.0,66.0)
   val monthNames: Array[String] = Array("Jan", "Feb", "Mar", "Apr", "May",
@@ -253,6 +259,15 @@ val monthlyConsumptionAmount = Seq(437.8,3339.5,0.0,0.0,0.0,0.0,75.0,99.0,0.0,20
     netResult
   }
 
+  def aggregateMonthlyConsumption1(snapshots: Seq[(ZonedDateTime, Double)]): Seq[Double] = {
+    val netResult: Seq[Double] = for {
+      i <- 1 to 12
+      snapShotView <- snapshots
+      if(snapShotView._1.getMonthValue == i)
+    } yield snapShotView._2
+    println(netResult.sum)
+    netResult
+  }
 
   val forresult1: Unit =for {
     (xs, i) <- monthlyConsumptionAmount.view.zipWithIndex

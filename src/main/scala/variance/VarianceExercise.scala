@@ -2,6 +2,7 @@ package variance
 
 object VarianceExercise  extends App{
   /*
+  TODO
    * Write an Monadic Implementation  (Invariant,covariant,contravariant) version of Parking API
    * abstract class Parking[T](ListOfAllVehicles :List[T]){
    * park(vehicle:T)
@@ -53,6 +54,7 @@ TODO what if SomeType is higherKinded type List[T] ??
   class CParking[+T](vehicles :List[T])   {
     // we need to do the heck the compiler because method argument are in contravariant position
    // def park [S>:T] (vehicle:S):T= ???
+    def get():CParking[T] = ???
     def park [S>:T] (vehicle:S):CParking[S]= ???
     def impound [S>:T] (vehicles:List[S]):CParking[S]= ???
     def checkVehicles(conditions:String):List[T] = ???
@@ -142,7 +144,10 @@ TODO what if SomeType is higherKinded type List[T] ??
          Note : Scala smartly converted this Contravariant  position into Covariant
       */
      def impound [S<:T](vehicles:IList[S]):XParking2[S]= ???
-
-     def checkVehicles [S<:T](conditions:String):IList[S] = ???
+//Contravariant type T occurs in covariant position in type T of value S
+    // because what we are trying here is S is super type of T which is wrong because T is contrvarient
+    //
+   //  def checkVehicles [S>:T](conditions:String):IList[S] = ???
+   def checkVehicles [S<:T](conditions:String):IList[S] = ???
   }
 }

@@ -73,8 +73,8 @@ TODO
 TODO
     But this run time advantage also fails here basically
     for the following example
-    here in this api show, the value class advantgae of runtine is not come into the picture
-    because JVM is confused whteher T is to be cosidered as String or object
+    here in this api show, the value class advantage of runtime is not come into the picture
+    because JVM is confused whether T is to be considered as String or object
     as we are using generics which will be erased at run time
    */
   def show[T](arg:T) = arg.toString
