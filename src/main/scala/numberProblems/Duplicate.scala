@@ -39,7 +39,19 @@ object Duplicate {
     withLessMemory(list)
     //naiveWithMemory(list,Map())
     //naive(list)
+
+    // optimal
+    // ^ = XOR
+    // 0 ^ 0 = 0
+    // 1 ^ 1 = 0
+    // If a is an Int, then a ^ a = 0
+    // 0 ^ a = a
+    // Complexity: O(N) time, O(1) space
+    val optimal = list.foldLeft(0)(_ ^ _)
+
+    optimal
   }
+
 
   def main(args: Array[String]): Unit = {
     println(duplicates(List(1)))

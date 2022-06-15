@@ -4,22 +4,24 @@ object Exceptions extends App {
 
   val x: String = null
   //println(x.length())
-
+/*
+todo
   // throwing and catching Exceptions
   // as we are aware that every thing in scala is expression
   // so throwing an exception will also be an expression which has some return value
   // val weirdValue:Nothing = throw new NullPointerException
-
   // throwable classes extend the Throwable class
   //Exception  and Error are the major Throwable subtypes
 
-  //How to catch Exceptions
+
+ */
+  //todo : -> How to catch Exceptions
   def getInt(withExceptions: Boolean): Int = {
 
     if (withExceptions) throw new RuntimeException("No int for you")
     else 42
   }
-// catching an exception via pattern matching
+//todo:->  catching an exception via pattern matching
   val potentialFail: Int = try {
 
     getInt(true)
