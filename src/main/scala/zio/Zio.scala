@@ -236,7 +236,7 @@ TODO
       -
    */
   sealed trait ConfigError
-  case class Config(params: String = _)
+  case class Config(params: String = "")
 
   final case class IOError(message: String) extends ConfigError
 
