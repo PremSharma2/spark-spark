@@ -1,6 +1,7 @@
 package oops
 
 import scala.io.Source
+import scala.language.postfixOps
 
 object OOBasics extends App {
   /*val person=new Person("john",26)

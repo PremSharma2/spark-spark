@@ -21,9 +21,9 @@ object Function extends App {
   }
 
  // println(aFunction("hello", 3))
-// its is a getter function
+// TODO : its is a getter function so in FP function function shd look like  properties
   def parameterLessFunction: Int = 42
-  //TODO : -> we can call paramless function with their names only
+  //TODO : -> we can call parameterless function with their names only
 
   println(parameterLessFunction)
 
@@ -38,13 +38,13 @@ object Function extends App {
   }
   //function returning a Unit,This is also an example of auxiliary function in scala
   def aFunctionWithSideEffects(aString: String): Unit = println(aString)
-  //nested function example
+  //TODO : nested function example
   def aBigFunction(n: Int): Int = {
     def aSmallFunction(a: Int, b: Int): Int = a + b
-    //TODO this is tail rec bcz this last thing in your code branch i.e recursive call
     aSmallFunction(n, n - 1)
   }
 
+  //TODO :-> concept of tail recursion
    @tailrec
   def factorial(n: Int): Int = {
     if (n <= 0) 1 else factorial(n - 1)

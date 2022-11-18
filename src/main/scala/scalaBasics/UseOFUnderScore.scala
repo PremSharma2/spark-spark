@@ -5,8 +5,12 @@ object UseOFUnderScore  extends App {
   val _ =5 // defining a value whose name u do'nt really care
   val onlyfive: Seq[Int] = (1 to 10).map(_*2)
   // another usage of under score
-  // We really dont care the type of option
 
+  /**
+   *  We really dont care the type of option we can use _
+   * @param List[Option[_]]
+   * @returnInt
+   */
   def processList(list : List[Option[_]] ): Int = list.length
 
   // TODO another scenario is the  default initializer

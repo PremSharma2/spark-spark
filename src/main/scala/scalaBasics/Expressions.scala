@@ -1,7 +1,7 @@
 package scalaBasics
 
 object Expressions extends App {
-  //In scala every thing is an expression and every expression has some value associated with it
+  //TODO In scala every thing is an expression and every expression has some value associated with it
   val x: Int = 1+2 // Expression
   //printing expression value
   println(x)
@@ -30,6 +30,7 @@ object Expressions extends App {
   println(conditionalExpressionOutput)
   
 
+  //TODO Loops are not advisable in scala
   /*var i=0
   while(i<10){
     println(i)
@@ -62,8 +63,8 @@ object Expressions extends App {
       */
       
       val codeBlock :String ={
-        var a=5
-        var b=a+1
+        val a = 5
+        val b = a + 1
        if(b>2) "hello" else "bye-bye"
              
       }

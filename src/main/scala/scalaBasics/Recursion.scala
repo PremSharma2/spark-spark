@@ -2,13 +2,13 @@ package scalaBasics
 
 import scala.annotation.tailrec
 
-/*
+/**
  * @author psharma
  */
 object Recursion extends App {
 
-  /*
-   *
+  /**
+   *TODO
    * Recursion Implementation with Out of stack memory error
    * this is called stack recursion
    */
@@ -23,9 +23,9 @@ object Recursion extends App {
 
     }
   }
-/*
+/**
 TODO
-    Recursive call should be the last thing  in ur code branch
+    to make tail recursive Recursive call should be the last thing  in ur code branch
  */
   def anotherFactorial(n: Int): BigInt = {
     @tailrec
@@ -37,7 +37,7 @@ TODO
 
   }
 
-  /*
+  /**
    * anotherFactorial(10)=factHelper(10,1)
    * =factHelper(9,10*1)
    * factHelper(8,9*10*1)
@@ -51,10 +51,10 @@ TODO
    *
    */
 
-  //concat of string using tail recursion
-  /*
-  TODO : -> The recursive call should be the last thing to do in the code branch
-     no pending computation is there
+  //TODO : -> concat of string using tail recursion
+  /**
+   The recursive call should be the last thing to do in the code branch
+     no pending computation is there hence its tailRecursive
    */
   @tailrec
   def concatStringTailRecur(aString: String, n: Int, accumulator: String): String = {

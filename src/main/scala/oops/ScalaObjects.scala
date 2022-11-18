@@ -1,9 +1,14 @@
 package oops
 
 object ScalaObjects extends App {
+  /**
+   *  A Singleton object is an object which defines a single object of a class.
+   *  A singleton object provides an entry point to your program execution.
+   *
+   *  scala does not have class level functionality ("scala does not know the concept of static")
+   *  there is only single instance of the Type Person we refer to with the name Person
+   */
 
-  // scala does not have class level functionality ("scala does not know the concept of static")
-// there is only single instance of the Type Person we refer to with the name Person
   object Person { //type + its only instance
     //"static or class - level functionality 
     //static constant

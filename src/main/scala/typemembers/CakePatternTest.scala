@@ -1,4 +1,5 @@
 package typemembers
+/*
 import junit.framework.TestCase.assertEquals
 import org.junit
 import typemembers.examples.example1._
@@ -21,3 +22,5 @@ class CakePatternTest {
     assertEquals("a-test-b-test",RegistryTesting.b.value)
   }
 }
+
+ */
