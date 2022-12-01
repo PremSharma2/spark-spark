@@ -16,6 +16,10 @@ object Try_And_Option_Exercise extends App {
   val flatMap: Try[Int] =aSuccess.flatMap(x => Success(x * 2))
   println(aSuccess.flatMap(x => Success(x * 2)))
   println(aSuccess.filter(x => x > 20))
+
+  /**
+   * Create a Api which fetches the content from the server and also handles the Connection
+   */
   val hostName = "localhost"
   val port = "8080"
   def renderHtml(page: String) = println(page)

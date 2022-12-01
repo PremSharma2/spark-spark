@@ -1,12 +1,13 @@
 package collections.basic.operationAndTransformation
 
+import scala.collection.immutable
 import scala.util.matching.Regex
 
 object Map_FlatMap_Filter_for extends App {
 
   val list = List(1, 2, 3)
   val input = List("hello-world", "scala", "prem")
-  /*
+  /**
   TODO
      Tests whether a predicate holds for at least one element of this traversable collection.
      Note: may not terminate for infinite-sized collections.
@@ -16,14 +17,14 @@ object Map_FlatMap_Filter_for extends App {
   val rExists: Boolean = input.exists(_.matches("hello-world"))
   val numPattern = new Regex("[0-9]+")
   val address = "123 Main Street Suite 101"
-  //TODO the findFirstIn method finds the first match in the String and returns an Option[String]:
+  //TODO: the findFirstIn method finds the first match in the String and returns an Option[String]:
   //123 is Ans
-  val match1 = numPattern.findFirstIn(address)
+  val match1: Option[String] = numPattern.findFirstIn(address)
   match1 match {
     case Some(s) => println(s"Found: $s")
     case None =>
   }
-  /*
+  /**
   TODO
     Finds the first element which yields the largest value measured by function f
    */
@@ -35,13 +36,13 @@ object Map_FlatMap_Filter_for extends App {
   val l = List(1, 2, 3, 4)
   val l1 = List(5, 6, 7, 8)
   val alist = List(2, 3, 5, 7)
-  /*
-   TODO
-      A copy of the general sequence with an element prepended.
-    Note that :-ending operators are right associative (see example).
-     A mnemonic for +: vs. :+ is: the COLon goes on the COLlection side.
-    Also, the original general sequence is not modified, so you will want to capture the result.
-    Example:
+  /**
+    TODO
+       A copy of the general sequence with an element prepended.
+      Note that :-ending operators are right associative (see example).
+      A mnemonic for +: vs. :+ is: the COLon goes on the COLlection side.
+     Also, the original general sequence is not modified, so you will want to capture the result.
+     Example:
       scala> val x = List(1)
       x: List[Int] = List(1)
       scala> val y = 2 +: x
@@ -50,16 +51,20 @@ object Map_FlatMap_Filter_for extends App {
    */
   val prepended = 1 +: alist // List(1,2,3,5,7)
   val prepen = 0 :: alist // this Right associative basically i.e alist :: 0
-  val associtivoperatorlist = 1 :: 2 :: 3 :: Nil
+  val associtivoperatorlist: immutable.Seq[Int] = 1 :: 2 :: 3 :: Nil
   alist.::(0)
   val appended = alist :+ 9
   println(appended)
   println(l ++ l1)
 
-  //List(List(1, 2, 3, 4), 5, 6, 7, 8)
+  /**
+TODO
+   //List(List(1, 2, 3, 4), 5, 6, 7, 8)
   //Adds an element at the beginning of this list
   // you can pass list or any value
   //1 :: List(2, 3) = List(2, 3).::(1) = List(1, 2, 3)
+
+   */
   val listOfIntegerAndList: List[Any] = l :: l1
   println(l :: l1)
 
@@ -90,7 +95,8 @@ object Map_FlatMap_Filter_for extends App {
   // map
   //TODO override final def map[B, That](f: A => B)(implicit bf: CanBuildFrom[List[A], B, That])
   println(list.map(_ + 1))
-  println(list.map(x => x + 1))
+  println(list.map(x => List(x + 1)))
+ val rrr: immutable.Seq[List[Int]] = list.map(x => List(x + 1))
   //filter
   /*
     TODO
@@ -104,32 +110,30 @@ object Map_FlatMap_Filter_for extends App {
   //result: List[String] = List(abc, axc, azc)
 
   //flatmap
-  // ETw pattern
+
   val transform: Int => (Int, Int) = x => (x, x + 1)
   //ETW
-  val toPair = (x: Int) => List(transform.apply(x))
+  val transformer = (x: Int) => List(transform.apply(x))
   //TODO def flatMap[B, A](f: A => List[B])
-  println(list.flatMap(toPair))
+  println(list.flatMap(transformer))
   println(list.map(transform))
   val numbers = List(1, 2, 3, 4)
   val chars = List('a', 'b', 'c', 'd')
-  //iteration logic 
+  //todo : -> iteration logic
   val combinations: Seq[String] = numbers.
     flatMap(n => chars.map(c => "" + c + n))
 
   println(combinations)
   val forcomprehension: Seq[String] =
     for {
-      n: Int <- numbers if n % 2 == 0 // with if filter
+      n: Int <- numbers if n % 2 == 0 // todo with if filter
       c: Char <- chars
     } yield "" + c + n
   println(forcomprehension)
 
   // syntax overload
-  list.map {
-    //pattern matching using partial function
-    case x => x * 2
-  }
+  list.map(//pattern matching using partial function
+    x => x * 2)
   // dropRight
   val m1 = List(1, 1, 3, 3, 3, 5, 4, 5, 2)
   // Applying dropRight method
@@ -145,13 +149,18 @@ object Map_FlatMap_Filter_for extends App {
   drop(n)	Return all elements after the first n elements
    */
   println(m1.drop(2))
-  //Method Definition: def dropWhile(p: (A) => Boolean): List[A]
-  // drops all elements which satisfy the predicate
-  //Return Type: It returns all the elements of the list except the dropped ones.
-  /*
+
+  /**
+   * TODO
+      Method Definition: def dropWhile(p: (A) => Boolean): List[A]
+      drops all elements which satisfy the predicate
+      Return Type: It returns all the elements of the list except the dropped ones.
+  */
+
+  /**
   TODO
-     dropWhile discards all the items at the start of a collection for which the condition is true.
-     It stops discarding as soon as the first item fails the condition.
+      dropWhile discards all the items at the start of a collection for which the condition is true.
+      It stops discarding as soon as the first item fails the condition.
       dropWhile drops 1 but stops when it reaches 2 because the condition _ % 2 != 0 is false.
       filter discards all the items throughout the collection where the condition is not true.
        It does not stop until the end of the collection.
@@ -167,9 +176,9 @@ object Map_FlatMap_Filter_for extends App {
   // Displays output
   println(res)
 
-  /*
-  Method Definition : def find(p: (A) => Boolean): Option[A]
-
+  /**
+TODO
+    Method Definition : def find(p: (A) => Boolean): Option[A]
    Return Type :It returns an Option value containing the first element of the stated collection
    that satisfies the used predicate else returns None if none exists.
    */
@@ -184,18 +193,27 @@ scala> val x = IndexedSeq(1,2,3)
   // Creating an Iterator
   val iter: Iterator[Int] = Iterator.apply(2, 4, 5, 1, 13)
 
-  // Applying find method
+  // Applying
+/**
+ * TODO
+ *  Finds the first value produced by the iterator satisfying a
+ *  predicate, if any.
+ *
+ *
+ */
   val result: Option[Int] = iter.find(_ > 1)
 
   // Displays output
-  println(result)
-  /*
+  println(result) //todo: ->  Some(2)
+  /**
+TODO
   init	All elements except the last one
    */
   val initList: Seq[Int] = m2.init
   println(initList)
 
   /*
+TODO
   intersect(s)	Return the intersection of the list and another sequence s
    */
 
@@ -203,11 +221,13 @@ scala> val x = IndexedSeq(1,2,3)
   println(intersection)
 
   /*
+TODO
   lastOption	The last element as an Option
    */
 
   val lastOption: Option[Int] = intersection.lastOption
   /*
+TODO
   takeWhile(p)	The first subset of elements that matches the predicate p
    */
   val takeWhileSeq = Seq(2, 4, 6, 8, 3,5,7,9)
@@ -215,5 +235,5 @@ scala> val x = IndexedSeq(1,2,3)
     x % 2 == 0
   })
   println(lastOption.get)
-  println(takenWhile)
+  println(takenWhile) // o/p should be [2,4,6,8]
 }

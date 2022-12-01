@@ -28,7 +28,7 @@ object ScalaObjects extends App {
   println(Person.vanFly())
   
   //scala object=Singleton Instance  
-  //scala instances are singleton by defination
+  //scala instances are singleton by definition
   // no extra code needed from you to make it singleton
   val mary1=Person
   //val john=Person

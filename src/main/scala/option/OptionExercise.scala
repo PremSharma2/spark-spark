@@ -22,7 +22,7 @@ A collection of type Map that contains given key/value bindings.
   object Connection {
     val random = new Random(System.nanoTime)
     def apply(host: String, port: String): Option[Connection] = {
-      if (random.nextBoolean()) Some.apply(new Connection)
+      if (random.nextBoolean()) Option(new Connection)
       else None
     }
 
@@ -93,7 +93,7 @@ A collection of type Map that contains given key/value bindings.
   val forConnectionStatus: Option[String] = for {
     host: String <- serverConfig.get("host")
     port: String <- serverConfig.get("port")
-    connection <- Connection(host, port)
+    connection <- Connection.apply(host, port)
   }yield  connection.connect
 
 }

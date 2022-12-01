@@ -55,11 +55,15 @@ object HigherOrderFunctionAndCurries extends App {
    * val result =fz.(x).(y)
    *
    *TODO
-   * In mathematics and computer science, currying is the technique of translating the evaluation of a function
-   * that takes multiple arguments into evaluating a sequence of functions, each with a single argument.
+   * In mathematics and computer science,
+   *  currying is the technique of translating the evaluation of a function
+   * that takes multiple arguments into evaluating a sequence of functions,
+   *  each with a single argument.
    *
    *TODO
-   * Here by passing one argument we converted into series of function call
+   * Here is one more example of currying
+   * by passing one argument we converted into series of function call
+   * here we are applying function n times to same input
    * x => plusOne.apply(plusOne.apply(plusOne.apply(plusOne.apply(x))))
    * or
    * ntb(f,4)	= x => f(f(f(f(x))))
@@ -96,11 +100,15 @@ TODO
         fx is nothing but f applied to input
         and input is f.apply(x)
         so it will become like this
-    fy:    x=>  f.apply(f.apply(x))
+        where fx: x => f(x)
+    fy:    x=>  fx.apply(f.apply(x))
          fy is nothing but f applied twice to input
 ----------------------------------------------------------
 TODO
        Now lets evaluate the 2nd Position
+       fy.apply(f.apply(x))
+       where fy is  fy: x=>  fx.apply(f.apply(x))
+       fy.apply(f.apply(x))
          f(f(f(x)))
         fz: x=>   f(f(f(x)))
          it will be returned
@@ -158,25 +166,31 @@ TODO
 
   //Function[Int, Int] here fx is Function[Int, Int] and its
   // function type is (Int, Int) => Int
-  /*
+  /**
   Here we passed an function as input param and
    then it got converted into series of function calls
    Here we are converting a def into curried function
    */
-  def toCurry(fx: (Int, Int) => Int): (Int => Int => Int) =
-  //result = f(x)(y)(z)
-  //  (x => (y => (fx(x, y)) ))
-  //x => y => fx.apply(x,y) or x+y
-
+  def toCurry(fx: (Int, Int) => Int): (Int => Int => Int) = {
+  /**
+   * TODO
+      result = f(x)(y)(z)
+      (x => (y => (fx(x, y)) ))
+       x => y => fx.apply(x,y) or x+y
+  */
     x => y => fx(x, y)
+  }
 
 
   // This one is curried to normal i.e revrese
   def fromCurry(function: (Int => Int => Int)): (Int, Int) => Int =
-  // it is equivalent to x,y=> x+y
-  // (x,y) => function.apply(x).apply(y)
-  // function: x=> y => x+y
-  // x,y => function(x).apply(y)
+  /**
+   * TODO
+      it is equivalent to x,y=> x+y
+      (x,y) => function.apply(x).apply(y)
+      function: x=> y => x+y
+       x,y => function(x).apply(y)
+   */
     (x, y) => function(x)(y)
 
   /*def compose(function1: Int => Int, function2: Int => Int): Int => Int =
@@ -204,16 +218,16 @@ val f3: (Int, Int) => String = ???
   val f3: (Int, Int) => String = (x, y) => f2(f1(x, y))
   val fx11 : String => Int = x => x.toInt
    //val f5: (Int, Int) => String =   f2.compose(f1)
-  /*
+  /**
    TODO
        Compose more live examples here
-
    */
 
   def convert: String => String = (value: String) => value+"converted"
   def verify: String => String = (value: String) => if (value == "converted") "valid" else "invalid"
     val finalfx= (x:String) => convert(verify(x))
   def vc: String => String = convert compose verify
+  def vc1: String => String = verify compose convert
   finalfx("Scala")
   vc("prem")
 

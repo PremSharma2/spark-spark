@@ -4,8 +4,8 @@ object VarianceUnderstanding {
 
   /*
   TODO
-    If A is a subtype of B, then should Thing[A] be a subtype of Thing[B]?
-    This is the variance question.
+       If A is a subtype of B, then should Thing[A] be a subtype of Thing[B]?
+       This is the variance question.
 TODO
   If our Thing is a collection, such as a list, the answer is yes:
   if Dogs are Animals, then a collection of Dogs is also a collection of Animals.
@@ -27,7 +27,7 @@ val dogs: MyList[Animal] = new MyList[Dog]
 
   /*
 TODO
-    In other words, if A is a subtype of B, then Thing[B] is a subtype of Thing[A].
+      In other words, if A is a subtype of B, then Thing[B] is a subtype of Thing[A].
     This is called contravariant, and we mark it with a - sign at the class declaration.
     For the Animals use case, a good contravariant example would be a Vet:
     A Vet[Animal] is a proper replacement for a Vet[Dog],
@@ -43,7 +43,7 @@ TODO
   /*
   TODO
        The Variance Positions
-     Now that we’ve found that a collection should be covariant,
+       Now that we’ve found that a collection should be covariant,
       we get to work and write our own list, because of course we can:
 
   TODO
@@ -61,9 +61,9 @@ TODO
 
   /*
   TODO
-       Types of vals Are in Covariant
-       Let’s say we had a Vet. As discussed before, a Vet should be a contravariant type.
-       Let’s also imagine this vet had a favorite animal val field, of the same type she can treat:
+        Types of vals Are in Covariant
+        Let’s say we had a Vet. As discussed before, a Vet should be a contravariant type.
+        Let’s also imagine this vet had a favorite animal val field, of the same type she can treat:
    */
 
 
@@ -72,14 +72,14 @@ TODO
   /*
   TODO
        See any trouble here?
-     lassiesVet is declared as Vet[Dog];
+      lassiesVet is declared as Vet[Dog];
       as per contravariance we can assign a Vet[Animal]
-    theVet is a Vet[Animal] (typed correctly),
+     theVet is a Vet[Animal] (typed correctly),
     but is constructed with a Cat (a legit Animal)
    lassiesVet.favoriteAnimal is supposed to be a Dog per the generic type declared,
     but it’s really a Cat per its construction
    No-no. This is a type conflict.
-   A sound type checker will not compile this code.
+   A sound type checker wi ll not compile this code.
    We say that the types of val fields are in covariant position,
     and this is what the compiler will show you
 
@@ -108,7 +108,8 @@ TODO
  If a dog is an animal, then a maybe-dog is also a maybe-animal.
  Think of an Option as a list with at most one element. If a list is covariant, then an option is covariant.
  Now, imagine that (for whatever reason) we had a mutable version of an option.
- Let’s call it MutableOption[+T] with a subtype containing a var member, e.g. class MutableSome[+T](var contents: T)
+ Let’s call it MutableOption[+T] with a subtype containing a var member,
+  e.g. class MutableSome[+T](var contents: T)
  */
   /*
 TODO
@@ -127,35 +128,40 @@ TODO
   The only way they would work is if the generic type were invariant,
   which eliminates the problem (same type argument everywhere, no need for substitution).
    */
- // class MutableOption[+T]
-  //class MutableSome[+T](var contents: T) extends MutableOption[T]
+  /*
+  TODO
+   // class MutableOption[+T]
+   //class MutableSome[+T](var contents: T) extends MutableOption[T]
+    // val maybeAnimal: MutableSome[Animal] = new MutableSome[Dog](new Dog)
+   // def mutableApi(mutable: MutableSome[Animal]) = {
+    //  mutable.contents = new Cat // type conflict because mutable is of Dog type we are assigning Cat
+     /  /}
+     //mutableApi(new MutableSome[Dog](new Dog))
 
- // val maybeAnimal: MutableSome[Animal] = new MutableSome[Dog](new Dog)
- // def mutableApi(mutable: MutableSome[Animal]) = {
-  //  mutable.contents = new Cat // type conflict because mutable is of Dog type we are assigning Cat
-  //}
-  //mutableApi(new MutableSome[Dog](new Dog))
+   */
 
 /*
 TODO
      Types of Method Arguments Are in Contravariant position
    This says it all. How do we prove it? We try the reverse and see how it’s wrong.
-  Let’s take the (now) classical example of a list. A list is covariant, we know that. So what would be wrong with
-
-abstract class MyList[+T] {
+  Let’s take the (now) classical example of a list.
+  A list is covariant, we know that. So what would be wrong with
+TODO
+   class MyList[+T] {
   def head: T
   def tail: MyList[T]
   def add(elem: T): MyList[T]
-}
+   }
  */
 /*
 TODO
   Let’s imagine this code compiled.
   Let’s also imagine we gave some dummy implementations to these methods,
-   as the implementation doesn’t matter, only their signature. As per the covariance declaration, we could say
+   as the implementation doesn’t matter, only their signature.
+    As per the covariance declaration, we could say
 TODO
  val animals: MyList[Animal] = new MyList[Cat]
- val moreAnimals = animals.add(new Dog)
+ val moreAnimals = animals.add(new Dog) Dogs and cats cant be together its wrong
  class ContraList[+T] {
   def head: T
   def tail: ContraList[T]
@@ -216,14 +222,15 @@ TODO
   we use a Vet[Animal] whose method returns a Cat,
   so when we finally invoke the CovVetApi method on covet (which is declared as Vet[Dog]),
   the type checker expects a Dog but we get a Cat per its real implementation! Not funny.
-  Therefore, we say method return types are in covariant position. A covariant example works fine for this case.
+  Therefore, we say method return types are in covariant position.
+  A covariant example works fine for this case.
 
 TODO
    abstract class CovVet[+T] {
     def rescueAnimal(): T
   }
   val covet: CovVet[Animal] = new CovVet[Dog] {
-    override def rescueAnimal(): Animal = new Dog // because Dog is animal
+    override def rescueAnimal(): Dog = new Dog // because Dog is animal
   }
   def CovVetApi(vet:CovVet[Animal])={
     val rescuedDog: Dog = vet.rescueAnimal // This code will blow expecting Dog but got Cat
@@ -240,17 +247,19 @@ TODO
     override def rescueAnimal(): Dog = new Dog // because Dog is animal
   }
   def CovVetApi(vet:CovVet[Dog])={
-    val rescuedDog: Dog = vet.rescueAnimal // This code will blow expecting Dog but got Cat
+    val rescuedDog: Dog = vet.rescueAnimal
   }
   CovVetApi(covet)
 /*
 TODO
     How to Solve the Variance Positions
   We proved that a covariant list cannot have an add(elem: T) method
-   because it breaks type guarantees. However, does that forbid us from ever adding an element to a list?!
+   because it breaks type guarantees.
+   However, does that forbid us from ever adding an element to a list?!
  Hell, no.
  Let’s take this back to first principles.
-  We said that we can’t add an add(elem: T) method to a list, because otherwise we could write
+  We said that we can’t add an add(elem: T) method to a list,
+  because otherwise we could write
   What if our add(elem: T): MyList[T]
   received an argument of a different type and
   returned a result of a different type? Allow me to make a suggestion:

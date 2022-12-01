@@ -89,17 +89,17 @@ TODO  vpt("())",0)
     if (s.isEmpty) true
     else {
       @tailrec
-      def go(position: Int, accumulator: List[Char]): Boolean = {
-        if (position == s.length) accumulator.isEmpty
+      def go(index: Int, accumulator: List[Char]): Boolean = {
+        if (index == s.length) accumulator.isEmpty
         else {
-          val char = s(position)
+          val char = s(index)
           val isOpening = OpenToClose.contains(char)
           val isClosing = CloseToOpen.contains(char)
-          if (isOpening) go(position + 1, char :: accumulator)
+          if (isOpening) go(index + 1, char :: accumulator)
           else if (isClosing) {
             accumulator match {
-              case _ :: tail =>
-                go(position + 1, tail)
+              case head :: tail =>
+                go(index + 1, tail)
               case _ =>
                 false
             }
@@ -107,11 +107,27 @@ TODO  vpt("())",0)
         }
       }
 
-      go(position = 0, accumulator = List.empty)
+      go(index = 0, accumulator = Nil)
     }
   }
 
+
+  def parenthesesAreBalancedModified(s: String): Boolean = {
+      @tailrec
+      def go(index: Int, accumulator: List[Char]): Boolean = {
+         if (index == s.length) accumulator.isEmpty
+        else if  (OpenToClose.contains(s(index))) go(index + 1, s.head :: accumulator)
+        else if (CloseToOpen.contains(s(index)))  go(index + 1, accumulator.tail)
+        else false
+
+      }
+    if (s.isEmpty) return true
+    go(index = 0, accumulator = Nil)
+    }
+
+
   def main(args: Array[String]): Unit = {
+    println(parenthesesAreBalancedModified("(())"))
     println(parenthesesAreBalanced("(())"))
     println(parenthesesAreBalanced("())"))
     println(parenthesesAreBalanced("()"))

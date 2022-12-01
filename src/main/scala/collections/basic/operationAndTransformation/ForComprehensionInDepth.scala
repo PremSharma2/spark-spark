@@ -6,36 +6,38 @@ import scala.collection.SeqView
 import scala.io.Source
 
 object ForComprehensionInDepth  extends App {
-/*
-Welcome back. We were discussing Scala control structures.
-The last item among the control abstraction is the for expression.
-The Scala's for loop is a swiss army knife of iterations.
-Here is the general structure of the for expression.
+/**
+ TODO
+  Welcome back. We were discussing Scala control structures.
+  The last item among the control abstraction is the for expression.
+  The Scala's for loop is a swiss army knife of iterations.
+   Here is the general structure of the for expression.
 
 // for ( seq ) yield { expr }
-
-It looks simple, but I realized that it is quite confusing to explain the above structure.
-Let me take a progressive approach to explain that. To simplify the structure,
+TODO
+ It looks simple, but I realized that it is quite confusing to explain the above structure.
+ Let me take a progressive approach to explain that. To simplify the structure,
  let's ignore the yield for now. The yield is optional.
   You will be using it most of the time, but let's keep it aside for the moment.
-Now the structure looks like this.
+ Now the structure looks like this.
 
-for ( seq ) { expr }
-
-
+ for ( seq ) { expr }
 
 
 
-Let's try to understand this structure.If you learned other languages,
-the above structure should look familiar.
-The things inside the parenthesis will control the number of iterations,
-and those curly braces represent the body of the loop.
-That's how it is in most of the languages.
 
-for (i <- 1 to 10) {
+TODO
+ Let's try to understand this structure.If you learned other languages,
+ the above structure should look familiar.
+ The things inside the parenthesis will control the number of iterations,
+ and those curly braces represent the body of the loop.
+ That's how it is in most of the languages.
+
+TODO
+  for (i <- 1 to 10) {
   statement - 1;
   statement - 2;
-}
+  }
 
 
 You can have one or more expressions within the body.
@@ -181,11 +183,11 @@ println(result2)
   // more examples of for comprehension
   val dataSeq = Source.fromFile("C:\\prem\\prem\\Data\\Spark_VM\\emp.txt").getLines().toList
   for(line <- dataSeq){
-    val fields = line.split(",")
+    val fields: Array[String] = line.split(",")
     println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
   }
   // TODO : here compiler will convert this into the following
-  dataSeq.foreach{
+ val xx: Unit = dataSeq.foreach{
     line =>
       val fields=line.split(",")
       println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))

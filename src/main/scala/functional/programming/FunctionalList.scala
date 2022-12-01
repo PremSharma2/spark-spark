@@ -1,9 +1,10 @@
 package functional.programming
 
-/*
+/**
  *
  *
- * List implementation with Functional Programming Flavour,with Transformer and predicate replacing the inbuilt functional interfaces
+ * List implementation with Functional Programming Flavour,
+ * with Transformer and predicate replacing the inbuilt functional interfaces
  */
 
 abstract class MyList[+A] {

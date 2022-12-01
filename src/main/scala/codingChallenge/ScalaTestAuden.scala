@@ -90,7 +90,7 @@ TODO
   }
      */
     def dayIterator(startDate: LocalDate, endDate: LocalDate) = {
-      //the iterator producing the infinite sequence of values `start, f(start), f(f(start)), ...
+      //todo : -> the iterator producing the infinite sequence of values `start, f(start), f(f(start)), ...
       Iterator.iterate(startDate)(_ plusDays 1).takeWhile(d => d.isBefore(endDate) || d.isEqual(endDate))
     }
     dayIterator(startDate,endDate).toList.map(_.toString)

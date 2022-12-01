@@ -63,7 +63,8 @@ TODO
   //# todo : -> range method of Sequence
   /*
 TODO
-    /** range method Produces a collection containing equally spaced values in some integer interval.
+    /**
+       range method Produces a collection containing equally spaced values in some integer interval.
    *   start the start value of the collection
    *   end   the end value of the collection (the first value NOT contained)
    *   step  the difference between successive elements of the collection (must be positive or negative)

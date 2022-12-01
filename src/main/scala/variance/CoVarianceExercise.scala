@@ -21,7 +21,7 @@ TODO
    */
 
   //TODO defining ADTs
-  sealed trait Food {
+   trait Food {
 
     def name: String
 
@@ -53,13 +53,16 @@ TODO
    class Vegetable(override val name: String) extends Food
 
    class WhiteMeat(override val name: String) extends Meat(name)
+
+
 //Producer
-  abstract class MyRecip[+A](val ingredien: List[A]){
+  abstract class MyRecipe[+A](val ingredients: List[A]){
     def name: String
 
-    def recipeIngredients: List[A] = ingredien
+    def recipeIngredients: List[A] = ingredients
   }
-  class WorldRecipe extends MyRecip[Food]( ingredien = List(carrot,pumpkin)) {
+
+  class WorldRecipe extends MyRecipe[Food]( ingredients = List(carrot,pumpkin)) {
     override def name: String = s"Generic recipe based on ${recipeIngredients.map(_.name)}"
   }
   // TODO it is also type class instance for type Food

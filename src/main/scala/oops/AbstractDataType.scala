@@ -2,7 +2,7 @@ package oops
 
 object AbstractDataType{
 
-  abstract class Animal {
+  trait Animal {
 
     val creatureType: String
     def eat: Unit
@@ -141,7 +141,7 @@ TODO:Best practices
   }
   case object Goldfinch1 extends Ordering[String] with  Bird1 {
     override def compare(x: String, y: String): Int = throw new NullPointerException
-    override protected val plumage = Plumage("Yellow", "Red", "White", "Black")
+    override protected val plumage: Plumage = Plumage("Yellow", "Red", "White", "Orange")
     override protected val colours: Seq[String] = plumage.colours
     //TODO still it will not work because
   }
@@ -149,8 +149,8 @@ TODO:Best practices
     //croc.eat(dog)
   // Kingfisher.printColours()
    // Kingfisher1.printColours()
-   Goldfinch.printColours()
-    //Goldfinch1.printColours() // this will work
+   //Goldfinch.printColours()
+    Goldfinch1.printColours() // this will work
   }
 
 }

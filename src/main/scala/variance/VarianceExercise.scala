@@ -51,16 +51,16 @@ TODO what if SomeType is higherKinded type List[T] ??
   
   //Covariant API Implementation
   //TODO If your Generic class creates or contains elements of type T it should be +T
-  class CParking[+T](vehicles :List[T])   {
+  case class CParking[+T](vehicles :List[T])   {
     // we need to do the heck the compiler because method argument are in contravariant position
    // def park [S>:T] (vehicle:S):T= ???
-    def get():CParking[T] = ???
-    def park [S>:T] (vehicle:S):CParking[S]= ???
-    def impound [S>:T] (vehicles:List[S]):CParking[S]= ???
+    def get():CParking[T] = CParking(vehicles)
+    def park [S>:T] (vehicle:S):CParking[S]= CParking(vehicle :: vehicles)
+    def impound [S>:T] (addVehicles:List[S]):CParking[S]= CParking(vehicles ++ addVehicles)
     def checkVehicles(conditions:String):List[T] = ???
     def flatMap[S](f : T => CParking[S]): CParking[S] = ???
     // Due to double Variance function input has become covariant and its o/p has become contravariant
-    def transform [S>:T](function : T => S): CParking[S] = ???
+    def map [S>:T](function : T => S): CParking[S] = ???
   }
   //TODO Contravariant implementation are majorly used in type class
   //Todo beacuse we need to take an action on type
@@ -98,7 +98,8 @@ TODO what if SomeType is higherKinded type List[T] ??
    //Covariant Implementation
    //TODO If your Generic class creates or contains elements of type T it should be +T
   class CParking2[+T](  vehicles :IList[T])   {
-    // we need to do the hacking of compiler to avoid second ThumB Rule for variance i.e to make the method argument is at
+    // we need to do the hacking of compiler to avoid second ThumB Rule
+    // for variance i.e to make the method argument is at
      // contravariant position
     def park [S>:T] (vehicle:S):CParking2[S]= ???
     /*
