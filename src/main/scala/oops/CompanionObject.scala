@@ -1,12 +1,15 @@
 package oops
 
 /**
+ *TODO
  * A companion object is an object with the same name as a class or trait and is defined
  * in the same source file as the associated file
  * or trait.
  * A companion object differs from other objects as it has access rights to the class/trait that other objects do not.
  * In particular it can access methods and fields that are private in the class/trait.
  *
+ *
+TODO
  * An analog to a companion object in Java is having a class with static methods.
  * In Scala you would move the static methods to a Companion object.
  *
@@ -18,8 +21,9 @@ package oops
  * A second common use-case for companion objects is to create extractors for the class.
  * I will mention extractors in a future topic. Basically extractors allow matching to work with arbitrary classes.
  *
- * NOTE: Because the companion object and the class must be defined in the same source file you cannot create them in the interpreter.
- * So copy the following example into a file and run it in script mode:
+ * NOTE: Because the companion object and the class must be defined in the same source file and in same scope
+ * you cannot create them in the interpreter.
+ * So copy the following example into a file and run it in script mode
  *
  *
  */
@@ -35,6 +39,7 @@ object CompanionObject extends App {
   object MyString {
     // all static fields or class level attributes goes here
     val staticField = 22
+
 
     /*
      * Constructor of Factory Pattern for MyString  class
