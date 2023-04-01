@@ -1,5 +1,5 @@
 package catz
-
+/*
 import cats.effect.unsafe.implicits.global
 import cats.effect.{IO, IOApp}
 object CatsEffect  extends IOApp.Simple {
@@ -41,3 +41,5 @@ object CatsEffect  extends IOApp.Simple {
   //=> hey!
   ()
 }
+
+ */

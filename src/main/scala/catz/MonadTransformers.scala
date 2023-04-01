@@ -1,9 +1,16 @@
 package catz
 
+import cats.implicits.catsStdInstancesForFuture
+
 import java.util.concurrent.Executors
 
 import scala.concurrent.{ExecutionContext, Future}
 
+// option transformer
+import cats.data.OptionT
+import cats.instances.list._ // fetch an implicit OptionT[List]
+import cats.instances.future._
+import cats.instances.future._
 object MonadTransformers  extends App {
 
   /*
@@ -123,7 +130,9 @@ object MonadTransformers  extends App {
   implicit val ec: ExecutionContext = ExecutionContext.
     fromExecutorService(Executors.newFixedThreadPool(2))
  val listOfEither: List[Either[String, Int]] = List(Left("Somethin Wrong"),Right(43))
-// it is wrapper over   List[Either[String,Int]] nested monad
+  val futureOfEither: EitherT[Future, String, Int] = EitherT.right(Future(45)) // wrap over Future(Right(45))
+
+  // it is wrapper over   List[Either[String,Int]] nested monad
   //final case class EitherT[F[_], A, B](value: F[Either[A, B]])
   // its like
 final case class MyT[F[_], Int](value: F[Int])
@@ -137,7 +146,13 @@ final case class MyT[F[_], Int](value: F[Int])
   val futureOfEiterT: EitherT[Future, String, Int] =
     EitherT.apply(Future.apply[Either[String,Int]](Right(42)))
 
-  val rs1 = futureOfEiter.map(_*1)
+  //val rs1 = futureOfEiter.map(_*1)
+
+
+  //TODO--------------------------------------------------------------------------------------------------------------------------
+
+
+
 /*
   TODO : Exercise
       We have multi machine cluster for your businesses which will receive a traffic
@@ -157,46 +172,53 @@ final case class MyT[F[_], Int](value: F[Int])
   )
   // it is used  for   Future[Either[String,Int]] nested monad
   ////final case class EitherT[F[_], A, B](value: F[Either[A, B]])
-  type AsyncResponseOFThread[T] = EitherT[Future, String, T]
+  type AsyncResponseOFThread[T] = EitherT[Future, String, T]  // wrapper over Future[Either[String, T]]
+
  val dataBaseThread= Future.apply[Either[String,Int]](Left("Server Not Reachable!!!!"))
+
   val dbThread: Future[Either[String, Int]] =
     Future.successful(Left("Server Not Reachable!!!!"))
+
   //TODO bandwidth API here Int is bandwidth of server
-  def calculateBandWidthAPI(server:String): AsyncResponseOFThread[Int] ={
+  def getBandwidth(server:String): AsyncResponseOFThread[Int] ={
     bandwidthsConfigOfServer.get(server) match {
         //Future[Either[String,Int]]
         // trying access the database
-
-      case None => EitherT.apply(dbThread)
-      //Future[Either[String,Int]]
-      case Some(value) => EitherT.apply(Future.apply[Either[String,Int]](Right(value)))
+      case None => EitherT.left(Future(s"Server $server unreachable"))
+      case Some(b) => EitherT.right(Future(b))
 
     }
   }
 
-  import cats.instances.future._
+  // TODO 1
+  // hint: call getBandwidth twice, and combine the results
+
   // will return //Future[Either[String,Boolean]]
   def canStandWithSurge(s1:String,s2:String):AsyncResponseOFThread[Boolean] ={
     for{
-      band1 <- calculateBandWidthAPI(s1)
-      band2 <- calculateBandWidthAPI(s2)
+      band1 <- getBandwidth(s1)
+      band2 <- getBandwidth(s2)
     } yield band1 + band2 > 250
-
+    // Future[Either[String, Boolean]]
   }
  /*
   def transform[C, D](f: Either[A, B] => Either[C, D])(implicit F: Functor[F]): EitherT[F, C, D] =
     EitherT(F.map(value)(f))
   */
+
+  // TODO
+  // hint: call canWithstandSurge + transform
   // TODO Here we are processing the Async Response of the Thread
+
   def generateTrafficSpikeReport(s1:String,s2:String):AsyncResponseOFThread[String] ={
     // transform will transform Future[Either[String,Boolean]] to
     // Future[Either[String,String]]
     // def transform[C, D](f: Either[A, B] => Either[C, D])(implicit F: Functor[F]): EitherT[F, C, D] =
     //    EitherT(F.map(value)(f))
     canStandWithSurge(s1,s2) .transform{
-      case Left(reason) => Left(s"Server s1 and s2 cannot cope with the incoming spike:$reason")
-      case Right(false) =>  Left("Server s1 and s2 cannot cope with the incoming spike: not enough total bandwidth")
-      case Right(true) => Right("Server s1 and s2 can cope with the incoming spike")
+      case Left(reason) => Left(s"Servers $s1 and $s2 CANNOT cope with the incoming spike: $reason")
+      case Right(false) => Left(s"Servers $s1 and $s2 CANNOT cope with the incoming spike: not enough total bandwidth")
+      case Right(true) => Right(s"Servers $s1 and $s2 can cope with the incoming spike NO PROBLEM!")
 
     }
   }

@@ -21,7 +21,7 @@ trait DonutShoppingCartDao[A] {
     donutDatabase.query(donut)
   }
 
-  def delete(donut: A): Boolean = {
+  def deletefromDb(donut: A): Boolean = {
     println(s"DonutShoppingCartDao-> delete method -> donut: $donut")
     donutDatabase.delete(donut)
   }

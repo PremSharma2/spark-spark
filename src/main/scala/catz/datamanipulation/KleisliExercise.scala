@@ -1,5 +1,5 @@
 package catz.datamanipulation
-
+/*
 import cats.effect.unsafe.implicits.global
 
 object KleisliExercise {
@@ -68,3 +68,7 @@ TODO
   //res: Success(Shipment(1234, OK))
 
 }
+
+
+
+ */
