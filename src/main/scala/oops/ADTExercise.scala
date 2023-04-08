@@ -65,7 +65,7 @@ class Deck {
       suit <- List(Heart, Diamond, Spade, Club)
       rank <- List(King, Queen, Jack, Ten, Nine, Eight, Seven, Six, Five, Four, Three, Two, Ace)
     }
-    yield new Card(suit, rank)
+    yield  Card(suit, rank)
 }
 
 /**

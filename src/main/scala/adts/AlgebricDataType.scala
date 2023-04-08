@@ -1,4 +1,4 @@
-package oops
+package adts
 
 object AlgebricDataType  extends App{
 
