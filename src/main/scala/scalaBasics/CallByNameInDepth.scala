@@ -82,7 +82,7 @@ TODO Trick 2 callbyNeed: ->
  which is another beast - allows us to manage infinite data structures in Scala:
  If your Generic class creates or contains elements of type T it should be +T
   here LazyList contains the elements of type T
-  In short Containers are always covarient
+  In short Containers are always covariant
  */
 abstract class LazyList[+T] {
   def head: T
