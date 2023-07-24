@@ -57,8 +57,8 @@ object Function extends App {
     def isPrimeUntil(t: Int): Boolean =
       if (t <= 1) true
     else {
-        val accumlator: Boolean = n % t != 0
-      accumlator  && isPrimeUntil(t - 1)
+        val accumulator: Boolean = n % t != 0
+        accumulator  && isPrimeUntil(t - 1)
       }
        
       

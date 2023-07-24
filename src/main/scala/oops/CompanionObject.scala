@@ -6,7 +6,7 @@ package oops
  * in the same source file as the associated file
  * or trait.
  * A companion object differs from other objects as it has access rights to the class/trait that other objects do not.
- * In particular it can access methods and fields that are private in the class/trait.
+ * In particular it can access methods and fields that are private in the class/trait even private Constructor.
  *
  *
 TODO
@@ -46,6 +46,7 @@ object CompanionObject extends App {
      */
     def apply(base: String, extras: String): MyString = {
       val s = new MyString(base)
+      //access to private field
       s.extraData = extras
       s
     }

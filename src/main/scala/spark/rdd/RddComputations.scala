@@ -11,7 +11,7 @@ import org.apache.spark.sql.functions.col
 
 
 object RddComputations extends App {
-  /*
+  /**
    * 
    * basic intrnsic properties of an RDD
    * abstract class RDD[T] {
@@ -31,12 +31,13 @@ Used exclusively when RDD is requested for the preferred locations of a partitio
   Defines the Partitioner of a RDD
   val partitioner: Option[Partitioner] = None
 }
-   */
+   **/
   System.setProperty("hadoop.home.dir", "C:/winutils");
   val logFile = "D:/Spark_VM/emp.txt" // Should be some file on your system
   // val spark = new SparkConf().setAppName("Simple Application").setMaster(("local[*]"))
   val sparksession: SparkSession = SparkSession.builder.master("local").getOrCreate()
   val sparkContext = sparksession.sparkContext
+  //file read from spark
  val empData=sparkContext.textFile(logFile, 2)
  println(empData.collect().size)
  println(empData.collect().foreach(println))

@@ -9,6 +9,7 @@ object InheritanceInScala extends App {
   }
 
   /**
+  TODO
    * def in super class can be overridden as val
    * eat is defined in super class as def
    */
@@ -29,7 +30,9 @@ object InheritanceInScala extends App {
   val person = new Person("prem", 20)
 
   // Constructor Chaining
-  class Adult(name: String, age: Int, idcard: String) extends Person(name, age)
+  class Adult(name: String, age: Int, idcard: String) extends Person(name, age){
+    override val breath = super.breath
+  }
 
   //-----------------------------------------------------------------------------------------------------------------------------
   // overriding class fields different signatures
@@ -49,6 +52,7 @@ object InheritanceInScala extends App {
   //here it is clear that def can be over ridden as val
   class Bird(override val creatureType: String) extends Animal {
     override val eat: String = {
+      //calling super class function eat here
       super.eat
     }
   }

@@ -2,7 +2,7 @@ package oops
 
 object CompanionObjectExercise {
 /**
-
+ TODO thumb rule
     nonstatic member goes to  class
     and static member companion object
  */
@@ -44,6 +44,7 @@ object CompanionObjectExercise {
 
     def apply(description: String, status: String): Task = {
       val task = new Task(description)
+      //TODO we can access the private member of class in the Companion Object
       task._status = status
       task
     }
