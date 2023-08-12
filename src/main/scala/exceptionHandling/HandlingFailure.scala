@@ -14,8 +14,11 @@ object HandlingFailure extends App {
     Failure.apply(new RuntimeException("Exception thrown due to failure"))
   println(aSuccess)
   println(aFailure)
-  //Expression returning nothing type
+
+  //TODO : -> Expression returning nothing type
   val nothing :Nothing = throw new RuntimeException("No String For You Buster")
+
+
   //TODO it shows that Nothing is sub class of every class
   //todo :-> Try will wrap it into Success or Failure
   def unsafeMethod : String= nothing
@@ -30,8 +33,10 @@ TODO
    */
   //TODO :-> here is is clearly predicted that Try is covariant in nature
   val potentialFailures: Try[String] =Try.apply(unsafeMethod) // Try[Nothing]
+
   //todo:->  checking whether Failure object is there or Success object is there
   println(potentialFailures.isFailure)
+
   //TODO example which proves the handling Exceptions pure Functionally
   val functionalhandleOfException: Try[Int] =potentialFailures.map(_ => 2)
   //syntactic sugar
@@ -47,13 +52,19 @@ TODO
   println(potentialFailures.isSuccess)
   //orElse
   def backupMethod: String = "A valid backup Result"
-  // if it is failure then return Try with Success with backup method
-  val fallbackTry: Try[String] = Try.apply(unsafeMethod) orElse (Try.apply(backupMethod))
+
+  // TODO : -> if it is failure then return Try with Success with backup method
+  val fallbackTry: Try[String] = Try.apply(unsafeMethod) orElse Try.apply(backupMethod)
   println(fallbackTry.isSuccess)
-  def betterUnsafeMethod():Try[String]= Failure.apply(new RuntimeException("Failure ocuured,throwing an exception"))
-  def betterBackUpMethod() : Try[String]= Success.apply("Method succesfully executed : Returning a Valid Result")
-  //TODO :-> Returns this Try if it's a Success or the given default argument if this is a Failure which is actually success.
+
+  def betterUnsafeMethod():Try[String]= Failure.apply(new RuntimeException("Failure occurred,throwing an exception"))
+
+  def betterBackUpMethod() : Try[String]= Success.apply("Method successfully executed : Returning a Valid Result")
+
+  //TODO :-> Returns this Try if it's a Success or the given default argument if this is a Failure which is actually success
+
   val betterFallBack: Try[String] = betterUnsafeMethod orElse betterBackUpMethod
+
    println(betterFallBack.isSuccess)
 
   //Try as Monad Exercise

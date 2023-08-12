@@ -11,6 +11,7 @@ object HandlingException_IN_FP extends App {
   //TODO : success for Nothing represented by Unit
   //todo val aSuccessforNothing:Success[Nothing] = Success(())
   val aFailure: Failure[Nothing] = Failure(new RuntimeException("Exception thrown due to failure"))
+  val filterExpression=aSuccess.filter(_%2==0)
 
   println(aSuccess)
   println(aFailure)

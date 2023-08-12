@@ -1,7 +1,7 @@
 package oops
 
 trait MyList {
-  /*
+  /**
  TODO
    * 
    * head: first element of list
@@ -29,6 +29,7 @@ trait MyList {
  * Singleton object that represents Empty List Data structure
  */
 case object CNil extends MyList {
+
   def head: Nothing = throw new NoSuchElementException
 
   def tail: Nothing = throw new NoSuchElementException
@@ -39,6 +40,7 @@ case object CNil extends MyList {
 
   def printElements: String = ""
 }
+
 
 class Node(h: Int, nodeTail: MyList) extends MyList {
   def head: Int = h
@@ -53,6 +55,7 @@ class Node(h: Int, nodeTail: MyList) extends MyList {
     if (nodeTail.isEmpty) "" + h
     else {
       h + "" + nodeTail.printElements
+      //"[" + this.head + nodeTail.printElements + "]"
     }
   }
 }

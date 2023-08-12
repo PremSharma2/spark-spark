@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 
 object HigherOrderFunctionAndCurries extends App {
 
-  /*
+  /**
    *
    * TODO
    *      Here superFunction takes two parameters one is int and
@@ -13,9 +13,11 @@ object HigherOrderFunctionAndCurries extends App {
    *      which takes input as function and gives o/p as function are called
    *      Higher Order function
    */
-  //val superfunction: (Int, (String, (Int => Boolean)) => Int) => (Int => Int) = ???
+  //TODO : -> val superfunction: (Int, (String, (Int => Boolean)) => Int) => (Int => Int) = ???
 
-  /*implementation of higher order function which takes plusone function and two int params
+  /*
+  TODO
+   implementation of higher order function which takes plusone function and two int params
    * ntimes(plusone,1,3)
    * ntimes(plusone,0,4)
    * 
@@ -69,6 +71,8 @@ object HigherOrderFunctionAndCurries extends App {
    * ntb(f,4)	= x => f(f(f(f(x))))
    * x => f(f(f(f(x)))) hence this is the output of this function ntb(f,4)
    */
+
+
   /*
     TODO
         ntimes Better Explanation
@@ -88,7 +92,7 @@ TODO
       now at 4th position identity Function applied f.apply(f.apply(x)) = f.apply(x) or f(x)
       because x=> f(x) is equivalent to the f(x)
       i.e when u apply identity function to f.apply(x) this input which is function
-       fIdentity.apply(f.apply(x)) then it will Return f.apply(x)
+       fIdentity.apply(f.apply(x)) this  will be evaluated to  f.apply(x)
        bcz o/p of identity function is i/p
        applied to it hence it will look like this
        fx: x => f(x) this will be the returned value
@@ -166,11 +170,16 @@ TODO
 
   //Function[Int, Int] here fx is Function[Int, Int] and its
   // function type is (Int, Int) => Int
+
+
+
   /**
-  Here we passed an function as input param and
+  TODO
+   Here we passed an function as input param and
    then it got converted into series of function calls
    Here we are converting a def into curried function
    */
+
   def toCurry(fx: (Int, Int) => Int): (Int => Int => Int) = {
   /**
    * TODO
@@ -207,11 +216,12 @@ TODO
   }
 
 
-  //   Composing small exercise
-  /*
- Given two functions f1 and f2, implement f3 by composing f1 and f2
-val f3: (Int, Int) => String = ???
-   */
+  //   TODO Composing small exercise
+  /**
+  TODO
+   Given two functions f1 and f2, implement f3 by composing f1 and f2
+    val f3: (Int, Int) => String = ???
+   **/
 
   val f1: (Int, Int) => Int = (a, b) => a + b
   val f2: Int => String = _.toString
@@ -256,7 +266,10 @@ val f3: (Int, Int) => String = ???
   val add3 = superAddition(3)
   val add2 = (x: Int) => x + 2
   val times3 = (x: Int) => x * 3
+  def add4(x: Int)=x+2
+  def add5(x: Int)=x+2
   val composed: Int => Int = compose(add2, times3)
+  val composed1: Int => Int = compose(add4, add5)
   val ordered: Int => Int = andThen(add2, times3)
   println("composed" + composed(4))
   println(ordered(4))

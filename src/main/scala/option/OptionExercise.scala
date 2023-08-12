@@ -1,32 +1,38 @@
 package option
 
+import option.OptionExercise.ConnectionApi.Connection
+
 import java.util.Random
 object OptionExercise extends App {
 
-  /*
+  /*TODO
    * def apply[A, B](elems: (A, B)*): Map[A, B]
-
-A collection of type Map that contains given key/value bindings.
-
-
-  the key/value pairs that make up the map
+     A collection of type Map that contains given key/value bindings.
+     the key/value pairs that make up the map
    */
+
   val serverConfig: Map[String, String] =
     Map.apply(
     "host" -> "176.45.36.1",
     "port" -> "2020")
 
-  class Connection {
-    def connect :String= "Connected"
-  }
-  object Connection {
-    val random = new Random(System.nanoTime)
-    def apply(host: String, port: String): Option[Connection] = {
-      if (random.nextBoolean()) Option(new Connection)
-      else None
+  object ConnectionApi {
+
+    class Connection {
+      def connect: String = "Connected"
     }
 
+    object Connection {
+      val random = new Random(System.nanoTime)
+
+      def apply(host: String, port: String): Option[Connection] = {
+        if (random.nextBoolean()) Option(new Connection)
+        else None
+      }
+
+    }
   }
+
   val host: Option[String] = serverConfig.get("host")
   val port = serverConfig.get("port")
   /*
@@ -43,7 +49,7 @@ A collection of type Map that contains given key/value bindings.
      */
 
   val connection: Option[Connection] = host.flatMap(h => port.
-    flatMap(p => Connection.apply(h, p)))
+                                            flatMap(p => Connection(h, p)))
 
   val conn: Option[Connection] =  host.flatMap{
       host => port.flatMap(port => Connection(host,port))
@@ -79,7 +85,8 @@ A collection of type Map that contains given key/value bindings.
 
 // as we can see we are using the composite Function here so we can decompose
 // it further like this  x => f(x).flatmap(g(x,y).map(h(z))
- val compositeFunction: String => Option[String] = host => serverConfig.get("port").
+ val compositeFunction: String => Option[String] =
+     host => serverConfig.get("port").
     flatMap(port => Connection.apply(host, port)).
     map(connection => connection.connect)
   val result: Option[String] =serverConfig.get("host") flatMap compositeFunction

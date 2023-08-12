@@ -5,7 +5,7 @@ import scala.util.control.Exception.allCatch
 
 /**
 TODO
- * An Option factory which creates Some(x) if the argument is not null,
+ *  An Option factory which creates Some(x) if the argument is not null,
      and None if it is null.
    object Option {
    def apply[A](x: A): Option[A] = if (x == null) None else Some(x)
@@ -79,7 +79,7 @@ object Options extends App {
   //map,filter,flatMap option monad
   /*
   TODO
-    Returns a Some containing the result of applying
+     Returns a Some containing the result of applying
     f to this Option's value if this Option is nonempty. Otherwise return None.
    This is equivalent to:
    option match {
@@ -107,8 +107,8 @@ object Options extends App {
     if this option is nonempty and partial function is defined for that value.
      4
 
-
-  I have two vals, a condition and an option.
+TODO
+   I have two vals, a condition and an option.
    Note that condition is a simple boolean, not depending on the option's value.
    i.e some external condition
    */

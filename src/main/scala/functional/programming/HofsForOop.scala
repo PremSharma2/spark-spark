@@ -11,6 +11,8 @@ object HofsForOop {
   // should look like calling any function when you call any def on any instance
   // like we use to do in c applicable(2)
   // or call calling any property or def should be similar like applicable.length
+
+
   /*
     TODO
          Lets discuss about the function objects in scala

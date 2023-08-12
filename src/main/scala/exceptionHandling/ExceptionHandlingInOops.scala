@@ -20,6 +20,7 @@ todo
 
     if (withExceptions) throw new RuntimeException("No int for you")    else  42
   }
+
 //todo:->  catching an exception via pattern matching
   val potentialFail: Int = try {
     getInt(true)
