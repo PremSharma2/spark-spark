@@ -10,8 +10,10 @@ object TuplesandMaps extends App {
 
   println(tuple._1)
   println(tuple._2)
+  //update the value
   println(tuple.copy(_2 = "good bye java"))
   println(tuple)
+
   /**
    * TODO
    *   It’s also possible to omit some elements
@@ -20,6 +22,7 @@ object TuplesandMaps extends App {
    */
   val (_, myAge) = tuple
   val arrayOfTuples = List((1, "Two"), (3, "Four"))
+
   val tuplemap: immutable.Seq[String] =arrayOfTuples map {
     case (e1: Int, e2: String) => e1.toString + e2
   }
@@ -42,8 +45,16 @@ object TuplesandMaps extends App {
    *  particularly if we need to return unrelated values.
    *
    */
+
+  val numbers = List(1, 2, 3, 4, 5)
+  val (sum, count) = numbers.foldLeft(Tuple2(0, 0)) {
+    case ((runningSum, runningCount), number) => (runningSum + number, runningCount + 1)
+  }
+  val average = sum.toDouble / count
+
+
   def partition[A](xs: List[A])(predicate: A => Boolean): (List[A], List[A]) = {
-    xs.foldRight((List.empty[A], List.empty[A])) {
+    xs.foldRight(Tuple2(List.empty[A], List.empty[A])) {
       case (a, (lefts, rights)) =>
         if (predicate(a)) (a :: lefts, rights) else (lefts, a :: rights)
     }
@@ -91,9 +102,10 @@ object TuplesandMaps extends App {
    */
 
   println(phonebook.apply("Mary"))
-  val newPairing = "Mary" -> 678
+  val newPairing: (String, Int) = "Mary" -> 678
   //new pairing added into the map
   val newPhonebook = phonebook + newPairing
+
   val newPhonebook1 = phonebook.updated(newPairing._1,newPairing._2)
 
   println(newPhonebook)
@@ -104,7 +116,7 @@ object TuplesandMaps extends App {
   //TODO : Transforms this map by applying a function to every retrieved value from Key-Value
   println(phonebook.mapValues(phonenumber => "03256--" + phonenumber))
   //conversions
-  val tupledList = phonebook.toList
+  val tupledList: immutable.Seq[(String, Int)] = phonebook.toList
   println(tupledList)
   val names = List("Bob", "James", "Angela", "Mary", "Daniel", "Jim")
   //TODO fetching the values of Map

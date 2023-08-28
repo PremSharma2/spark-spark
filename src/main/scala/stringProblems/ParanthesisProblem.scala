@@ -98,10 +98,8 @@ TODO  vpt("())",0)
           if (isOpening) go(index + 1, char :: accumulator)
           else if (isClosing) {
             accumulator match {
-              case head :: tail =>
-                go(index + 1, tail)
-              case _ =>
-                false
+              case _ :: tail =>   go(index + 1, tail)
+              case _ => false
             }
           } else false
         }
@@ -116,6 +114,7 @@ TODO  vpt("())",0)
       @tailrec
       def go(index: Int, accumulator: List[Char]): Boolean = {
          if (index == s.length) accumulator.isEmpty
+         else if(accumulator.tail.isEmpty) false
         else if  (OpenToClose.contains(s(index))) go(index + 1, s.head :: accumulator)
         else if (CloseToOpen.contains(s(index)))  go(index + 1, accumulator.tail)
         else false
@@ -135,6 +134,7 @@ TODO  vpt("())",0)
     println(parenthesesAreBalanced("{[()]}"))
     println(parenthesesAreBalanced("([{{[(())]}}])"))
     println(parenthesesAreBalanced("{{[]()}}}}"))
+    //println(parenthesesAreBalancedModified("{{[]()}}}}"))
     println(parenthesesAreBalanced("{{[](A}}}}"))
     println(parenthesesAreBalanced("{[(])}"))
   }

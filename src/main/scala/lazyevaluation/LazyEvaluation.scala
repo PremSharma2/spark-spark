@@ -20,6 +20,7 @@ object LazyEvaluation extends App {
 
   //More examples
   /*
+TODO
  Side  effect if it modifies a mutable data structure or variable, uses IO,
   throws an exception or halts an error;
    all of these things are considered side effects.
@@ -75,8 +76,8 @@ object LazyEvaluation extends App {
   }
 
   val numbers = List(1, 25, 40, 5, 23)
-  val lt30=numbers.filter(lessThan30 _)
-  val gt20=lt30.filter(greaterThan20 _)
+  val lt30=numbers.filter(lessThan30)
+  val gt20=lt30.filter(greaterThan20)
    println(gt20)
   // Filtering With Lazy vals
   // withFilter works with lazy values

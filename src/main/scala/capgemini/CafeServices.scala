@@ -26,7 +26,7 @@ trait CafeServices {
     val standardPrice = standardBill(items)
     val modelItems = toModel(items)
     if (modelItems.forall(_.isDrink)) 0
-    else if (modelItems.exists(_.isHotFood)) standardPrice * 0.2
+    else if (modelItems.exists(_.isHot)) standardPrice * 0.2
     else standardPrice * 0.1
   }
     override def standardBill(items: Seq[MenuItem]) = {

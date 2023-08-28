@@ -48,10 +48,7 @@ TODO
         and you'll never need to search for online discounts again."
       )
     */
-  def ransomeNote(note: String, magzine: String): Boolean = {
-    def buildMap1(string: String): Map[Char, Int] = {
-      string.groupBy(c => c).mapValues(_.length)
-    }
+  def ransomNote(note: String, magazine: String): Boolean = {
 
     /*
     TODO
@@ -66,9 +63,9 @@ TODO
     }
 
     val noteMap = buildMap(note)
-    val magzineMap = buildMap(magzine)
+    val magazineMap = buildMap(magazine)
     noteMap.keySet.
-      forall(char => noteMap.getOrElse(char, 0) <= magzineMap.getOrElse(char, 0))
+      forall(char => noteMap.getOrElse(char, 0) <= magazineMap.getOrElse(char, 0))
 
   }
 
@@ -104,7 +101,7 @@ TODO
       else {
         val newChar: Char = charCount.filter(_._1 != forbiddenChar).maxBy(_._2)._1
         val newCharCount: Map[Char, Int] =
-          if (charCount(newChar) == 1) charCount - newChar
+          if (charCount(newChar) == 1)   charCount - newChar
           else charCount.updated(newChar,charCount(newChar) - 1)
         organizeTailRec(newCharCount, newChar, accumulator + newChar)
       }
@@ -120,6 +117,7 @@ val charCount: Map[Char, Int]= {
     case Tuple2(map, char) => map.updated(char, map.getOrElse(char, 0) + 1)
   }
 }
+    //for scenerio like aaaaabbc
     if (charCount.values.exists(_ > (string.length + 1) / 2)) ""
     else organizeTailRec(charCount, '\u0000', "")
   }
@@ -139,7 +137,7 @@ val charCount: Map[Char, Int]= {
     println(countCharacters("Scala"))
     println(checkAnagrams("scala", "haskel"))
     println(checkAnagrams("desserts", "stressed"))
-    val result = ransomeNote(
+    val result = ransomNote(
       "I have your daughter. I want 1000000 dollars, or you'll never see her again.",
       "I bought this really nice doll for my daughter. It was 20 dollars on Amazon." +
         "She's never been happier." +

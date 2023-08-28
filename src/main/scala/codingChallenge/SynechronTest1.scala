@@ -1,36 +1,55 @@
 package codingChallenge
 
-object SynechronTest1 {
+import scala.:+
 
+object SynechronTest1 extends App{
+
+
+  import scala.collection.mutable
 
   case class Trade(accountName: String, accountNumber: String)
 
-  case class SeparateTrades(results: Map[String, Stream[Trade]] = Map.empty) {
-
-    def buildAccountMap(trades: Stream[Trade]): Map[String, Stream[Trade]] = {
-      val groupedTrades: Stream[(String, Stream[Trade])] = trades.groupBy(_.accountName).toStream
-      trades.foldLeft(results) {
-        case (map, trade) => map.updated(trade.accountName, groupedTrades.find(_._1 == trade.accountName).get._2)
+  object SeparateTradesByAccount {
+    def apply(trades: Seq[Trade]): SeparateTradesByAccount = {
+      val results = trades.foldLeft(mutable.Map.empty[String, Seq[Trade]].withDefaultValue(Seq.empty)) { (map, trade) =>
+        val updatedTrades = map.apply(trade.accountName) :+ trade
+        map.updated(trade.accountName, updatedTrades)
       }
+      new SeparateTradesByAccount(results.toMap)
     }
 
+    def unapply(separatedTrades: SeparateTradesByAccount): Option[Map[String, Seq[Trade]]] =
+      Some(separatedTrades.results)
+  }
 
-    val getTradesForAccount: String => Seq[Trade] = (accountName: String) => results.getOrElse(accountName, Stream.empty)
-
-    val tradeNames: Iterable[String] = results.values.flatten.map(_.accountName)
-
-    def getTradeByName(tradeName: String): Option[Trade] = {
-      val x = for {
-        trade <- results.values.flatten
-        if (trade.accountName == tradeName)
-      } yield trade
-      x.headOption
-    }
+  class SeparateTradesByAccount(private val results: Map[String, Seq[Trade]]) {
+    def getTradesForAccount(accountName: String): Seq[Trade] = results(accountName)
 
     def getFilteredTradesForAccount(accountName: String, predicate: Trade => Boolean): Seq[Trade] = {
       getTradesForAccount(accountName).filter(predicate)
     }
 
+    def getAllTradeNames: Seq[String] = results.keys.toSeq
 
+    def getTradeByName(tradeName: String): Option[Trade] = {
+      results.values.flatten.find(_.accountName == tradeName)
+    }
   }
+
+
+
+      val trades = Seq(
+        Trade("Account1", "123"),
+        Trade("Account2", "456"),
+        Trade("Account1", "789")
+      )
+
+      val separateTrades = SeparateTradesByAccount(trades)
+
+      println(separateTrades.getTradesForAccount("Account1"))
+      println(separateTrades.getFilteredTradesForAccount("Account1", _.accountNumber == "123"))
+      println(separateTrades.getAllTradeNames)
+      println(separateTrades.getTradeByName("Account2"))
+
+
 }

@@ -14,6 +14,11 @@ object StringOperations extends App {
     splitArray.map(_.split(","))
 
   }
+  val strreplace = "Hello, world!"
+  val newStr = strreplace.replace("world", "Scala")
+
+  val newCascadeStr = strreplace.replace("world", "Scala")
+                                .replace("orldw", "Scala")
 
   val x: Array[Int] = doubleSplit.map(list => list.length)
  val xxx: Array[Seq[String]] = splitArray.map(word => Seq(word))

@@ -22,6 +22,7 @@ val dogs: MyList[Animal] = new MyList[Dog]
   class Dog extends Animal
 
   class Cat extends Animal
+  class KittyCat extends Cat
 
   val dogs: MyList[Animal] = new MyList[Dog](new Dog)
 
@@ -36,6 +37,7 @@ TODO
     Covariant = retrieves or produces T.
     Contravariant = acts on, or consumes T. //alias type class pattern
    */
+
   class Vet[-T]
 
   val lassiesVet: Vet[Dog] = new Vet[Animal]
@@ -87,10 +89,10 @@ TODO
    class PetBox[-T](val favoriteAnimal: T)
    Error : ->  contravariant type T occurs in covariant position in type T of value favoriteAnimal
    val garfield = new Cat
-   val theVet: PetBox[Cat] = new PetBox[Animal](garfield)
-   def petApi(petBox: PetBox[Animal]) = {
+   val theVet: PetBox[dog] = new PetBox[Animal](garfield)
+   def petApi(petBox: PetBox[Dog]) = {
     // here petBox of Dog is having the Cat and we expect here Dog
-    val petBox: PetBox[Dog] = theVet // type conflict if we access that pet it will cat
+    val petBox: PetBox[dog] = theVet // type conflict if we access that pet it will cat
    }
    val lassiesVet: PetBox[Dog] = theVet
     We say that the types of val fields are in covariant position,
@@ -173,7 +175,7 @@ TODO
     list.add(new Cat) // dogs and cat are intermixed together this is wrong
   }
   ContraApi(new ContraList[Dog])
-  val moreAnimals = animals.add(new Dog) // Wrong adding Dog into list of cats
+  val moreAnimals = animals.add(new Dog) // Wrong adding Dog into list of cats  compiler will not allow
 
 TODO
   which again breaks the type guarantees.
@@ -221,9 +223,13 @@ TODO
   Again, breaking the type guarantees:
   we use a Vet[Animal] whose method returns a Cat,
   so when we finally invoke the CovVetApi method on covet (which is declared as Vet[Dog]),
-  the type checker expects a Dog but we get a Cat per its real implementation! Not funny.
+  the type checker expects a Dog but we get a Cat per its real implementation! Not funny but its allowed as its Contravarient.
   Therefore, we say method return types are in covariant position.
   A covariant example works fine for this case.
+
+
+
+
 
 TODO
    abstract class CovVet[+T] {
@@ -232,8 +238,10 @@ TODO
   val covet: CovVet[Animal] = new CovVet[Dog] {
     override def rescueAnimal(): Dog = new Dog // because Dog is animal
   }
+
+ TODO
   def CovVetApi(vet:CovVet[Animal])={
-    val rescuedDog: Dog = vet.rescueAnimal // This code will blow expecting Dog but got Cat
+    val rescuedDog: Dog = vet.rescueAnimal // This code will blow expecting Dog but you are supplying a Animal
   }
   CovVetApi(covet)
 
@@ -243,13 +251,21 @@ TODO
   abstract class CovVet[+T] {
     def rescueAnimal(): T
   }
+
   val covet: CovVet[Dog] = new CovVet[Dog] {
     override def rescueAnimal(): Dog = new Dog // because Dog is animal
   }
+
+
+
+  //API
   def CovVetApi(vet:CovVet[Dog])={
     val rescuedDog: Dog = vet.rescueAnimal
   }
   CovVetApi(covet)
+
+
+
 /*
 TODO
     How to Solve the Variance Positions
@@ -282,17 +298,20 @@ This is how we solve the cryptic “covariant type T occurs in contravariant pos
 
   //Similarly, we can solve the opposite “contravariant type occurs in covariant position” with the opposite type bound:
 
-   class VetContra[-T] {
+   trait VetContra[-T] {
     def rescueAnimal[S <: T]: S = ???
   }
   //Assuming we can actually implement this method in such general terms,
   // the compiler would be happy: we can force the Vet to return an instance of a particular type:
 
   val vetContra: VetContra[Dog] = new VetContra[Animal] {
-     def rescueAnimal: Cat = new Cat // because Dog is animal
+       val rescueAnimal: Cat = new Cat // because Dog is animal
+
   }
+
   def contraApi(vet:VetContra[Dog]) ={
-    val rescuedDog: Dog = vet.rescueAnimal[Dog] // type checking passes now this code will not blow
+    val rescuedDog: Dog = vet.rescueAnimal[Dog] // type checking passes now this code will not blow at compile time but will blow at runtime
   }
+
  contraApi(vetContra)
 }

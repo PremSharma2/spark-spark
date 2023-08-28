@@ -14,6 +14,15 @@ object PartialFunctionAndCollectionExercise  extends App {
 
 f1: PartialFunction[Int,String] = List(a, c, b)
 
+val transformations: Seq[Data => Data] = Seq(
+  transform1,
+  transform2,
+  transform3
+  // ...
+)
+
+// Apply the i-th transformation
+val transformedData = transformations(i)(originalData)
 
 */
 

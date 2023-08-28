@@ -28,6 +28,7 @@ val random= new Random
 sealed trait Animal
   case class  Dog(breed:String) extends Animal
   case class  Cat(breed:String) extends Animal
+
   def main(args: Array[String]): Unit = {
   println(x)
   println(description)

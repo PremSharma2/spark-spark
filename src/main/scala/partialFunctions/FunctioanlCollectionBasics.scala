@@ -97,6 +97,9 @@ TODO
   this set is all about the property of the elements, so contains returns true only if that property is satisfied
   adding an element means adjusting the property so that it also holds true for the element we want to add
   removing an element means adjusting the property so that it definitely returns false for the element we’re removing
+  e  => property(e) || e == x effectively "extends" the set to include x
+   without affecting the original elements in the set that satisfy property(e).
+   This means that the new set contains all elements from the old set (as they satisfy property(e)) and also the element x
  */
   case class PBSet[A](property: A => Boolean) extends RSet[A] {
     def contains(x: A): Boolean = property(x)
@@ -105,8 +108,55 @@ TODO
   }
 
   object RSet {
-    def apply[A](values: A*) = values.foldLeft[RSet[A]](new REmpty())(_ + _)
+    def apply[A](values: A*) = values.foldLeft[RSet[A]]( REmpty())(_ + _)
   }
+
+  //TODO use case of PropertyBasedSet
+  val validInputs = PBSet[Int](x => x >= 0 && x <= 100)
+
+  def processInput(x: Int): Unit = {
+    if (validInputs.contains(x)) {
+      println(s"Processing $x")
+    } else {
+      println(s"Invalid input: $x")
+    }
+  }
+  processInput(55)  // Output: Processing 55
+  processInput(105) // Output: Invalid input: 105
+  /**
+ TODO
+  Use Case 2: Query Optimization
+  Imagine you have a database and you know certain rows
+  are more likely to be queried based on some property.
+  A PBSet can be used to easily check whether a row satisfies the likely-to-be-queried property.
+  without loading the data
+   */
+
+  val frequentlyQueried = PBSet[String](x => x.startsWith("A"))
+
+  def isFrequentlyQueried(s: String): Boolean = frequentlyQueried.contains(s)
+
+  println(isFrequentlyQueried("Apple"))  // Output: true
+  println(isFrequentlyQueried("Banana")) // Output: false
+
+  /**
+ TODO
+  Use Case 3: Authorization
+  Let's say you have different tiers of users in an application
+  and each tier has a set of privileges.
+  You could define each tier's privileges as a PBSet.
+   */
+
+
+  val adminPrivileges = PBSet[String](_ == "all")
+  val userPrivileges = PBSet[String](x => List("read", "comment").contains(x))
+
+  def hasAccess(userType: PBSet[String], action: String): Boolean = userType.contains(action)
+
+  println(hasAccess(adminPrivileges, "write")) // Output: true
+  println(hasAccess(userPrivileges, "write")) // Output: false
+
+
 
   val first5Elements: RSet[Int] = REmpty[Int]() + 1 + 2 + 3 + 4 + 5
 

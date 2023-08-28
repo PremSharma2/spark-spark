@@ -18,9 +18,11 @@ object ScalaObjects extends App {
     def vanFly(): Boolean = true
     //factory method for Person class
     def apply(mother:Person, father:Person):Person= new Person("Bobie")
+
   }
   class Person(name:String) {
     //instance level functionality
+    def print= println(Person.N_EYES)
   }
 // This Pattern of writing class and object of same type in same scope is called Companion
   //Person class and person object

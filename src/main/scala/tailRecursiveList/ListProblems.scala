@@ -23,7 +23,7 @@ object ListProblems {
 
     override def toString: String = "[]"
 
-    // todo prepend operator
+    // todo prepend operator complexity is O(1)
     def ::[S >: T](element: S): RList[S] =  Node(element, this)
 
     def apply(index: Int): T
@@ -175,9 +175,9 @@ object ListProblems {
      Complexity is: O(min(N,index))
        */
       @tailrec
-      def tailRecApply(remaining: RList[T], currentIndexAccumlator: Int): T = {
-        if (currentIndexAccumlator == index) remaining.head
-        else tailRecApply(remaining.tail, currentIndexAccumlator + 1)
+      def tailRecApply(remaining: RList[T], currentIndexAccumulator: Int): T = {
+        if (currentIndexAccumulator == index) remaining.head
+        else tailRecApply(remaining.tail, currentIndexAccumulator + 1)
       }
 
       if (index < 0) throw new NoSuchElementException
@@ -271,6 +271,7 @@ object ListProblems {
 
      */
     override def ++[S >: T](anotherList: RList[S]): RList[S] = {
+      @tailrec
       def concatTailRec(remaining: RList[S], accumulator: RList[S]): RList[S] = {
         if (remaining.isEmpty) accumulator
         else concatTailRec(remaining.tail, remaining.head :: accumulator)
@@ -303,10 +304,10 @@ object ListProblems {
      */
     override def removeAt(index: Int): RList[T] = {
       @tailrec
-      def removeAtTailRec(remaining: RList[T], currentIndex: Int, predecessor: RList[T]): RList[T] = {
-        if (currentIndex == index) predecessor.reverse ++ remaining.tail
-        else if (remaining.isEmpty) predecessor.reverse
-        else removeAtTailRec(remaining.tail, currentIndex + 1, remaining.head :: predecessor)
+      def removeAtTailRec(remaining: RList[T], currentIndex: Int, accumulator: RList[T]): RList[T] = {
+        if (currentIndex == index) accumulator.reverse ++ remaining.tail
+        else if (remaining.isEmpty) accumulator.reverse
+        else removeAtTailRec(remaining.tail, currentIndex + 1, remaining.head :: accumulator)
       }
 
       removeAtTailRec(this, 0, RNil)
@@ -437,6 +438,7 @@ object ListProblems {
 
 
     /*
+   TODO
      [1,2,3,4].filter(_%2==0) = this will make a call to
      filterTailRec([1,2,3,4],[]) inside that we will check if(remaining.isEmpty) which is false
      then we will check whether current head passes the predicate  else if (predicate.apply(remaining.head)) which fails to pass
@@ -448,6 +450,7 @@ object ListProblems {
      then we will check whether current head passes the predicate  else if (predicate.apply(remaining.head)) which fails
      then we will make recursive call filterTailRec([4],[2])
 
+TODO
      inside that we will check if(remaining.isEmpty) which is false
      then we will check whether current head passes the predicate  else if (predicate.apply(remaining.head)) which actually passes
       filterTailRec([],[4,2])
@@ -602,6 +605,8 @@ object ListProblems {
              Complexity is O(N*K) because N*K is the dimension of the resultant list
              here N is the length of Current list and K is the number of times we need to duplicate
      */
+
+
     override def duplicateEach(k: Int): RList[T] = {
       @tailrec
       def duplicateEachTailRec(remaining: RList[T], currentElement: T, nDuplications: Int, accumulator: RList[T]): RList[T] = {

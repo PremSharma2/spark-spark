@@ -35,12 +35,19 @@ TODO what if SomeType is higherKinded type List[T] ??
  If SomeType is invariant in T, then the position of T is strictly invariant,
  * and T must not have any +/- annotation.
    */
-  class IList[T]
-  class Vehicle
-  class Bike extends Vehicle
-  class Car extends Vehicle
+
+
+
+ //TODO ADTs Data model
+  sealed trait Vehicle
+  case object Bike extends Vehicle
+  case object Car extends Vehicle
+
+
+
   //Invariant API
   class InvariantList[T]
+
   class IParking[T](vehicles:List[T]){
     def park(vehicle:T):IParking[T]= ???
     def impound (vehicles:List[T]):IParking[T]= ???
@@ -62,6 +69,7 @@ TODO what if SomeType is higherKinded type List[T] ??
     // Due to double Variance function input has become covariant and its o/p has become contravariant
     def map [S>:T](function : T => S): CParking[S] = ???
   }
+
   //TODO Contravariant implementation are majorly used in type class
   //Todo beacuse we need to take an action on type
   
@@ -97,6 +105,14 @@ TODO what if SomeType is higherKinded type List[T] ??
   
    //Covariant Implementation
    //TODO If your Generic class creates or contains elements of type T it should be +T
+  /*
+  TODO
+     In summary, IList[T] being invariant allows the code
+     to compile even though T is covariant in CParking2.
+     The invariance of IList effectively "neutralizes" the covariance of T in this context.
+
+   */
+   class IList[T]
   class CParking2[+T](  vehicles :IList[T])   {
     // we need to do the hacking of compiler to avoid second ThumB Rule
     // for variance i.e to make the method argument is at
@@ -125,10 +141,18 @@ TODO what if SomeType is higherKinded type List[T] ??
   class XParking2[-T] ( vehicles :IList[T]){
      def park(vehicle:T):XParking2[T]= ???
      /*
+  TODO
      def impound (vehicles:IList[T]):XParking2[S]= ???
       *Error: contravariant type T occurs in invariant position
        in type com.scala.variance.VarianceExercise.IList[T] of value vehicles
       * Reason: you cannot supply an invariant parameter
+       In Scala, the contravariant type parameter -T means that for a type XParking2,
+       if A is a subtype of B, then XParking2[B] is a subtype of XParking2[A].
+       But since IList[T] is invariant, IList[A] and IList[B] have no subtyping relationship.
+TODO
+       In your XParking2 class, you are trying to use T (which is contravariant in XParking2)
+       in a position where it must be invariant (inside IList[T]).
+        This is not allowed by the Scala type system because it can lead to type unsafety.
          with a contravariant type value
          This IList is invariant and you are supplying the contravariant type
          Hence this is wrong

@@ -68,17 +68,24 @@ numbers1 match {
   }
   
   object even{
-    def unapply(arg: Int): Option[Boolean] = if (arg%2==0) Some(true) else None
+    def unapply(arg: Int): Option[Boolean] = if (arg % 2 ==0) Some(true) else None
   }
 
-  object singledigit{
-    def unapply(arg: Int): Option[Boolean] = if (arg > -10 && arg<10 ) Some(true) else None
+  object Odd {
+    def unapply(arg: Int): Option[Int] = if (arg % 2 != 0) Some(arg) else None
   }
-// its like if if and else conditions implementation via pattern matching
+
+  object SingleDigit {
+    def unapply(arg: Int): Option[Unit] =
+      if (arg > -10 && arg < 10) Some(()) else None
+  }
+
+  // its like if if and else conditions implementation via pattern matching
   val matchpattern1: String = n match {
-    case singledigit(myflag) => s" is single Digit : and value returned from unapply is $myflag"
+    case SingleDigit(_) => s" is single Digit : and value returned from unapply is Unit"
     case even(_) => s" is even number"
-    case _ => "no property"
+    case Odd(number) => s"this is odd number : and value returned from unapply is ${number}"
+    case _ => "no property matched "
   }
   println(matchpattern)
   println(matchpattern1)

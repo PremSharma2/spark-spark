@@ -1,9 +1,11 @@
 package codingChallenge
 
+import option.OptionExercise.ConnectionApi.Connection
+
 import java.time.ZonedDateTime
 
 //import codingChallenge.RoughTest.{i, map}
-import option.OptionExercise.{Connection, serverConfig}
+import option.OptionExercise.serverConfig
 
 import scala.collection.SeqView
 object RoughTest  extends App{

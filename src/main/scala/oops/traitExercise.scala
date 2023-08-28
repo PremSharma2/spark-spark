@@ -1,7 +1,7 @@
 package oops
 
 //TODO Mixins cake pattern
-trait DonutShoppingCartDao[A] {
+trait DonutShoppingMixinCartDao[A] {
 
   donutDatabase: DonutDatabase[A] => // dependency injection
 
@@ -38,8 +38,9 @@ trait DonutDatabase[A] {
   def delete(donut: A): Boolean = ???
 
 }
-
-case class DonutShoppingCart[A]() extends DonutShoppingCartDao[A] with DonutDatabase[A]
+//wiring is done here
+// this can be done in ScalaPB in Scala projects
+case class DonutShoppingMixinCart[A]() extends DonutShoppingMixinCartDao[A] with DonutDatabase[A]
 
 
 

@@ -140,6 +140,7 @@ object ScalaClass {
     }
   }
 
+  // we cant do that  val brain=new Brain
   object SingletonTest extends App {
 
     // this won't work

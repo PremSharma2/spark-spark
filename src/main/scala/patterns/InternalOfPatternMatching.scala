@@ -18,14 +18,14 @@ object InternalOfPatternMatching extends App {
   }
   println(matchPattern)
   println(matchPattern1)
-  /*
+  /**
   The return type of an unapply should be chosen as follows:
-
-If it is just a test, return a Boolean. For instance case even().
-If it returns a single sub-value of type T, return an Option[T].
-If you want to return several sub-values T1,...,Tn, group them in an optional tuple Option[(T1,...,Tn)].
-Sometimes, the number of values to extract isn’t fixed and we would like to return
-an arbitrary number of values,
+TODO
+ If it is just a test, return a Boolean. For instance case even().
+ If it returns a single sub-value of type T, return an Option[T].
+ If you want to return several sub-values T1,...,Tn, group them in an optional tuple Option[(T1,...,Tn)].
+ Sometimes, the number of values to extract isn’t fixed and we would like to return
+ an arbitrary number of values,
  depending on the input. For this use case,
  you can define extractors with an unapplySeq method which returns an Option[Seq[T]].
   Common examples of these patterns include deconstructing a List using :

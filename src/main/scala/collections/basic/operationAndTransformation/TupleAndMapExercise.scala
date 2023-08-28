@@ -7,20 +7,29 @@ object TupleAndMapExercise extends App {
   
   def addtoNetwork(network: Map[String, Set[String]], person: String): Map[String, Set[String]] = {
      // TODO new entry in the networkMap is represented by (person -> Set())
-    network + (person -> Set.empty[String])
+    network.updated(person,Set.empty[String])
   }
 
   def friend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] = {
-    val friendsOFA: Set[String] = network.apply(a)
-    val friendsB: Set[String] = network.apply(b)
-    network + (a -> (friendsOFA + b)) + (b -> (friendsB + a))
+    val friendsOfA: Set[String] = network.getOrElse(a, Set())
+    val friendsOfB: Set[String] = network.getOrElse(b, Set())
+    network.updated(a, friendsOfA + b).updated(b, friendsOfB + a)
   }
 
+
   def unFriend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] = {
-    val friendsA = network(a)
-    val friendsB = network(b)
-    network + (a -> (friendsA - b)) + (b -> (friendsB - a))
+    val friendsA = network.getOrElse(a, Set.empty)
+    val friendsB = network.getOrElse(b, Set.empty)
+
+    network.updated(a, friendsA - b).updated(b, friendsB - a)
   }
+
+  /**
+   * This method removes the Person from the network
+   * @param network
+   * @param person
+   * @return network
+   */
 
   def remove(network: Map[String, Set[String]], person: String): Map[String, Set[String]] = {
     // to remove this person from the network we need to unfriend this person from the all network  entries of  the persons
@@ -44,7 +53,8 @@ object TupleAndMapExercise extends App {
   println(friend(network, "BOB", "Mary"))
   println(unFriend(friend(network, "BOB", "Mary"), "BOB", "Mary"))
   println(remove(friend(network, "BOB", "Mary"), "BOB"))
-  /*
+
+  /**
    * this method is used to find the total number of friends of a person in a network
    * 
    */
@@ -64,6 +74,7 @@ object TupleAndMapExercise extends App {
   def nPeopleWithNoFriends(network: Map[String, Set[String]]): Int = {
     network.filterKeys(key => network(key).isEmpty).size
   }
+
   def socialConnection(network: Map[String, Set[String]], a: String, b: String): Boolean = {
     def bfsSearch(target: String, consideredPeople: Set[String], discoveredPeople: Set[String]): Boolean = {
       if (discoveredPeople.isEmpty) false

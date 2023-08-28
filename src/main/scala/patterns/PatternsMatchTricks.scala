@@ -80,10 +80,14 @@ val ordinalNumber=aNumber match {
     case _ => "I hate This List"
 
   }
+
+
 val mylist= 1::2::3::4::RNil
   mylist match {
     case RNil | Node(0,_) => " compound pattern"
   }
+
+
   // TODO if guards
   mylist match {
     case Node(head,Node(specailSecondElement,_)) if (specailSecondElement%2==0) =>
@@ -123,7 +127,7 @@ val mylist= 1::2::3::4::RNil
       case Nil => Seq(1)
       case head :: tail if head < 9 => Seq(head + 1) ++ tail
       // Seq(4) ++ Seq(2,1)
-      case _ :: tail => Seq(0) ++ incrementRec(tail) // Seq(0) + Seq(0) + Seq(0) + Seq(1)
+      case _ :: tail => Seq(0) ++ incrementRec(tail) // Seq(0) ++ Seq(0) ++ Seq(0) ++ Seq(1)
     }
     tempResult
   }
@@ -147,12 +151,12 @@ val mylist= 1::2::3::4::RNil
     case Nil => ""
   }
   // pattern match Exercise 3: Largest size element in List
-
+   @tailrec
   def max(xs: List[Int]): Option[Int] = xs match {
     case Nil => None
     case List(x: Int) => Some(x)
-    case firstHead :: secondElement :: tail => max( (if (firstHead > secondElement)
-                                              firstHead else secondElement) :: tail )
+    case firstHead :: secondElement :: tail => max( (if (firstHead > secondElement) firstHead else secondElement) :: tail )
+
   }
 
 
