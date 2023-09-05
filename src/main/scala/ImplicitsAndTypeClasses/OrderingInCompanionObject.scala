@@ -9,6 +9,7 @@ object OrderingInCompanionObject  extends App {
     Emp("Steve",5),
     Emp("Bold",2)
   )
+
   object Emp{
     implicit val alphabeticOrdering :Ordering[Emp] = Ordering.fromLessThan(
       (a,b) => a.name.compareTo(b.name) < 0)

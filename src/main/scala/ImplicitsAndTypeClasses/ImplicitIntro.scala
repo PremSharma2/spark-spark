@@ -10,6 +10,7 @@ object ImplicitIntro extends  App {
   case class Person(name:String){
     def greet = s"Hi my name is $name"
   }
+
   implicit  def StringToPerson(str:String): Person =Person(str)
   // Here Compiler will scan all Classes traits everything which has something which takes
   // String and gives a object which has greet method and which is marked implicit as well

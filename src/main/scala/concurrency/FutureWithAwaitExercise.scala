@@ -17,10 +17,15 @@ case class User(name:String)
       User(name)
 
     }
+
+
+
     def createTransaction(user: User, merchantName:String, amount:Double): Future[Transaction] =Future{
       Thread.sleep(1000)
       Transaction(user.name , merchantName,amount,status = "Success")
     }
+
+
     def purchase(userName: String, merchantName:String, costOfItem:Double) : String ={
       // fetch the user form db
       //create a transaction for the user

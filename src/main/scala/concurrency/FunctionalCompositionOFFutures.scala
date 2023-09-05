@@ -25,18 +25,23 @@ object FunctionalCompositionOFFutures  extends  App {
     mark: Profile <- SocialNetwork.toFetchProfile("fb.id.1.zuck")
     bill: Profile <- SocialNetwork.fetchBestFriend(mark)
   }  mark poke bill
+
+
 Thread.sleep(1000)
-  val recoverPArtialFunction: PartialFunction[Throwable, Unit] = {
-    case  e: Throwable => Profile("fb.id.0-dummy","Foreveralone")
+
+  val recoverPartialFunction: PartialFunction[Throwable, Unit] = {
+    case  e: Throwable => Profile("fb.id.0-dummy","Forevermore")
 
   }
   val recoverWithPartialFunction: PartialFunction[Throwable, Future[Profile]] = {
     case  e: Throwable => SocialNetwork.toFetchProfile("fb.id.1.zuck")
 
   }
+
   val aProfileNoMatterWhat: Future[Any] = SocialNetwork
     .toFetchProfile("unknwon-Id") .
-     recover(recoverPArtialFunction)
+     recover(recoverPartialFunction)
+
   // always use recoverWith when you want to fallback with actual existing object in database
   val aFetchedProfileNoMatterWhat: Future[Profile] = SocialNetwork.
     toFetchProfile("unknwon-Id").

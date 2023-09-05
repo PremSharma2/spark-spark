@@ -113,8 +113,8 @@ TODO:Best practices
   case object Kingfisher extends Ordering[String] with  Bird {
     override def compare(x: String, y: String): Int = -1
 
-    //override protected val plumage = Plumage("Green", "Orange")
-    //override protected val colours: Seq[String] = plumage.colours
+    override protected val plumage = Plumage("Green", "Orange")
+    override protected val colours: Seq[String] = plumage.colours
   }
   case object Goldfinch extends Ordering[String] with  Bird {
     override def compare(x: String, y: String): Int = throw new NullPointerException
@@ -149,7 +149,7 @@ TODO:Best practices
     //croc.eat(dog)
   // Kingfisher.printColours()
    // Kingfisher1.printColours()
-   //Goldfinch.printColours()
+   Goldfinch.printColours()
     Goldfinch1.printColours() // this will work
   }
 

@@ -10,6 +10,7 @@ object FuturePromiseExercise extends App {
     callByNameExpression
   }
 
+
   // accessing two future task in sequence
   def inSequence[A, B](firstFuture: Future[A], secondFuture: Future[B]): Future[B] =
     firstFuture.flatMap(_ => secondFuture)
@@ -48,6 +49,7 @@ object FuturePromiseExercise extends App {
   def safefirst[A](fa: Future[A], fb: Future[A]): Future[A] = {
     // here promise is a controller for fa here basically
     val promise = Promise[A]
+
     val rs: Unit = fa.onComplete {
       case Success(value) => try {
         promise.success(value)
@@ -60,6 +62,8 @@ object FuturePromiseExercise extends App {
         case _ =>
       }
     }
+
+
     val rs1: Unit = fb.onComplete {
       case Success(value) => try {
         promise.success(value)
@@ -86,15 +90,15 @@ object FuturePromiseExercise extends App {
     Tries to complete the promise with either a value or the exception.
     Note: Using this method may result in non-deterministic concurrent programs.
      */
-    def tryCompletePromise(promise: Promise[A], result: Try[A]) =
+    def tryCompletePromise(promise: Promise[A], result: Try[A]) = {
       result match {
-      case Success(value) => try {
-        promise.success(value)
-      } catch {
-        case _ =>
-      }
-      case Failure(value) => try {
-        /*
+        case Success(value) => try {
+          promise.success(value)
+        } catch {
+          case _ =>
+        }
+        case Failure(value) => try {
+          /*
          promise.failure(value)
         The throwable to complete the promise with.
          If the throwable used to fail this promise is an error,
@@ -103,12 +107,12 @@ object FuturePromiseExercise extends App {
        If the promise has already been fulfilled,
          failed or has timed out, calling this method will throw an IllegalStateException.
          */
-        promise.failure(value)
-      } catch {
-        case _ => "Exception Thrown From DataBase No Connection Fetched"
+          promise.failure(value)
+        } catch {
+          case _ => "Exception Thrown From DataBase No Connection Fetched"
+        }
       }
     }
-
     // we can read this like this the future task result i.e future object
     // with this promise try to fulfill the promise with a promised value
     val promiseResult: Unit = fa.onComplete(result => tryCompletePromise(promise, result))
@@ -146,7 +150,7 @@ object FuturePromiseExercise extends App {
 *  @return If the promise has already been completed returns `false`, or `true` otherwise.
 
      */
-    val r: Unit = fb.onComplete(promise.tryComplete)
+     fb.onComplete(promise.tryComplete)
     // returning the fulfilled promise future
     promise.future
   }
@@ -166,21 +170,19 @@ object FuturePromiseExercise extends App {
     // by another Future Task
     // then this Future task should complete another promise
 
-    val checkAndComplete: Try[A] => Any = (result: Try[A]) => {
-      val checkIfPromissedAlreadyFullfilled = !bothPromise.tryComplete(result)
-      if (checkIfPromissedAlreadyFullfilled)
-      //def complete(result: Try[T]): this.type
-      //Completes the promise with either an exception or a value.
+    def checkAndComplete(result: Try[A]): Unit = {
+      if (!bothPromise.tryComplete(result)) {
         lastPromise.complete(result)
+      }
     }
+
     fa.onComplete(checkAndComplete)
     fb.onComplete(checkAndComplete)
     lastPromise.future
   }
 
   def retryUntil[A](action: () => Future[A], predicate: A => Boolean): Future[A] = {
-    action.apply().
-      filter(predicate).
+    action().
       recoverWith {
         case _ => retryUntil(action, predicate)
       }

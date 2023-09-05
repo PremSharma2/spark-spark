@@ -34,7 +34,7 @@ object NeedOFMonads extends App {
 
   // We have some external API which has a method
   def giveMeSafeValue[T](value:T):SafeValueContainer[T] = SafeValueContainer.apply(value)
-  val safeStringContainer:SafeValueContainer[String] = giveMeSafeValue("Scala is aweosome")
+  val safeStringContainer:SafeValueContainer[String] = giveMeSafeValue("Scala is awesome!!!")
   // now scenerio is we want to process the string is Wrapped in the SafeValue wrapper
   // to process that we need to extract it from the wrapper
   // three steps of ETW pattern here are ass follows:

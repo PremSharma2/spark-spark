@@ -1,7 +1,8 @@
 package ImplicitsAndTypeClasses
 
 //Exercise number 2
-// Types classes along with the implicits
+// TODO : -> Types classes along with the implicits
+
 object TypeClassAndImplicits  extends App {
 // type class
   trait HtmlSerializer[T]{
@@ -10,8 +11,11 @@ object TypeClassAndImplicits  extends App {
   // This is utility to use smartly, Type Class via this companion object
   // as a good design we always access type classes or traits who top most member of faimly
   // via companion object
-  // via this utility i.e Type class instances will be passed to utility to this Companion Object
+  // via this utility i.e Type class instances will be passed to utility factory of  this Companion Object
   // We will apply the operation on Type we passed via this utility
+
+  //TODO : ->  Companion Object
+
   object HtmlSerializer{
     // it take type class instance as argument and the type T
     def serialize[T](value : T)(implicit serializer:HtmlSerializer[T]):String=
@@ -38,6 +42,7 @@ object TypeClassAndImplicits  extends App {
   println(HtmlSerializer.serialize(42)(IntSerializer))
   println(HtmlSerializer.serialize(42))
   val user=User("Prem", 34, "prem.kaushik@outlook.com")
+
 println(HtmlSerializer.apply[User].serialize(user))
   // SAME
   println(HtmlSerializer[User].serialize(user))

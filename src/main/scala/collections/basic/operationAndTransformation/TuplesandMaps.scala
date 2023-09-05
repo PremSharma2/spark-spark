@@ -140,4 +140,19 @@ object TuplesandMaps extends App {
   // and value is the List
 
   //Map(J -> List(James, Jim), A -> List(Angela), M -> List(Mary), B -> List(Bob), D -> List(Daniel))
+  //TODO : -> Special case of calling map over Map
+
+/**
+TODO
+    If the function passed to map returns a tuple (K, V)
+    where K and V could be any type, then the result will be a Map[K, V].
+   If the function returns something other than a tuple,
+   then the result will be an Iterable.
+ */
+  val myMap = Map("a" -> 1, "b" -> 2, "c" -> 3)
+  val result: immutable.Iterable[String] = myMap.map{ case (key, value) => s"$key: $value" }
+  println(result)  // Output: Map(a: 1, b: 2, c: 3)
+  println(result.getClass)  // Output: class scala.collection.immutable.Map
+
+
 }
