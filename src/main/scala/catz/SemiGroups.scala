@@ -13,10 +13,25 @@ TODO
 
 //lets import the type class
 object SemiGroups  extends App {
+
   //TODO import the type class
   import cats.Semigroup
+
   // TODO lets import type class instances for Int type
   import cats.instances.int._
+  /*
+TODO
+      implicit val catsKernelStdGroupForInt: CommutativeGroup[Int] = new IntGroup
+}
+TODO
+ class IntGroup extends CommutativeGroup[Int] {
+  def combine(x: Int, y: Int): Int = x + y
+  def empty: Int = 0
+  def inverse(x: Int): Int = -x
+  override def remove(x: Int, y: Int): Int = x - y
+ }
+   */
+
   // naturalIntSemiGroupTypeClassInstance is an type class instance
   val naturalIntSemiGroupTypeClassInstance: Semigroup[Int] = Semigroup.apply[Int]
 
@@ -24,6 +39,7 @@ object SemiGroups  extends App {
 
   val combineNaturals: Int = naturalIntSemiGroupTypeClassInstance.combine(2,46)
   println(combineNaturals)
+
 
   // naturalStringSemiGroupTypeClassInstance is an type class instance
   // TODO import type class instance for the String type
@@ -34,12 +50,15 @@ object SemiGroups  extends App {
 
   // TODO --------------------------------------------------------------------------------
 
+
   // TODO : -> use of Semigroup type class  is to reduce the List elements
   // TODO or combine the elements in list
   //TODO : -> this we can enhance by converting into
-  // type Enrichment by making it implicit class
+  //      type Enrichment by making it implicit class
 
   //TODO : Use case -> General API for Reduction of any type using type class
+
+
 /*
 TODO
  def reduce[A1 >: A](op: (A1, A1) => A1): A1
@@ -47,6 +66,7 @@ TODO
  Reduces the elements of this collection or iterator using the specified associative binary operator.
  The order in which operations are performed on elements is unspecified and may be nondeterministic.
  */
+
   Tuple2
   def reduceThings[T](list:List[T])(implicit semiGroup:Semigroup[T]) = {
     list.reduce(semiGroup combine)
@@ -54,7 +74,7 @@ TODO
   }
 
 // TODO : -> These are specific APIS over here we dont require combine function
-
+//todo : binary operator
 val fx : (Int,Int) => Int = (x,y) => x+ y
 
   def   reduceInts(list:List[Int]) = list.reduce(fx)
@@ -80,6 +100,7 @@ val fx : (Int,Int) => Int = (x,y) => x+ y
   // TODO :-> importing the implicit  Semigroup type class instance of Type Option[Int]
   // TODO it is an higher kinded type so we will
   //  use type class instance of monoid with semigroup
+
   /*
   implicit def catsKernelStdMonoidForOption[A: Semigroup]: Monoid[Option[A]] =
     new OptionMonoid[A]
@@ -113,6 +134,7 @@ val strings= List("I am" , "starting" ,"to like " , "SemiGroup")
 
   // TODO 1: Exercise make this api to support for Custom Types
 
+
   case class Expense(id:Long, amount:Double)
   // TODO : creating the  Type class Instance for Expense Type which is custom Type Expense
   // TODO and marking it implicit
@@ -139,6 +161,7 @@ val strings= List("I am" , "starting" ,"to like " , "SemiGroup")
   implicit final def catsSyntaxSemigroup[A: Semigroup](a: A): SemigroupOps[A] =
     new SemigroupOps[A](a)
 }
+
 //TODO type Enrichment using implicits
 implicit class SemigroupOps[A: Semigroup](lhs: A) {
   def |+|(rhs: A): A = Semigroup[A].combine(lhs, rhs)
@@ -152,6 +175,7 @@ implicit class SemigroupOps[A: Semigroup](lhs: A) {
 
   println(anIntsumUsingTypeEnrichMent)
   println(anStringConcatUsingTypeEnrichMent)
+  // wen have defined typed class instance above typeClassInstanceExpense
   val aCombinedExpense: Expense = Expense(1,60) |+| Expense(2,40)
   println(aCombinedExpense)
 

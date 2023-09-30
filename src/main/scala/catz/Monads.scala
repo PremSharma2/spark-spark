@@ -58,6 +58,7 @@ object lMonads extends App {
   val charFuture= Future('c')
 //TODO : here flatmap make sure that they will make the sequential acces to these tasks
   val combinationFuture: Future[(Int, Char)] = numberFuture.
+
                                                      flatMap(n=> charFuture.map(ch=> (n,ch)))
   val forComprehensionForFuture = for{
     number <- numberFuture

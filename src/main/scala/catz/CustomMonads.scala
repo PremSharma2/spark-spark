@@ -26,8 +26,10 @@ object CustomMonads  extends App {
       case Some(Right(value)) => Some(value)
     }
   }
+
   //This will return the final value after
-  // the iteration over this monad All these iteration functions take inference of tailRecM
+  // the iteration over this monad
+  // All these iteration functions take inference of tailRecM
   // MonadOption.iterateUntil()
 
   // Todo Exercise Define a monad for Identity Type
@@ -71,6 +73,7 @@ TODO Here transformation will be applied over leaf nodes of Tree
   final case class Branch [+T](left:Tree[T], right:Tree[T]) extends Tree[T]
 
   // TODO : We will create smart constructor instead of using case class constructor
+
   object Tree{
     def leaf[T](value:T): Tree[T] = Leaf(value)
     def branch[T](left:Tree[T], right:Tree[T]): Tree[T] =

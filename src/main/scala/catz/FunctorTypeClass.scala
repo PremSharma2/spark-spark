@@ -1,5 +1,6 @@
 package catz
 
+import scala.language.higherKinds
 import scala.util.Try
 
 /*
@@ -35,10 +36,12 @@ val aModifed: Seq[Int] = List(1,2,3).map(_ +1)
 
   // TODO F[_] is abstract  representation of any kind of Bag for example Bag[A](content: A)
 
+
   // TODO Type Class
   trait MyFunctor[F[_]] {
     def map[A, B](bag: F[A])(f: A => B): F[B]
   }
+
   // TODO : Companion Object
 
 object MyFunctor{
@@ -47,11 +50,15 @@ object MyFunctor{
 
   //TODO : Example implementation for Functor type-class instance for higher-kinded-type
   // [Option[_]]
+
   implicit val mycatsStdInstancesForOption: MyFunctor[Option] = new MyFunctor[Option] {
     override def map[A, B](option: Option[A])(f: A => B): Option[B] =
       option.map(f)
   }
+
+
   mycatsStdInstancesForOption.map[String,Int](Some("a"))(_.toInt)
+
    val functorForOption: MyFunctor[Option] = new MyFunctor[Option] {
     def map[A, B](fa: Option[A])(f: A => B): Option[B] = fa match {
       case None    => None
@@ -66,12 +73,16 @@ object MyFunctor{
   }
 
   val functortypeClassInstance= MyFunctor.apply[Option]
+
+  val rs: Option[Int] =functortypeClassInstance.map(Some(2))(_+1)
   // TODO : Test our own Custom Functor
   //val listTypeClassInstaceforCustomFunctor= MyFunctor.apply[List]
  // println(listTypeClassInstaceforCustomFunctor.map(List(1,2,2))(_+1))
 
 
   val functorTypeClasInsatnce= MyFunctor.apply[Option]
+
+
   //TODO ---------------------------cats API Functor type class------------------------------------------------------
 
 
@@ -106,14 +117,16 @@ object MyFunctor{
   //TODO We can generalize this api
 /*
 TODO : type class instance like below will be implicitly passed to here
-implicit val mycatsStdInstancesForList = new MyFunctor[List] {
+TODO
+ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
     override def map[A, B](fa: List[A])(f: A => B): List[B] =
       fa.map(f)
   }
  */
+
   // TODO: Use of functor Type class to expose API or end point which accepts any kind of Monad
-  def do10x[F[_]](container:F[Int])(implicit functortypeClassInstance:Functor[F]):F[Int] ={
-    functortypeClassInstance.map(container)(_+1)
+  def do10x[F[_]](container:F[Int])(implicit functorTypeClassInstance:Functor[F]):F[Int] ={
+    functorTypeClassInstance.map(container)(_+1)
 }
 
   println(do10x(List(1,2,3,4)))
@@ -136,8 +149,10 @@ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
  */
 
 
-  // TODO : Define a Functor for Binary Tree
-  trait Tree[+T]
+  // TODO : Define a Functor for Binary Tree Data structure
+  //this is also ADTs
+ sealed trait Tree[+T]
+
   case class Leaf[+T](value : T) extends Tree[T]
   //TODO: leaf is node of tree which has no branch
 //TODO : Branch is also an Tree but it has further branches or leaf nodes only
@@ -162,6 +177,8 @@ implicit val mycatsStdInstancesForList = new MyFunctor[List] {
   }
   println(do10x[Tree](Branch(2,Leaf(2),Leaf(2))))
   println(do10x(Tree.branch(2,Tree.leaf(2),Tree.leaf(2))))
+
+
 
   //TODO : Extension methods
 

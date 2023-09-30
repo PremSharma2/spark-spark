@@ -797,6 +797,8 @@ TODO
       insertSortTailRec(this, RNil)
     }
 
+
+
     override def mergeSort[S >: T](ordering: Ordering[S]): RList[S] = {
       /*
       As merge sorting approach we now that it breaks the list into two parts

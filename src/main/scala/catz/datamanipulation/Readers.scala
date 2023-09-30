@@ -5,7 +5,7 @@ import cats.data.Kleisli
 
 object Readers extends App {
 
-  /*
+  /**
   TODO
    This conf file has all info for all the layers
    - configuration File => initial data structure
@@ -13,15 +13,18 @@ object Readers extends App {
    - an http layer i.e Rest End point  another state
    - a business logic layer  service layer   another state
    */
-  // TODO : -> this we will read from properties file
-case class Configuration(dbUserName:String, dbPassword:String , host:String, port:Int , nThreads:Int , emailReplyto:String)
+
+  // TODO : -> this we will read Conf data from properties file
+case class Configuration(dbUserName:String, dbPassword:String, host:String, port:Int, nThreads:Int, emailReplyTo:String)
+
 
 // TODO Repository layer Dao
   case class DbConnection(userName:String,password:String){
-    def getOrderStatus(orderID:Long):String = "dispatched" // it select * from Order and return status of order
+    def getOrderStatus(orderID:Long):String = "dispatched" // it select * from Order and return status of order where orderID=???
 
     def getLastOrderId(userName:String):Long= 101
   }
+
 
   // TODO Service Layer
   case class HttpService(host:String, port:Int){
@@ -34,10 +37,37 @@ case class Configuration(dbUserName:String, dbPassword:String , host:String, por
   // TODO : ->  lets introduce Reader data processor API which is used to handle these situation
   // TODO i.e it will compose the functions
   //TODO  i.e this api will handle all this in functional way
+
+
   import cats.data.Reader
-  // This API has one input and one output here as we can see that
-  // Reader apply method takes function which consumes the input and
-  // generate the desired output i.e it transforms the state it is wrapper over function
+  /*
+TODO
+     Reader monad (and its transformer variant, ReaderT) is a very powerful tool
+     in the functional programming world,
+     and it's especially useful in contexts
+     where you want to pass around a configuration or environment
+     without explicitly threading it through every function.
+     generate the desired output i.e
+     it transforms the state it is wrapper over function
+     Reader[A, B] is a type that represents a
+     function A => B. In other words,
+     it’s a computation that needs a value of type A to produce a value of type B.
+     ReaderT[F[_], A, B] is the transformer version of Reader.
+     It represents a computation that,
+     given a value of type A,
+     produces a value of type B wrapped in a functor F.
+     For example:
+     For instance, ReaderT[Option, A, B]
+     would represent a computation that needs an A and produces an Option[B].
+     ReaderT[F[_], A, B] is the transformer version of Reader.
+     It represents a computation that, given a value of type A,
+     produces a value of type B wrapped in a functor F.
+     For instance, ReaderT[Option, A, B]
+     would represent a computation that needs an A and produces an Option[B].
+   */
+
+  // Id is the identity monad.
+  // It’s a type that doesn’t do anything special. It's effectively a "no-operation" monad.
   //def apply[A, B](f: A => Id[B]): Reader[A, B] = ReaderT[Id, A, B].apply(f)
   //TODO here A is input to function B is o/p of function
   // and ID which is an identity type is final o/p of reader
@@ -70,6 +100,13 @@ def map[C](f: B => C)(implicit F: Functor[F]): Kleisli[F, A, C] =
         so in map when  a => F.map(run(a))(f) we can replace run(a)
         with F[B]  a => F.map(F[B])(f)
         this F[B] here represents higherkindedtype but here it is Identity type
+
+TODO
+        implicit val identityFunctor: Functor[Id] = new Functor[Id] {
+        def map[A, B](fa: Id[A])(f: A => B): Id[B] = f(fa)
+         }
+
+       type Id[A] = A  // This is usually provided by the cats library itself
  */
   /*
   val dbReader: Reader[Configuration,DbConnection] = Reader.apply{
@@ -84,9 +121,13 @@ def map[C](f: B => C)(implicit F: Functor[F]): Kleisli[F, A, C] =
   // and then dbReader map will run like this Reader(  a => F.map(run(a))(b:B => f.apply(b)))    )
   //TODO a => F.map(run(a))(b:B => f.apply(b))) this composed function will return String
   //TODO now we wanted to run these two composed functions  a => F.map(run(a))(b:B => f.apply(b)))
+
   val orderStatus: Id[String] = myOrderStatusReader.run(configuration)
+
+
+
   /*
-  TODO
+  TODO Exercise:
       This pattern goes like this
       1 you create the initial data structure : for eg Configuration here
       2 you create a Reader which specifies  how that data structure will be manipulated initially
@@ -95,6 +136,7 @@ def map[C](f: B => C)(implicit F: Functor[F]): Kleisli[F, A, C] =
          with the initial data structure
          5 i.e the composed function will run at the end which is a composition of more then functions
    */
+
   //TODO Exercise
   /*
    val dbReader: Reader[Configuration,DbConnection] = Reader.apply{
@@ -113,8 +155,9 @@ def getLastOrderStatus(userName:String): String = {
     def flatMap[C, AA <: A](f: B => Kleisli[F, AA, C])(implicit F: FlatMap[F]): Kleisli[F, AA, C] =
     Kleisli.shift(   a => F.flatMap[B, C](run(a))((b: B) => f.apply(b).run.apply(a))    )
      */
-    val f: Long => Kleisli[Id, Configuration, String] = {
-      (lastOrderID:Long) => dbReader.map(conn => conn.getOrderStatus(lastOrderID))
+    val f: Long => Reader[ Configuration, String] = {
+      (lastOrderID:Long) =>
+        dbReader.map(conn => conn.getOrderStatus(lastOrderID))
     }
     //val usersLastOrderIdReader: Reader[ Configuration, Long]
 // g = a => F.flatMap[B, C](run(a))((b: B) => f.apply(b).run.apply(a))
@@ -126,6 +169,7 @@ def getLastOrderStatus(userName:String): String = {
 
      val fx: Configuration => Id[String] = usersLastOrderStatusReader.run
   usersLastOrderStatusReader.run(configuration)
+
 }
   println(getLastOrderStatus("Prem"))
 
@@ -139,10 +183,29 @@ def getLastOrderStatus(userName:String): String = {
     } yield lastOrderStatus
     usersOrderForReader.run(configuration)
   }
+
+  def getLastOrderStatusModified_1(userName: String): String = {
+
+    val usersOrderForReader: Reader[Configuration, String] =
+      dbReader.flatMap(db => {
+        val lastOrderID = db.getLastOrderId(userName)
+        dbReader.map(_.getOrderStatus(lastOrderID))
+      })
+
+    usersOrderForReader.run(configuration)
+  }
+
+
+
+
+
   // TODO Exercise
+
   case class EmailService(emailReplyTo:String){
     def sendEmail(address:String , contents:String) = s"Sending Email to $address: with Contents :$contents"
   }
+
+
   def emailUser(userName:String,userEmail:String):String = {
     // fetch the status of their last order
     // email them with the Email service
@@ -154,15 +217,18 @@ def getLastOrderStatus(userName:String): String = {
   }
    */
     val emailServiceReader: Reader[Configuration,EmailService] = Reader.apply{
-      conf => EmailService(conf.emailReplyto)
+      conf => EmailService(conf.emailReplyTo)
     }
+
     val emailReader:Reader[Configuration,String] = for{
       lastOrderID <- dbReader.map(_.getLastOrderId(userName))
       lastOrderStatus <- dbReader.map(_.getOrderStatus(lastOrderID))
       emailService <- emailServiceReader
     } yield emailService.sendEmail(
       userEmail, s"your last order has the status: -> $lastOrderStatus")
-    emailReader.run(configuration)
+
+
+   emailReader.run(configuration)
   }
   println(emailUser("prem","prem.kaushik@outlook.com"))
 }

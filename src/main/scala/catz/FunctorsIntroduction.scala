@@ -17,7 +17,9 @@ object FunctorsIntroduction extends App {
             fmap knows how to apply functions to values that are wrapped in a context.
             For example, suppose you want to apply (+3) to Just 2. Use fmap:
 
-TODO: Functor is any data type that defines how fmap applies to it. Here's how fmap works:
+TODO:
+    Functor is any data type that defines
+     how fmap applies to it. Here's how fmap works:
 
    */
   //TODO Example of Functor

@@ -24,6 +24,20 @@ TODO
       }
   }
 
+/*
+Eval.defer(
+  Eval.defer(
+    Eval.defer(
+      Eval.now(1)
+    ).map(_ * 2)
+  ).map(_ * 3)
+)
+
+ */
+  def factorial(n: BigInt): Eval[BigInt] =
+    if(n == 1) Eval.now(1)
+    else Eval.defer(factorial(n - 1).map(_ * n))
+
   /*
   TODO
     stack-safe lazy computation
@@ -50,5 +64,6 @@ TODO
   }
   def main(args: Array[String]): Unit = {
     MutualRecursion.odd(199999).value
+    factorial(3).value
   }
 }

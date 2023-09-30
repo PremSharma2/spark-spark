@@ -1,31 +1,85 @@
 package catz.datamanipulation
 
-import java.util.concurrent.Executors
-
 import cats.Id
 import cats.data.WriterT
+import cats.effect.unsafe.implicits.global
 
+import java.util.concurrent.Executors
 import scala.concurrent.{ExecutionContext, Future}
 
 object Writers  extends App {
 import cats.data.Writer
-  List(1,2).distinct
+
+
   /*
  TODO
-    Writer is wrapper over some kind of valuable value denoted by V here
-    but you also want keep track of some sought of modifications
-    like the Sequence of modification of this valuable value
-    or some sought of Logs you want to dump
+    The Writer monad in functional programming is a tool
+    to carry around a log or accumulated value alongside a result.
+    This can be especially helpful when
+    you want to compute a result while also producing a log
+    of what happened during the computation.
+
    TODO
+       WriterT:
+       This is the monad transformer variant of the Writer monad.
+       Monad transformers allow you to stack effects.
+       In the case of WriterT,
+       it allows you to combine the logging effect of Writer
+       with another effect encapsulated by a different monad.
+
+ TODO
+       Often, you'll find scenarios
+       where you need to combine multiple effects.
+       For instance, imagine you need to fetch some data
+       asynchronously (an IO or Future effect),
+       but there might not be any data to return (an Option effect).
+       One way to represent this combined effect would be
+       to nest monads: IO[Option[A]].
+       But working with nested monads can quickly become cumbersome.
+       You'd have to deal with multiple layers of monadic values,
+       each of which requires its own set of combinators.
+
+ TODO
+      That's where monad transformers come in.
+      They allow you to work with stacked/nested effects in a more ergonomic way.
+      For our previous example, we could use an OptionT
+      transformer with IO to get a structure that
+      behaves like both IO and Option but is easier to work with than IO[Option[A]].
+
+ TODO API definition :
       type  Id[V] = V
       final case class WriterT[F[_], L, V](run: F[(L, V)])
       type Writer[L, V] = WriterT[Id, L, V]
            def apply[L, V](l: L, v: V): WriterT[Id, L, V] = WriterT.apply[Id, L, V]((l, v))
            and WriterT looks like this
            Note : F[(L, V)] = (l,v) if F is Id[V] =V i.e identity type
+ TODO
+         In the case of the WriterT you've seen,
+         it's the transformer variant of the Writer monad.
+         It allows you to combine the logging effect of Writer
+         with another effect (like IO, Option, etc.).
+        This stacking lets you produce logs
+        while also handling other effects like asynchronicity or optionality.
 
    */
+
+  //understanding WriterT monad transformer
+
+  import cats.data.OptionT
+  import cats.effect.IO
+  import cats.implicits._
+
+  import scala.concurrent.ExecutionContext.global
+
+  val maybeResult: IO[Option[Int]] = IO.pure(Some(5))
+  val transformed: OptionT[IO, Int] = OptionT(maybeResult)
+  val incremented: OptionT[IO, Int] = transformed.map(_ + 1)
+
+  incremented.value.unsafeRunSync() // Should return Some(6)
+
+
   val aWriter: Writer[List[String],Int] = Writer.apply(List("hello scala"),43)
+
   /*
 TODO
   def map[Z](fn: V => Z)(implicit functorF: Functor[F]): WriterT[F, L, Z] =
@@ -35,8 +89,11 @@ TODO
       }
     }
    */
+
+
   val increasedWriter: WriterT[Id, List[String], Int] = aWriter.map(_+1)
   val rs: Id[(List[String], Int)] = increasedWriter.run
+
   // TODO and if we want to modify only logs then we will use mapWritten
   /*
     def mapWritten[M](f: L => M)(implicit functorF: Functor[F]): WriterT[F, M, V] =
@@ -51,10 +108,15 @@ TODO
   def bimap[M, U](f: L => M, g: V => U)(implicit functorF: Functor[F]): WriterT[F, M, U] =
     mapBoth((l, v) => (f(l), g(v)))
    */
-  val aWriterWithBoth: WriterT[Id, List[String], Int] = aWriter.
+  val aWriterWithBoth: WriterT[Id, List[String], Int] =
+    aWriter.
     bimap(_ :+"Found interesting " , _+1)
-  val aWriterWithBoth1: WriterT[Id, List[String], Int] = aWriter.mapBoth{
-    (logs,value) => (logs:+ "found something interesting", value+1)
+
+  val aWriterWithBoth1: WriterT[Id, List[String], Int] =
+    aWriter
+      .mapBoth{
+    (logs,value) =>
+      (logs:+ "found something interesting", value+1)
   }
 
   /*
@@ -71,9 +133,11 @@ TODO
    */
   val finalResult: Id[Int] = increasedWriter.value
 
+  // getting the Logs from the Writer Monad  i.e. Left
   val logsWritten: Id[List[String]] = aWriterWithBoth.written
   //run: Id[(List[String], Int)]
   val bothLogsAndValue: (List[String], Int) = aWriterWithBoth.run
+  //bothLogsAndValue
   val writerA= Writer.apply(Vector("a","b"),44)
   val writerB= Writer.apply(Vector("c","d"),40)
   /*
@@ -98,7 +162,7 @@ TODO
     def combine(x: Vector[A], y: Vector[A]): Vector[A] = x ++ y
 
   */
-  // TODO Lets take a loook at flatmap impl
+  // TODO Lets take a look at flatmap impl
   /*
  TODO
   def flatMap[U](f: V => WriterT[F, L, U])(implicit flatMapF: FlatMap[F], semigroupL:
@@ -111,26 +175,30 @@ TODO
       }
     }
    */
-  import cats.instances.vector._
 
   // For example
   //  val writerA= Writer.apply(Vector("a","b"),44)
   val fx : Int => Writer[Vector[String],Int]=
   intValue => Writer(Vector("Logs Getting appended !!"),intValue+1)
+
  val finalValue: (Vector[String], Int) = writerA.flatMap(fx).run
 
   // Here Semigroup will combine the logs of writerA and writerB
   writerA.flatMap(valueA => writerB.map(valueB=> valueA + valueB))
+
+
   // OR
    val compositeWriter = for{
      valueA <- writerA
      valueB <- writerB
    } yield valueA+valueB
+
+
   //Lets test this
   println(compositeWriter.run)
 
-  //TODO : ->  What if we want to clear the Logs
-  import cats.instances.list._ // Monoid[List[Int]]
+
+  //TODO : ->  What if we want to clear the Logs // Monoid[List[Int]]
   /*
 TODO
   Is is used monoid because we dint which Monad is this
@@ -158,6 +226,7 @@ TODO
     }
   }
   println(countAndSay(10))
+
   //modify this with writer
   def countAndLog(n:Int):Writer[Vector[String],Int] = {
     if(n<0) Writer(Vector("starting"),0)
@@ -205,7 +274,37 @@ TODO
     } yield lowerSum + n //   lowerSum + n
   }
   println(sumWithLogs(3))
-// Writer with Future
+
+
+
+
+  def sumWithLogs_v1(n: Int): Writer[Vector[String], Int] = {
+    if (n <= 0) {
+      Writer(Vector(), 0)
+    } else {
+      Writer(Vector(s"Now at $n"), n)
+        .flatMap { currentN =>
+          sumWithLogs(n - 1)
+            .flatMap { lowerSum =>
+              Writer(Vector(s"computed sum ${n - 1} = $lowerSum"), currentN)
+                .map(_ + lowerSum)
+            }
+        }
+    }
+  }
+
+  def sumWithLogs_v2(n: Int): Writer[Vector[String], Int] = {
+    if (n <= 0) Writer(Vector("Starting"), 0)
+    else {
+      sumWithLogs_v2(n - 1)
+        .flatMap { lowerSum =>
+          Writer(Vector(s"Now at $n", s"Computed sum ${n - 1} = $lowerSum"), n )
+            .map(_ + lowerSum)
+        }
+    }
+  }
+
+  // Writer with Future
 implicit val ec: ExecutionContext = ExecutionContext.
   fromExecutorService(Executors.newFixedThreadPool(2))
   val samFuture1= Future(sumWithLogs(3))

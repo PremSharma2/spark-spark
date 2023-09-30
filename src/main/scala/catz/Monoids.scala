@@ -5,6 +5,7 @@ import cats.Semigroup
 import cats.syntax.eq._
 
 object Monoids  extends App {
+
   //TODO: Here we are discussing a problem which is solved by monoids not by
   // SemiGroup
   //TODO: Problem: ->
@@ -19,6 +20,7 @@ object Monoids  extends App {
   implicit final def catsSyntaxSemigroup[A: Semigroup](a: A): SemigroupOps[A] =
     new SemigroupOps[A](a)
 }
+
 //TODO type Enrichment using implicits
 implicit class SemigroupOps[A: Semigroup](lhs: A) {
   def |+|(rhs: A): A = Semigroup[A].combine(lhs, rhs)
@@ -30,6 +32,8 @@ implicit class SemigroupOps[A: Semigroup](lhs: A) {
   //TODO:  for the below scenario
   println(sumLeft === sumRight)
 
+
+
   // TODO : -> Define a General API for fold
   //TODO : -> USe of type Enrichment or Extension Methods from Semi Group , or pimping
   // lets import the correct package
@@ -38,6 +42,7 @@ implicit class SemigroupOps[A: Semigroup](lhs: A) {
   //TODO : because we cant pass any int value because it is generic method
   // TODO: because T can be anything so u cant pass initial value as Int
   // Todo: or we need to add empty method to Semigroup type class
+
   /*
   def combineFold[T](list: List[T])(implicit semiGroup: Semigroup[T]):T ={
     list.foldLeft(0)(_ |+| _)
@@ -98,7 +103,8 @@ TODO trait Monoid[A] extends Semigroup[A] {
     new OptionMonoid[A]
 }
    */
-// TODO : Monoids are also higher kinded type becuse they extend MonoidFunctions
+// TODO : Monoids are also higher kinded type because they extend MonoidFunctions
+
   /*
   TODO
      there is type enrichment, but not with higher kinded types
@@ -136,7 +142,7 @@ TODO
 TODO As we can see that this instance has SemiGroup type class instance injected
     into it
  */
-val noneValue= optionMonoidTypeClassInstance.empty
+val noneValue: Option[Int] = optionMonoidTypeClassInstance.empty
   val combine= optionMonoidTypeClassInstance.combine(Option(2),Option.empty[Int])
   println(combine)
 
@@ -157,6 +163,8 @@ implicit class SemigroupOps[A: Semigroup](lhs: A) {
  */
   val fancyCombine= Option(3) |+| Option(2)
 
+
+
   // TODO: implement the foldLeft with Monoid
   // TODO : As we can see that monoid has empty method so we can give
   // TODO: starting value as monoid.empty it is generic value depends on type T
@@ -165,6 +173,7 @@ implicit class SemigroupOps[A: Semigroup](lhs: A) {
   def combineFold[T](list: List[T])(implicit monoid: Monoid[T]):T ={
     list.foldLeft(monoid.empty)(_ |+| _)
   }
+
 
   println(combineFold(numbers))
   println(combineFold(List("I", "Like" , "Monoids")))
@@ -187,6 +196,7 @@ val phoneBook= List(
 )
   // TODO: to solve this problem we need to
   //  import a Monoid type-class instance of type [Map]
+
 
   //TODO: import cats.instances.map._
   import cats.instances.map._
@@ -213,6 +223,8 @@ val phoneBook= List(
       }
     }
    */
+
+
   /*
  TODO
       instance : MapMonoid[String,Int] this will be evaluated by the implicit def
@@ -229,6 +241,7 @@ val phoneBook= List(
   //TODO: Exercise 3:-> Shopping Cart and online stores  problem by monoids
   // TODO : Approach to solve this problem will be define custom Monoid type class
   // TODO: and then use combineByFold to aggregate the carts  to the single cart
+
   case class ShoppingCart(items:List[String],total:Double)
 
 

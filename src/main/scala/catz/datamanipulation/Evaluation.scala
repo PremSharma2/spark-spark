@@ -70,6 +70,8 @@ TODO
  // println(delayedEval.value)
  // println(delayedEval.value)
 
+
+
   /* TODO
         Computation performed in eval call by name expression
          is always lazy, even when called on an
@@ -83,6 +85,10 @@ TODO
        Computation performed in f is always lazy,
        even when called on an eager (Now) instance.
    */
+
+
+
+
   /*
 TODO
    FlatMap is a type of Eval[A] that is used to chain computations or Lazy expressions
@@ -92,10 +98,28 @@ TODO
    * Users should not instantiate FlatMap instances
    * themselves. Instead, they will be automatically created when
    * needed.
-   *
-   * Unlike a traditional trampoline, the internal workings of the
-   * trampoline are not exposed. This allows a slightly more efficient
-   * implementation of the .value method.
+ FlatMap[A]:
+ This class represents an Eval
+ that is the result of chaining two other Eval computations.
+ The type [A] is the final result type.
+ type Start:
+ This is an abstract type member.
+ It represents the type of the intermediate
+ result between the chained computations.
+ val start: () => Eval[Start]:
+ This is a function that,
+ when invoked,
+ will produce the initial Eval computation
+ that will yield a result of type Start.
+ val run: Start => Eval[A]:
+ This function takes the result of the initial computation
+ (of type Start) and produces the next Eval
+ computation that will yield the final result of type A.
+ def memoize: Eval[A] = Memoize(this):
+  This method returns a memoized version of this computation.
+  The exact workings of Memoize are not provided,
+  but it's reasonable to assume
+   it ensures that once this Eval is run, it caches its result
 TODO
   sealed abstract class FlatMap[A] extends Eval[A] { self =>
     type Start
@@ -120,7 +144,9 @@ TODO
 
   val ComposedEvaluation: Eval[String] = instantEval.
     flatMap(value1 => delayedEval.map(value2=> value1 + value2))
-  //println(ComposedEvaluation.value)
+  //this is the point where chained computation gets triggred
+  println(ComposedEvaluation.value)
+
 
 
   val forcomposedEvaluation: Eval[String] = for{
@@ -128,12 +154,30 @@ TODO
     value2 <-  delayedEval
   } yield  (value1 + value2)
 
+  val forResult: String =forcomposedEvaluation.value
+
+  /*
+ TODO
+      What you end up with, for ex, is a nested structure of FlatMap instances.
+      Each instance represents a step in the computation,
+      and they're all tied together in a way
+      that makes the entire computation trampolined and stack-safe.
+      When you finally ask for the value of ex (by calling something like ex.value),
+      the nested structure will be traversed,
+      executing each computation in sequence
+      while ensuring it doesn't cause a stack overflow,
+      even for deeply nested chains.
+   */
+
+
   val ex: Eval[String] = for{
     a <- delayedEval
     b <-  redoEval
     c <-  instantEval
     d <-  redoEval
   } yield a + b+ c+d
+
+
  // println(ex.value)
  // println(ex.value)
   // TODO now this will not be recomputed again and again
@@ -150,14 +194,17 @@ TODO
 
  // println(tutorial.value)
   //println(tutorial.value)
+
+
   // TODO : implement defer such that defer Eval.now should not run side effects
+
   /* TODO Note:
         Computation performed in eval call by name expression
        (eval : =>Eval[T])  is always lazy, even when called on an
    *    eager (Now) instance.
         Lazily perform a computation based on an Eval[A], using the
    *     function `eval` to produce an Eval[B] given an A.
-   We have delayed the expression evaluation by using later
+        We have delayed the expression evaluation by using later
    */
 
   def defer [T](eval : =>Eval[T]):Eval[T] ={
@@ -170,7 +217,9 @@ TODO
 
   /*
  TODO
-    Scala cats implementation if Defer APi
+       Scala cats implementation if Defer APi
+     def defer[A](a: => Eval[A]): Eval[A] =
+    new Eval.Defer[A](() => a) {}
     sealed abstract class Defer[A](val thunk: () => Eval[A]) extends Eval[A] {
     def memoize: Eval[A] = Memoize(this)
     def value: A = evaluate(this)
@@ -181,7 +230,57 @@ TODO
   def reverseList[T](list: List[T]): List[T] =
     if(list.isEmpty) list
     else reverseList(list.tail) :+list.head
+/*
+TODO
+        evaluation:
+        Initial call: reverseEval(List(1, 2))
+       This gets translated to (in a pseudo FlatMap structure):
+     FlatMap {
+  start = () => reverseEval(List(2))
+  run = reversedTail => Eval.now(reversedTail :+ 1)
+   }
+TODO
+   Inside the start function, the recursive call to reverseEval(List(2)) translates to:
+   FlatMap {
+  start = () => reverseEval(List())
+  run = reversedTail => Eval.now(reversedTail :+ 2)
+ }
 
+TODO
+    Continuing down the recursion, reverseEval(List()) hits the base case:
+    Now(List())
+
+TODO
+   So, when we combine these structures, we get a nested structure:
+   FlatMap {  // For List(1, 2)
+  start = () => FlatMap {  // For List(2)
+    start = () => Now(List())  // Base case for empty list
+    run = reversedTail => Eval.now(reversedTail :+ 2)
+  }
+  run = reversedTail => Eval.now(reversedTail :+ 1)
+ }
+
+TODO
+     When we invoke .value, it begins the evaluation of this structure.
+TODO
+      def value: A = this match {
+  case Now(a) => a
+  case FlatMap(start, run) =>
+    val nextEval = start()
+    nextEval match {
+      case Now(a) => run(a).value
+      case _ => run(nextEval.value).value
+    }
+ }
+
+The outermost FlatMap starts evaluation.
+It invokes start(), which triggers the evaluation of the inner FlatMap.
+The inner FlatMap invokes its start(), which leads to Now(List()).
+The run function of the inner FlatMap is then invoked, appending 2 to List(), resulting in List(2).
+This List(2) is then used in the run function of the outer FlatMap to append 1, resulting in the final reversed list: List(2, 1)
+
+
+ */
   def reverseEval[T](list : List[T]) : Eval[List[T]] = {
     if(list.isEmpty) Eval.now(list)
    //else reverseEval(list.tail).map(_:+list.head)

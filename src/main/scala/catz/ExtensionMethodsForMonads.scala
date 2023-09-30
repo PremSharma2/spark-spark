@@ -3,6 +3,8 @@ package catz
 import cats.Monad
 import cats.implicits.catsStdInstancesForList
 
+import scala.language.higherKinds
+
 object ExtensionMethodsForMonads  extends App {
 
   // TODO Extension method for Monads are pure and flatMap
