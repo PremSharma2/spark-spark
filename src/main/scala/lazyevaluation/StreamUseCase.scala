@@ -13,8 +13,10 @@ object StreamUseCase {
    **/
 
   case class TradeOrder(id: Int, symbol: String, quantity: Int, orderType: String)
-  //Now, let's assume you have a function that can generate a Stream of TradeOrder representing incoming orders:
+  //Now, let's assume you have a function
+  // that can generate a Stream of TradeOrder representing incoming orders:
 //its a pooling function listing to Kafka topic
+
   def incomingOrders(startId: Int): Stream[TradeOrder] = {
     // Simulating orders. In a real-world scenario, these would come from some external source.
     val order = TradeOrder(startId, if (startId % 2 == 0) "AAPL" else "GOOGL", startId * 10, if (startId % 3 == 0) "buy" else "sell")
