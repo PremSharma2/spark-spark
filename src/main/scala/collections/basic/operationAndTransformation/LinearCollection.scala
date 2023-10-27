@@ -3,8 +3,8 @@ import scala.collection.immutable
 import scala.util.Random
 
 object LinearCollection  {
-/*
-TODO
+/**
+ TODO
     Seq defines the ordered and linear Collection
     as well as well-defined Ordering and indexing
     val aSeq= Seq(1,2,3)
@@ -34,18 +34,21 @@ TODO
     //List
     val aList = List(1, 2, 3, 4)
     //TODO apart from seq methods we have list specific methods as well in list
-    //i.e haead and tail
+    //i.e head and tail
     val head = aList.head
     val remList = aList.tail
     //TODO appending and prepending
     val aBiggerList = 0 +: aList :+ 7
-    /*
-    TODO
-        final case class ::[B](override val head: B, private[scala] var tl: List[B]) extends List[B] {
+    /**
+   TODO
+       def ::[B >: A] (x: B): List[B] =
+       new scala.collection.immutable.::(x, this)
+      final case class ::[B](override val head: B, private[scala] var tl: List[B]) extends List[B] {
       override def tail : List[B] = tl
       override def isEmpty: Boolean = false
 }
      */
+
     val prepending = 0 :: aList
     val scala5X: List[String] = List.fill(5)("Scala")
 

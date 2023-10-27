@@ -82,6 +82,7 @@ TODO Explanation of above Code
   val myDog = new Dog("Buddy")
   val myVet: Vet[Dog] = gimmeAVet
   myVet.heal(myDog)
+
   /*
  TODO
   This example is from the last project I was working on.

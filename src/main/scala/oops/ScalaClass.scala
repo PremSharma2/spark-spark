@@ -14,7 +14,7 @@ object ScalaClass {
   al.age=45                     // it is a setter method in person class
   //A bit more real-world:
 
-  //TODO: ->  define the class with immutable filed values there will no setters
+  //TODO: ->  define the class with immutable field values there will no setters
   class Person1(val firstName: String, val lastName: String) {
 
     println("the constructor begins")
@@ -52,10 +52,11 @@ object ScalaClass {
   //p.name = "Fred Flintstone"              // error: reassignment to val
 
   // 'name' is neither var or val
-  /*
+  /**
    If a field doesn’t have a var or val modifier,
     Scala gets conservative, and doesn’t generate a getter or setter method for the field.
     so no getter is there thats why its complaning
+    because name is class parameter not fild
    */
   class User(name: String)
   val u = new User("Alvin Alexander")
@@ -66,7 +67,7 @@ object ScalaClass {
   class Staff(private var name: String) { def printName {println(name)}  }
 
   val s = new Staff("Alvin Alexander")
-  //s.name       // error: variable name in class Person cannot be accessed in Person
+  //s.name       //TODO : ->  error: variable name in class Staff cannot be accessed here
   s.printName  // Alvin Alexander
   /*
   What var, val, and default mean when applied to class parameters:
@@ -123,7 +124,11 @@ object ScalaClass {
 
 
    */
-  //todo scala singleton pattern implementation
+
+  /**
+   * Singleton pattern in scala is implemented by making a private constructor
+   * and that the constructor can be accessed from the companion object
+   */
   class Brain private {
     override def toString = "This is the brain."
   }
@@ -135,6 +140,7 @@ object ScalaClass {
     }
   }
 
+  // we cant do that  val brain=new Brain
   object SingletonTest extends App {
 
     // this won't work

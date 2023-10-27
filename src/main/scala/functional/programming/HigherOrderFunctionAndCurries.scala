@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 
 object HigherOrderFunctionAndCurries extends App {
 
-  /*
+  /**
    *
    * TODO
    *      Here superFunction takes two parameters one is int and
@@ -13,9 +13,11 @@ object HigherOrderFunctionAndCurries extends App {
    *      which takes input as function and gives o/p as function are called
    *      Higher Order function
    */
-  //val superfunction: (Int, (String, (Int => Boolean)) => Int) => (Int => Int) = ???
+  //TODO : -> val superfunction: (Int, (String, (Int => Boolean)) => Int) => (Int => Int) = ???
 
-  /*implementation of higher order function which takes plusone function and two int params
+  /*
+  TODO
+   implementation of higher order function which takes plusone function and two int params
    * ntimes(plusone,1,3)
    * ntimes(plusone,0,4)
    * 
@@ -55,16 +57,22 @@ object HigherOrderFunctionAndCurries extends App {
    * val result =fz.(x).(y)
    *
    *TODO
-   * In mathematics and computer science, currying is the technique of translating the evaluation of a function
-   * that takes multiple arguments into evaluating a sequence of functions, each with a single argument.
+   * In mathematics and computer science,
+   *  currying is the technique of translating the evaluation of a function
+   * that takes multiple arguments into evaluating a sequence of functions,
+   *  each with a single argument.
    *
    *TODO
-   * Here by passing one argument we converted into series of function call
+   * Here is one more example of currying
+   * by passing one argument we converted into series of function call
+   * here we are applying function n times to same input
    * x => plusOne.apply(plusOne.apply(plusOne.apply(plusOne.apply(x))))
    * or
    * ntb(f,4)	= x => f(f(f(f(x))))
    * x => f(f(f(f(x)))) hence this is the output of this function ntb(f,4)
    */
+
+
   /*
     TODO
         ntimes Better Explanation
@@ -84,7 +92,7 @@ TODO
       now at 4th position identity Function applied f.apply(f.apply(x)) = f.apply(x) or f(x)
       because x=> f(x) is equivalent to the f(x)
       i.e when u apply identity function to f.apply(x) this input which is function
-       fIdentity.apply(f.apply(x)) then it will Return f.apply(x)
+       fIdentity.apply(f.apply(x)) this  will be evaluated to  f.apply(x)
        bcz o/p of identity function is i/p
        applied to it hence it will look like this
        fx: x => f(x) this will be the returned value
@@ -96,11 +104,15 @@ TODO
         fx is nothing but f applied to input
         and input is f.apply(x)
         so it will become like this
-    fy:    x=>  f.apply(f.apply(x))
+        where fx: x => f(x)
+    fy:    x=>  fx.apply(f.apply(x))
          fy is nothing but f applied twice to input
 ----------------------------------------------------------
 TODO
        Now lets evaluate the 2nd Position
+       fy.apply(f.apply(x))
+       where fy is  fy: x=>  fx.apply(f.apply(x))
+       fy.apply(f.apply(x))
          f(f(f(x)))
         fz: x=>   f(f(f(x)))
          it will be returned
@@ -158,25 +170,36 @@ TODO
 
   //Function[Int, Int] here fx is Function[Int, Int] and its
   // function type is (Int, Int) => Int
-  /*
-  Here we passed an function as input param and
+
+
+
+  /**
+  TODO
+   Here we passed an function as input param and
    then it got converted into series of function calls
    Here we are converting a def into curried function
    */
-  def toCurry(fx: (Int, Int) => Int): (Int => Int => Int) =
-  //result = f(x)(y)(z)
-  //  (x => (y => (fx(x, y)) ))
-  //x => y => fx.apply(x,y) or x+y
 
+  def toCurry(fx: (Int, Int) => Int): (Int => Int => Int) = {
+  /**
+   * TODO
+      result = f(x)(y)(z)
+      (x => (y => (fx(x, y)) ))
+       x => y => fx.apply(x,y) or x+y
+  */
     x => y => fx(x, y)
+  }
 
 
   // This one is curried to normal i.e revrese
   def fromCurry(function: (Int => Int => Int)): (Int, Int) => Int =
-  // it is equivalent to x,y=> x+y
-  // (x,y) => function.apply(x).apply(y)
-  // function: x=> y => x+y
-  // x,y => function(x).apply(y)
+  /**
+   * TODO
+      it is equivalent to x,y=> x+y
+      (x,y) => function.apply(x).apply(y)
+      function: x=> y => x+y
+       x,y => function(x).apply(y)
+   */
     (x, y) => function(x)(y)
 
   /*def compose(function1: Int => Int, function2: Int => Int): Int => Int =
@@ -193,27 +216,28 @@ TODO
   }
 
 
-  //   Composing small exercise
-  /*
- Given two functions f1 and f2, implement f3 by composing f1 and f2
-val f3: (Int, Int) => String = ???
-   */
+  //   TODO Composing small exercise
+  /**
+  TODO
+   Given two functions f1 and f2, implement f3 by composing f1 and f2
+    val f3: (Int, Int) => String = ???
+   **/
 
   val f1: (Int, Int) => Int = (a, b) => a + b
   val f2: Int => String = _.toString
   val f3: (Int, Int) => String = (x, y) => f2(f1(x, y))
   val fx11 : String => Int = x => x.toInt
    //val f5: (Int, Int) => String =   f2.compose(f1)
-  /*
+  /**
    TODO
        Compose more live examples here
-
    */
 
   def convert: String => String = (value: String) => value+"converted"
   def verify: String => String = (value: String) => if (value == "converted") "valid" else "invalid"
     val finalfx= (x:String) => convert(verify(x))
   def vc: String => String = convert compose verify
+  def vc1: String => String = verify compose convert
   finalfx("Scala")
   vc("prem")
 
@@ -242,7 +266,10 @@ val f3: (Int, Int) => String = ???
   val add3 = superAddition(3)
   val add2 = (x: Int) => x + 2
   val times3 = (x: Int) => x * 3
+  def add4(x: Int)=x+2
+  def add5(x: Int)=x+2
   val composed: Int => Int = compose(add2, times3)
+  val composed1: Int => Int = compose(add4, add5)
   val ordered: Int => Int = andThen(add2, times3)
   println("composed" + composed(4))
   println(ordered(4))

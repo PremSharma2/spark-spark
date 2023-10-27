@@ -292,8 +292,9 @@ object Listest extends App {
   listOfIntegers.foreach(elem => println(elem))
 
   println(clonelistOfIntegers.sort((x, y) => x - y))
-  println(anotherListOfIntegers.zip(listOfIntegers, (x: Int, y: Int) => x + y))
-  println(listOfIntegers.fold(0)(_ + _))
+  val zipValue: MyList[(Int, Int)] =anotherListOfIntegers.zip(listOfIntegers, (x: Int, y: Int) => (x,y))
+  println(anotherListOfIntegers.zip(listOfIntegers, (x: Int, y: Int) => (x,y)))
+  println((listOfIntegers.fold(0)(_ + _)))
   //for comprehension
   val combinations: MyList[String] = for {
     n <- listOfIntegers

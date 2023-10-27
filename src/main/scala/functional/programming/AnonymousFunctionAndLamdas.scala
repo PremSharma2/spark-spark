@@ -2,25 +2,32 @@ package functional.programming
 
 import functional.programming.WhatsAFunction.MyFunction1
 
-/*
+/**
  *
- *
+ *TODO
  * taste of lambdas and anonymous functions in scala which is alternative to oops way ,Of
  *   defining anonymous function and passing them as reference
  */
 object AnonymousFunctionAndLamdas extends App {
+  /*
+TODO
   // anonymous function can be replaced with lambdas or lambda
   //(x) => x * 2 this is apply method implementation
   //val doubler : Function1[Int, Int]
-  val doubler1: MyFunction1[Int, Int] = {
+   */
+
+  val doubler1: MyFunction1[Int, Int] =
          new MyFunction1[Int,Int]{
     override def apply(element:Int):Int=element*2
   }
-  }
+  /*
+ TODO
   // val fux:MyFunction[Int,Int]=(x:Int) => x*1
   // val doubler: MyFunction1[Int, Int] = (x) => x * 2
   // MyFunction1[Int, Int] this can be replaced with function types
   //(Int => Int)
+
+   */
   val doubler: (Int => Int) = (x) => x * 2
   //or Function1[Int, Int]
   val product: (Int => Int) = (x) => x * 2
@@ -35,16 +42,16 @@ object AnonymousFunctionAndLamdas extends App {
   // curlybraces with lambdas or syntacticsugar
 //todo if we have multiple computations in function we can use syntactic Sugar
   val stringtoInt :(String => Int) = { 
-    (str) => str.toInt
-      if(str.toInt %2==0) 1 else 0
+    (str) => if(str.toInt %2==0) 1 else 0
   }
 
   //MoAR syntactic sugar
   val niceIncrementer: Int => Int = (x) => x + 1
-  val niceAdder: (Int, Int) => Int = _ + _ // equivalent to (a,b)=> a+b
-  //lambda with curried function
-//val superAdd: Function1[Int, Function[Int, Int]]
+  val niceAdder: (Int, Int) => Int = _ + _ //todo:-> equivalent to (a,b)=> a+b
+  //todo lambda with curried function
+//todo val superAdd: Function1[Int, Function[Int, Int]]
   /*
+TODO
   val specialFunction: Function1[Int, Function[Int, Int]] = new Function1[Int, Function[Int, Int]] {
       override def apply(x: Int): Function1[Int, Int] = new Function1[Int, Int] {
       override def apply(y: Int): Int = x + y

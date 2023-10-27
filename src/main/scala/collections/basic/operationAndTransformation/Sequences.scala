@@ -5,7 +5,7 @@ import scala.util.Random
 
 /*
 TODO
- s an important note,
+ Its an important note,
  I use Seq in the following examples to keep things simple,
  but in your code you should be more precise and use IndexedSeq or
  LinearSeq where appropriate. As the Seq class Scaladoc states:
@@ -21,6 +21,7 @@ TODO
   because as that name implies,
  Seq behaves differently than Vector in almost all of these examples.
  */
+
 object Sequences extends App {
 
   val asequnce: Seq[Int] = Seq.apply(1, 4, 3, 2)
@@ -35,6 +36,7 @@ object Sequences extends App {
   val arange: Seq[Int] = 1 to 10
 
   arange.foreach(x => println(x))
+
  val seq1: Seq[Int] = 1 to 5
   //# List(1, 2, 3, 4, 5)
   (1 until 5)               // # List(1, 2, 3, 4)
@@ -47,6 +49,7 @@ object Sequences extends App {
   ('d' until 'h')           // # List(d, e, f, g)
 
   ('a' to 'f').by(2)        // # List(a, c, e)
+
 /*
 TODO
     Range is a datastructures that represents an ordered collection of numbers.
@@ -57,13 +60,15 @@ TODO
     Let’s see how we can create a range of integers from 1 to 10:
     Also Range is Indexed Sequence so it  has all Seq methods
  */
+
   val rangeIncl: Seq[Int] = Range.inclusive(1,10)
   rangeIncl.toList equals List(1,2,3,4,5,6,7,8,9,10)
 
   //# todo : -> range method of Sequence
   /*
 TODO
-    /** range method Produces a collection containing equally spaced values in some integer interval.
+    /**
+       range method Produces a collection containing equally spaced values in some integer interval.
    *   start the start value of the collection
    *   end   the end value of the collection (the first value NOT contained)
    *   step  the difference between successive elements of the collection (must be positive or negative)
@@ -173,6 +178,7 @@ TODO
   val randomAccessTimeRatio = randomAccessSeq(lst, numElements)/randomAccessSeq(vec, numElements)
   println("Random access test with %s elements, Vector is ~ %s times faster than List".format(numElements, randomAccessTimeRatio))
 
+
   //TODO Head/Tail Access
   /*
 TODO
@@ -232,6 +238,14 @@ TODO
      None that the default implementation for Seq for Scala 2.11 is based on LinkedLists,
     while Vectors are implemented using a bit-map with
    a factor branching of 32 (a weird structure that can be seen as a tree with up to 32 children nodes).
+
+   TODO Use Cases:
+TODO
+ List: Useful when you frequently prepend elements,
+ don't need random access, and the list isn't too large.
+TODO
+ Vector: Suitable for cases where you need efficient random access, insertion,
+ and modification of elements, especially for larger collections.
 
  */
 }

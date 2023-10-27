@@ -12,7 +12,7 @@ object WhatsAFunction extends App {
     we cannot pass function as a argument
     here as we can see that Objects are treated as First class citizens
 
-    Functions in scala are represented by Function traits
+    TODO Functions in scala are represented by Function traits
   }*/
   // TODO : in FP functions are treated as first class citizens
   val doubler: MyFunction1[Int, Int] =

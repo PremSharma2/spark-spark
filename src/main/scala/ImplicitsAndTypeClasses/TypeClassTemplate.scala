@@ -6,5 +6,5 @@ trait TypeClassTemplate [T]{
 }
 
 object TypeClassTemplate{
-  def action[T](implicit typeClassInstance:TypeClassTemplate[T]) = typeClassInstance
+  def apply[T](value :T)(implicit typeClassInstance:TypeClassTemplate[T]) = typeClassInstance.action(value)
 }

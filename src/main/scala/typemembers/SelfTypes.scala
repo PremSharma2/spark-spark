@@ -5,15 +5,28 @@ object SelfTypes  extends App {
   trait InstrumentList{
     def play(): Unit
   }
+
+  /**
+  TODO
+      self: InstrumentList =>:
+      This is a self-type annotation.
+      It says that the trait Singer
+      can only be mixed into some class
+      that also extends InstrumentList.
+      This is useful for establishing
+      that a certain trait should only be used in conjunction with another trait or traits.
+   */
 trait Singer{ self: InstrumentList => //whoever implement Singer he has to implement InstrumentList also
 def sing():Unit = self.play()
 
 }
-// It is the correct impl which say that whoever extends Singer has to implement InstrumentList
-  class LeadSinger extends Singer with InstrumentList{
-    override def sing(): Unit = ???
-
-    override def play(): Unit = ???
+  // This will compile because Musician extends InstrumentList
+  class Musician extends InstrumentList with Singer {
+   override def play(): Unit = println("Playing instrument")
+    def perform(): Unit = {
+      play()
+      sing()
+    }
   }
 // Error: Illegal inheritance, self-type VocalList does not conform to InstrumentList
   // self: InstrumentList => this whole construct is called self-type

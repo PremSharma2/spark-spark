@@ -1,7 +1,6 @@
 package ImplicitsAndTypeClasses
 
-import ImplicitsAndTypeClasses.TypeClassAndImplicits.HtmlSerializer
-
+import ImplicitsAndTypeClasses.TypeClassExercise.user
 
 
 object PimpMyLibraryAndTypeClassExercise  extends App {
@@ -9,36 +8,39 @@ object PimpMyLibraryAndTypeClassExercise  extends App {
   // this is an implicit value class for implicit conversion
 // it will covert Buisness DO to HTML
   // serializable form
-  // WE HAVE USED THE  VALUE CLASS BECAUSE WE WANT TO DO
   //implicit conversion
   // so that we can write USer.toHtml
-  implicit class HTMLEnrichment[T](value:T){
-  // it will take type class instance
-  def toHtml(implicit serializer:HtmlSerializer[T]) :String = serializer.serialize(value)
-}// type class instance
-  case class User(name:String, age:Int , email:String)
-  implicit object UserSerializer extends HtmlSerializer[User] {
-    override def serialize(user: User): String =
-      s"<div> $user.name {$user.age yo} <a href = $user.email /> </div>"
+  //Type class
+trait HtmlSerializer[T] {
+  def serialize(value: T): String
+}
+
+  // Implicit class with Type class instance this will be used to pimp the library
+  implicit class HTMLEnrichment[T](value: T) {
+    def toHtml(implicit serializer: HtmlSerializer[T]): String = serializer.serialize(value)
   }
-  // we need type class instance
-  implicit object IntSerializer extends HtmlSerializer[Int] {
-    override def serialize(value: Int): String = s"<div style : color=blue > $value</div>"
+
+  //model
+  case class User(name: String, age: Int, email: String)
+
+  object User {
+    implicit val userHtmlSerializer: HtmlSerializer[User] = new HtmlSerializer[User] {
+      override def serialize(user: User): String = s"""<div>${user.name} (${user.age} yo) <a href="${user.email}"></a></div>"""
+    }
   }
-  val user=User("Prem", 34, "prem.kaushik@outlook.com")
-  val anotherUser= User("Prem", 34, "prem.kaushik@outlook.com")
-println(user.toHtml(UserSerializer))
-  // compiler rewrite this as new HTMLEnrichment(user).toHtml(UserSerializer)
+
+  object IntHtml {
+    implicit val intHtmlSerializer: HtmlSerializer[Int] = new HtmlSerializer[Int] {
+      override def serialize(value: Int): String = s"""<div style="color:blue">$value</div>"""
+    }
+  }
+
+
+val user = User("Prem", 30, "prem@gmail.com")
+import User._
   println(user.toHtml)
-  // This proves that this approach can extend the functionality to the new types though
-  //
-  println(2.toHtml)
-  // we also can choose the implementation with diffrent type class instances
-  object PartialUserSerializer extends HtmlSerializer[User] {
-    override def serialize(user: User): String =
-      s"<div> $user.name /> </div>"
-  }
-  println(user.toHtml(PartialUserSerializer))
+
+
   /*
   Hence type class pattern has three main components to Enhancing a type with type class
   1: type class itself   (trait HtmlSerializer[T])
@@ -47,6 +49,7 @@ println(user.toHtml(UserSerializer))
   (implicit class HTMLEnrichment[T](value:T))
   Which will convert the your Data object to Serialized object implicitly
    */
+
 
   /*
   Lets talk about context bounds

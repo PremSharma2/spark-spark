@@ -35,12 +35,19 @@ TODO what if SomeType is higherKinded type List[T] ??
  If SomeType is invariant in T, then the position of T is strictly invariant,
  * and T must not have any +/- annotation.
    */
-  class IList[T]
-  class Vehicle
-  class Bike extends Vehicle
-  class Car extends Vehicle
+
+
+
+ //TODO ADTs Data model
+  sealed trait Vehicle
+  case object Bike extends Vehicle
+  case object Car extends Vehicle
+
+
+
   //Invariant API
   class InvariantList[T]
+
   class IParking[T](vehicles:List[T]){
     def park(vehicle:T):IParking[T]= ???
     def impound (vehicles:List[T]):IParking[T]= ???
@@ -51,17 +58,18 @@ TODO what if SomeType is higherKinded type List[T] ??
   
   //Covariant API Implementation
   //TODO If your Generic class creates or contains elements of type T it should be +T
-  class CParking[+T](vehicles :List[T])   {
+  case class CParking[+T](vehicles :List[T])   {
     // we need to do the heck the compiler because method argument are in contravariant position
    // def park [S>:T] (vehicle:S):T= ???
-    def get():CParking[T] = ???
-    def park [S>:T] (vehicle:S):CParking[S]= ???
-    def impound [S>:T] (vehicles:List[S]):CParking[S]= ???
+    def get():CParking[T] = CParking(vehicles)
+    def park [S>:T] (vehicle:S):CParking[S]= CParking(vehicle :: vehicles)
+    def impound [S>:T] (addVehicles:List[S]):CParking[S]= CParking(vehicles ++ addVehicles)
     def checkVehicles(conditions:String):List[T] = ???
     def flatMap[S](f : T => CParking[S]): CParking[S] = ???
     // Due to double Variance function input has become covariant and its o/p has become contravariant
-    def transform [S>:T](function : T => S): CParking[S] = ???
+    def map [S>:T](function : T => S): CParking[S] = ???
   }
+
   //TODO Contravariant implementation are majorly used in type class
   //Todo beacuse we need to take an action on type
   
@@ -97,8 +105,17 @@ TODO what if SomeType is higherKinded type List[T] ??
   
    //Covariant Implementation
    //TODO If your Generic class creates or contains elements of type T it should be +T
+  /*
+  TODO
+     In summary, IList[T] being invariant allows the code
+     to compile even though T is covariant in CParking2.
+     The invariance of IList effectively "neutralizes" the covariance of T in this context.
+
+   */
+   class IList[T]
   class CParking2[+T](  vehicles :IList[T])   {
-    // we need to do the hacking of compiler to avoid second ThumB Rule for variance i.e to make the method argument is at
+    // we need to do the hacking of compiler to avoid second ThumB Rule
+    // for variance i.e to make the method argument is at
      // contravariant position
     def park [S>:T] (vehicle:S):CParking2[S]= ???
     /*
@@ -124,10 +141,18 @@ TODO what if SomeType is higherKinded type List[T] ??
   class XParking2[-T] ( vehicles :IList[T]){
      def park(vehicle:T):XParking2[T]= ???
      /*
+  TODO
      def impound (vehicles:IList[T]):XParking2[S]= ???
       *Error: contravariant type T occurs in invariant position
        in type com.scala.variance.VarianceExercise.IList[T] of value vehicles
       * Reason: you cannot supply an invariant parameter
+       In Scala, the contravariant type parameter -T means that for a type XParking2,
+       if A is a subtype of B, then XParking2[B] is a subtype of XParking2[A].
+       But since IList[T] is invariant, IList[A] and IList[B] have no subtyping relationship.
+TODO
+       In your XParking2 class, you are trying to use T (which is contravariant in XParking2)
+       in a position where it must be invariant (inside IList[T]).
+        This is not allowed by the Scala type system because it can lead to type unsafety.
          with a contravariant type value
          This IList is invariant and you are supplying the contravariant type
          Hence this is wrong

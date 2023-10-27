@@ -6,49 +6,52 @@ import scala.collection.SeqView
 import scala.io.Source
 
 object ForComprehensionInDepth  extends App {
-/*
-Welcome back. We were discussing Scala control structures.
-The last item among the control abstraction is the for expression.
-The Scala's for loop is a swiss army knife of iterations.
-Here is the general structure of the for expression.
+/**
+ TODO
+  Welcome back. We were discussing Scala control structures.
+  The last item among the control abstraction is the for expression.
+  The Scala's for loop is a swiss army knife of iterations.
+   Here is the general structure of the for expression.
 
 // for ( seq ) yield { expr }
-
-It looks simple, but I realized that it is quite confusing to explain the above structure.
-Let me take a progressive approach to explain that. To simplify the structure,
+TODO
+ It looks simple, but I realized that it is quite confusing to explain the above structure.
+ Let me take a progressive approach to explain that. To simplify the structure,
  let's ignore the yield for now. The yield is optional.
   You will be using it most of the time, but let's keep it aside for the moment.
-Now the structure looks like this.
+ Now the structure looks like this.
 
-for ( seq ) { expr }
-
-
+ for ( seq ) { expr }
 
 
 
-Let's try to understand this structure.If you learned other languages,
-the above structure should look familiar.
-The things inside the parenthesis will control the number of iterations,
-and those curly braces represent the body of the loop.
-That's how it is in most of the languages.
 
-for (i <- 1 to 10) {
+TODO
+ Let's try to understand this structure.If you learned other languages,
+ the above structure should look familiar.
+ The things inside the parenthesis will control the number of iterations,
+ and those curly braces represent the body of the loop.
+ That's how it is in most of the languages.
+
+TODO
+  for (i <- 1 to 10) {
   statement - 1;
   statement - 2;
-}
+  }
 
-
-You can have one or more expressions within the body.
-If you have a single expression, curly braces are optional.
+TODO
+ You can have one or more expressions within the body.
+ If you have a single expression, curly braces are optional.
  We don't have any complexity for the body of the loop.
  It is almost same as any other language.
-But the seq is somewhat complicated. It keeps confusing a lot of people.
+ But the seq is somewhat complicated. It keeps confusing a lot of people.
 
-The sequence generator in Scala for loop
-Let’s start with the simplest form of the seq and then expand it step by step.
-The simplest form of seq is a generator that looks something like below.
+TODO
+ The sequence generator in Scala for loop
+ Let’s start with the simplest form of the seq and then expand it step by step.
+ The simplest form of seq is a generator that looks something like below.
 
-e <- collection
+ e <- collection
 
 The col is a Scala collection,
 and e is a value that binds to each element of the collection.
@@ -67,7 +70,7 @@ for (i <- 1 to 5) println(i)
   for (i <- seq) println(i)
   // TODO we can also write like this like we use to do in traditional for loop in java
   for (i <- seq){
-    println(i)
+    println(i)//todo:  statement 1
   }
   // compiler will write this like that
   seq.foreach(println(_))
@@ -149,8 +152,10 @@ TODO
       case _       => "I don't know"
     }
   }
-
-  val output1 =for (country <- List("India", "USA", "China", "Japan")) yield {pf}
+  val seqView= List("India", "USA", "China", "Japan")
+  val output1 =for (_ <- seqView) yield { pf }
+ // so it will look like
+  seqView.map(pf)
 
 //Compiler will convert this into
 val pf1: PartialFunction[String,Unit] = {
@@ -162,6 +167,7 @@ val pf1: PartialFunction[String,Unit] = {
   //TODO : compiler will convert this into like this
      val list = List("India", "USA", "China", "Japan")
      list.map(pf1)
+
 // here As we can see yield  is working as we are applying the map function
   // to each single element
   // of Seq and transforming that into another Seq[String]
@@ -178,25 +184,28 @@ val pf1: PartialFunction[String,Unit] = {
   }
 println(result2)
 
-  // more examples of for comprehension
-  val dataSeq = Source.fromFile("C:\\prem\\prem\\Data\\Spark_VM\\emp.txt").getLines().toList
+  //TODO :  more examples of for comprehension
+
+  val filePath = "C:\\prem\\prem\\Data\\Spark_VM\\emp.txt"
+  val source = Source.fromFile(filePath)
+  val dataSeq = try source.getLines().toList finally source.close()
+
   for(line <- dataSeq){
-    val fields = line.split(",")
+    val fields: Array[String] = line.split(",")
     println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
   }
   // TODO : here compiler will convert this into the following
-  dataSeq.foreach{
+ val xx: Unit = dataSeq.foreach{
     line =>
       val fields=line.split(",")
       println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
   }
-  //Lets put assignment inside the For not in the body this is more clean code
+  //TODO Lets put assignment inside the For not in the body this is more clean code
   // make body as simple as possible
 
   for{
     line <- dataSeq
      fields = line.split(",")
-
   }  println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
 
 // applying if filter inside for
@@ -213,8 +222,8 @@ println(result2)
    */
 
   val myresult: Seq[String] =for{
-    line <- dataSeq // generator and it control the number of iterations
-    // for each record perform these operations
+    line <- dataSeq // TODO generator and it control the number of iterations
+    //TODO  for each record perform these operations
     record: Array[String] = line.split(",") // assignment
     if(record.apply(2).equals("SALESMAN")) // if filter i.e using this we will filter the current iteration of record
   } yield (record.apply(0) + "----"+ record.apply(1)+ "----"+ record.apply(2))

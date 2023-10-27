@@ -1,18 +1,18 @@
 package monads
 
 object Monads extends App {
-// Our own Try monad As we know that
-// Monad is an abstract type hence it will be trait contract
+/**
+TODO
+  The bag/container with unit alias pure , flatMap around  makes a Monad
+  Monad is an abstract type hence it will be trait contract
   // so it will have these two functions
-  //def unit (value :A): MonadTemplate[A]// it is like apply method
-  //def flatMap[B](fx: A=>MonadTemplate[B]): MonadTemplate[B]
-  // here Attempt is a container as well as monad
-  // Success and Failure are also  containers and monads  bcz they contain a value here
-  //Here Attempt is a contract or interface
-  /*
-  Informally, a monad is anything with a constructor and a flatMap method. All
-of the functors we saw in the last chapter are also monads
-   */
+ case class Bag[A](content: A) {
+  def map[B](f: A => B): Bag[B] = Bag(f(content))
+  def flatMap(f: A=> Bag[B]) : Bag[B] =f(content)
+ }
+
+ */
+
   trait Attempt[+A]{
     def flatMap[B](fx: A=> Attempt[B]): Attempt[B]
   }

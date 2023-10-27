@@ -41,7 +41,7 @@ val aFuture: Future[Int] = Future.apply{
    println(aFuture.value) //it returns an option of try Option[Try[Int]]
   val valueReturnedByThread: Any =aFuture.value.getOrElse(42)
    println("Waiting for the Future ")
-  // Here we reomved t => t match {} because it is a partial functionso we can write this way
+  // Here we reomved t => t match {} because it is a partial function we can write this way
   //TODO you can use this call back to return values from the Future
   val futureResult: Unit =aFuture.onComplete{
     case  Success(value) => println(s"Thread is completed with the value $value")
@@ -51,7 +51,7 @@ val aFuture: Future[Int] = Future.apply{
 
   val futurePartialFunction: PartialFunction[Try[Int], Option[Int]] = {
     case  Success(value) => Some(value)
-    case Failure(exception) => None
+    case Failure(_) => None
 
   }
   val futureResult2: Unit =aFuture.onComplete(futurePartialFunction)

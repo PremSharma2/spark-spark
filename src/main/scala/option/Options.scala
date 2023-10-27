@@ -1,17 +1,24 @@
 package option
 
+import scala.language.postfixOps
 import scala.util.control.Exception.allCatch
 
-/*
-
+/**
 TODO
- * use of options and handling failures
- *
- * final case class Some[+A]( value: A) extends Option[A] {
-  def isEmpty = false
-  def get :A = value
-  def x: A = value
+ *  An Option factory which creates Some(x) if the argument is not null,
+     and None if it is null.
+   object Option {
+   def apply[A](x: A): Option[A] = if (x == null) None else Some(x)
+        }
+---------------------------------------------------------------------
+  TODO
+     use of options and handling failures
+     * final case class Some[+A]( value: A) extends Option[A] {
+     def isEmpty = false
+     def get :A = value
+     def x: A = value
 }
+
 TODO It represents Empty Option i.e like we have Nil is List Monad we have None in option monad
    case object None extends Option[Nothing] {
    def isEmpty = true
@@ -21,14 +28,6 @@ TODO It represents Empty Option i.e like we have Nil is List Monad we have None 
  because it does not contain the value
  */
 object Options extends App {
-  /*
-  TODO
-     An Option factory which creates Some(x) if the argument is not null,
-     and None if it is null.
-   object Option {
-   def apply[A](x: A): Option[A] = if (x == null) None else Some(x)
-        }
-   */
   val basicOption: Option[Int] = Option.apply[Int](2)
   val myfirstOption: Option[Int] = Some(4)
   val noOption: Option[Int] = None
@@ -36,7 +35,7 @@ object Options extends App {
   println(myfirstOption.getOrElse("3"))
   println(myfirstOption.get)
   println(noOption getOrElse (3))
-
+ println(myfirstOption orElse Option(3))
   def unsafe: String = null
 
   //An Option factory which creates Some(x) if the argument is not null,
@@ -72,7 +71,7 @@ object Options extends App {
     betterUnsafeMethod orElse betterBackUpMethod
   val getOrelse = betterUnsafeMethod() getOrElse ("Backup-Result-GetOrElse")
   println(betterUnsafeMethod() getOrElse ("Backup-Result-GetOrElse"))
-  println(betterUnsafeMethod)
+  println(betterUnsafeMethod())
   println(betterchianedResult.get)
   //function
   println(myfirstOption.isEmpty)
@@ -80,7 +79,7 @@ object Options extends App {
   //map,filter,flatMap option monad
   /*
   TODO
-    Returns a Some containing the result of applying
+     Returns a Some containing the result of applying
     f to this Option's value if this Option is nonempty. Otherwise return None.
    This is equivalent to:
    option match {
@@ -108,8 +107,8 @@ object Options extends App {
     if this option is nonempty and partial function is defined for that value.
      4
 
-
-  I have two vals, a condition and an option.
+TODO
+   I have two vals, a condition and an option.
    Note that condition is a simple boolean, not depending on the option's value.
    i.e some external condition
    */
@@ -118,4 +117,5 @@ object Options extends App {
     myfirstOption.collect {
     case x if x % 2 == 0 => transformX(x)
   }.orElse(None)
+
 }

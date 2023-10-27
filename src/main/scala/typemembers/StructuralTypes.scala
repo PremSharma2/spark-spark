@@ -1,5 +1,7 @@
 package typemembers
 
+import scala.language.reflectiveCalls
+
 object StructuralTypes  extends App {
   // type aliasing
   type JavaClosable = java.io.Closeable
@@ -7,7 +9,7 @@ object StructuralTypes  extends App {
   // let say our team has implemented some custom impl of closeable
 
   class HipsterCloseable{
-    def close() = println("close")
+    def close(): Unit = println("close")
   }
 
   // now implement a method that will accept both Java Closeable and the Custom Scala Closeable
@@ -20,7 +22,7 @@ object StructuralTypes  extends App {
    def close() : Unit
   }// this is called structural type
 // now we can redefine method
-  def closeQuitely(closeable: UnifiedCloseable) = closeable.close()
+  def closeQuitely(closeable: UnifiedCloseable): Unit = closeable.close()
 
   closeQuitely(new JavaClosable {
     override def close(): Unit = ???
@@ -46,7 +48,7 @@ object StructuralTypes  extends App {
 
   // using structural types as standalone types
   // this is like we passed structural Type as an argument in method
-  def altCloesable(cloesable: {def close():Unit}) = cloesable.close()
+  def altCloesable(cloesable: {def close():Unit}): Unit = cloesable.close()
 
 
 
@@ -82,7 +84,7 @@ val SoundMaker = new Dog
     override def toString: String = "Brains"
 
   }
-  def f[T](someThingWithTheHead: { def head : T}) = println(someThingWithTheHead.head)
+  def f[T](someThingWithTheHead: { def head : T}): Unit = println(someThingWithTheHead.head)
   /*
   We ned to check that f is compatible with MyList and Human
    */

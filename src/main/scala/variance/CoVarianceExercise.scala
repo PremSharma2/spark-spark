@@ -1,5 +1,7 @@
 package variance
 
+import variance.CoVarianceExercise.MyRecipe
+
 object CoVarianceExercise extends App {
 
 
@@ -20,15 +22,39 @@ TODO
     recipe: Recipe[Food] = new GenericRecipe[Meat]
    */
 
-  //TODO defining ADTs
+  //TODO: ->   data modelling via defining ADTs
+  /**
+   * A trait that represents any kind of food.
+   */
   sealed trait Food {
-
+    /**
+     * The name of the food.
+     *
+     * @return the name of the food.
+     */
     def name: String
-
   }
 
+  /**
+   * Represents a kind of meat.
+   *
+   * @param name the name of the meat.
+   */
+  case class Meat(override val name: String) extends Food
+
+  /**
+   * Represents a kind of vegetable.
+   *
+   * @param name the name of the vegetable.
+   */
+  case class Vegetable(override val name: String) extends Food
+
+
+  class WhiteMeat(override val name: String) extends Meat(name)
+
+
   /*
-TODO
+TODO API DEsign
     Lets proof our inheritance analogy in terms of Recipe
     Recipe, is a covariant type i.e Recipes can also have variance relationship and because
     Recipe is collection of Food and its subtypes
@@ -40,54 +66,29 @@ TODO
   //TODO If your Generic class creates or contains elements of type T it should be +T
   //TODO here recipe contains the elements of type T
   //TODO its a classic case of Producer so it will be covariant
-  trait Recipe[+A] {
-
+  trait Recipe[+A <: Food] {
     def name: String
-
     def recipeIngredients: List[A]
-
-  }
-
-   class Meat(override val name: String) extends Food
-
-   class Vegetable(override val name: String) extends Food
-
-   class WhiteMeat(override val name: String) extends Meat(name)
-//Producer
-  abstract class MyRecip[+A](val ingredien: List[A]){
-    def name: String
-
-    def recipeIngredients: List[A] = ingredien
-  }
-  class WorldRecipe extends MyRecip[Food]( ingredien = List(carrot,pumpkin)) {
-    override def name: String = s"Generic recipe based on ${recipeIngredients.map(_.name)}"
-  }
-  // TODO it is also type class instance for type Food
-  case class GenericRecipe(override val recipeIngredients: List[Food]) extends Recipe[Food] {
-
-    def name: String = s"Generic recipe based on ${recipeIngredients.map(_.name)}"
-
-  }
-
-  // TODO it is also type class instance for type Meat
-  case class MeatRecipe(override val recipeIngredients: List[Meat]) extends Recipe[Meat] {
-
-    def name: String = s"Meat recipe based on ${recipeIngredients.map(_.name)}"
-
-  }
-
-  // TODO it is also type class instance for type White Food
-  case class WhiteMeatRecipe(override val recipeIngredients: List[WhiteMeat]) extends Recipe[WhiteMeat] {
-
-    def name: String = s"Meat recipe based on ${recipeIngredients.map(_.name)}"
-
+    def add[B >: A <: Food](ingredient: B): Recipe[B]
   }
 
 
-  /*
- We can create some food instances of various type.
- They will be the ingredients of the recipes we are going to serve in our restaurants.
-  */
+
+
+//TODO : -> Producer API Design
+//TODO: -> Producer API Design
+class MyRecipe[+A <: Food](val recipeIngredients: List[A]) extends Recipe[A] {
+
+  def name: String = s"Recipe based on ${recipeIngredients.map(_.name).mkString(", ")}"
+
+  def add[B >: A <: Food](ingredient: B): MyRecipe[B] = new MyRecipe(ingredient :: recipeIngredients)
+}
+
+
+  val redChicken = Meat("Chicken")
+  val lamb = Meat("Lamb")
+  val redCarrot = Vegetable("Carrot")
+
   // Food <- Meat
   val beef = new Meat("beef")
   // Food <- Meat <- WhiteMeat
@@ -96,15 +97,20 @@ TODO
   // Food <- Vegetable
   val carrot = new Vegetable("carrot")
   val pumpkin = new Vegetable("pumpkin")
+
   //Recipe[Food] <-  Recipe[Meat]
-  val recipe: Recipe[Food] = MeatRecipe(List(beef, turkey))
+  val recipeofMeat: Recipe[Food] = new MyRecipe[Meat](List(beef, turkey))
+
   // Recipe[Food]: Based on Meat or Vegetable
-  val mixRecipe: Recipe[Food] =
-    GenericRecipe(List(chicken, carrot, beef, pumpkin))
+  val meatRecipe: Recipe[Meat] = new
+    MyRecipe(List(redChicken, beef))
+
+    val mixRecipeMoreingrdients: Recipe[Food] =meatRecipe.add(pumpkin)
+
   // Recipe[Food] <- Recipe[Meat]: Based on any kind of Meat
-  val meatRecipe: Recipe[Food] = MeatRecipe(List(beef, turkey))
+  val meatRecipes: Recipe[Food] = new MyRecipe[Meat](List(beef, turkey))
   // Recipe[Food] <- Recipe[Meat] <- Recipe[WhiteMeat]: Based only on WhiteMeat
-  val whiteMeatRecipe: Recipe[Food] = WhiteMeatRecipe(List(chicken, turkey))
+  val whiteMeatRecipe: Recipe[Food] = new MyRecipe[Meat](List(redChicken, turkey))
 
   //TODO : Design an API for recipe for Food and i will pass
   //TODO we wil pass all recipes

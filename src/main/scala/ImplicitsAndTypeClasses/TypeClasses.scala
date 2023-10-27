@@ -5,6 +5,8 @@ object TypeClasses  extends App {
   trait HtmlSerializable{
     def serializeToHtml:String
   }
+
+
   // This is the POJO or BO  we want to map that HTML object
   // we extended this pojo to HtmlSerializable just to mark it it is serializable
   // this approach is tightly coupled
@@ -14,6 +16,8 @@ case class User(name:String, age:Int , email:String) extends HtmlSerializable {
 }
   val user=User("Prem", 34, "prem.kaushik@outlook.com")
   println(user.serializeToHtml)
+
+
   /*
   Disadvantages of this design
   1: This only works for the Types we write i.e it is per implementation specific
@@ -39,7 +43,9 @@ case class User(name:String, age:Int , email:String) extends HtmlSerializable {
     }
   }
 
-  /*
+
+  /**
+ TODO
     Better Design than last two
   Advantages with this approach
   We can define the  serializers for the generic types
@@ -51,19 +57,24 @@ case class User(name:String, age:Int , email:String) extends HtmlSerializable {
   that's why we make then singleton object
   This is called type class pattern
    */
-  trait HtmlSerliazer[T]{
+
+  trait HtmlSerializer[T]{
     def serialize(value : T):String
   }
-  object UserSerializer extends HtmlSerliazer[User] {
+
+  object UserSerializer extends HtmlSerializer[User] {
     override def serialize(user: User): String =
         s"<div> $user.name {$user.age yo} <a href = $user.email /> </div>"
   }
+
   import java.util.Date
-  object DateSerializer extends HtmlSerliazer[Date] {
+  object DateSerializer extends HtmlSerializer[Date] {
     override def serialize(value: Date): String =  s"<div>${value.toString}</div>"
   }
+
+
   // these are those users who are not logged in
-  object PartialUserSerializer extends HtmlSerliazer[User] {
+  object PartialUserSerializer extends HtmlSerializer[User] {
     override def serialize(user: User): String =
       s"<div> $user.name /> </div>"
   }

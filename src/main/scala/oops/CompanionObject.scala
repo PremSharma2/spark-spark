@@ -1,25 +1,29 @@
 package oops
 
-/*
+/**
+ *TODO
  * A companion object is an object with the same name as a class or trait and is defined
- *  in the same source file as the associated file
+ * in the same source file as the associated file
  * or trait.
  * A companion object differs from other objects as it has access rights to the class/trait that other objects do not.
- * In particular it can access methods and fields that are private in the class/trait.
-
-An analog to a companion object in Java is having a class with static methods.
-In Scala you would move the static methods to a Companion object.
-
-One of the most common uses of a companion object is to define factory methods for class.
-An example is case-classes. When a case-class is declared a companion object is created for the case-class with a factory
-method that has the same signature as the primary constructor of the case class.
-That is why one can create a case-class like: MyCaseClass(param1, param2). No new element is required for case-class instantiation.
-
-A second common use-case for companion objects is to create extractors for the class.
-I will mention extractors in a future topic. Basically extractors allow matching to work with arbitrary classes.
-
-NOTE: Because the companion object and the class must be defined in the same source file you cannot create them in the interpreter.
-So copy the following example into a file and run it in script mode:
+ * In particular it can access methods and fields that are private in the class/trait even private Constructor.
+ *
+ *
+TODO
+ * An analog to a companion object in Java is having a class with static methods.
+ * In Scala you would move the static methods to a Companion object.
+ *
+ * One of the most common uses of a companion object is to define factory methods for class.
+ * An example is case-classes. When a case-class is declared a companion object is created for the case-class with a factory
+ * method that has the same signature as the primary constructor of the case class.
+ * That is why one can create a case-class like: MyCaseClass(param1, param2). No new element is required for case-class instantiation.
+ *
+ * A second common use-case for companion objects is to create extractors for the class.
+ * I will mention extractors in a future topic. Basically extractors allow matching to work with arbitrary classes.
+ *
+ * NOTE: Because the companion object and the class must be defined in the same source file and in same scope
+ * you cannot create them in the interpreter.
+ * So copy the following example into a file and run it in script mode
  *
  *
  */
@@ -34,12 +38,15 @@ object CompanionObject extends App {
   // this is companion object for Mystring class
   object MyString {
     // all static fields or class level attributes goes here
-    val staticField=22
+    val staticField = 22
+
+
     /*
      * Constructor of Factory Pattern for MyString  class
      */
     def apply(base: String, extras: String): MyString = {
       val s = new MyString(base)
+      //access to private field
       s.extraData = extras
       s
     }
@@ -61,7 +68,7 @@ object CompanionObject extends App {
   println(MyString.unapply(MyString.apply("Tom", "Jerry")).getOrElse(Some("tom", "jerry")))
 
   mystring match {
-    case MyString(str, str1) => println(str)
+    case MyString(str, str1) => s" firstName:-> ${str} and lastName-> ${str1}"
 
   }
 
@@ -97,12 +104,18 @@ object CompanionObject extends App {
     def greet(): String = s"Hello, my name is $name and I am $age  years old ,Do I like vegetables ${Kid.LIKES_VEGETABLES}   "
   }
 
-  // class level or static logic goes here
-  // in short companion objects are for static fields and methods
+  /**
+   * class level or static logic goes here
+   * in short companion objects are for static fields and methods
+   *
+   * */
+
   object Kid { // all class level or static stuff will go here
-    // its like static boolean LIKES_VEGETABLES = false
+    //TODO: ->  its like static boolean LIKES_VEGETABLES = false
     private val LIKES_VEGETABLES = false
 
+
   }
+
 
 }

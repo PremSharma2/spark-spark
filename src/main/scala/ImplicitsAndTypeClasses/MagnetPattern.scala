@@ -8,6 +8,8 @@ object MagnetPattern extends App {
   class P2PRequest
   class P2PResponse
   class Serializer[T]
+
+  // This Actor receives multiple Request of different type
   trait Actor{
     def receive(statusCode:Int):Int
     def receive(request:P2PRequest) :Int
@@ -15,6 +17,7 @@ object MagnetPattern extends App {
     def receive[T](message:T)(implicit serializer:Serializer[T]):Int
     def receive [T : Serializer](message:T,statusCode:Int):Int
     def receive(future : Future[P2PRequest]): Int
+    //def receive(future : Future[P2PResponse]): Int
     //val recive: Future[P2PResponse] => Int =  receive(_: Future[P2PResponse])
     // Problems with overloading
   // 1:  def receive(future : Future[P2PResponse]): Int
@@ -36,17 +39,19 @@ object MagnetPattern extends App {
       actor.receive(default argument we cant give bcz compiler again will get confuse)
      */
   }
+
+
   // TODO : -> this problem can be solved implicit conversion
   trait MessageMagnet[Result]{
     def apply():Result
   }
+
   // in actor api we will only have this receive method here
   // here to implement overloading smartly we will pass type class instances
   // so that receive method can consume all types of messages so messages are in form of type class instances
 def receive[R](magnet: MessageMagnet[R]):R= magnet.apply()
-  // now how we can make sure that this apply method somehow receive other types as well
-  // this we can do by implicit conversion by using value classes
-  // these are type class instances which are helping to implement overloading receive method
+
+
   implicit class FromP2PRequest(request:P2PRequest) extends MessageMagnet[Int]{
     override def apply(): Int = {
       // all logic to handle P2P request

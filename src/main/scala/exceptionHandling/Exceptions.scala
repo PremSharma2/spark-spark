@@ -49,11 +49,12 @@ todo
   }
 
 
-  /*
-  Returning an Option from a method
-The toInt method used in this book shows how to return an Option from a method.
-It takes a String as input and returns a Some[Int]
- if the String is successfully converted to an Int, otherwise it returns a None:
+  /**
+   TODO
+     Returning an Option from a method
+    The toInt method used in this book shows how to return an Option from a method.
+    It takes a String as input and returns a Some[Int]
+    if the String is successfully converted to an Int, otherwise it returns a None:
 
    */
 

@@ -287,7 +287,7 @@ object ScalaContravarianceTest {
     def get[S <: T](isItAPuppy: Boolean, defaultAnimal: S): S = defaultAnimal
   }
 
-  val animalPetshop: PetShop[Animal] = new PetShop[Animal]{
+  val animalPetshop: PetShop[Dog] = new PetShop[Animal]{
     override def get[Cat <: Animal](isItAPuppy: Boolean, defaultAnimal: Cat): Cat = defaultAnimal
   }
   val animalShop:PetShop[Animal]=new PetShop[Animal]{

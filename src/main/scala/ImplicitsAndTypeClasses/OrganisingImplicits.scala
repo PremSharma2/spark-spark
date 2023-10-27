@@ -5,16 +5,26 @@ object OrganisingImplicits  extends App {
 
   implicit def normalOrdering :Ordering[Int] = Ordering.fromLessThan(_ < _)
   println(List(1,2,3).sorted)
+
 /*
-potential implicit values are :
-- var/val
--objects
--accesor method = defs with no paraenthesis
+TODO
+ potential implicit values are :
+ - var/val
+ -objects
+ -accesor method = defs with no paraenthesis
 
  */
+
 //Exercise
+
+  //ascending order
 implicit val ageOrdering :Ordering[Person] = Ordering.fromLessThan(
   (a,b) => a.age.compareTo(b.age) < 0)
+
+  // todo: both are same
+ // implicit val ageOrdering1: Ordering[Person] = Ordering.by(_.age)
+
+
   case class Person(name:String, age:Int)
   //override def apply[A](xs: A*): List[A]
   val personList= List.apply(
@@ -47,6 +57,7 @@ implicit val ageOrdering :Ordering[Person] = Ordering.fromLessThan(
   and at last in all the types involved in method signature
   i.e A and B [B >: A] or any of there Super Type
    */
+
   //Best Practices
   /*
   If there is only one good value which will be used most of the cases

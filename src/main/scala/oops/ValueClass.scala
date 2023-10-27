@@ -69,14 +69,21 @@ TODO
       3 cannot be extended
       4 can only extends universal traits(trait with just defs and without initilization)
 
+*/
+  case class BarCodeVc( code:String) extends AnyVal{
+    def countryCode: Char = code.charAt(0)
+  }
 
+  /*
 TODO
     But this run time advantage also fails here basically
     for the following example
     here in this api show, the value class advantage of runtime is not come into the picture
     because JVM is confused whether T is to be considered as String or object
     as we are using generics which will be erased at run time
+
    */
+
   def show[T](arg:T) = arg.toString
 /*
 TODO
@@ -84,7 +91,7 @@ TODO
   here also compiler is expecting of type Barcode so jvm will instantiate the class
  BarCodeVc because Array is generic type
  */
-  val barcodes= Array[BarCodeVc](BarCodeVc("123-456-789"),BarCodeVc("123-456-866"))
+  val barcodes: Array[BarCodeVc] = Array[BarCodeVc](BarCodeVc("123-456-789"),BarCodeVc("123-456-866"))
   /*
   TODO Third case is pattern match where we will not able to take advantage
       this will instantiate the element being matched
@@ -98,10 +105,8 @@ TODO
        for us which covers all these above discussed scenario
         @newtype class BarCodeNT(code:String)
    */
-  case class BarCodeVc(val code:String) extends AnyVal{
-   def countryCode= code.charAt(0)
-  }
-  @newtype class BarCodeNT(code:String)
+
+  @newtype  class BarCodeNT(code:String)
   // now i will create a helper api here i.e utility object
   object BarCodeNT{
     def apply(code:String):Either[String,BarCodeNT] = {

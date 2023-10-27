@@ -120,7 +120,8 @@ TODO
   we need to write defensive code so that we stay away from the dreaded NullPointerException.
 
  */
-def unsafeMethod(arg: Int): String = null // implementation not important, assume that for some code path the function returns null
+  //TODO : // implementation not important, assume that for some code path the function returns null
+def unsafeMethod(arg: Int): String = null
   // defensive code
   val potentialValue = unsafeMethod(44)
   val myRealResult =

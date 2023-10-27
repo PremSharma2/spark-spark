@@ -6,13 +6,14 @@ object ScalaTestAuden  extends App {
 
   import java.time.LocalDate
 
-  // sunroofType is None if vehicle doesn't have one, model is not case sensitive
+  //todo:  sunroofType is None if vehicle doesn't have one, model is not case sensitive
   case class Vehicle(
                       speed: Int,
                       model: String,
                       numberOfWheels: Int,
                       sunroofType: Option[String]
                     )
+
   case class ModelDetails(size: Int, doors: Int)
 
   // Do not extend, we only have details for some models
@@ -89,22 +90,22 @@ TODO
     def next() = if (hasNext) { hdDefined = false; hd } else empty.next()
   }
      */
-    def dayIterator(startDate: LocalDate, endDate: LocalDate) = {
-      //the iterator producing the infinite sequence of values `start, f(start), f(f(start)), ...
-      Iterator.iterate(startDate)(_ plusDays 1).takeWhile(d => d.isBefore(endDate) || d.isEqual(endDate))
-    }
-    dayIterator(startDate,endDate).toList.map(_.toString)
+
+      //todo : -> the iterator producing the infinite sequence of values `start, f(start), f(f(start)), ...
+      // Use val for the function, and make it a lazy val to avoid computation.
+      lazy val dateIterator: Iterator[LocalDate] = Iterator
+        .iterate(startDate)(_ plusDays 1)
+        .takeWhile(d => !d.isAfter(endDate))
+
+       dateIterator.map(_.toString).toList
 
   }
 
   // filter a list of vehicles by the given sunroofType
-  def filterVehiclesBySunroof(
-                               inputVehicles: List[Vehicle],
-                               sunroofType: String
-                             ): List[Vehicle] = {
-    val result =inputVehicles.filter(_.sunroofType.getOrElse(None).equals(sunroofType))
-    result
+  def filterVehiclesBySunroof(inputVehicles: List[Vehicle], sunroofType: String): List[Vehicle] = {
+    inputVehicles.filter(_.sunroofType.contains(sunroofType))
   }
+
 
   // filter a list of vehicles by the given boundries, exclusively,
   // if boundary not given ignore
@@ -113,15 +114,14 @@ TODO
                              lowerBoundary: Option[Int],
                              upperBoundary: Option[Int]
                            ): List[Vehicle] = {
-
-    val result = for {
-      vehicle   <- inputVehicles
-      lb <- lowerBoundary.orElse((Some(Int.MinValue)))
-      ub <- upperBoundary.orElse(Some(Int.MaxValue))
-      if (vehicle.speed > lb && vehicle.speed <  ub)
-    } yield vehicle
-    result
+    inputVehicles.filter { vehicle =>
+      val speed = vehicle.speed
+      val lb = lowerBoundary.getOrElse(Int.MinValue)
+      val ub = upperBoundary.getOrElse(Int.MaxValue)
+      speed > lb && speed < ub
+    }
   }
+
 
   // generate list of vehicles with model capitalised
   def generateVehiclesCapitalised(
@@ -139,10 +139,21 @@ TODO
     // MANUAL sunroofs
     // For anything not specified above display a simple "Have a good day driver"
     // Add in some more test cases if you can!
-    vehicle.model match {
-      case "HONDA" => "Hello super fast Honda driver, zoom zoom!"
-      case  "FIAT"  => "If it's a nice day, don't forget to roll down your fancy sunroof"
-      case _ => "Have a good day driver"
+    vehicle match {
+      case Vehicle(_, "FIAT", _, Some("MANUAL")) =>
+        "If it's a nice day, don't forget to roll down your fancy sunroof"
+
+
+      case Vehicle(speed, "HONDA", _ , _) if speed > 60 =>
+        "Hello super fast Honda driver, zoom zoom!"
+
+      case Vehicle(_, "HONDA", _, _) =>
+        "Hello Honda driver"
+
+
+
+      case _ =>
+        "Have a good day driver"
     }
   }
 
@@ -150,36 +161,14 @@ TODO
   // given the input vehicles
   // it's a bit bad, make it better, only works for certain models?
   // mutable state? correct count?
-  def totalNumberWheelsByModel(
-                                inputVehicles: List[Vehicle]
-                              ): List[(String, Int)] = {
 
-
-    val result: Map[String, List[(String, Int)]] =inputVehicles.map(
-      vehicle => (vehicle.model, vehicle.numberOfWheels)).groupBy(_._1)
-
-    val temp: Map[String, Int] =result.map{
-      pair => pair._1 -> sum(pair._2.map(_._2))
+    def totalNumberWheelsByModel(inputVehicles: List[Vehicle]): List[(String, Int)] = {
+      inputVehicles
+        .groupBy(_.model)
+        .map { case (model, vehicles) => model -> vehicles.map(_.numberOfWheels).sum }
+        .toList
     }
 
-
-
-    /*
-var toyotaCount = 0
-var hondaCount = 0
-for (
-  vehicle <- inputVehicles
-) {
-  if (vehicle.model == "TOYOTA") toyotaCount = toyotaCount + 1
-  if (vehicle.model == "HONDA") hondaCount = hondaCount + 1
-}
-
-List(("HONDA", hondaCount), ("TOYOTA", toyotaCount))
-
-     */
-    temp.toList
-
-  }
 
   // return a vehicle model details ModelDetails or None if the details cannot be found
   def getSingleVehicleModelDetails(
@@ -193,14 +182,22 @@ List(("HONDA", hondaCount), ("TOYOTA", toyotaCount))
   // we only have details for some models, do not extend the map,
   // if a vehicle model is not in the list do not include it in
   // the return list
-  def getVehicleListModelDetails(
-                                  inputVehicles: List[Vehicle]
-                                ): List[ModelDetails] = {
-    val temp=  inputVehicles.filter(vehicle => modelToDetails.
-      contains(vehicle.model))
-    val result1=temp.map( vehicle => modelToDetails(vehicle.model))
-    result1
-  }
+
+/**
+TODO
+    We use flatMap to directly extract the
+    ModelDetails for each vehicle while filtering out vehicles
+    with models not present in the modelToDetails map.
+    flatMap also flattens the option results into a list.
+    If the model is not found in the map, it will result in None,
+    effectively filtering out those vehicles.
+    As this is specail feature of flatMap it will concat those values which are not None
+ */
+
+    def getVehicleListModelDetails(inputVehicles: List[Vehicle]): List[ModelDetails] = {
+      inputVehicles.flatMap(vehicle => modelToDetails.get(vehicle.model))
+    }
+
 
 
   //

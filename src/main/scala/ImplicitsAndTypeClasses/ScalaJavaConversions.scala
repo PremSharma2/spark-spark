@@ -10,7 +10,9 @@ object ScalaJavaConversions  extends App {
 val javaSet:javaCollection.Set[Int] = new javaCollection.HashSet[Int]()
 
   (1 to 5).foreach(javaSet.add)
+
   println(javaSet)
+
   // it is like implicit def intToBoolean(i:Int):Boolean= i==1
   // which converts int to boolean via implicit method
   // so same like here we have method

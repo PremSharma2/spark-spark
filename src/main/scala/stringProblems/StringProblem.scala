@@ -3,16 +3,17 @@ package stringProblems
 import stringProblems.ParanthesisProblem.hasValidParanthesis
 
 import scala.annotation.tailrec
+import scala.collection.immutable.TreeMap
 
 object StringProblem {
   /*
 TODO
-   countCharacterTailRec("Scala, []) =
-   countCharacterTailRec("cala, ["s"->1,])
+    countCharacterTailRec("Scala, []) =
+    countCharacterTailRec("cala, ["s"->1,])
     countCharacterTailRec("ala, ["s"->1,"c"->1])
-   countCharacterTailRec("la, ["s"->1,"c"->1,"a"->1])
-   countCharacterTailRec("a, ["s"->1,"c"->1,"a"->1,"l"->1])
-    countCharacterTailRec(" ", ["s"->1,"c"->1,"a"->2,"l"->1])
+    countCharacterTailRec("la, ["s"->1,"c"->1,"a"->1])
+    countCharacterTailRec("a, ["s"->1,"c"->1,"a"->1,"l"->1])
+     countCharacterTailRec(" ", ["s"->1,"c"->1,"a"->2,"l"->1])
    */
   def countCharacters(string: String): Map[Char, Int] = {
     @tailrec
@@ -21,8 +22,8 @@ TODO
       else if (accumulator.contains(remaining.head)) {
         val currentChar = remaining.head
         val currentOccurrences = accumulator(currentChar)
-        countCharacterTailRec(remaining.tail, accumulator + (currentChar -> (currentOccurrences + 1)))
-      } else countCharacterTailRec(remaining.tail, accumulator + (remaining.head -> 1))
+        countCharacterTailRec(remaining.tail, accumulator.updated(currentChar, currentOccurrences + 1))
+      } else countCharacterTailRec(remaining.tail, accumulator.updated(remaining.head, 1))
     }
 
     countCharacterTailRec(string, Map.empty)
@@ -47,10 +48,7 @@ TODO
         and you'll never need to search for online discounts again."
       )
     */
-  def ransomeNote(note: String, magzine: String): Boolean = {
-    def buildMap1(string: String): Map[Char, Int] = {
-      string.groupBy(c => c).mapValues(_.length).toMap
-    }
+  def ransomNote(note: String, magazine: String): Boolean = {
 
     /*
     TODO
@@ -59,15 +57,15 @@ TODO
      override def foldLeft[B](z: B)(op: Tuple2(B, A) => B): B
      */
     def buildMap(str: String): Map[Char, Int] = {
-      str.foldLeft(Map[Char, Int]()) {
-        case Tuple2(map, char) => map + (char -> (map.getOrElse(char, 0) + 1))
+      str.foldLeft(TreeMap[Char, Int]()) {
+        case Tuple2(map, char) => map.updated(char, map.getOrElse(char, 0) + 1)
       }
     }
 
     val noteMap = buildMap(note)
-    val magzineMap = buildMap(magzine)
+    val magazineMap = buildMap(magazine)
     noteMap.keySet.
-      forall(char => noteMap.getOrElse(char, 0) <= magzineMap.getOrElse(char, 0))
+      forall(char => noteMap.getOrElse(char, 0) <= magazineMap.getOrElse(char, 0))
 
   }
 
@@ -95,45 +93,51 @@ TODO
       The elements are sorted in natural order (ascending).
       The TreeMap should be used when we require key-value pair in sorted (ascending) order.
      */
-  def reorganizeString(string: String) = {
+  def reorganizeString(string: String): String = {
     //TODO : -> '\u0000' is unicode char for null character
     @tailrec
-    def organizeTailRec(charCount: Map[Char, Int], forbiddenChar: Char = '\u0000', accumlator: String): String = {
-      if (charCount.isEmpty) accumlator
+    def organizeTailRec(charCount: Map[Char, Int], forbiddenChar: Char = '\u0000', accumulator: String): String = {
+      if (charCount.isEmpty) accumulator
       else {
         val newChar: Char = charCount.filter(_._1 != forbiddenChar).maxBy(_._2)._1
         val newCharCount: Map[Char, Int] =
-          if (charCount(newChar) == 1) charCount - newChar
-          else charCount + (newChar -> (charCount(newChar) - 1))
-        organizeTailRec(newCharCount, newChar, accumlator + newChar)
+          if (charCount(newChar) == 1)   charCount - newChar
+          else charCount.updated(newChar,charCount(newChar) - 1)
+        organizeTailRec(newCharCount, newChar, accumulator + newChar)
       }
     }
-
+/*
+TODO
     def buildMap(string: String): Map[Char, Int] = {
       string.groupBy(c => c).mapValues(_.length)
     }
-
-    val charCount: Map[Char, Int] = buildMap(string)
+ */
+val charCount: Map[Char, Int]= {
+  string.foldLeft(TreeMap[Char, Int]()) {
+    case Tuple2(map, char) => map.updated(char, map.getOrElse(char, 0) + 1)
+  }
+}
+    //for scenerio like aaaaabbc
     if (charCount.values.exists(_ > (string.length + 1) / 2)) ""
     else organizeTailRec(charCount, '\u0000', "")
   }
+
   /*
   TODO
      "Alice loves Scala" => "Scala loves Alice"
      "    hello      world    " => "world hello"
     */
-  def reverseWords(string:String):String ={
+  def reverseWords(string: String): String = {
     //non empty words from the original string
-    string.split(" ").filter(!_.isEmpty).reverse.mkString(" ")
+    string.split(" ").filter(_.nonEmpty).reverse.mkString(" ")
   }
-
 
 
   def main(args: Array[String]): Unit = {
     println(countCharacters("Scala"))
     println(checkAnagrams("scala", "haskel"))
     println(checkAnagrams("desserts", "stressed"))
-    val result = ransomeNote(
+    val result = ransomNote(
       "I have your daughter. I want 1000000 dollars, or you'll never see her again.",
       "I bought this really nice doll for my daughter. It was 20 dollars on Amazon." +
         "She's never been happier." +
@@ -149,7 +153,7 @@ TODO
     println(reorganizeString("abbcb"))
     println(reverseWords("    hello      world    "))
 
-// TODO Paranthesis test
+    // TODO Paranthesis test
     println(hasValidParanthesis("(())"))
     println(hasValidParanthesis("())"))
 

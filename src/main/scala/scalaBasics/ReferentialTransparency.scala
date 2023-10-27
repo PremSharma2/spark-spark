@@ -27,11 +27,11 @@ TODO
 
   def add(a: Int, b: Int) = a + b
 
-  val five = add(2, 3)
+  val five: Int = add(2, 3)
 
-  val ten = five + five
-  val ten_v2 = add(2, 3) + add(2, 3)
-  val ten_v3 = 5 + add(2, 3)
+  val ten: Int = five + five
+  val ten_v2: Int = add(2, 3) + add(2, 3)
+  val ten_v3: Int = 5 + add(2, 3)
   val ten_v4 = 10
 
   /*

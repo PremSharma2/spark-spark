@@ -11,9 +11,12 @@ def fetchValue= 2
   val p = Promise[String]
   val q = Promise[String]
 
+
   p.future foreach {
     case text => println(s"Promise p succeeded with '$text'")
   }
+
+
 /*
 TODO
    Completes the promise with a value.
@@ -28,9 +31,9 @@ TODO
   /*
   TODO
       Tries to complete the promise with a value.
-    Note: Using this method may result in non-deterministic concurrent programs.
+      Note: Using this method may result in non-deterministic concurrent programs.
      Returns:
-   If the promise has already been completed returns false, or true otherwise.
+     If the promise has already been completed returns false, or true otherwise.
    */
   val secondAttempt = p trySuccess "kept again"
 

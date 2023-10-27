@@ -62,6 +62,7 @@ object PimpMyLibraryExercise extends App {
 // Doing implicit conversions or pimping is not encouraged via method in scala i.e method implicit conversion
   // is not encouraged lets proof it why? because if it gets corrupt hard to debug
   implicit def intToBoolean(i:Int):Boolean= i==1
+
   val conditionedValue1= if (3) "OK" else "Something Wrong"
 val conditionedValue= if (3) "OK" else "Something Wrong"
   val condition: Boolean = 3

@@ -1,9 +1,14 @@
 package oops
 
 object ScalaObjects extends App {
+  /**
+   *  A Singleton object is an object which defines a single object of a class.
+   *  A singleton object provides an entry point to your program execution.
+   *
+   *  scala does not have class level functionality ("scala does not know the concept of static")
+   *  there is only single instance of the Type Person we refer to with the name Person
+   */
 
-  // scala does not have class level functionality ("scala does not know the concept of static")
-// there is only single instance of the Type Person we refer to with the name Person
   object Person { //type + its only instance
     //"static or class - level functionality 
     //static constant
@@ -13,9 +18,11 @@ object ScalaObjects extends App {
     def vanFly(): Boolean = true
     //factory method for Person class
     def apply(mother:Person, father:Person):Person= new Person("Bobie")
+
   }
   class Person(name:String) {
     //instance level functionality
+    def print= println(Person.N_EYES)
   }
 // This Pattern of writing class and object of same type in same scope is called Companion
   //Person class and person object
@@ -23,7 +30,7 @@ object ScalaObjects extends App {
   println(Person.vanFly())
   
   //scala object=Singleton Instance  
-  //scala instances are singleton by defination
+  //scala instances are singleton by definition
   // no extra code needed from you to make it singleton
   val mary1=Person
   //val john=Person

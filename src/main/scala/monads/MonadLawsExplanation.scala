@@ -6,20 +6,28 @@ MonadLawsExplanation  extends App{
 Monads are kind of Abstract type which have some fundamental operations
 Like mentioned below
 All operations must satisfy the monad laws
-left identity
+left identity law
 if you built a basic monad from an element and you flatmap
 it should give you the function you used
 in flatMap
 here unit(x) is equal MonadCompanionObject.apply(x)
-unit(x).flatmap(fx) ==f(x)
+pure(a).flatMap(f) == f(a)
 ------------------------------------------------------------------
 val instance=Some(x)
-right identity
-amonadInstance.flatMap(unit)== amonadInstance
+TODO
+ right identity LAw
+ The Monadic Right Identity Law states that if you have a monad M containing a value m
+ then m.flatMap(pure) == m should hold. In simpler terms, if you take a monadic value
+ and apply flatMap to it with a function that simply wraps a plain value back into a monad
+amonadInstance.flatMap(pure)== amonadInstance
 if you have a monadicInstance and you flat map it using the unit function then it should give
 a same amonadInstance
 ------------------------------------------------------------------------------------------
 3rd law is associativity
+The Monadic Associativity Law ensures that the sequence
+in which operations are performed doesn't matter
+when dealing with monads.
+Formally, for a monad M with a value m and functions f and g, the law states:
 m.flatMap(f).flatMap(g) == m.flatMap(x => f(x).flatMap(g))
 IF you have monadeInstance and you flatMap it with two functions (f and g)
 in a sequence i.e in cascading manner like shown here m.flatMap(f).flatMap(g)
@@ -38,7 +46,7 @@ imp point is here composite function= f.flatMap(g)
   /*
   First Law : left identity
 
-  List.apply(x).flatMap(f)= f(x) ++ Nil.flatMap(f)
+  List.pure(x).flatMap(f)= f(x) ++ Nil.flatMap(f)
   that will be equal to
   f(x) ++ Nil.flatMap(f)
   where Nil.flatMap(f)=Nil
@@ -47,7 +55,7 @@ imp point is here composite function= f.flatMap(g)
 
   ---------------------------------------------------
   Second Law right identity
-  list.flatMap(x => List(x))= list
+  list.pure(x).flatMap(x => List(x))= list
   hence proved
 -----------------------------------------------------
 

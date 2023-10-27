@@ -46,6 +46,17 @@ TODO   now lets talk about a number which is not prime
       15 % 3 and it is true , now it will not go to else
       return false from here
       complexity O(Sqrt(n))
+
+     TODO
+      Explanation of this branch  else n % currentDivisor != 0 && isPrimeTailRec(currentDivisor + 1)
+      The && (logical AND) operator is used to chain the non-divisibility condition with
+      the recursive function call.
+      If the left-hand side (n % currentDivisor != 0) is true
+      (i.e., n is not divisible by currentDivisor),
+      then the right-hand side is evaluated (isPrimeTailRec(currentDivisor + 1)),
+      moving on to the next divisor.
+      If the left-hand side is false,
+      then the function will immediately return false without evaluating the right-hand side.
    */
   def isPrime(n: Int): Boolean = {
     @tailrec

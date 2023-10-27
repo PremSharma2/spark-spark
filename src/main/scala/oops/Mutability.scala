@@ -6,7 +6,11 @@ object Mutability {
   var mutablemeaning = 42
   mutablemeaning = 45
 
-  // how to mutate a datastructure
+  /**
+   *  how to mutate a datastructures in pure FP style
+   * @param name
+   * @param a
+   */
   class Person(private var name: String, private var a: Int) {
     var nAccesesofAge = 0
 

@@ -27,7 +27,7 @@ object PartialFunctions extends App {
 On the other hand a partial function from A to B is not defined for some inputs of type A
    */
 
-  val anicerFussyFunction: Int => Int = (x: Int) => x match {
+  val anicerFussyFunction: Int => Int = {
 
     case 1 => 42
     case 2 => 43

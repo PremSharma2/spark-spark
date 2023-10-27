@@ -1,21 +1,22 @@
 package scalaBasics
 
 object Expressions extends App {
-  //In scala every thing is an expression and every expression has some value associated with it
+  //TODO In scala every thing is an expression
+  // and every expression has some value associated with it
   val x: Int = 1+2 // Expression
-  //printing expression value
+  //TODO : -> printing expression value
   println(x)
   val booleanExpression1: Boolean = x==1
   println(booleanExpression1)
   println(x==1)// Boolean Expression
   // false scenario boolean expression
-  println(!(1==x)) // Boolean Expression
-  //assignment and declaration of an variable in scala they both goes hand in hand
+  println(!(1==x)) // Boolean Expression  ex: !(1==x)
+  //TODO : assignment and declaration of an variable in scala they both goes hand in hand
   var a:Int=3
   //Side effect in variable
   a+=3
   println(a)
-  // one more boolean expression
+  //TODO : ->  one more boolean expression  4 % 2 != 0
   val booleanExpression: Boolean = 4 % 2 != 0
   println(booleanExpression)
   println(4 % 2 != 0)// printing boolean expression o/p value
@@ -30,6 +31,8 @@ object Expressions extends App {
   println(conditionalExpressionOutput)
   
 
+  //TODO
+  // Loops are not advisable in scala
   /*var i=0
   while(i<10){
     println(i)
@@ -56,14 +59,20 @@ object Expressions extends App {
       
       //code blocks 
      /*
+
+
+  TODO
+      /
      code blocks are also expression
      Whose returned value is calculated from the last line of code block
-
+     which is an Conditional Expression
+     if(b>2) "hello" else "bye-bye"
       */
+
       
       val codeBlock :String ={
-        var a=5
-        var b=a+1
+        val a = 5
+        val b = a + 1
        if(b>2) "hello" else "bye-bye"
              
       }
@@ -80,4 +89,24 @@ object Expressions extends App {
         23
       }
       print(someValueCodeBlock)
+
+  /*
+  TODO
+      Transactional Operations: Code blocks in Scala can be used to perform
+      transactional operations,
+      where a series of operations need to be executed as a single atomic unit.
+      By using code blocks along with database transactions
+      or other transaction management mechanisms,
+       you can ensure that either all operations succeed or none of them take effect.
+      def transferFunds(fromAccount: Account, toAccount: Account, amount: Double): Unit = {
+     // Start a transaction
+  TODO
+     // Code block for transferring funds
+       {
+       fromAccount.withdraw(amount)
+        toAccount.deposit(amount)
+       } // The transaction is committed here if no exceptions occur, otherwise rolled back
+}
+
+   */
 }

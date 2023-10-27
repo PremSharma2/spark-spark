@@ -55,6 +55,7 @@ object FunctionalCollection extends App {
 // When you negate the EmptySet
 // its output will be the EveryThing of Type A i.e all values of domain A
     // thats why we gave here _ => true or true we have returend
+    //represents a set that contains all possible elements of type A (based on some domain or universal set concept).
     override def unary_! : MySet[A] = new PropertyBasedSet[A](_ => true)
   }
 
@@ -199,9 +200,11 @@ and now recursion traces back
   // can only be added into this set this is canonical definition of Property based set
   // PropertyBasedSet[A](property: A => Boolean) This is scala representation
   // of { x in A | property(x)  }
-  // Canonical defination of property bases set
-// This is infinite property based set this is replacement of AllinclusiveSet
+  // Canonical definition of property bases set
+// This is infinite property based set this is replacement of AllInclusiveSet
+
   class PropertyBasedSet[A](property: A => Boolean) extends MySet[A] {
+
     // { x in A | property(x)  } in this method are verifying that this element is exist in this set or not
     // if it exist it has to satisfy the property
     override def contains(element: A): Boolean = property(element)
@@ -210,6 +213,10 @@ and now recursion traces back
     // this means that all elements are present in in this set should satisfy this property
     // and new element is being added should be similar to already present elements in set
     // Hence   canonical definition of Set is been changed now
+    //e => property(e) || e == x effectively "extends" the set to
+    // include x without affecting the original elements in the set that satisfy property(e).
+    // This means that the new set contains all elements from the old set (as they satisfy property(e))
+    // and also the element x.
     override def +(element: A): MySet[A] =
       new PropertyBasedSet[A](x => property(x) || x == element)
 
@@ -220,6 +227,14 @@ and now recursion traces back
     // Hence output will be new set which either satisfies the property or passed argument set
     // should contains the same type element which are present in calling set
     // i.e property based set then only canonical definition will get complete
+
+    /*
+  TODO
+       So the new PropertyBasedSet[A] contains all elements x
+       that either satisfy the original property or are contained in anotherSet.
+       In other words, the new set represents the union of the original set and anotherSet
+
+     */
     override def ++(anotherSet: MySet[A]): MySet[A] =
       new PropertyBasedSet[A](x => property(x) || anotherSet.contains(x))
 //all inclusive set i.e all integers of domain Int we apply map function x=> _%3

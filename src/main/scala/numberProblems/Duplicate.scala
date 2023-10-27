@@ -19,6 +19,7 @@ object Duplicate {
         else naive(remainder.tail)
       }
     //todo Complexity: O(N) time, O(N) space
+
     @tailrec
     def naiveWithMemory(remainder: List[Int], occurrences: Map[Int, Int] = Map()): Int =
       if (remainder.isEmpty) occurrences.filter(_._2 == 1).head._1
@@ -26,7 +27,7 @@ object Duplicate {
         val currentNumber = remainder.head
         val currentOccurrences = occurrences.getOrElse(currentNumber, 0)
 
-        naiveWithMemory(remainder.tail, occurrences + (currentNumber -> (currentOccurrences + 1)))
+        naiveWithMemory(remainder.tail, occurrences.updated(currentNumber, (currentOccurrences + 1)))
       }
 
     //todo Complexity: O(N) time, O(1) space with some optimization, at most N/2 elements in the set
