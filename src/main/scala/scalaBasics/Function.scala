@@ -3,12 +3,13 @@ package scalaBasics
 import scala.annotation.tailrec
 
 
-/*
+/**
 tODO
  * Single Object which exposes some functions
  * 
  * @author psharma
  */
+
 object Function extends App {
 
   def aFunction(a: String, b: Int) =
@@ -36,6 +37,7 @@ object Function extends App {
     if (n == 1) accumulator else accumulator + aRecursiveFunction(accumulator, n - 1)
 
   }
+
   //function returning a Unit,This is also an example of auxiliary function in scala
   def aFunctionWithSideEffects(aString: String): Unit = println(aString)
   //TODO : nested function example
@@ -43,6 +45,26 @@ object Function extends App {
     def aSmallFunction(a: Int, b: Int): Int = a + b
     aSmallFunction(n, n - 1)
   }
+
+  //todo: one more example for nested method
+  /*
+ TODO
+    In this scenario, isValidLength and containsSpecialCharacter
+    are nested functions within processUserInput.
+    They encapsulate specific validation checks,
+     making the main function more readable and easier to maintain.
+   */
+  def processUserInput(input: String): Boolean = {
+    def isValidLength(str: String): Boolean = str.length >= 8
+
+    def containsSpecialCharacter(str: String): Boolean = str.exists(!_.isLetterOrDigit)
+
+    isValidLength(input) && containsSpecialCharacter(input)
+  }
+
+  val userInput = "Scala@2024"
+  val isValid = processUserInput(userInput)
+  println(s"Is user input valid? $isValid")
 
   //TODO :-> concept of tail recursion
    @tailrec

@@ -12,6 +12,7 @@ object Recursion extends App {
    * Recursion Implementation with Out of stack memory error
    * this is called stack recursion
    */
+
   def factorial(n: Int): Int = {
     if (n <= 1) 1
     else {

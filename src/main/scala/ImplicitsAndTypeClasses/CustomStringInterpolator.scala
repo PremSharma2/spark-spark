@@ -51,6 +51,7 @@ TODO
 
   //refcatoring query use raw interpolator
   val complexQuery = raw"""SELECT * FROM products WHERE category = 'Electronics' AND manufacturer = 'XYZ Corp' AND description LIKE '%\\_\\_%' ESCAPE '\\'"""
+  val complexQuery1 = s"""SELECT * FROM products WHERE category = 'Electronics' AND manufacturer = 'XYZ Corp' AND description LIKE '%\\_\\_%' ESCAPE '\\'"""
 
 
   /**

@@ -76,7 +76,36 @@ object Expressions extends App {
        if(b>2) "hello" else "bye-bye"
              
       }
-  
+  /*
+  TODO
+    val codeblock: String = {
+    val userExists = checkUserExists(userId)
+    val accountActive = checkAccountStatus(userId)
+    if (userExists && accountActive) "User is active" else "User not found or inactive"
+      }
+
+ if (checkUserExists(userId) && checkAccountStatus(userId)) "User is active" else "User not found or inactive"
+
+   */
+
+  def financialCalculation(): Double = {
+    // Code block for encapsulation
+    //scope of these variables made local
+    val codeBlock = {
+      val principal = 10000
+      val rate = 0.05
+      val time = 5
+      principal * rate * time // Last expression is the value of the block
+    }
+
+    codeBlock // Using the result of the code block
+  }
+
+  val interest = financialCalculation()
+  println(s"Calculated interest: $interest")
+
+
+
   println(codeBlock)
   
       val someOtherValueCodeBlock: Boolean ={

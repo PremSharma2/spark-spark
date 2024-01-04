@@ -28,11 +28,12 @@ TODO Explanation
   I’ll take care to evaluate it if I need to”. So when you call
    */
 
-  def byNameFunction1(x: => Int) ={
+  def byNameFunction1(x: => Int): Unit ={
     println(x)
     println(x)
   }
-  byNameFunction1(2 + 3)
+  val expression: Int = 2 + 3
+  byNameFunction1(expression)
   /*
 TODO Explanation
    what you’re passing is not the value of 2 + 3,
