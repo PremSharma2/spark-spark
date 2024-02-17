@@ -26,9 +26,9 @@ TODO
     you want to ensure that it cannot be accessed or modified from any other instance,
    `private[this]` provides an additional layer of security.
 
-Here's an example to illustrate the use of `private[this]`:
+  Here's an example to illustrate the use of `private[this]`:
 
-In the above example, the `price` variable is declared as `private[this]`,
+ In the above example, the `price` variable is declared as `private[this]`,
   making it accessible and modifiable only within the same instance of the `Product` class.
   It cannot be accessed or modified from other instances like `product2.price = 29.99`,
   which would result in a compile-time error.
@@ -46,8 +46,8 @@ In the above example, the `price` variable is declared as `private[this]`,
     }
   }
 
-  val product1 = new Product(10.99)
-  product1.displayPrice()  // Output: Price: 10.99
+    val product1 = new Product(10.99)
+     product1.displayPrice()  // Output: Price: 10.99
 
   //TODO Another created the DS Product with some values so it can cause data corruption
   val product2 = new Product(19.99)

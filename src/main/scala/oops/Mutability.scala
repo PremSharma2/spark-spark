@@ -1,16 +1,17 @@
 package oops
 
 object Mutability {
-  // mutable variables
+  // todo : mutable variables
+
   val meaningOflife = 42
   var mutablemeaning = 42
   mutablemeaning = 45
 
   /**
-   *  how to mutate a datastructures in pure FP style
-   * @param name
-   * @param a
+   *  how to  mutate a datastructures in pure FP style
+   *
    */
+
   class Person(private var name: String, private var a: Int) {
     var nAccesesofAge = 0
 
@@ -24,7 +25,7 @@ object Mutability {
       a = newAge
     }
 
-    def apply(index: Int) = index match {
+    def apply(index: Int): Any = index match {
       case 0 => name
       case 1 => a
       case _ => throw new IndexOutOfBoundsException
@@ -51,6 +52,7 @@ TODO
     alice.age = 25 // compiler will re write this as
     // alice.age_+=(25)
     val name = alice(0) // alice.apply(0)
+    //update the Alice age with value of 33
     alice(1) = 33 // alice.update(1,33)
   }
 

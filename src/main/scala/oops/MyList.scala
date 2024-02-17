@@ -25,6 +25,7 @@ trait MyList {
   override def toString: String = "[" + printElements + "]"
 }
 
+
 /**
  * Singleton object that represents Empty List Data structure
  */

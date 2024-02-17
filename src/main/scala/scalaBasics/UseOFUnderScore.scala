@@ -1,5 +1,7 @@
 package scalaBasics
 
+import scala.language.higherKinds
+
 object UseOFUnderScore  extends App {
 
   val _ =5 // defining a value whose name u do'nt really care
@@ -8,8 +10,7 @@ object UseOFUnderScore  extends App {
 
   /**
    *  We really dont care the type of option we can use _
-   * @param List[Option[_]]
-   * @returnInt
+   *
    */
   def processList(list : List[Option[_]] ): Int = list.length
 
@@ -17,6 +18,25 @@ object UseOFUnderScore  extends App {
   //TODO:->  let say i have a string variable i want let the jvm decide what value the variable will have
   var mystring:String = _
 
+  //Ignored Variables:
+  val (a, _) = (10, "Scala")
+  // todo : This is used when you want to ignore the second part of the tuple.
+
+
+  //Partially Applied Functions:
+
+  def add(a: Int, b: Int) = a + b
+  val addTwo: Int => Int = add(2, _: Int)
+  addTwo(3) // returns 5
+
+
+  //Pattern Matching:
+
+    (1, "Scala") match {
+    case (_, "Scala") => println("Found Scala")
+    case _            => println("Not Found")
+  }
+  //todo:  _ is used as a wildcard in pattern matching.
 
   // lambda sugars
   Seq(1,2,3,4) map(x => x*3)
@@ -26,6 +46,7 @@ val sumfunction : (Int,Int) => Int  = _ + _
   //Higher Kinded type
   class MyHigherKindedJewel[M[_]]
   val myjewel= new MyHigherKindedJewel[List]
+
   // variable arguments methods
   def makeSentence(words : String*) = words.toSeq.mkString(",")
 makeSentence("I","Love","Scala")

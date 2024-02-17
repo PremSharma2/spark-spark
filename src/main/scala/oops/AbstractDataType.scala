@@ -75,6 +75,8 @@ object AbstractDataType{
   bar.foo // this is assessor method
   bar.foo="hi" // this is update method
   // TODO : Exercise
+
+
 /*
   the trait has a member plumage,
   which the compiler knows it will be overridden in GoldFinch,

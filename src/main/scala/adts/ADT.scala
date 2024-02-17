@@ -29,9 +29,11 @@ object ADT {
   /**
    * EXERCISE 3
    * Hybrid type
-   * Using enums, construct a `Currency` type, whose cases can hold currency-specific values, for
+   * Using enums, construct a `Currency` type,
+   * whose cases can hold currency-specific values, for
    * USD, EURO, and other currencies.
    */
+
   sealed trait Currency
 
   object Currency {

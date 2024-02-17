@@ -14,12 +14,13 @@ object ScalaObjects extends App {
     //static constant
     // All helper utilities goes here
     // all factory goes here
-    val N_EYES = 2 // static constants
+    val N_EYES = 2 //todo static constants
     def vanFly(): Boolean = true
     //factory method for Person class
     def apply(mother:Person, father:Person):Person= new Person("Bobie")
 
   }
+
   class Person(name:String) {
     //instance level functionality
     def print= println(Person.N_EYES)

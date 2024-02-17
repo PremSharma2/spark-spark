@@ -10,6 +10,7 @@ TODO
    or lazily evaluated (using `def`).
    In some cases, you might want to override a `def` method with a `val` to change its behavior.
    Let's explore a real-time project scenario where this can be applied.
+
 TODO
   Real-time Project Scenario:
     Imagine you are working on a data processing application
@@ -24,7 +25,7 @@ TODO
 
   Here's how you can design it:
 
-    ```scala
+
 
  */
   abstract class DataProcessor {

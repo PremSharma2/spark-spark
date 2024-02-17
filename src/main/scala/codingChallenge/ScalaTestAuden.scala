@@ -195,7 +195,8 @@ TODO
  */
 
     def getVehicleListModelDetails(inputVehicles: List[Vehicle]): List[ModelDetails] = {
-      inputVehicles.flatMap(vehicle => modelToDetails.get(vehicle.model))
+      inputVehicles
+        .flatMap(vehicle => modelToDetails.get(vehicle.model))
     }
 
 

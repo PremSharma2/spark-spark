@@ -2,7 +2,7 @@ package oops
 
 object InheritanceInScala extends App {
 
-  class Animal {
+  trait Animal {
     val creatureType = "wild-animal"
 
     def eat = "nom-nom-nom"
@@ -51,6 +51,7 @@ object InheritanceInScala extends App {
   // or we can override class fields in this way
   //here it is clear that def can be over ridden as val
   class Bird(override val creatureType: String) extends Animal {
+
     override val eat: String = {
       //calling super class function eat here
       super.eat

@@ -1,39 +1,47 @@
 package capgemini
-import capgemini.codingchallenge.NumberOperations.roundTodecimals
+
+import capgemini.Menu.getItem
+
 trait CafeServices {
-  type MenuItem = String
-  type Price = Double
-
-  @throws[ItemNotSupportedException]("One or more MenuItems are not supported")
-  def standardBill(items: Seq[MenuItem]): Price
-
-  @throws[ItemNotSupportedException]("if any MenuItem is not supported")
-  def serviceCharge(items: Seq[MenuItem]): Price
-
+  def standardBill(items: Seq[String]): Either[String, Double]
+  def serviceCharge(items: Seq[String]): Either[String, Double]
 }
 
+class DefaultService extends CafeServices {
+  private def roundToDecimals(value: Double, decimals: Int = 2): Double =
+    BigDecimal(value).setScale(decimals, BigDecimal.RoundingMode.HALF_UP).toDouble
 
- class DefaultService extends CafeServices {
-
-  override def serviceCharge(items: Seq[MenuItem]) = {
-
-    val sc = fullServiceCharge(items)
-    if (sc > 20) 20
-    else roundTodecimals(sc)
+  override def standardBill(items: Seq[String]): Either[String, Double] = {
+    val itemPrices = items.map(getItem)
+    if (itemPrices.exists(_.isLeft)) Left("One or more MenuItems are not supported")
+    else Right(itemPrices.collect { case Right(item) => item.price }.sum)
   }
 
-  private def fullServiceCharge(items: Seq[MenuItem]): Double = {
-    val standardPrice = standardBill(items)
-    val modelItems = toModel(items)
-    if (modelItems.forall(_.isDrink)) 0
-    else if (modelItems.exists(_.isHot)) standardPrice * 0.2
-    else standardPrice * 0.1
+  override def serviceCharge(items: Seq[String]): Either[String, Double] = {
+    standardBill(items).right.flatMap { bill =>
+      val modelItems = items.flatMap(getItem(_).toOption)
+      val charge =
+        if (modelItems.forall(_.itemType == Drink)) 0
+       else if (modelItems.exists(_.temperature == Hot)) Math.min(bill * 0.2, 20)
+       else Math.min(bill * 0.1, 20)
+
+      Right(roundToDecimals(charge))
+    }
   }
-    override def standardBill(items: Seq[MenuItem]) = {
-    toModel(items).view.map(_.price).sum
+}
+
+// Auxiliary object to demonstrate usage
+object CafeApp extends App {
+  val service = new DefaultService()
+  val items = Seq("Coffee", "Cheese Sandwich")
+
+  service.standardBill(items) match {
+    case Right(bill) => println(s"Standard bill: $bill")
+    case Left(error) => println(s"Error: $error")
   }
 
-  private def toModel(items: Seq[MenuItem]): Seq[capgemini.MenuItem] =
-    items.map(name => MenuItem(name))
-
+  service.serviceCharge(items) match {
+    case Right(charge) => println(s"Service charge: $charge")
+    case Left(error) => println(s"Error: $error")
+  }
 }

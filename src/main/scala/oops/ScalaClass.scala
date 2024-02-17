@@ -18,18 +18,20 @@ object ScalaClass {
   class Person1(val firstName: String, val lastName: String) {
 
     println("the constructor begins")
-    val fullName = firstName + " " + lastName
+    val fullName: String = firstName + " " + lastName
 
-    val HOME = System.getProperty("user.home")
+    val HOME: String = System.getProperty("user.home")
 
-    // define some methods
-    def foo { println("foo") }
-    def printFullName {
-      // access the fullName field, which is created above
+    // todo : -> define some methods
+    def foo() { println("foo") }
+
+    def printFullName() {
+      // todo : access the fullName field, which is created above
       println(fullName)
     }
+
 //TODO-----constructor again begins--------------------
-    printFullName
+    printFullName()
     println("still in the constructor")
 
   }
@@ -45,11 +47,11 @@ object ScalaClass {
   e.name                                  // String = Alvin Alexander
   e.name = "Fred Flintstone"              // String = Fred Flintstone
 
-  // 'name' is a val
+  //todo : -> 'name' is a val
   class Emp1(val name: String)
   val e1 = new Emp1("Alvin Alexander")
   e1.name                                  // String = Alvin Alexander
-  //p.name = "Fred Flintstone"              // error: reassignment to val
+  //p.name = "Fred Flintstone"              //todo: -> error: reassignment to val
 
   // 'name' is neither var or val
   /**

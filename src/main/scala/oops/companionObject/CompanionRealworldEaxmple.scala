@@ -1,6 +1,6 @@
 package oops.companionObject
 
-object Companion {
+object CompanionRealworldEaxmple {
 
 
 
@@ -18,9 +18,19 @@ object Companion {
   class Film(val name: String, val yearOfRelease: Int, val imdbRating: Double, val director: Director) {
     def directorsAge: Int = yearOfRelease - director.yearOfBirth
 
-    def isDirectedBy(d: Director): Boolean = d.firstName == director.firstName && d.lastName == director.lastName
+    /**
+     *
+     * Methods like directorsAge or isDirectedBy in your Film class
+     * are specific to the particular instance
+     * of the class and wouldn't make sense as static methods.
+     */
 
-    def copy(newName: String, newYearOfRelease: Int, newImdbRating: Double, newDirector: Director): Film = new Film(newName, newYearOfRelease, newImdbRating, newDirector)
+    def isDirectedBy(d: Director): Boolean =
+      d.firstName == director.firstName && d.lastName == director.lastName
+
+    def copy(newName: String, newYearOfRelease: Int, newImdbRating: Double, newDirector: Director): Film =
+      new Film(newName, newYearOfRelease, newImdbRating, newDirector)
+
 
     override def equals(obj: Any): Boolean = {
       if (!obj.isInstanceOf[Film]) return false
@@ -29,12 +39,18 @@ object Companion {
     }
   }
 
+  /**
+   * Factory of director
+   */
   object Director {
     def apply(fName: String, lName: String, yBirth: Int): Director = new Director(fName, lName, yBirth)
     def older(d1: Director, d2: Director): Director = if (d1.yearOfBirth < d2.yearOfBirth) d1 else d2
   }
 
-  //factory of Director
+  /**
+   * Factory of Film
+   */
+
   object Film {
     def apply(name: String, yearOfRelease: Int, imdbRating: Double, director: Director): Film = new Film(name, yearOfRelease, imdbRating, director)
     def highestRating(f1: Film, f2: Film): Film = if (f1.imdbRating > f2.imdbRating) f1 else f2

@@ -20,7 +20,7 @@ object SmartConstructorExercise {
     def area: Double = math.Pi * radius * radius
   }
 
-  // Define the companion object for Circle
+  // todo : Define the companion object for Circle
   object Circle {
     // Smart constructor to create instances of Circle
     def apply(radius: Double): Option[Circle] = {
@@ -60,4 +60,6 @@ object SmartConstructorExercise {
   you want to control the creation of instances and enforce certain rules or constraints.
 
 **/
+
+
 }

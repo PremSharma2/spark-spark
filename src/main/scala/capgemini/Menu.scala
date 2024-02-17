@@ -1,56 +1,41 @@
 package capgemini
 
-private trait Food {
-  def isFood: Boolean = true
+//Adts for temptarute
+sealed trait Temperature
+case object Hot extends Temperature
+case object Cold extends Temperature
 
-  def isDrink: Boolean = false
-}
+//Adts for Itemtype
+sealed trait ItemType
+case object Food extends ItemType
+case object Drink extends ItemType
 
-private trait Drink {
-  def isDrink: Boolean = true
+case class MenuItem(name: String, price: Double, itemType: ItemType, temperature: Temperature)
 
-  def isFood: Boolean = false
-}
+object Menu {
+  val items: List[MenuItem] = List(
+    MenuItem("Cola", 0.5, Drink, Cold),
+    MenuItem("Coffee", 1.0, Drink, Hot),
+    MenuItem("Cheese Sandwich", 2.0, Food, Cold),
+    MenuItem("Steak Sandwich", 4.5, Food, Hot)
+  )
 
-private trait Hot {
-  def isHot: Boolean = true
-}
-
-private trait Cold {
-  def isHot: Boolean = false
+  def getItem(name: String): Either[String, MenuItem] =
+    items.find(_.name == name).toRight(s"Item not supported: $name")
 }
 
 case class ItemNotSupportedException(message: String) extends Exception(message)
 
-// Menu item is an abstract type it will have multiple implementations
-private sealed trait MenuItem {
-  def price: Double
-
-  def isDrink: Boolean
-
-  def isFood: Boolean
-
-  def isHot: Boolean
-}
-
-private object MenuItem {
-  private case class Cola(price: Double = 0.5) extends MenuItem with Drink with Cold
-
-  private case class Coffee(price: Double = 1) extends MenuItem with Drink with Hot
-
-  private case class CheeseSandwich(price: Double = 2) extends MenuItem with Food with Cold
-
-  private case class SteakSandwich(price: Double = 4.5) extends MenuItem with Food with Hot
-
-  def apply(itemName: String): MenuItem = {
-    itemName match {
-      case "Cola" => Cola()
-      case "Coffee" => Coffee()
-      case "Cheese Sandwich" => CheeseSandwich()
-      case "Steak Sandwich" => SteakSandwich()
-      case _ => throw ItemNotSupportedException(s"Item not supported: $itemName")
+// Example usage
+object Example {
+  def main(args: Array[String]): Unit = {
+    val item = Menu.getItem("Coffee")
+    item match {
+      case Right(menuItem) => println(s"Selected item: ${menuItem.name}, Price: ${menuItem.price}")
+      case Left(error) => println(error)
     }
   }
 }
+
 
 

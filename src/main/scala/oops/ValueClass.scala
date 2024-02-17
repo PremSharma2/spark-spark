@@ -32,7 +32,7 @@ TODO
    */
   case class BarCode(code:String)
   case class Description(description:String)
-  //TODO now lets redefine the backend service
+  //TODO now lets redefine the  backend service
   trait BackendService1{
     def findByCode(code:BarCode):Option[Product]
     def findByDescription(description:Description):List[Product]
@@ -84,7 +84,7 @@ TODO
 
    */
 
-  def show[T](arg:T) = arg.toString
+  def show[T](arg:T): String = arg.toString
 /*
 TODO
   second scenario where this advantage fails
@@ -107,7 +107,7 @@ TODO
    */
 
   @newtype  class BarCodeNT(code:String)
-  // now i will create a helper api here i.e utility object
+  // todo Smart constructor for Bar Code
   object BarCodeNT{
     def apply(code:String):Either[String,BarCodeNT] = {
       Either.cond(

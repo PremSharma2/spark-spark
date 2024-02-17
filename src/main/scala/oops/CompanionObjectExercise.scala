@@ -51,4 +51,76 @@ object CompanionObjectExercise {
 
     def unapply(task: Task): Option[(String, String)] = Option(task.description, task.status())
   }
+
+
+
+  /*
+  TODO
+      Real-World Scenario: Database Access Layer
+      Let's consider a real-world scenario in a web application
+      where you have a User class representing
+      users of the application and you need to perform
+      database operations like fetching and saving users.
+     TODO
+      Factory Method:
+      The companion object contains an apply method,
+       which acts as a factory method to create new User instances.
+       This provides a cleaner syntax for creating objects (you don't need to use the new keyword).
+TODO
+    Database Operations:
+    Methods like findById are part of the companion object.
+    These are static-like methods that can be called on the class itself.
+    It's logical to put database operations here,
+    as they typically operate on the class level (like fetching a user by ID) rather than on an instance level.
+
+TODO
+   Encapsulation and Accessibility:
+   If there are any private fields or methods in the User class
+   that need to be accessed by the companion object (for example, private helper methods for database operations),
+   they can be accessed directly,
+   maintaining encapsulation while allowing
+   for convenient access between the class and its companion object.
+   */
+  class User(val id: Int, val name: String, val email: String) {
+    // Instance methods here
+    def save(): Unit = {
+      // Save instance to the database
+    }
+  }
+
+
+  object User {
+    // Factory method
+    def apply(id: Int, name: String, email: String): User = {
+      new User(id, name, email)
+    }
+
+    def unapply(user: User): Option[(Int, String, String)] = {
+      Some((user.id, user.name, user.email))
+    }
+
+    // Method to fetch user from database
+    def findById(id: Int): Option[User] = {
+      // Fetch user from the database using the id
+      // Return None if not found, or Some(user) if found
+      Some(User(id,name="Prem",email = "abc.com"))
+    }
+
+  }
+
+
+  // Create a new user instance using the companion object
+  val user = User(1, "John Doe", "john@example.com")
+
+  // Save the user to the database
+  user.save()
+
+  // Fetch a user by id
+  val maybeUser: Option[User] = User.findById(1)
+
+  maybeUser match {
+    case Some(user) => println(s"User found: ${user.name}")
+    case None => println("User not found")
+  }
+
 }

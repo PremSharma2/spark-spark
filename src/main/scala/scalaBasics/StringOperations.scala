@@ -22,6 +22,7 @@ object StringOperations extends App {
 
   val x: Array[Int] = doubleSplit.map(list => list.length)
  val xxx: Array[Seq[String]] = splitArray.map(word => Seq(word))
+
   val sorted = doubleSplit.sortBy(_.length)
   val thresh = sorted.head.length  // assume qq is non-empty
  val rs: Array[Array[String]] = sorted.takeWhile(_.length== thresh)
