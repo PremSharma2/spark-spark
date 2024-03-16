@@ -36,14 +36,14 @@ object Try_And_Option_Exercise extends App {
 
   }
 
-  trait ConnectApi {
+  object Connection {
     def getConnection(host: String, port: String): Connection = {
       val random = new Random(System.nanoTime())
       if (random.nextBoolean()) new Connection
       else throw new RuntimeException("Someone else took the Port")
     }
   }
-    object Connection extends  ConnectApi
+
 
     def getSafeServerConnectionApi(host: String, port: String): Try[Connection] = Try.apply{
       getConnection(host, port)
@@ -66,7 +66,7 @@ TODO
    */
   //here flatmap function:
   //TODO :->  Maps the given function to the value from this Success or returns this if this is a Failure.
-  val anotherhtml: Try[String] = possibleConncetion.map(connection => connection.getSafeServerContent("/home")).flatten
+
   val posiibleHtml: Try[String] = possibleConncetion.flatMap(conection => conection.getSafeServerContent("/home"))
   posiibleHtml.foreach(renderHtml)
 

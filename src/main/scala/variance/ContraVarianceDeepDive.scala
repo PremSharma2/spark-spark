@@ -100,11 +100,12 @@ TODO Explanation of above Code
     def cure(a: A): String
   }
 
-  def vetCureApi[A](a: A)(implicit p: VetDoctor[A]) = p.cure(a)
+  def vetCureApi[A](a: A)(implicit p: VetDoctor[A]): String = p.cure(a)
 
   implicit object AnimalDoctor extends VetDoctor[Animal] {
-    def cure(a: Animal) = "[Animal : %s]" format (a)
+    def cure(a: Animal): String = "[Animal : %s]" format (a)
   }
+
   vetCureApi[Dog](new Dog("Tom"))
   // TODO : here as we can see that
   //  we have declared the PrettyPrinter[Dog] but we have passed

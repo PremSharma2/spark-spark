@@ -290,9 +290,13 @@ object ScalaContravarianceTest {
   val animalPetshop: PetShop[Dog] = new PetShop[Animal]{
     override def get[Cat <: Animal](isItAPuppy: Boolean, defaultAnimal: Cat): Cat = defaultAnimal
   }
+
+
   val animalShop:PetShop[Animal]=new PetShop[Animal]{
     def get(isItAPuppy: Boolean):Animal=new Cat
     }
+
+
 def petApi(petShop:PetShop[Dog]) ={
   // todo this arrangement is done by scala to make sure that
   //  we will receive only Dog and its sub type

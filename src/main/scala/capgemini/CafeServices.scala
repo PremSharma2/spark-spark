@@ -18,7 +18,8 @@ class DefaultService extends CafeServices {
   }
 
   override def serviceCharge(items: Seq[String]): Either[String, Double] = {
-    standardBill(items).right.flatMap { bill =>
+    standardBill(items).right.flatMap {
+      bill =>
       val modelItems = items.flatMap(getItem(_).toOption)
       val charge =
         if (modelItems.forall(_.itemType == Drink)) 0

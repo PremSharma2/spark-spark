@@ -26,6 +26,8 @@ val dogs: MyList[Animal] = new MyList[Dog]
 
   val dogs: MyList[Animal] = new MyList[Dog](new Dog)
 
+
+
   /*
 TODO
       In other words, if A is a subtype of B, then Thing[B] is a subtype of Thing[A].
@@ -44,9 +46,9 @@ TODO
 
   /*
   TODO
-       The Variance Positions
-       Now that we’ve found that a collection should be covariant,
-      we get to work and write our own list, because of course we can:
+        The Variance Positions
+        Now that we’ve found that a collection should be covariant,
+       we get to work and write our own list, because of course we can:
 
   TODO
      We start from the very basics. But before we even write a proper subtype for MyList, we hit a wall:
@@ -63,8 +65,9 @@ TODO
 
   /*
   TODO
-        Types of vals Are in Covariant
-        Let’s say we had a Vet. As discussed before, a Vet should be a contravariant type.
+         Types of vals Are in Covariant
+        Let’s say we had a Vet.
+        As discussed before, a Vet should be a contravariant type.
         Let’s also imagine this vet had a favorite animal val field, of the same type she can treat:
    */
 
@@ -78,7 +81,7 @@ TODO
       as per contravariance we can assign a Vet[Animal]
      theVet is a Vet[Animal] (typed correctly),
     but is constructed with a Cat (a legit Animal)
-   lassiesVet.favoriteAnimal is supposed to be a Dog per the generic type declared,
+    lassiesVet.favoriteAnimal is supposed to be a Dog per the generic type declared,
     but it’s really a Cat per its construction
    No-no. This is a type conflict.
    A sound type checker wi ll not compile this code.
@@ -90,23 +93,25 @@ TODO
    Error : ->  contravariant type T occurs in covariant position in type T of value favoriteAnimal
    val garfield = new Cat
    val theVet: PetBox[dog] = new PetBox[Animal](garfield)
-   def petApi(petBox: PetBox[Dog]) = {
+   PetBox
+ TODO
+   def petApi(petBox: [Dog]) = {
     // here petBox of Dog is having the Cat and we expect here Dog
     val petBox: PetBox[dog] = theVet // type conflict if we access that pet it will cat
    }
-   val lassiesVet: PetBox[Dog] = theVet
+   def petApi(new PetBox[Animal](garfield))
     We say that the types of val fields are in covariant position,
    */
 /*
 TODO
-    Types of vars Are Also in Contravariant
-   If our contravariant Vet example had a var field,
-   we’d have the exact same problem right at initialization.
-  Therefore, types of var members are in covariant position as well.
+     Types of vars Are Also in Contravariant
+    If our contravariant Vet example had a var field,
+    we’d have the exact same problem right at initialization.
+   Therefore, types of var members are in covariant position as well.
    Because vars can be reassigned, they come with an extra restriction.
   Let’s think about Option[T] for a second. Should it be covariant or contravariant?
   Spoiler: it’s covariant. If Dog extends Animal then Option[Dog] should be a subtype of Option[Animal].
- Pick your favorite reason (both are true):
+  Pick your favorite reason (both are true):
  If a dog is an animal, then a maybe-dog is also a maybe-animal.
  Think of an Option as a list with at most one element. If a list is covariant, then an option is covariant.
  Now, imagine that (for whatever reason) we had a mutable version of an option.
@@ -155,6 +160,8 @@ TODO
   def add(elem: T): MyList[T]
    }
  */
+
+
 /*
 TODO
   Let’s imagine this code compiled.
@@ -169,6 +176,7 @@ TODO
   def tail: ContraList[T]
   def add(elem: T): ContraList[T]
 }
+
 TODO
   val animals: ContraList[Animal] = new ContraList[Cat](new Cat)
   def ContraApi(list:ContraList[Animal])={
@@ -186,6 +194,7 @@ TODO
   and we’ve just added a Dog to it, which breaks the type checker.
    Therefore, we say that the type of method arguments is in contravariant position.
  */
+
 class ContraVet[-T] {
   def heal(animal: T): Boolean = true // implementation unimportant
 }
@@ -195,6 +204,7 @@ class ContraVet[-T] {
    }
   val catVet: ContraVet[Dog] = new ContraVet[Animal]
   CVetApi(catVet)
+
 
 /*
 TODO
@@ -214,10 +224,12 @@ TODO
   val covet: CovVet[Dog] = new CovVet[Animal] {
     override def rescueAnimal(): Animal = new Cat // because cat is animal
   }
-  def CovVetApi(vet:CovVet[Dog])={
+
+  TODO
+   def CovVetApi(vet:CovVet[Dog])={
     val rescuedDog: Dog = vet.rescueAnimal // This code will blow expecting Dog but got Cat
-  }
-  CovVetApi(covet)
+   }
+   CovVetApi(covet)
 
  TODO
   Again, breaking the type guarantees:
@@ -235,15 +247,20 @@ TODO
    abstract class CovVet[+T] {
     def rescueAnimal(): T
   }
+
+
+TODO
   val covet: CovVet[Animal] = new CovVet[Dog] {
     override def rescueAnimal(): Dog = new Dog // because Dog is animal
   }
 
  TODO
   def CovVetApi(vet:CovVet[Animal])={
-    val rescuedDog: Dog = vet.rescueAnimal // This code will blow expecting Dog but you are supplying a Animal
+    val rescuedDog: Dog = vet.rescueAnimal // This is correct
   }
-  CovVetApi(covet)
+
+  TODO
+    CovVetApi(covet)
 
 
  */

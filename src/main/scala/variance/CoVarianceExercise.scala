@@ -54,9 +54,10 @@ TODO
 
 
   /*
-TODO API DEsign
+TODO API Design
     Lets proof our inheritance analogy in terms of Recipe
-    Recipe, is a covariant type i.e Recipes can also have variance relationship and because
+    Recipe, is a covariant type
+    i.e Recipes can also have variance relationship and because
     Recipe is collection of Food and its subtypes
     Let's define the covariant type Recipe.
      It takes a component type that expresses the base food for the recipe -
@@ -72,7 +73,10 @@ TODO API DEsign
     def add[B >: A <: Food](ingredient: B): Recipe[B]
   }
 
-
+  //todo : Companion object
+  object Recipe {
+    def empty[A <: Food]: MyRecipe[A] = new MyRecipe(List.empty[A])
+  }
 
 
 //TODO : -> Producer API Design
@@ -90,25 +94,25 @@ class MyRecipe[+A <: Food](val recipeIngredients: List[A]) extends Recipe[A] {
   val redCarrot = Vegetable("Carrot")
 
   // Food <- Meat
-  val beef = new Meat("beef")
+  val butterChicken = new Meat("butter-chicken")
   // Food <- Meat <- WhiteMeat
   val chicken = new WhiteMeat("chicken")
   val turkey = new WhiteMeat("turkey")
   // Food <- Vegetable
-  val carrot = new Vegetable("carrot")
-  val pumpkin = new Vegetable("pumpkin")
+  val carrot = Vegetable("carrot")
+  val pumpkin = Vegetable("pumpkin")
 
   //Recipe[Food] <-  Recipe[Meat]
-  val recipeofMeat: Recipe[Food] = new MyRecipe[Meat](List(beef, turkey))
+  val recipeofMeat: Recipe[Food] = new MyRecipe[Meat](List(butterChicken, turkey))
 
   // Recipe[Food]: Based on Meat or Vegetable
   val meatRecipe: Recipe[Meat] = new
-    MyRecipe(List(redChicken, beef))
+    MyRecipe(List(redChicken, butterChicken))
 
     val mixRecipeMoreingrdients: Recipe[Food] =meatRecipe.add(pumpkin)
 
   // Recipe[Food] <- Recipe[Meat]: Based on any kind of Meat
-  val meatRecipes: Recipe[Food] = new MyRecipe[Meat](List(beef, turkey))
+  val meatRecipes: Recipe[Food] = new MyRecipe[Meat](List(butterChicken, turkey))
   // Recipe[Food] <- Recipe[Meat] <- Recipe[WhiteMeat]: Based only on WhiteMeat
   val whiteMeatRecipe: Recipe[Food] = new MyRecipe[Meat](List(redChicken, turkey))
 
