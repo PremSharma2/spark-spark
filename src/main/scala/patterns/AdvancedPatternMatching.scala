@@ -52,7 +52,7 @@ numbers1 match {
   println(legalStatus)
 
 
-  //Exercise onPattern MAtching
+  //Exercise onPattern Matching
 
 //if we have to match pattern on condition basis
   // then we have to do with custom Singleton object rather than
@@ -66,9 +66,9 @@ numbers1 match {
     case x if x%2==0 => s"$x is even number"
     case _ => "no property matched "
   }
-  
-  object even{
-    def unapply(arg: Int): Option[Boolean] = if (arg % 2 ==0) Some(true) else None
+
+  object even {
+    def unapply(arg: Int): Option[Boolean] = if (arg % 2 == 0) Some(true) else None
   }
 
   object Odd {
@@ -76,9 +76,9 @@ numbers1 match {
   }
 
   object SingleDigit {
-    def unapply(arg: Int): Option[Unit] =
-      if (arg > -10 && arg < 10) Some(()) else None
+    def unapply(arg: Int): Option[Unit] = if (arg > -10 && arg < 10) Some(()) else None
   }
+
 
   // its like if if and else conditions implementation via pattern matching
   val matchpattern1: String = n match {
@@ -115,4 +115,49 @@ numbers1 match {
     case _ => "no prpoery"
   }
   val list: List[String] =List(1,2,3,4,5) map(pf)
+
+
+
+
+  val matchPatternLatest: PartialFunction[Int, String] = {
+    case SingleDigit(_) => s"is a single digit"
+    case even(_) => s"is an even number"
+    case Odd(_) => s"is an odd number"
+  }
+
+  // Adding a default case to handle inputs not matched by the PartialFunction
+  def applyMatchPattern(n: Int): String = matchPatternLatest.applyOrElse(n, (_: Int) => "no property matched")
+
+  // Testing the function
+  val testValues = List(3, 4, 10, 23, -5)
+  val results = testValues.map(n => s"$n ${applyMatchPattern(n)}")
+  results.foreach(println)
+  // Output:
+  // 3 is a single digit
+  // 4 is an even number
+  // 10 is an even number
+  // 23 is an odd number
+  // -5 is a single digit
+
+
+
+  //TODO : Real World Use Case
+
+  case class Transaction(id: String, amount: Double, currency: String)
+
+  object HighValueTransaction {
+    def unapply(transaction: Transaction): Option[(String, Double)] = {
+      if (transaction.amount > 10000) Some((transaction.id, transaction.amount)) else None
+    }
+  }
+
+  val transaction = Transaction("TX123", 15000.0, "USD")
+  val result = transaction match {
+    case HighValueTransaction(id, amount) => s"High value transaction: $id with amount $$amount"
+    case _ => "Regular transaction"
+  }
+
+  println(result)
+  // Output: High value transaction: TX123 with amount $15000.0
+
 }

@@ -24,7 +24,7 @@ object ETAExpansionAndCurriedFunctions extends App {
   //Here Compiler converts this method into the function
   // here actually converts this into lambda
     List(1, 2, 3).map(x => inc(x))
-  val add5: Int => Int = curriedMethod(5) _ // this will tel the compiler pls dp ETA expansion for me
+  val add5: Int => Int = curriedMethod(5) // this will tel the compiler pls dp ETA expansion for me
 
   //Exercise
   val simpleAddFunction: (Int, Int) => Int = (x, y) => x + y
@@ -40,14 +40,16 @@ object ETAExpansionAndCurriedFunctions extends App {
   // here compiler rewrites into this like x => y => simpleAddFunction(x,y)
   val add7_2_1: Int => Int = simpleAddFunction.curried.apply(7)
   // using ETA expansion
-  val add7_3: Int => Int = curriedMethod(7) _ // ETA
+  val add7_3: Int => Int = curriedMethod(7) // ETA
   //y => curriedAddMEthod(x,y)
   //
 //Int => Int = y =>curriedMethod(7)(y)
   val add7_4: Int => Int = curriedMethod(7)(_) // same ETA but alternative syntax
-  // same ETA  expansion of normal methods we have curried the function calls of normal method
+
+  //todo : ->   same ETA  expansion of normal methods we have curried the function calls of normal method
   val add7_5: Int => Int = simpleAdd(7, _: Int)
-  // compiler rewrites it like this add7_5: Int => Int = y => simpleAdd(7,y) kind of compose
+
+  //todo:->  compiler rewrites it like this add7_5: Int => Int = y => simpleAdd(7,y) kind of compose
   println(add7_5.apply(3))
   // compiler will convert this into like this y => fx.apply(7,y)
   val add7_6: Int => Int = simpleAddFunction.apply(7, _: Int)
@@ -55,7 +57,9 @@ object ETAExpansionAndCurriedFunctions extends App {
 
   def concatenate(a: String, b: String, c: String): String = a + "\t" + b + "\t" + c
    val fn: (String, String, String) => String = concatenate(_: String, _: String, _: String)
+  //todo: making this function to curried function
   val fn1: String => String => String => String = fn.curried
+
   val insertName: String => String = concatenate("Hello I am  ", _: String, "How Are you")
   // y => concatenate("Hello Iam ", y , "How Are you")
   val fillInTheBlanks: (String, String) => String = concatenate(_: String, _: String, "di")
@@ -68,9 +72,10 @@ object ETAExpansionAndCurriedFunctions extends App {
   val numbers = List(Math.PI, Math.E, 1, 9.8, 1.3e-12)
   val simpleFormat: Double => String = curriedFormatter("%4.2f") (_)
   // fx: y=> curriedFormatter("%4.2f")(y)
-  val seriousFormat: Double => String = curriedFormatter("%8.6f") _
+  val seriousFormat: Double => String = curriedFormatter("%8.6f")
 
-  val preciseFormat: Double => String = curriedFormatter("%14.12f") _
+  val preciseFormat: Double => String = curriedFormatter("%14.12f")
+
   println(numbers.map(simpleFormat))
 
   //Exercise 2

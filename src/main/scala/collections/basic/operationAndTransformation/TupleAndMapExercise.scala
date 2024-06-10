@@ -58,22 +58,26 @@ object TupleAndMapExercise extends App {
    * this method is used to find the total number of friends of a person in a network
    * 
    */
+
   def nFriends(network: Map[String, Set[String]], person: String): Int = {
     if (!network.contains(person)) 0
     else {
       network(person).size
     }
   }
+
   println(nFriends(friend(network, "BOB", "Mary"), "BOB"))
 
   def mostFiends(network: Map[String, Set[String]]): String = {
     network.maxBy(pair => pair._2.size)._1
   }
   println(mostFiends(network))
-  
+
+
   def nPeopleWithNoFriends(network: Map[String, Set[String]]): Int = {
     network.filterKeys(key => network(key).isEmpty).size
   }
+
 
   def socialConnection(network: Map[String, Set[String]], a: String, b: String): Boolean = {
     def bfsSearch(target: String, consideredPeople: Set[String], discoveredPeople: Set[String]): Boolean = {

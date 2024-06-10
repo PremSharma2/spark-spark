@@ -2,8 +2,10 @@ package variance
 
 object VarianceExercise  extends App{
   /*
+
   TODO
    * Write an Monadic Implementation  (Invariant,covariant,contravariant) version of Parking API
+   here Parking is Container
    * abstract class Parking[T](ListOfAllVehicles :List[T]){
    * park(vehicle:T)
    * impound(vehicles:List[T])
@@ -73,7 +75,7 @@ TODO what if SomeType is higherKinded type List[T] ??
   //TODO Contravariant implementation are majorly used in type class
   //Todo beacuse we need to take an action on type
   
-  class XParking[-T] (vehicles :List[T]){
+    class XParking[-T] (vehicles :List[T]){
      def park (vehicle:T):XParking[T]= ???
      def impound (vehicles:List[T]):XParking[T]= ???
      def checkVehicles [S<:T](conditions:String):List[S] = ???

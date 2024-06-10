@@ -6,6 +6,8 @@ import scala.collection.SeqView
 import scala.io.Source
 
 object ForComprehensionInDepth  extends App {
+
+
 /**
  TODO
   Welcome back. We were discussing Scala control structures.
@@ -14,6 +16,7 @@ object ForComprehensionInDepth  extends App {
    Here is the general structure of the for expression.
 
 // for ( seq ) yield { expr }
+
 TODO
  It looks simple, but I realized that it is quite confusing to explain the above structure.
  Let me take a progressive approach to explain that. To simplify the structure,
@@ -53,7 +56,7 @@ TODO
 
  e <- collection
 
-The col is a Scala collection,
+The collection is a Scala collection,
 and e is a value that binds to each element of the collection.
 Let's take an example.
 
@@ -64,6 +67,8 @@ for (i <- seq) println(i)
 // You can remove the middleman and get a collection on the fly.
 for (i <- 1 to 5) println(i)
  */
+
+
 // or we can write this
   val seq= List("India", "USA", "China", "Japan")
 
@@ -89,6 +94,9 @@ for (i <- 1 to 5) println(i)
     case "Japan" => println("Tokyo")
     case _       => println("I don't know")
   }
+
+
+
   val result: Unit =for (country <- List("India", "USA", "China", "Japan"))  {
     country match {
       case "India" => println("Delhi")
@@ -194,12 +202,18 @@ println(result2)
     val fields: Array[String] = line.split(",")
     println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
   }
+
+
+
+
   // TODO : here compiler will convert this into the following
  val xx: Unit = dataSeq.foreach{
     line =>
       val fields=line.split(",")
       println(fields.apply(0) + "----"+ fields.apply(1)+ "----"+ fields.apply(2))
   }
+
+
   //TODO Lets put assignment inside the For not in the body this is more clean code
   // make body as simple as possible
 
@@ -222,11 +236,31 @@ println(result2)
    */
 
   val myresult: Seq[String] =for{
-    line <- dataSeq // TODO generator and it control the number of iterations
-    //TODO  for each record perform these operations
-    record: Array[String] = line.split(",") // assignment
-    if(record.apply(2).equals("SALESMAN")) // if filter i.e using this we will filter the current iteration of record
+    line <- dataSeq // TODO: 1 step: generator and it control the number of iterations
+
+    //TODO : Second step : assignment -  for each record perform these operations
+    record: Array[String] = line.split(",") //todo  assignment
+
+    //todo: if filter i.e using this we will filter the current iteration of record
+    if(record.apply(2).equals("SALESMAN"))
   } yield (record.apply(0) + "----"+ record.apply(1)+ "----"+ record.apply(2))
+
+
+
+//TODO : Transforming a dataset of customer transactions to calculate total sales per customer.
+
+  val transactions: List[(String, Double)] = List(("Alice", 50.0), ("Bob", 40.0), ("Alice", 100.0))
+
+  val totalSalesPerCustomer = for {
+    //todo : Generator
+    (customer, _) <- transactions
+    //todo assignment
+    groupedByCustomer = transactions.groupBy(_._1)
+    total = groupedByCustomer.mapValues(_.map(_._2).sum)
+
+    //todo we are not using withFilter here its not required here
+  } yield (customer, total(customer))
+
 
   // or for complex map and flatmap combination we can use this approach as well
   // TODO : here we are calculating sum
@@ -252,6 +286,10 @@ val salesManSalary: Seq[Long] =dataSeq.map{
   } yield (record.apply(2).toLong)
   val sum: Long = resultn1.sum
 //
+
+
+
+
 val monthlyConsumptionAmount = Seq(437.8,3339.5,0.0,0.0,0.0,0.0,75.0,99.0,0.0,20.0,66.0)
   val monthNames: Array[String] = Array("Jan", "Feb", "Mar", "Apr", "May",
     "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
@@ -267,6 +305,74 @@ val monthlyConsumptionAmount = Seq(437.8,3339.5,0.0,0.0,0.0,0.0,75.0,99.0,0.0,20
     println(netResult)
     netResult
   }
+
+
+
+/*
+TODO
+     Initialization:
+     Use Array.fill to create an array with 12 zeroes.
+     This array represents the total for each month
+     and avoids the need for repeatedly filtering and mapping the data.
+
+ TODO
+     Single Traversal:
+     The function traverses the snapshots sequence once,
+      using the foreach method to accumulate totals directly
+      into the corresponding index of the monthlyTotals array.
+      This avoids the inefficiency of repeatedly filtering the sequence for each month.
+
+TODO
+    Direct Index Access:
+    By directly accessing the array index that corresponds
+    to each month,
+    the function efficiently aggregates totals
+     without unnecessary transformations or intermediate collections.
+TODO
+    Performance:
+    The revised approach is more efficient in terms of both time (O(n)
+     where n is the number of snapshots) and space (using a fixed-size array),
+     compared to the original approach that iteratively filters the list for each month.
+ */
+
+
+
+
+  import java.time.ZonedDateTime
+
+  def aggregateMonthlyConsumptionModified(snapshots: Seq[(ZonedDateTime, Double)]): Seq[Double] = {
+    // Initialize an array of doubles with 12 elements, all set to 0.0
+    val monthlyTotals = Array.fill(12)(0.0)
+
+    // Iterate over each snapshot once and accumulate the values directly into the corresponding month
+    snapshots.foreach {
+      case (date, amount) =>
+      // Convert 1-based month to 0-based index for the array
+      val monthIndex = date.getMonthValue - 1
+      monthlyTotals(monthIndex) += amount
+    }
+
+    // Convert the mutable Array to an immutable Seq before returning
+    monthlyTotals.toSeq
+  }
+
+  // Example Usage:
+  val snapshots = Seq(
+    (ZonedDateTime.parse("2023-01-15T10:15:30+01:00[Europe/Paris]"), 100.0),
+    (ZonedDateTime.parse("2023-01-22T10:15:30+01:00[Europe/Paris]"), 150.0),
+    (ZonedDateTime.parse("2023-02-01T10:15:30+01:00[Europe/Paris]"), 200.0)
+  )
+
+  val monthlyConsumptionAmount1 = aggregateMonthlyConsumption(snapshots)
+  println(monthlyConsumptionAmount1)
+
+
+
+
+
+
+
+
 
   def aggregateMonthlyConsumption1(snapshots: Seq[(ZonedDateTime, Double)]): Seq[Double] = {
     val netResult: Seq[Double] = for {

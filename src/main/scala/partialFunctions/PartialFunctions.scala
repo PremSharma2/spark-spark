@@ -24,7 +24,8 @@ object PartialFunctions extends App {
    the domain is the set of all values that you may provide as input to your function,
    while the codomain is the result of the function application to the input,
     that is your function output.
-On the other hand a partial function from A to B is not defined for some inputs of type A
+On the other hand a partial function
+from A to B is not defined for some inputs of type A
    */
 
   val anicerFussyFunction: Int => Int = {

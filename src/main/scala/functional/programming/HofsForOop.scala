@@ -19,13 +19,18 @@ object HofsForOop {
          here incrementer is the jvm object here
          of type Function1[Int,Int] trait
    */
-  val incrementer: (Int => Int) = new Function[Int,Int] {
+  val incrementer: Int => Int = new Function[Int,Int] {
     override def apply(x: Int): Int = x+1
   }
 
-  def incrementer1: (Int => Int) = new Function[Int,Int] {
+
+  def incrementer1: Int => Int = new Function[Int,Int] {
     override def apply(x: Int): Int = x+1
   }
+
+
+
+
   incrementer.apply(2)
   incrementer(2)
   incrementer1(3)

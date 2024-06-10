@@ -6,6 +6,7 @@ object AllPatterns extends App {
   
   //1 constants
   val x: Any="scala"
+
   val constants: String = x match {
      case 1 => "a number"
      case "scala" => "The scala"

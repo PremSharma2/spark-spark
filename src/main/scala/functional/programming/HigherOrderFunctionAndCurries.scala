@@ -1,8 +1,76 @@
 package functional.programming
 
-import scala.annotation.tailrec
-
 object HigherOrderFunctionAndCurries extends App {
+
+/*
+TODO
+   Elegance and Scalability: The curried approach allows for more elegant and scalable code.
+    You don't need to define a new function for
+    every variant of add you might need. Instead,
+    you can partially apply addCurried as needed,
+    reducing boilerplate and making your code more concise.
+TODO
+   Enhanced Reusability: The curried function can be easily reused in different contexts.
+   For example, if you need a function that adds 10 to a number,
+   you can create it just
+   as simply: val addTen: Int => Int = addCurried(10).
+    This demonstrates how currying facilitates creating
+    highly reusable and customizable functions with minimal effort.
+TODO
+   Function Composition: Curried functions lend themselves to function
+   composition more naturally.
+    If you have other functions that operate on integers,
+    you can easily compose them with your curried add function to build more complex operations.
+
+
+TODO
+    Partial Application Flexibility:
+    Currying provides flexibility in how functions are applied.
+    You can choose to apply all arguments at once or partially apply the function,
+    depending on the needs of your application.
+    This flexibility is particularly useful in scenarios
+    where function parameters are determined in different contexts or at different times.
+ */
+
+
+  import scala.annotation.tailrec
+
+
+
+
+  /*
+  TODO
+    Code Reusability and Scalability:
+     The curried and recursive approach allows the core recursive logic
+     to be reused for any series computation, significantly reducing code duplication.
+      You only need to define the operation to apply to each term of the series.
+
+TODO
+   Clarity and Separation of Concerns:
+    This method clearly separates the concerns of the recursion (the structure of the series computation)
+    from the specific operation applied to each term.
+    This makes the code easier to understand and maintain.
+TODO
+  Flexibility:
+     It's easy to create new series computations without touching
+     the recursive logic. Want to sum the series of n factorial?
+     Just define a new function for the factorial operation and partially apply sumSeries.
+TODO
+    Higher-Order Function Utilization:
+     Leveraging higher-order functions (functions that take other functions as arguments or return them)
+     is a hallmark of functional programming.
+     This approach demonstrates the power and flexibility of higher-order functions in designing elegant solutions.
+   */
+
+  def sumSeries(f: Int => Int)(n: Int): Int = {
+    @tailrec
+    def loop(n: Int, acc: Int): Int = {
+      if (n == 0) acc
+      else loop(n - 1, acc + f(n))
+    }
+    loop(n, 0)
+  }
+
 
   /**
    *
@@ -34,7 +102,7 @@ object HigherOrderFunctionAndCurries extends App {
   }
 
   // val function:Function1[Int,Int] = (x: Int) => x + 1
-  val plusOne: Int => Int = (x) => x + 1
+  val plusOne: Int => Int = x => x + 1
   // here as we can see that the now functions can be passed  as an argument to the
   // here also we can notice that we have curried the function calls
   val ft: Int => Int = (x: Int) => plusOne(plusOne(plusOne(x)))
@@ -43,7 +111,7 @@ object HigherOrderFunctionAndCurries extends App {
   // curried approach
 
   /*
-   *TODO
+    TODO
    * All that the theory of currying means is that a function that takes multiple arguments
    *  can be translated into a series of function calls in a cascading manner
    *  that each take a single argument or input .
@@ -75,6 +143,9 @@ object HigherOrderFunctionAndCurries extends App {
 
   /*
     TODO
+        Dynamically generates a function that applies another
+         function f a specific number of times n to an argument.
+         This is about function composition and repeated application.
         ntimes Better Explanation
         break down of All recursion calls in stack
      * nTimesBetter(f,4) = x => nTimesBetter(f,3).apply(f.apply(x)) // First stack of recursion
@@ -82,7 +153,12 @@ object HigherOrderFunctionAndCurries extends App {
      * nTimesBetter(f,2) = x => nTimesBetter(f,1).apply(f.apply(x))//3rd
      * nTimesBetter(f,1) = x => nTimesBetter(f,0).apply(f.apply(x))//4th
      * nTimesBetter(f,0) = (x: Int) => x  it will return identity function and
-
+TODO
+     What is Identity Function?
+     The identity function is a fundamental concept in mathematics and functional programming,
+     which simply returns its input. This serves as a base case for the recursion,
+     like we return empty Sequence in as base case for recursion
+     effectively representing "applying f zero times."
 TODO
      now recursion traces back
       Now When Lets Evaluate How recursion Trace Back
@@ -144,7 +220,7 @@ TODO
      then all function objects are created
      *
      */
-  def nTimesBetter(f: Int => Int, n: Int): (Int => Int) = {
+  def nTimesBetter(f: Int => Int, n: Int): Int => Int = {
     if (n <= 0) (x: Int) => x // This is called Identity Function
     //else (x:Int) => nTimesBetter(f, n-1).apply(f.apply(x))
     else (x: Int) => nTimesBetter(f, n - 1)(f(x))
@@ -180,7 +256,7 @@ TODO
    Here we are converting a def into curried function
    */
 
-  def toCurry(fx: (Int, Int) => Int): (Int => Int => Int) = {
+  def toCurry(fx: (Int, Int) => Int): Int => Int => Int = {
   /**
    * TODO
       result = f(x)(y)(z)
@@ -237,6 +313,7 @@ TODO
   def verify: String => String = (value: String) => if (value == "converted") "valid" else "invalid"
     val finalfx= (x:String) => convert(verify(x))
   def vc: String => String = convert compose verify
+
   def vc1: String => String = verify compose convert
   finalfx("Scala")
   vc("prem")
@@ -244,16 +321,21 @@ TODO
   def andThen[A, B, C](function: A => B, function1: B => C): A => C =
     x => function1(function(x))
 //TODO example
+
   def verifiedOutput = verify andThen convert
   // plus10 is series of function calls
   val plus10: Int => Int = nTimesBetter(plusOne, 10)
   //We will get the refrence of functional interface
   println(plus10.getClass.getName)
   println(plus10.apply(1))
+
   // curried function
   val superAddition: Int => Int => Int = x => y => x + y
+
   val adder: (Int, Int) => Int = (x, y) => x + y
   // here we converted adder function which is normal function to curried function
+  // todo : (Int, Int) => Int   to    Int => Int => Int
+
   val superAdder: Int => Int => Int = toCurry(adder)
   // x => y => fx(x, y)
   //or

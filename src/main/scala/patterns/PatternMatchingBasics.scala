@@ -9,6 +9,7 @@ val random= new Random
   //  so this is called pattern match expression
   //TODO value of this expression is bind to variable called description
   //TODO patterns here are represented by the case statements
+
   val description = x match {
     case 1 => "number one"
     case 2 => "number 2"
@@ -16,22 +17,25 @@ val random= new Random
     case _ => "Wild card "
   }
 
+
   /*
   TODO
       First property of pattern matching is the decomposing the values using case class
    */
+
   case class Person(name:String,age:Int)
 
   /*
   TODO Pattern matching with Algebraic data types
    */
-sealed trait Animal
+     sealed trait Animal
   case class  Dog(breed:String) extends Animal
   case class  Cat(breed:String) extends Animal
 
   def main(args: Array[String]): Unit = {
   println(x)
   println(description)
+
   val bob = Person("bob",23)
     val greeting = bob match {
       case Person(name, age) => s"hi my name is $name and my age is $age years old"

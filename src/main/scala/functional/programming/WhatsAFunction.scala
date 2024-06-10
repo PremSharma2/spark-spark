@@ -14,17 +14,25 @@ object WhatsAFunction extends App {
 
     TODO Functions in scala are represented by Function traits
   }*/
+
+
   // TODO : in FP functions are treated as first class citizens
   val doubler: MyFunction1[Int, Int] =
       new MyFunction1[Int,Int]{
     override def apply(element:Int):Int=element*2
   }
+
+
   trait MyFunction1[-A, +B]{
     def apply(element:A):B
   }
+
+
+
   trait MyFunction[A,B]{
     def apply(element:A):B
   }
+
 
   // TODO also we can call the apply method like we call functions
    val result: Int = doubler(20)

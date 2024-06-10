@@ -93,7 +93,8 @@ TODO
 
       //todo : -> the iterator producing the infinite sequence of values `start, f(start), f(f(start)), ...
       // Use val for the function, and make it a lazy val to avoid computation.
-      lazy val dateIterator: Iterator[LocalDate] = Iterator
+      lazy val dateIterator: Iterator[LocalDate] =
+         Iterator
         .iterate(startDate)(_ plusDays 1)
         .takeWhile(d => !d.isAfter(endDate))
 
@@ -165,7 +166,10 @@ TODO
     def totalNumberWheelsByModel(inputVehicles: List[Vehicle]): List[(String, Int)] = {
       inputVehicles
         .groupBy(_.model)
-        .map { case (model, vehicles) => model -> vehicles.map(_.numberOfWheels).sum }
+        .map {
+          case (model, vehicles) =>
+          model -> vehicles.map(_.numberOfWheels).sum
+        }
         .toList
     }
 

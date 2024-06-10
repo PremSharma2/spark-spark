@@ -9,7 +9,7 @@ object PatternsMatchTricks extends App {
 
   val numbersList= List(1,2,3,4,42)
   val mustHavethree= numbersList match {
-    case List(_,_,3,somethengelse) => "List has 3rd element 3 "
+    case List(_,_,3,_) => "List has 3rd element 3 "
     case _ => " "
   }
 
@@ -24,6 +24,7 @@ object PatternsMatchTricks extends App {
       case Nil => "List Is Empty we should return Nil from here rather string"
       case head :: tail => s"list starts with $head,tail is $tail"
     }
+
     matchedresult
   }
 
@@ -56,11 +57,12 @@ object PatternsMatchTricks extends App {
   // if you want to bind the bob to some parameter s that we can use later
 // person object is kept in p now so need create new object of person
   val bobInfo1: String = bob match {
-    case p @ Person(name, age) => s"$name info : ${requestMoreInfo(p) }"
+    case p @ Person(name, _) => s"$name info : ${requestMoreInfo(p) }"
 
   }
   // This is powerful pattern matching as it is
-  // as it matches the condition in patern match
+  // as it matches the condition in pattern match
+
 val aNumber = 42
 val ordinalNumber=aNumber match {
   case 1 => "first"
@@ -164,6 +166,7 @@ val mylist= 1::2::3::4::RNil
     case Nil => 0
     case n :: rest => n + sum(rest)
   }
+
 
   def multiply(list: List[Int]): Int = list match {
     case Nil => 1

@@ -25,21 +25,31 @@ object Map_FlatMap_Filter_for extends App {
   //123 is Ans
   val numPattern = new Regex("[0-9]+")
   val address = "123 Main Street Suite 101"
+  val idList= Seq("12567N","13576Y")
 
   val match1: Option[String] = numPattern.findFirstIn(address)
+  val string= idList.find(_.startsWith("12567N"))
 
   match1.foreach { s =>
     println(s"Found: $s")
   }
 
+
+
+
+
   /**
   TODO
     Finds the first element which yields the largest value measured by function f
    */
+
+
   val maxby: String = input.maxBy(x => x.length())
+
   println(input.maxBy(x => x.length()))
 
   case class Employee(name: String, age: Int, salary: Double)
+
   val employees = List(
     Employee("Alice", 30, 50000.0),
     Employee("Bob", 28, 60000.0),
@@ -48,6 +58,7 @@ object Map_FlatMap_Filter_for extends App {
   )
 
   val employeeWithHighestSalary = employees.maxBy(_.salary)
+
   println(s"Employee with highest salary: ${employeeWithHighestSalary.name}")
 
   println(list.head)
@@ -58,11 +69,12 @@ object Map_FlatMap_Filter_for extends App {
   val alist = List(2, 3, 5, 7)
 
 
+
   /**
     TODO
        A copy of the general sequence with an element prepended.
       Note that :-ending operators are right associative (see example).
-      A mnemonic for +: vs. :+ is: the COLon goes on the COLlection side.
+      A mnemonic for +: vs. :+ is: the CoLon goes on the Collection side.
      Also, the original general sequence is not modified, so you will want to capture the result.
      Example:
       scala> val x = List(1)
@@ -71,16 +83,22 @@ object Map_FlatMap_Filter_for extends App {
       y: List[Int] = List(2, 1)
 
    */
+
+
   val prepended = 1 +: alist // List(1,2,3,5,7)
   val prepen = 0 :: alist // this Right associative basically i.e alist :: 0
+
+
 
   //TODO  when you chain multiple :: operations together, like a :: b :: c :: list,
   // it associates to the right. This means that it's effectively evaluated as a :: (b :: (c :: list))
   val associtivoperatorlist: immutable.Seq[Int] = 1 :: 2 :: 3 :: Nil
+
   alist.::(0)
   val appended = alist :+ 9
   println(appended)
   println(l ++ l1)
+
 
   /**
 TODO
@@ -114,6 +132,8 @@ TODO
   val listOfList: List[Int] = l ::: l1
   println(l ::: l1)
 
+
+
   /*
    TODO
        Applies a function f to all elements of this iterable collection.
@@ -125,6 +145,7 @@ TODO
   println(list.map(_ + 1))
   println(list.map(x => List(x + 1)))
  val rrr: immutable.Seq[List[Int]] = list.map(x => List(x + 1))
+
   //filter
   /*
     TODO
@@ -140,6 +161,7 @@ TODO
   //flatmap
 
   val transform: Int => (Int, Int) = x => (x, x + 1)
+
   //ETW
   val transformer = (x: Int) => List(transform.apply(x))
   //TODO def flatMap[B, A](f: A => List[B])
@@ -152,13 +174,17 @@ TODO
     flatMap(n => chars.map(c => "" + c + n))
 
   println(combinations)
+
   val forcomprehension: Seq[String] =
     for {
-      n: Int <- numbers if n % 2 == 0 // todo with if filter
+      n: Int <- numbers
       c: Char <- chars
+
+      if n % 2 == 0 // todo with if filter
     } yield "" + c + n
   println(forcomprehension)
 
+  
   // syntax overload
   list.map(//pattern matching using partial function
     x => x * 2)
@@ -234,11 +260,13 @@ TODO
 TODO Use case for dropwhile
        Imagine you have a list of log entries where each entry represents
        a user action along with a timestamp.
-       You want to process these log entries and remove
+       You want to process these log entries
+       and remove
       all the entries that occurred before
       a certain point in time.
       The dropWhile method can be very useful for achieving this.
    */
+
   case class LogEntry(action: String, timestamp: Long)
 
   // Sample log entries
@@ -249,13 +277,13 @@ TODO Use case for dropwhile
     LogEntry("click", 1629571200000L)   // Timestamp: 2021-08-22T08:00:00
   )
 
-  // Timestamp before which log entries should be removed
-  val cutoffTimestamp = 1629513600000L  // Timestamp: 2021-08-21T16:00:00
+  // todo: -> Timestamp before which log entries should be removed
+  val cutoffTimestamp = 1629513600000L  //todo: -> Timestamp: 2021-08-21T16:00:00
 
-  // Drop log entries that occurred before the cutoff timestamp
+  // todo: -> Drop log entries that occurred before the cutoff timestamp
   val filteredLogEntries = logEntries.dropWhile(entry => entry.timestamp < cutoffTimestamp)
 
-  // Print the filtered log entries
+  //todo: Print the filtered log entries
   filteredLogEntries.foreach(entry => println(s"${entry.action} - Timestamp: ${entry.timestamp}"))
 
 
@@ -270,12 +298,15 @@ TODO Use case for dropwhile
   // Displays output
   println(res)
 
+
   /**
 TODO
     Method Definition : def find(p: (A) => Boolean): Option[A]
    Return Type :It returns an Option value containing the first element of the stated collection
    that satisfies the used predicate else returns None if none exists.
    */
+
+
 /*
 TODO
  An IndexedSeq indicates that random access of elements is efficient,
@@ -284,7 +315,10 @@ TODO
 
 scala> val x = IndexedSeq(1,2,3)
  */
-  // Creating an Iterator
+
+
+
+
 /**
 TODO
       In Scala, an Iterator is a fundamental concept used
@@ -307,24 +341,27 @@ TODO
   /**
   TODO
         Certainly, let's delve deeper into a real-time use case of using Scala `Iterator`.
-
-   **Real-Time Log Processing:**
+  TODO
+        **Real-Time Log Processing:**
 TODO
- Imagine you are working on a real-time log processing system.
-  The system receives logs from various sources,
-  and you want to process these logs efficiently without consuming excessive memory.
-  This is a perfect scenario for utilizing Scala `Iterator`.
+     Imagine you are working on a real-time log processing system.
+     The system receives logs from various sources,
+     and you want to process these logs efficiently without consuming excessive memory.
+     This is a perfect scenario for utilizing Scala `Iterator`.
+
 TODO
  1. **Scenario Setup:**
    - The system receives log data from different servers, applications, or devices.
    - Logs can be generated at a high frequency, making it impractical to load all logs into memory simultaneously.
    - Each log entry needs to be analyzed, filtered, or transformed.
-TODO
- 2. **Using Scala Iterator:**
 
-   ```scala
-   // Simulating a log stream with Iterator
-   val logStream: Iterator[String] = ... // Obtain the log data iterator
+
+  TODO
+    2. **Using Scala Iterator:**
+
+      ` ``scala
+    // Simulating a log stream with Iterator
+     val logStream: Iterator[String] = ... // Obtain the log data iterator
 
    // Process logs
    logStream
@@ -334,23 +371,42 @@ TODO
    ```
 
 3. **Explanation:**
-
+TODO
    - The `logStream` is an `Iterator[String]` that lazily fetches log entries one at a time from a data source,
      such as a file or a network stream.
    - The `.filter()` operation processes logs on-the-fly,
      selecting only those containing the keyword "error".
       This is memory-efficient, as only relevant logs are processed.
    - The `.map()` operation transforms each log entry into a structured data format using the `parseLog` function.
-   - The `.foreach()` operation processes each log entry, potentially performing actions like sending alerts or aggregating statistics. Again, this is done one log entry at a time, consuming minimal memory.
+   - The `.foreach()` operation processes each log entry,
+     potentially performing actions like sending alerts or aggregating statistics.
+     Again, this is done one log entry at a time, consuming minimal memory.
 
 4. **Benefits:**
+TODO
+   - **Memory Efficiency:**
+     The `Iterator` processes logs one by one,
+     ensuring that only a single log entry is in memory at any given time.
+     This is crucial when dealing with a high volume of logs.
+   - **Real-Time Processing:**
+  Logs are processed in real-time as they arrive,
+  allowing you to react quickly to issues
+  or extract valuable insights without delay.
 
-   - **Memory Efficiency:** The `Iterator` processes logs one by one, ensuring that only a single log entry is in memory at any given time. This is crucial when dealing with a high volume of logs.
-   - **Real-Time Processing:** Logs are processed in real-time as they arrive, allowing you to react quickly to issues or extract valuable insights without delay.
-   - **Scalability:** The memory consumption remains relatively constant, making it suitable for handling varying workloads without causing memory exhaustion.
-   - **Lazy Evaluation:** The `Iterator`'s lazy evaluation ensures that only the necessary computations are performed, optimizing performance.
+  TODO
+   - **Scalability:**
+    The memory consumption remains relatively constant,
+    making it suitable for handling varying workloads without causing memory exhaustion.
 
-In this scenario, the use of Scala `Iterator` enables you to efficiently process incoming logs in real-time, without needing to load all logs into memory simultaneously. This approach is well-suited for applications that need to process and analyze data on-the-fly, especially when dealing with potentially large and continuously streaming datasets like logs.
+  TODO
+   - **Lazy Evaluation:**
+     The `Iterator`'s lazy evaluation ensures that only the necessary computations are performed, optimizing performance.
+TODO
+  In this scenario, the use of Scala `Iterator` enables you to efficiently process incoming logs in real-time,
+  without needing to load all logs into memory simultaneously.
+  This approach is well-suited for applications
+  that need to process and analyze data on-the-fly,
+  especially when dealing with potentially large and continuously streaming datasets like logs.
 
    // Simulating a log stream with Iterator
   val logStream: Iterator[String] = ??? // Obtain the log data iterator
@@ -364,20 +420,24 @@ TODO
 
    */
 
+
   /**
    TODO
        Use Case: Generating Date Range
-       Imagine you need to generate a sequence of dates within a given range
-       and perform calculations on them, such as finding the weekdays, counting weekends,
+       Imagine you need to generate a sequence of dates
+       within a given range
+       and perform calculations on them, such as :
+       finding the weekdays, counting weekends,
        or performing some custom logic on each date.
        Using Iterator can help you achieve this efficiently
        without pre-generating the entire date sequence.
-       In this example, the dateRange function generates an Iterator
+       In this example,
+       the dateRange function generates an Iterator
       of LocalDate instances within the given date range.
-     The Iterator.iterate function starts from the start date
-     and increments it by one day at a time
-     until the condition specified by takeWhile is met.
-     This allows you to generate a sequence of dates lazily as needed.
+      The Iterator.iterate function starts from the start date
+      and increments it by one day at a time
+      until the condition specified by takeWhile is met.
+      This allows you to generate a sequence of dates lazily as needed.
    */
 
   import java.time.LocalDate
@@ -390,9 +450,11 @@ TODO
     val startDate = LocalDate.of(2023, 1, 1)
     val endDate = LocalDate.of(2023, 1, 10)
 
-    val weekdaysCount = dateRange(startDate, endDate).count(date =>
-      date.getDayOfWeek.getValue <= 5 // 1-5 represents weekdays (Monday to Friday)
-    )
+
+    val weekdaysCount = dateRange(startDate, endDate).count {
+      date =>
+        date.getDayOfWeek.getValue <= 5 // 1-5 represents weekdays (Monday to Friday)
+    }
 
     println(s"Weekdays count between $startDate and $endDate: $weekdaysCount")
 
@@ -407,10 +469,14 @@ TODO
  *
  *
  */
+
+
+  //val iterator: Iterator[Int] = Iterator.apply(2, 4, 5, 1, 13)
   val result: Option[Int] = iterator.find(_ > 1)
 
   // Displays output
   println(result) //todo: ->  Some(2)
+
   /**
 TODO
   init	All elements except the last one
@@ -426,13 +492,14 @@ TODO
   println(initList)
 
   val stockPrices: List[Double] = List(100.0, 105.5, 110.2, 108.8, 112.5, 115.0)
-
+//most recent price   is 115.0
   val historicalPrices = stockPrices.init
   val averagePrice = historicalPrices.sum / historicalPrices.length
 
   println(s"Average stock price over historical days: $averagePrice")
 
-  /*
+
+  /**
 TODO
   intersect(s)	Return the intersection of the list and another sequence s
    */
@@ -440,12 +507,14 @@ TODO
   val intersection: Seq[Int] = m1.intersect(m2)
   println(intersection)
 
-  /*
+  /**
 TODO
-  lastOption	The last element as an Option
+      lastOption	The last element as an Option
    */
 
   val lastOption: Option[Int] = intersection.lastOption
+
+
   /**
 TODO
   takeWhile(p)	The first subset of elements that matches the predicate p
@@ -453,8 +522,11 @@ TODO
    Imagine you have a list of temperature readings collected from a sensor
    over a period of time. You want to extract the initial segment of temperature readings
    where the temperature remains within a certain comfortable range.
-   The takeWhile method can be used to achieve this by filtering the data based on the condition.
+   The takeWhile method can be used to achieve this by
+   filtering the data based on the condition.
    */
+
+
   val takeWhileSeq = Seq(2, 4, 6, 8, 3,5,7,9)
   val takenWhile: Seq[Int] = takeWhileSeq.takeWhile(x => {
     x % 2 == 0
@@ -472,10 +544,10 @@ TODO
 
 
 
-  val comfortableTemperatureRange = Range.Double.inclusive(start, end, step)
+  val targetTempRangeSpectrum = Range.Double.inclusive(start, end, step)
 
 
-  val comfortableReadings = temperatureReadings.takeWhile(temperature => comfortableTemperatureRange.contains(temperature))
+  val comfortableReadings = temperatureReadings.takeWhile(temperature => targetTempRangeSpectrum.contains(temperature))
 
 
   println(s"Initial comfortable temperature readings: $comfortableReadings")

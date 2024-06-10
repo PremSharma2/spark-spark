@@ -20,7 +20,7 @@ object LinearCollection  {
     val concat = aSeq ++ Seq(5, 6, 7)
     val sortedSeq = aSeq.sorted
     val anIncrementedSeq = aSeq.map(_ + 1)
-    val aSum= aSeq.foldLeft(0)(_+_)
+    val aSum= aSeq.sum
     val aStrRep: String = aSeq.mkString("[",",","]")
     println(aSeq)
     println(thirdElement)
@@ -39,14 +39,20 @@ object LinearCollection  {
     val remList = aList.tail
     //TODO appending and prepending
     val aBiggerList = 0 +: aList :+ 7
+
+
+
+
     /**
    TODO
        def ::[B >: A] (x: B): List[B] =
        new scala.collection.immutable.::(x, this)
+
+   TODO
       final case class ::[B](override val head: B, private[scala] var tl: List[B]) extends List[B] {
       override def tail : List[B] = tl
       override def isEmpty: Boolean = false
-}
+        }
      */
 
     val prepending = 0 :: aList
