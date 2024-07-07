@@ -136,6 +136,7 @@ object ListProblems {
     override def quickSort[S >: Nothing](ordering: Ordering[S]): RList[S] = RNil
   }
 
+
   //TODO here as we can see that def can be overridden as val
   /**
    TODO
@@ -263,6 +264,7 @@ object ListProblems {
       now we will return accumlator = [3,2,1,4,5]
       But this is wrong order of elements
       to fix this we need to reverse the current list i.e this.reverse
+      Note
       Complexity:As we know that complexity is directly proportional to the
       length of traversing list
       So if the length of the current list or traversing list   is N
@@ -279,6 +281,7 @@ object ListProblems {
 
       concatTailRec(this.reverse, anotherList)
     }
+
 
     // stack recursive implementation
     /*
@@ -300,18 +303,46 @@ object ListProblems {
   again we will check teh same condition index==currentIndex which is  true
   now we will reverse the predecessor list i.e [1,2] ad concatinate with tail of remaining
   [1,2] ++ [4,5]
-  Complexity is O(N) N is the length of the current list
+
+  The time complexity remains
+
+TODO
+ 2. **Traversing the List (`removeAtTailRec`)**:
+   - The recursive function `removeAtTailRec` traverses the list to reach the specified index.
+   - In the worst case, it traverses the entire list if the index is at the end or greater than the list length.
+   - The traversal time complexity is \(O(N)\).
+TODO
+ 3. **Reversing the `before` List (`before.reverse`)**:
+   - Once the element at the specified index is found, the `before` list is reversed.
+   - The length of the `before` list in the worst case is \(N - 1\).
+   - The time complexity for reversing the `before` list is \(O(N)\).
+TODO
+ 4. **Concatenation (`before.reverse ++ remaining.tail`)**:
+   - After reversing `before`, the concatenation operation appends `remaining.tail` to `before.reverse`.
+   - The length of `remaining.tail` is approximately \(N - 1\) in the worst case.
+   - The time complexity for concatenation is \(O(N + K)\), where \(K\) is the length of `remaining.tail`.
+   In the worst case, this is \(O(N)\).
+
+### Total Time Complexity
+
+Combining all these steps, the total time complexity of the method is:
+TODO
+ O(N) + O(N) + O(N)  = O(3N) = O(N)
      */
+
     override def removeAt(index: Int): RList[T] = {
+      if (index < 0 || index >= this.length)
+        throw new IndexOutOfBoundsException(s"Index $index out of bounds for length ${this.length}")
+
       @tailrec
-      def removeAtTailRec(remaining: RList[T], currentIndex: Int, accumulator: RList[T]): RList[T] = {
-        if (currentIndex == index) accumulator.reverse ++ remaining.tail
-        else if (remaining.isEmpty) accumulator.reverse
-        else removeAtTailRec(remaining.tail, currentIndex + 1, remaining.head :: accumulator)
+      def removeAtTailRec(remaining: RList[T], currentIndex: Int, before: RList[T]): RList[T] = {
+        if (currentIndex == index) before.reverse ++ remaining.tail
+        else removeAtTailRec(remaining.tail, currentIndex + 1, remaining.head :: before )
       }
 
       removeAtTailRec(this, 0, RNil)
     }
+
 
     // stack recursive implementation
     //override def map[S](f: T => S): RList[S] = f.apply(this.head) :: this.tail.map(f)

@@ -163,15 +163,21 @@ TODO
     This is actually callByNAme expression for tail(  lazyTail=s.tail.map(_+1) )
     tail.map(_+1) that still not evaluated,Hence whole expression is not evaluated till now
     it will be not be evaluated until someone called
-    mapped.lazyTail or mapped.foreach i.e if someone call for next iteration then it will be evaluated
-    list refrence=mapped.lazyTail but again that list tail is still not evaluated only head is evluated
+    mapped.lazyTail or mapped.foreach i.e
+    if someone call for next iteration then it will be evaluated
+    list reference=mapped.lazyTail
+    but again that list tail is still not evaluated only head is evaluated
     because it is eager
      */
     override def map[B](fx: A => B): MyStream[B] = new Node[B](fx.apply(head), tail.map(fx))
+
+
+
 /*
 TODO
- override def ++ [B >: A](anotherStream: => MyStream[B]): MyStream[B] =
-    When flatmap is called then it will return val stream= new Node[B](head, this.tail ++ anotherStream)
+    override def ++ [B >: A](anotherStream: => MyStream[B]): MyStream[B] =
+    When flatmap is called then it will return
+    val stream= new Node[B](head, this.tail ++ anotherStream)
      here anotherStream == this.tail.flatMap(fx)
      so when someone try to acces the stream.tail then  this.tail ++ anotherStream gets evaluated
      new Node[B](2, anotherStream)
@@ -210,6 +216,8 @@ Would continue the process, unfolding elements as you go.
 
      */
     override def flatMap[B](fx: A => MyStream[B]): MyStream[B] = fx.apply(this.head) ++ this.tail.flatMap(fx)
+
+
 
     override def take(n: Int): MyStream[A] =
       if (n <= 0) EmptyStream
