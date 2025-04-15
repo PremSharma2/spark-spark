@@ -3,6 +3,7 @@ package ImplicitsAndTypeClasses
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
+import scala.language.implicitConversions
 
 object MagnetPatternExercise {
   /*
@@ -75,15 +76,15 @@ object FutureMagnet {
     def apply() : R
   }
 
-  def completeFuture[R](magnet: FutureMagnet[R])= magnet()
+  private def completeFuture[R](magnet: FutureMagnet[R])= magnet()
 
   object FutureMagnet {
-    implicit def intFutureCompleter(future:Future[Int]) = new FutureMagnet[Int] {
+    implicit def intFutureCompleter(future:Future[Int]): FutureMagnet[Int] = new FutureMagnet[Int] {
 
       override def apply(): Int = Await.result(future,Duration.Zero)
     }
 
-    implicit def stringFutureCompleter(future:Future[String]) = new FutureMagnet[String] {
+    implicit def stringFutureCompleter(future:Future[String]): FutureMagnet[String] = new FutureMagnet[String] {
 
       override def apply(): String = Await.result(future,Duration.Zero)
     }

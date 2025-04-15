@@ -24,7 +24,7 @@ TODO
  TODO
   // val fux:MyFunction[Int,Int]=(x:Int) => x*1
   // val doubler: MyFunction1[Int, Int] = (x) => x * 2
-  // MyFunction1[Int, Int] this can be replaced with function types
+  // MyFunction1[Int, Int] this can be replaced with lambda-function types
   //(Int => Int)
 
    */

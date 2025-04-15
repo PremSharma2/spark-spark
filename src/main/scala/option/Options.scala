@@ -4,6 +4,8 @@ import scala.language.postfixOps
 import scala.util.control.Exception.allCatch
 
 /**
+ * In Scala, an Option is a container that can hold either a value (Some(value))
+ * or none (None) to represent the absence of a value safely, instead of using null.
 TODO
  *  An Option factory which creates Some(x) if the argument is not null,
      and None if it is null.
@@ -28,7 +30,9 @@ TODO It represents Empty Option i.e like we have Nil is List Monad we have None 
  because it does not contain the value
  */
 object Options extends App {
+  //factory method of Option
   val basicOption: Option[Int] = Option.apply[Int](2)
+  //use of Some case class
   val myfirstOption: Option[Int] = Some(4)
   val noOption: Option[Int] = None
   val orElse: Int = myfirstOption.getOrElse(3)
@@ -117,5 +121,24 @@ TODO
     myfirstOption.collect {
     case x if x % 2 == 0 => transformX(x)
   }.orElse(None)
+
+//use of fold in Option
+/**
+   In an e-commerce system, products may have optional discounts.
+   If a discount exists, it should be applied; otherwise, the original price should be used.
+ */
+  case class Product(name: String, price: Double, discount: Option[Double])
+
+  def finalPrice(product: Product): Double = {
+    product.discount.fold(product.price)(discount => product.price - discount)
+  }
+
+  // Example usage
+  val p1 = Product("Laptop", 1000.0, Some(100.0)) // Discounted
+  val p2 = Product("Mouse", 50.0, None)           // No discount
+
+  println(finalPrice(p1)) // Output: 900.0
+  println(finalPrice(p2)) // Output: 50.0
+
 
 }

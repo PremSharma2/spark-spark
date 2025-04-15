@@ -7,6 +7,7 @@ import scala.util._
 
 /**
  * Represents a Card suit - Hearts, Diamonds, Spades, Clubs
+ * with sum type ADTs..
  */
 sealed trait Suit
 case object Heart extends Suit
@@ -17,6 +18,8 @@ case object Club extends Suit
 
 /**
  * Represents a Card rank - Ace, King, Queen, Jack, 10..1
+ * you can use abstarct class if u want constructor intiization
+ * else you can use trait
  */
 sealed abstract class Rank(val value: Int)
 case object King extends Rank(10)
@@ -191,6 +194,20 @@ class BlackJack (var userCredit: Int = 100) {
     }
     // Check if user wants to continue
     "Y".equalsIgnoreCase(input)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
 
   /**

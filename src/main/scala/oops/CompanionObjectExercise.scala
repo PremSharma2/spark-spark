@@ -53,7 +53,6 @@ object CompanionObjectExercise {
   }
 
 
-
   /*
   TODO
       Real-World Scenario: Database Access Layer

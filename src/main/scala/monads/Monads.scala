@@ -1,6 +1,7 @@
 package monads
 
 object Monads extends App {
+
 /**
 TODO
   The bag/container with unit alias pure , flatMap around  makes a Monad
@@ -10,13 +11,15 @@ TODO
   def map[B](f: A => B): Bag[B] = Bag(f(content))
   def flatMap(f: A=> Bag[B]) : Bag[B] =f(content)
  }
-
+This is Adt modelling as well
  */
 
   trait Attempt[+A]{
     def flatMap[B](fx: A=> Attempt[B]): Attempt[B]
   }
-//companion object , We are creating container via Companion object
+
+//companion object, We are creating a container via a Companion object or Smart constructor
+
   object Attempt{
     // here we are using callByNAme expression because apply will not immediately fail
     // if dependency is null

@@ -1,5 +1,7 @@
 package variance
 
+import variance.VarianceUnderstanding.{Animal, Cat, Dog}
+
 object VarianceUnderstanding {
 
   /*
@@ -17,11 +19,13 @@ val dogs: MyList[Animal] = new MyList[Dog]
 
   }
 
-  class Animal
+  //Animal Adts
+  sealed trait  Animal
 
   class Dog extends Animal
 
   class Cat extends Animal
+
   class KittyCat extends Cat
 
   val dogs: MyList[Animal] = new MyList[Dog](new Dog)
@@ -42,6 +46,12 @@ TODO
 
   class Vet[-T]
 
+  /**
+   TODO
+    * here Dog<Animal
+    * but Vet[Dog]>Vet[Animal]
+   *  this is called contravarient
+   */
   val lassiesVet: Vet[Dog] = new Vet[Animal]
 
   /*
@@ -204,7 +214,7 @@ class ContraVet[-T] {
    }
   val catVet: ContraVet[Dog] = new ContraVet[Animal]
   CVetApi(catVet)
-
+CVetApi(new ContraVet[Animal])
 
 /*
 TODO
@@ -273,13 +283,17 @@ TODO
     override def rescueAnimal(): Dog = new Dog // because Dog is animal
   }
 
+  val covetCat: CovVet[Animal] = new CovVet[Cat] {
+    override def rescueAnimal(): Cat = new Cat // because Cat is animal
+  }
 
-
-  //API
-  def CovVetApi(vet:CovVet[Dog])={
-    val rescuedDog: Dog = vet.rescueAnimal
+  //API which is contravarient at input expecting CovVet[Dog]
+  private def CovVetApi(vet:CovVet[Dog]): Unit ={
+    val rescuedDog: Dog = vet.rescueAnimal()
   }
   CovVetApi(covet)
+
+  //CovVetApi(covetCat) this will not work
 
 
 
@@ -311,15 +325,112 @@ This is how we solve the cryptic “covariant type T occurs in contravariant pos
   def head: T = ???
   def tail: MyListC[T] = ???
   def add[S>:T](elem: S): MyListC[S] = new MyListC[S]
-}
+}}
 
   //Similarly, we can solve the opposite “contravariant type occurs in covariant position” with the opposite type bound:
 
-   trait VetContra[-T] {
-    def rescueAnimal[S <: T]: S = ???
-  }
+  /*
+  TODO
+
+
+
+### **"T is being used inside the type declaration of S, in a place that requires covariance."**
+This means:
+1. `T` is **inside** the definition of `S` (`S >: T`).
+2. The position of `S` in `def rescueAnimal[S >: T]: S`
+**requires covariance** (because it's a return type).
+3. But **`T` is contravariant (`-T`)**, which cannot be used in a covariant position.
+
+---
+
+## **Step-by-Step Breakdown**
+### **1️⃣ `S >: T` (Supertype Bound)**
+- `S >: T` means "`S` is a **supertype** of `T`."
+- This means `S` could be **`T` itself or something larger**.
+- Example:
+
+  trait Animal
+  class Dog extends Animal
+  class Cat extends Animal
+  ```
+  If `T = Dog`, then `S` could be:
+
+  S >: Dog  ⟶  S can be Dog, Animal, or Any
+  ```
+
+### **2️⃣ Return Type (`S`) Requires Covariance**
+- The return type of a function (`S`) **must be covariant** because:
+  - The caller **expects a specific type**.
+  - If `VetContra[Dog]` returns `S`, then `S` must be **Dog or something smaller** (not a larger type like `Animal`).
+
+**Issue:**
+- `S >: T` allows returning a **wider type** than `T` (e.g., `Animal` for `Dog`).
+- **This contradicts the covariance requirement for return types.**
+
+### **3️⃣ `T` is Contravariant (`-T`)**
+- `T` is **contravariant** in `VetContra[-T]`, meaning:
+
+  VetContra[Animal]  <:<  VetContra[Dog]   (subtyping is reversed)
+
+- But `T` **appears inside the bound `S >: T`**:
+
+  def rescueAnimal[S >: T]: S
+
+  - Since `T` is **contravariant**, the compiler treats it in a **contravariant way**.
+  - However, `S` is a **return type**, which requires **covariance**.
+  - A **contravariant type cannot be used in a covariant position** → **Error!**
+
+---
+
+## **Illustrative Example**
+### 🚨 **Code That Causes the Error**
+```scala
+trait VetContra[-T] {
+  def rescueAnimal[S >: T]: S = ???  // ❌ ERROR
+}
+
+### **Why This Is a Problem**
+
+val vet: VetContra[Dog] = new VetContra[Animal] {
+  def rescueAnimal[S >: Animal]: S = new Animal
+}
+
+val myDog: Dog = vet.rescueAnimal[Dog]  // ❌ ERROR!
+
+- `vet` is expected to return a **Dog**.
+- But since `S >: Animal`, it allows returning **Animal** (which isn't guaranteed to be a `Dog`).
+- **Type Safety is broken** → The compiler prevents this.
+
+
+
+## **Fixing It: Using `S <: T` Instead**
+```scala
+trait VetContra[-T] {
+  def rescueAnimal[S <: T]: S = ???  // ✅ Works fine!
+}
+
+Now:
+- `S <: T` means "`S` must be a subtype of `T`."
+- This ensures that **the returned type `S` is always within `T`**, making it safe.
+
+---
+
+## **Final Takeaway**
+- **The compiler error occurs because `T` (contravariant) appears in a covariant position (`S`).**
+- **Return types must be covariant** (they can return **subtypes**, not supertypes).
+- **A contravariant type (`-T`) cannot be used to define a supertype bound (`S >: T`).**
+- **Solution:** Use `S <: T` instead, ensuring `S` stays within safe type bounds.
+
+WorkAround or Fix:
+Contravariance (-T) cannot be used in a covariant position (return type).
+Using S <: T in the return type forces covariance, which breaks type safety.
+The compiler cannot catch this because it only enforces S <: T at compile-time.
+   */
+
   //Assuming we can actually implement this method in such general terms,
   // the compiler would be happy: we can force the Vet to return an instance of a particular type:
+  trait VetContra[-T] {
+    def rescueAnimal[S <: T]: S = ???  //
 
   val vetContra: VetContra[Dog] = new VetContra[Animal] {
        val rescueAnimal: Cat = new Cat // because Dog is animal
@@ -327,7 +438,8 @@ This is how we solve the cryptic “covariant type T occurs in contravariant pos
   }
 
   def contraApi(vet:VetContra[Dog]) ={
-    val rescuedDog: Dog = vet.rescueAnimal[Dog] // type checking passes now this code will not blow at compile time but will blow at runtime
+    val rescuedDog: Dog = vet.rescueAnimal[Dog]
+    // type checking passes now this code will not blow at compile time but will blow at runtime
   }
 
  contraApi(vetContra)

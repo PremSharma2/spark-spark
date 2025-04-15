@@ -1,7 +1,5 @@
 package ImplicitsAndTypeClasses
 
-import ImplicitsAndTypeClasses.TypeClassExercise.user
-
 
 object PimpMyLibraryAndTypeClassExercise  extends App {
 // exercise of Type class pattern and Pimp-My-library mixture

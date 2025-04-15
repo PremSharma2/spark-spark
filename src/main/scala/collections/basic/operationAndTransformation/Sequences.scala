@@ -119,6 +119,7 @@ scala> val x = IndexedSeq(1,2,3)
  */
   val vector: IndexedSeq[Int] = Vector.apply(1, 2, 3)
 
+  // todo : -> we call it LinkList
   val nums1: scala.collection.LinearSeq[Int] = List(1, 2, 3)
 
 

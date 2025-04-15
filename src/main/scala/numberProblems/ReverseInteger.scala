@@ -1,18 +1,23 @@
 package numberProblems
 
+import scala.annotation.tailrec
+
 object ReverseInteger {
 
   // return a number with the digits reversed
   // if the result overflows Int, return 0
   def reverseInteger(number: Int): Int = {
+   @tailrec
    def loop(remaining:Int, accumulator:Int):Int = {
        if (remaining == 0) accumulator
        else {
          //fetching the last digit of the number
          val digit =remaining % 10
+         //adding the fetched digit at the end of given accumlator
          val tentativeResult= accumulator *10 + digit
 
          // very careful
+         //to enforce that it should not over-flow so we are checking signs of two numbers
          if ((accumulator >= 0) != (tentativeResult >= 0)) 0
          else loop(remaining / 10, tentativeResult)
        }

@@ -40,6 +40,7 @@ object Function extends App {
 
   //function returning a Unit,This is also an example of auxiliary function in scala
   def aFunctionWithSideEffects(aString: String): Unit = println(aString)
+
   //TODO : nested function example
   def aBigFunction(n: Int): Int = {
     def aSmallFunction(a: Int, b: Int): Int = a + b

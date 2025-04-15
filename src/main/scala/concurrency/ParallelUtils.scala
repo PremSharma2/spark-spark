@@ -6,14 +6,18 @@ import scala.collection.parallel.{ForkJoinTaskSupport, Task, TaskSupport}
 import scala.collection.parallel.immutable.{ParSeq, ParVector}
 import scala.concurrent.forkjoin.ForkJoinPool
 /*
-Parallel Collection works on model of
-Map Reduce
-   - whcih breaks collection into chunks by the class called Splitter
-   - operation: then the operation you wanted to apply over thread is done by
-   by multiple future tasks and then finally reduce them into single value result
+TODO
+   Parallel Collection works on a model named
+  Map Reduce
+   - which breaks a collection into chunks by the class called Splitter
+   - operation: then the operation you wanted to apply over thread is done by multiple future tasks
+     and then finally reduce them into a single value result
+     Big task → broken into → smaller tasks → each done by a thread
+
  */
+
 object ParallelUtils extends App {
-// parallel Connection means that many threads can work on this collection at same time
+// parallel Collection means that many threads can work on this collection at the same time
   val parList: ParSeq[Int] =List(1,2,3).par
   val aParVector: ParVector[Int] = ParVector[Int](1,2,3,4)
   def measure[T](operation : => T):Long ={
@@ -40,7 +44,8 @@ val list= (1 to 10000).toList
   //Synchronization
   var sum=0
   List(1,2,3).par.foreach(sum += _)
-  println(sum) // here race condition will occur because in parallel Seq multiple threads Work
+  println(sum)
+  // here race condition will occur because in parallel Seq multiple threads Work
   // How to configure Parallel Collection
   // here we are asking the frame work that that with ForkJoinTaskSupport
   // that this is your thread manager with thread pool ForkJoinPool with two threads

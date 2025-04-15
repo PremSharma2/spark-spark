@@ -44,7 +44,7 @@ object WhatsAFunction extends App {
   // function types in scala
   //function type=Function1[A][B]
   // here stringToIntConverter is of AnyRef type
-  val stringToIntConverter: (String => Int) =new Function1[String,Int]{
+  val stringToIntConverter: String => Int =new Function1[String,Int]{
     override def apply(string:String):Int=string.toInt
   }
    //: ((Int,Int)=>Int) function types can be used as follows with assignment variable

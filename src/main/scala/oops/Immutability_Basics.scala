@@ -28,12 +28,16 @@ TODO
    where a function's output depends solely on its input parameters
    and has no side effects. Immutability aligns with this principle, ensuring that objects don't change state unexpectedly.
 
-
-
-Better Memory Management: Modern JVMs are highly optimized for dealing with short-lived immutable objects. Although creating new objects might seem inefficient, in practice, the JVM handles this well, often making it more performant than managing mutable objects, especially under heavy multi-threading.
+TODO
+  Better Memory Management:
+    Modern JVMs are highly optimized for dealing with short-lived immutable objects.
+ Although creating new objects might seem inefficient,
+ in practice, the JVM handles this well,
+ often making it more performant than managing mutable objects, especially under heavy multi-threading.
 
 Immutability in Scala
-Scala, being a hybrid of object-oriented and functional programming languages, supports both mutable and immutable designs.
+Scala, being a hybrid of object-oriented and functional programming languages,
+ supports both mutable and immutable designs.
  However, it encourages immutability:
 
 

@@ -2,6 +2,7 @@ package monads
 
 object
 MonadLawsExplanation  extends App{
+
 /*
 Monads are kind of Abstract type which have some fundamental operations
 Like mentioned below
@@ -62,7 +63,7 @@ imp point is here composite function= f.flatMap(g)
   ThirdLaw: associativity
   [a,b,c].flatMap(f).flatMap(g) = [a,b,c].flatMap(x=> f(x).flatMap(g))
   Lets take RHS and decompose it first
-  when we decompose it will look like this taking the refrence of flatMap
+  when we decompose it will look like this taking the reference of flatMap
    flatmapImpl :
       fx.apply(this.head) ++ this.tail.flatMap(fx)
 

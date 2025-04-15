@@ -5,8 +5,10 @@ package oops
  * A companion object is an object with the same name as a class or trait and is defined
  * in the same source file as the associated file
  * or trait.
- * A companion object differs from other objects as it has access rights to the class/trait that other objects do not.
- * In particular it can access methods and fields that are private in the class/trait even private Constructor.
+ * A companion object differs from other objects as
+ * it has access rights to the class/trait that other objects do not.
+ * In particular it can access methods
+ * and fields that are private in the class/trait even private Constructor.
  *
  *
  * TODO

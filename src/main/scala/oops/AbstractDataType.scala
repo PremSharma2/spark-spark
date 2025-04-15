@@ -4,20 +4,23 @@ object AbstractDataType{
 
   trait Animal {
 
-    val creatureType: String
-    def eat: Unit
+    val creatureType: String    // abstract  val
+    def eat(): Unit           // abstract def
     def beep:String = "beep"
   }
 
+
   class Dog extends Animal {
 // todo : -> This is everything inside constructor
-    override val creatureType: String = "Cannie"
-    override def eat = println("crunch crunch")
+    override val creatureType: String = {"Cannier"}
+
+    override def eat(): Unit = println("crunch crunch")
 
 // todo def can be overridden as val instance property
-    override val beep  = super.beep
+    override val beep: String = {super.beep}
   }
-  //trait an Abstract data type represents only behaviour
+
+  //trait an Abstract data type represents only behavior
   trait Carnivore {
 
     def eat(animal: Animal): Unit
@@ -26,9 +29,12 @@ object AbstractDataType{
 
   class Crocodile extends Animal with Carnivore {
     override val creatureType: String = "Croc"
-    override def eat: Unit = println("nom-nom-nom-nom-")
-    override def eat(animal: Animal): Unit = println(s"I am a ${this.creatureType} and I am eating ${animal.creatureType}")
+    override def eat(): Unit = println("nom-nom-nom-nom-")
+    override def eat(animal: Animal): Unit =
+      println(s"I am a ${this.creatureType} and I am eating ${animal.creatureType}")
   }
+
+
 //TODO Using scala constructor to set variable defined in trait
   /*
   TODO
@@ -43,10 +49,12 @@ object AbstractDataType{
     with a special structure which then allows you to say bar.foo = "a string",
      which the compiler translates to bar.foo_=("a string")
    */
+
   trait Foo {
     def foo: String
     def foo_= (s: String): Unit
   }
+
   /*
   TODO
     “A def can be implemented by either of a def, a val, a lazy val, or an object.
@@ -54,6 +62,7 @@ object AbstractDataType{
     Since traits are usually abstract interfaces,
     saying you want a val is saying how the implementation should do.”
    */
+
   trait Foo1 {
     def id: Int
     protected val b=2
@@ -99,11 +108,14 @@ TODO
  or override everything in sub class
 TODO:Best practices
   almost - best practice is to have
- defs in traits, except constants i.e all vals which you aren't going to override (they should stay in companion objects anyway)
+ defs in traits, except constants i.e all vals which you aren't going to override
+ (they should stay in companion objects anyway)
  override defs with either defs or vals (depending on what you're doing,
  sometimes your logic will make it impossible to override with val)
  */
+
   case class Plumage(colours: String*)
+
   sealed trait Bird {
     // We cannot assign a value the variables in trait in scala
     protected val plumage: Plumage = Plumage("Yellow", "Red", "White", "Black")
@@ -112,15 +124,18 @@ TODO:Best practices
       println(s"Bird colours: [${colours.mkString("/")}]")
     }
   }
+
   case object Kingfisher extends Ordering[String] with  Bird {
     override def compare(x: String, y: String): Int = -1
 
-    override protected val plumage = Plumage("Green", "Orange")
+    override protected val plumage: Plumage = Plumage("Green", "Orange")
     override protected val colours: Seq[String] = plumage.colours
   }
+
+
   case object Goldfinch extends Ordering[String] with  Bird {
     override def compare(x: String, y: String): Int = throw new NullPointerException
-    override protected val plumage = Plumage("Yellow", "Red", "White", "Black")
+    override protected val plumage: Plumage = Plumage("Yellow", "Red", "White", "Black")
     override protected val colours: Seq[String] = plumage.colours
     //TODO still it will not work because
   }
@@ -138,7 +153,7 @@ TODO:Best practices
   case object Kingfisher1 extends Ordering[String] with  Bird1 {
     override def compare(x: String, y: String): Int = -1
 
-    override protected val plumage = Plumage("Green", "Orange")
+    override protected val plumage: Plumage = Plumage("Green", "Orange")
     //override protected val colours: Seq[String] = plumage.colours
   }
   case object Goldfinch1 extends Ordering[String] with  Bird1 {

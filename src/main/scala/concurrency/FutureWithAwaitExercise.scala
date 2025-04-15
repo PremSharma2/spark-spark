@@ -10,8 +10,9 @@ case class User(name:String)
 
   object BankingUtils{
     val name ="Rock the JVM"
-    def fetchUser(name:String): Future[User] = Future.apply{
-      // fetch the user from the database i.e make a call to database
+    private def fetchUser(name:String): Future[User] =
+      Future.apply{
+      // fetch the user from the database i.e., make a call to database
       Thread.sleep(500)
       // object returned form database
       User(name)
@@ -20,7 +21,8 @@ case class User(name:String)
 
 
 
-    def createTransaction(user: User, merchantName:String, amount:Double): Future[Transaction] =Future{
+    private def createTransaction(user: User, merchantName:String, amount:Double): Future[Transaction] =
+      Future{
       Thread.sleep(1000)
       Transaction(user.name , merchantName,amount,status = "Success")
     }
@@ -30,7 +32,8 @@ case class User(name:String)
       // fetch the user form db
       //create a transaction for the user
       //wait for the transaction to finish
-      val transactionStatusFuture: Future[String] = for{
+      val transactionStatusFuture: Future[String] =
+        for{
         user: User <- fetchUser(userName)
         transaction: Transaction <- createTransaction(user,merchantName,costOfItem)
       } yield  transaction.status

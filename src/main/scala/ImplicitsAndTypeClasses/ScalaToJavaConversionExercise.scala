@@ -1,29 +1,32 @@
 package ImplicitsAndTypeClasses
 
-import java.{util => javaCollection}
-
+import java.{util => ju}
+import scala.language.implicitConversions
+//pimp the library pattern using implicit def + Ops class
+//implicit def + Ops class	Separates concerns: conversion logic vs method definition
 object ScalaToJavaConversionExercise extends App {
 
-
-  // exercise to convert java optional to scala option
-  class ToScala[T](value: => T) {
-    def asScala: T = value
-
+  // Ops class with the actual method
+  //The Ops class that holds the extension method
+  class JavaOptionalOps[T](val optional: ju.Optional[T]) extends AnyVal {
+    def asScala: Option[T] =
+      if (optional.isPresent) Some(optional.get)
+      else None
   }
 
-  // For implicit conversion
-  trait ScalaDecorator {
-    implicit def asScalaOptional[T](o: javaCollection.Optional[T]): ToScala[Option[T]] = {
-      new ToScala[Option[T]](
-        if (o.isPresent) Some(o.get()) else None
-      )
-    }
+  // Syntax object with the implicit conversion
+  //he implicit def that wraps ju.Optional with the Ops class
+  object JavaOptionalSyntax {
+    implicit def toJavaOptionalOps[T](optional: ju.Optional[T]): JavaOptionalOps[T] =
+      new JavaOptionalOps(optional)
   }
 
-  object ScalaConverters extends ScalaDecorator
+  // Bring the implicit conversion into scope
+  import JavaOptionalSyntax._
 
-  import ImplicitsAndTypeClasses.ScalaToJavaConversionExercise.ScalaConverters._
-
-  val javaOptional: javaCollection.Optional[Int] = javaCollection.Optional.of(2)
+  // Test
+  val javaOptional: ju.Optional[Int] = ju.Optional.of(42)
   val scalaOption: Option[Int] = javaOptional.asScala
+
+  println(scalaOption) // Output: Some(42)
 }

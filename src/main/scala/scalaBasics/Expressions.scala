@@ -4,13 +4,18 @@ object Expressions extends App {
   //TODO In scala every thing is an expression
   // and every expression has some value associated with it
   val x: Int = 1+2 // Expression
+
   //TODO : -> printing expression value
   println(x)
+
   val booleanExpression1: Boolean = x==1
+
   println(booleanExpression1)
   println(x==1)// Boolean Expression
   // false scenario boolean expression
-  println(!(1==x)) // Boolean Expression  ex: !(1==x)
+  val anotherbooleanExpression= !(1==x)
+  println(anotherbooleanExpression) // Boolean Expression  ex: !(1==x)
+
   //TODO : assignment and declaration of an variable in scala they both goes hand in hand
   var a:Int=3
   //Side effect in variable
@@ -41,19 +46,38 @@ object Expressions extends App {
   //Never do this in scala
 
       var aVariable: Int =1
-  // This expression doest not return any thing
+  // This expression doest not return anything
   //! As discussed Every thing in scala is Expression
   val aWeirdValue: Unit =  aVariable=3  // Unit is equivalent to void in java
   println(aWeirdValue)
+
+  // todo : We can do this as well
+  val anotherVoid: Unit = ()
   
   
-  /*var j=0
-  var awhile=while(j<10){
+  /*
+  todo
+      imperative programming constructs like var variables and
+       while loops are discouraged in
+       Scala's functional programming paradigm for several reasons.
+  todo
+      var j=0
+     var awhile=while(j<10){
               println(j)
               j+=1
-  }
+      }
       print(awhile)
+
+
+ todo
+      Here, the var j is mutable, meaning its state changes during execution (j += 1).
+      This can lead to unintended side effects,
+      making the program harder to reason about, debug, and test.
+      Functional Approach: Functional programming encourages immutability,
+       where variables are not reassigned after initialization.
+       Instead of mutating state, new values are created.
       */
+
       // Side Effects are while loop,reassigning a variable,
       
       
@@ -78,12 +102,14 @@ object Expressions extends App {
       }
   /*
   TODO
-    val codeblock: String = {
+     use case for code block
+    val codeBlock: String = {
     val userExists = checkUserExists(userId)
     val accountActive = checkAccountStatus(userId)
     if (userExists && accountActive) "User is active" else "User not found or inactive"
       }
 
+//TODO : complex Expression
  if (checkUserExists(userId) && checkAccountStatus(userId)) "User is active" else "User not found or inactive"
 
    */

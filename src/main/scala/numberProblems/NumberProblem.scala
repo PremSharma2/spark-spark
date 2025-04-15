@@ -152,6 +152,13 @@ TODO               decomposeTailRec(2,2,[2,2])
                   bcz 2< 3.87
                   else if(4 % 2 ==0) true
                   decomposeTailRec(1,2,[2,2,2,2])
+
+                  Complexity is 0(sqrt(N))
+                  this can go as Low as 0(log(n))
+                  when we have identical divisors
+                  i.e. this case
+                   else if (remaining % currentDivisor == 0)
+                   if we have decomposeTailRec(16,2,[])
    */
   def decompose(n: Int): RList[Int] = {
     //as we are putting the current divisor into list so we need to make it variable
@@ -159,6 +166,7 @@ TODO               decomposeTailRec(2,2,[2,2])
 
     @tailrec
     def decomposeTailRec(remaining: Int, currentDivisor: Int, accumulator: RList[Int]): RList[Int] = {
+
       if (currentDivisor > Math.sqrt(remaining)) remaining :: accumulator
       else if (remaining % currentDivisor == 0) {
         decomposeTailRec(remaining / currentDivisor, currentDivisor, currentDivisor :: accumulator)

@@ -64,11 +64,11 @@ trait SetOps[A, +CC[_], +C <: SetOps[A, CC, C]]
    removing an element
    */
 
-  trait RSet[A] extends (A => Boolean) {
-    override def apply(x: A): Boolean = contains(x)
+  sealed trait RSet[A] {
     def contains(x: A): Boolean
     def +(x: A): RSet[A]
     def -(x: A): RSet[A]
+    def ++(other: RSet[A]): RSet[A]
   }
 
   /*
@@ -84,11 +84,12 @@ trait SetOps[A, +CC[_], +C <: SetOps[A, CC, C]]
    Pure sets in mathematics are described by their properties.
    Some sets may be finite, or infinite, some may be countable (or not).
    */
-  case class REmpty[A]() extends RSet[A] {
+  case class Empty[A]() extends RSet[A] {
     override def contains(x: A) = false
     // todo A single-element set is a property-based set, where the property only returns true for that particular element.
-    def +(x: A): RSet[A] = new PBSet[A](_ == x)
+    def +(x: A): RSet[A] = new PropertySet[A](_ == x)
     def -(x: A): RSet[A] = this
+    override def ++(other: RSet[A]): RSet[A] = other
   }
 
 /*
@@ -101,28 +102,34 @@ TODO
    without affecting the original elements in the set that satisfy property(e).
    This means that the new set contains all elements from the old set (as they satisfy property(e)) and also the element x
  */
-  case class PBSet[A](property: A => Boolean) extends RSet[A] {
-    def contains(x: A): Boolean = property(x)
-    def +(x: A): RSet[A] = new PBSet[A](e => property(e) || e == x)
-    def -(x: A): RSet[A] = if (contains(x)) new PBSet[A](e => property(e) && e != x) else this
+
+  case class PropertySet[A](property: A => Boolean) extends RSet[A] {
+    override def contains(x: A): Boolean = property(x)
+    override def +(x: A): RSet[A] = PropertySet(e => property(e) || e == x)
+    override def -(x: A): RSet[A] =
+      if (contains(x)) PropertySet(e => property(e) && e != x)
+      else this
+    override def ++(other: RSet[A]): RSet[A] =
+      PropertySet(e => this.contains(e) || other.contains(e))
   }
 
   object RSet {
-    def apply[A](values: A*) = values.foldLeft[RSet[A]]( REmpty())(_ + _)
+    // Public constructor for an empty RSet of any type
+    def empty[A]: RSet[A] = Empty()
+
+    def apply[A](values: A*): RSet[A] =
+      values.foldLeft(empty[A])(_ + _)
+
+    def fromProperty[A](property: A => Boolean): RSet[A] =
+      PropertySet(property)
   }
 
   //TODO use case of PropertyBasedSet
-  val validInputs = PBSet[Int](x => x >= 0 && x <= 100)
+  val emptySet: RSet[Int] = RSet.empty
+  val withOne = emptySet + 42   // ✅ Returns RSet[Int]
+  println(withOne.contains(42)) // true
 
-  def processInput(x: Int): Unit = {
-    if (validInputs.contains(x)) {
-      println(s"Processing $x")
-    } else {
-      println(s"Invalid input: $x")
-    }
-  }
-  processInput(55)  // Output: Processing 55
-  processInput(105) // Output: Invalid input: 105
+  val set = RSet(1, 2, 3)       // folded over empty
   /**
  TODO
   Use Case 2: Query Optimization
@@ -132,7 +139,7 @@ TODO
   without loading the data
    */
 
-  val frequentlyQueried = PBSet[String](x => x.startsWith("A"))
+  val frequentlyQueried = PropertySet[String](x => x.startsWith("A"))
 
   def isFrequentlyQueried(s: String): Boolean = frequentlyQueried.contains(s)
 
@@ -147,31 +154,44 @@ TODO
   You could define each tier's privileges as a PBSet.
    */
 
+  case class Product(
+                      id: String,
+                      name: String,
+                      category: String,
+                      brand: String,
+                      price:Int
+                    )
 
-  val adminPrivileges = PBSet[String](_ == "all")
-  val userPrivileges = PBSet[String](x => List("read", "comment").contains(x))
+  val cheapElectronics = RSet.fromProperty[Product] { p =>
+    p.price < 50 && p.category == "Electronics"
+  }
 
-  def hasAccess(userType: PBSet[String], action: String): Boolean = userType.contains(action)
+  val popularBrands = RSet.fromProperty[Product] { p =>
+    p.brand == "Apple" || p.brand == "Samsung"
+  }
 
-  println(hasAccess(adminPrivileges, "write")) // Output: true
-  println(hasAccess(userPrivileges, "write")) // Output: false
+  val combineFilters=cheapElectronics ++ popularBrands
+  //So you're creating an exception to the rule — including the iPhone manually, even though it doesn't satisfy the original property.
+  val filtered = cheapElectronics + Product("iPhone-1001", "iphone16", "Electronics", "Apple",12000) // Adds one special exception
 
 
+  val iphone = Product("sku123", "iPhone", "Electronics", "Apple", 999)
 
-  val first5Elements: RSet[Int] = REmpty[Int]() + 1 + 2 + 3 + 4 + 5
+  println(cheapElectronics.contains(iphone)) // false
+  println(filtered.contains(iphone))         // true
+
+  val first5Elements: RSet[Int] = RSet.empty[Int] + 1 + 2 + 3 + 4 + 5
 
   val first5lementsFancy = RSet(1,2,3,4,5)
   val first1000Elements = RSet(1 to 1000: _*) // pass as varargs
 
-  println(first5Elements(42)) // false
-  println(first5lementsFancy(3)) // true
-  println(first1000Elements(68) )// true
+
 
   //TODO The interesting thing about this set definition is that
   // you can now declare infinite sets, just based on their property.
   // For example, the set of even natural numbers is now trivial:
 
-  val allEvens = PBSet[Int](_ % 2 == 0)
+  val allEvens = PropertySet[Int](_ % 2 == 0)
 
   /*
   TODO

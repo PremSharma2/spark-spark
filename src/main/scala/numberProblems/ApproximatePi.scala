@@ -8,7 +8,9 @@ object ApproximatePi {
 
   //TODO : npoints is the total points in sqaure
   def approximatePi(nPoints: Int): Double = {
-    val nPointsInsideCircle = (1 to nPoints).map { _ =>
+    val nPointsInsideCircle =
+      (1 to nPoints).map {
+        _ =>
       val x = random.nextDouble
       val y = random.nextDouble
       // TODO :this is the square of the distance between center of circle
@@ -16,6 +18,7 @@ object ApproximatePi {
       x * x + y * y
       //TODO:  square of the radius of circle is 1
     }.count(distance => distance < 1)
+
     nPointsInsideCircle * 4.0 / nPoints
   }
 

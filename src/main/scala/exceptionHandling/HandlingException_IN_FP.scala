@@ -36,6 +36,7 @@ TODO
    *  Constructs a Try using the by-name parameter.
    *  This method will ensure any non-fatal exception is caught and a Failure object is returned.
    */
+
   val potentialFailures: Try[String] =Try(unsafeExpresion) //todo : Try[Nothing]
   //todo:->  checking whether Failure object is there or Success object is there
   println(potentialFailures.isFailure)
@@ -50,6 +51,7 @@ TODO
     case Success(_) => "Pass"
     case Failure(value) => s"Failure $value "
   }
+
   // utilities
   println(potentialFailures.isSuccess)
   //orElse

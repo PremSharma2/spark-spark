@@ -4,12 +4,12 @@ import scala.language.higherKinds
 
 object UseOFUnderScore  extends App {
 
-  val _ =5 // defining a value whose name u do'nt really care
+  val _ = 5 // defining a value whose name u don't really care
   val onlyfive: Seq[Int] = (1 to 10).map(_*2)
-  // another usage of under score
+  // another usage of underscore
 
   /**
-   *  We really dont care the type of option we can use _
+   *  We really don't care the type of option we can use _
    *
    */
   def processList(list : List[Option[_]] ): Int = list.length
@@ -43,7 +43,7 @@ object UseOFUnderScore  extends App {
   Seq(1,2,3,4) map(_*3)
 val sumfunction : (Int,Int) => Int  = _ + _
 
-  //Higher Kinded type
+  //todo : -> Higher Kinded type
   class MyHigherKindedJewel[M[_]]
   val myjewel= new MyHigherKindedJewel[List]
 

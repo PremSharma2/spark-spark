@@ -28,13 +28,14 @@ object Recursion extends App {
 TODO
     to make tail recursive Recursive call should be the last thing  in ur code branch
  */
-  def anotherFactorial(n: Int): BigInt = {
+  def tailRecFactorial(n: Int): BigInt = {
+
     @tailrec
-    def factHelper(n: Int, accumulator: BigInt): BigInt = {
+    def loop(n: Int, accumulator: BigInt): BigInt = {
       if (n <= 1) accumulator
-      else factHelper(n - 1, n * accumulator)
+      else loop(n - 1, n * accumulator)
     }
-    factHelper(n, 1)
+    loop(n, 1)
 
   }
 
@@ -54,7 +55,7 @@ TODO
 
   //TODO : -> concat of string using tail recursion
   /**
-   The recursive call should be the last thing to do in the code branch
+   The recursive call should be the last thing to do in the code branchzz
      no pending computation is there hence its tailRecursive
    */
   @tailrec
@@ -65,17 +66,18 @@ TODO
 
   def isPrime(n: Int): Boolean = {
     @tailrec
-    def isPrimeTailRec(t: Int, isNumberPrimeAccumulator: Boolean): Boolean =
-      // if accumulator value is false then we will return false value
+    def loop(t: Int, isNumberPrimeAccumulator: Boolean): Boolean =
+
+      // if accumulator value is false, then we will return false value
       if (!isNumberPrimeAccumulator) false
       else if (t <= 1) true
       else {
         val conditionalExpression = n % t != 0
         //todo:->  if any of these flag is false accumulator value will be false here
         val accumulator: Boolean = conditionalExpression && isNumberPrimeAccumulator
-        isPrimeTailRec(t - 1, accumulator)
+        loop(t - 1, accumulator)
       }
-     isPrimeTailRec(n/2, true)
+     loop(n/2, isNumberPrimeAccumulator = true)
   }
 
   // println(anotherFactorial(5000))

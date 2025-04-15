@@ -37,7 +37,8 @@ TODO
     for various reasons (API breaks etc). In other words,
     the “production” logic is completely fixed and deterministic.
      However, what’s not deterministic is when the service will actually
-     end up calling the production function. In other words, you can’t implement your function as
+     end up calling the production function.
+     In other words, you can’t implement your function as
  */
 
   def fetchFromDB(yourArg: Int): Future[String] = Future{
@@ -46,24 +47,26 @@ TODO
     produceAPreciousValue(2)
   }
 
-// This service is multi threaded
+// This service is multithreaded
   object MyService{
  // 1 A "production" function which is completely deterministic.
 
     def produceAPreciousValue(thearg:Int):String =
       "Fetching the Value From the Database " + {42/thearg}
+
 //2) A submission function which has a pretty terrible API,
 // because the function argument will be evaluated on
-// one of the service's threads and
+// one of the service's threads, and
 // you can't get the returned value back from another thread's call stack.
-    def submmitTask[A](actualArg:A)(function: A => Unit): Boolean = {
-      // This will apply the function on the given input i.e actualArg
-      // at some point in time without our control i.e non determnistic way
+    def submitTask[A](actualArg:A)(function: A => Unit): Boolean = {
+      // This will apply the function on the given input i.e., actualArg
+      // at some point in time without our control i.e., non-deterministic way
       true
     }
   }
 
-/*
+
+/**
 TODO
      The solution
      Introducing Promises - a “controller” and “wrapper” over a Future.
@@ -71,12 +74,13 @@ TODO
      get its Future and use it (consume it) with the assumption it will be filled in later:
  */
 
-//making of  Controllable Future Step 1:
+//todo : -> making of Controllable Future Step 1:
   val promise = Promise[String]()
-  // step 2  extract its Future
+
+  //todo: -> step 2 extract its Future
  //promise.complete()
-  val extractedFuture = promise.future
-  // step3 consume the future using map oR flatMap
+  private val extractedFuture = promise.future
+  //todo:->  step3 consume the future using a map oR flatMap
 
 
   /*
@@ -86,7 +90,9 @@ TODO
   map function so this map function i s wrapper
   Like this :
   val p = Promise[S]()
-    this.onComplete { v => p complete (v map f) }
+    this.onComplete {
+    v => p complete (v map f)
+     }
     p.future
 
 TODO
@@ -110,9 +116,9 @@ TODO
   asyncCall(promise)
 
   // this is the target method
-  // we will call service form here
-  // this is classical case how to make deterministic or controllable future
-  // because service is a async call
+  // we will call a service form here
+  // this is a classical case how to make deterministic or controllable future
+  // because service is an async call
   //And at the moment the promise contains a value,
   // its future will automatically be fulfilled with that value, which will unlock the consumer.
 
@@ -122,15 +128,15 @@ TODO
     val thePromise = Promise[String]()
 
     // submit a task to be evaluated later, at the discretion of the service
-    // note: if the service is not on the same JVM,
+    // note: if the service is not on the same JVM let say RPC call ,
     // you can pass a tuple with the arg and the promise so the service has access to both
     //step 5 call the service this will be executed on the thread of Service running on other jvm
-    MyService.submmitTask(args){
+    MyService.submitTask(args){
       x:Int =>
-        // step 4- producer logic
+        // step 4- producer logic to be executed on this RPC service
 
       val preciousValue= MyService.produceAPreciousValue(x)
-        // Full-fill the desired promise with this value
+        // Fulfill the desired promise with this value,
         //or it Completes the promise with either an exception or a value
         //it will call tryComplete
         thePromise.success(preciousValue)

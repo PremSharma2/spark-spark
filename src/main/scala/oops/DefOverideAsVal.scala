@@ -59,7 +59,10 @@ TODO
   so any subsequent access to `calculateMetric`
    will return the cached value directly without re-computation.
 
-    Using `lazy val` to override a `def` method is a powerful technique when you have expensive calculations that need to be performed only under certain conditions or once. It helps in optimizing the performance of the application and avoiding unnecessary calculations.
+    Using `lazy val` to override a `def` method
+     is a powerful technique when you have expensive calculations
+     that need to be performed only under certain conditions or once.
+      It helps in optimizing the performance of the application and avoiding unnecessary calculations.
 
 
   */

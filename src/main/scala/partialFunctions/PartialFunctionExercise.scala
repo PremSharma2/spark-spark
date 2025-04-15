@@ -4,6 +4,7 @@ object PartialFunctionExercise extends App {
   /*
   Exercise number 1 Construct a PF instance
    */
+
   val anManualFussyFunction: PartialFunction[Int, Int] = new PartialFunction[Int, Int] {
     override def isDefinedAt(x: Int): Boolean =
       x == 1 || x == 2 || x == 5
@@ -15,6 +16,8 @@ object PartialFunctionExercise extends App {
       case x => 44
     }
   }
+
+
   // chatbot
   val chatBot: PartialFunction[String, String] = {
     case "Hello" => "Hi My name is Prem"

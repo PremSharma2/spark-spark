@@ -1,6 +1,6 @@
 package functional.programming
 
-object Exercise extends App {
+object FunctionExercise extends App {
   //anonymous class inside a function concat
   def concat: (String, String) => String = new Function2[String, String, String] {
     override def apply(s1: String, s2: String): String = s1 + s2

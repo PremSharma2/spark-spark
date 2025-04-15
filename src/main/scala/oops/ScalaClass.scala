@@ -7,6 +7,37 @@ object ScalaClass {
   //todo: which will create the constructor here basically and setter getter
   class Person(var name: String, var age: Int)
 
+
+  //The Scala compiler generates Java-compatible bytecode when you compile a Scala class.
+  /*
+  TODO
+     // Primary Constructor  // Primary Constructor
+       def this(name: String, age: Int) {
+                this() // default constructor
+               this.name = name
+               this.age = age
+             }
+
+
+// todo Getter for 'name'
+//todo  def name: String =  { return this.name}
+
+// Setter for 'name'
+def name_$eq(name: String): Unit =  { this.name = name
+}
+// Getter for 'age'
+def age: Int =  { return this.age
+}
+// Setter for 'age'
+def age_$eq(age: Int): Unit =  { this.age = age
+}
+override def toString: String =  { return "Person(name=" + this.name + ", age=" + this.age + ")"
+}
+
+
+
+   */
+
 //  # use the class
   val al = new Person("Al", 42)
   al.name                        // "Al"
@@ -23,9 +54,9 @@ object ScalaClass {
     val HOME: String = System.getProperty("user.home")
 
     // todo : -> define some methods
-    def foo() { println("foo") }
+    def foo(): Unit = { println("foo") }
 
-    def printFullName() {
+    def printFullName(): Unit = {
       // todo : access the fullName field, which is created above
       println(fullName)
     }
@@ -79,6 +110,7 @@ object ScalaClass {
   var            yes        yes
   val            yes        no
   default        no         no
+
   Auxiliary constructors
     Define auxiliary constructors using this
      as the name for each auxiliary constructor.
@@ -86,6 +118,7 @@ object ScalaClass {
 
 
    */
+
   class Pizza {
 
     var crustSize = 12
@@ -101,7 +134,7 @@ object ScalaClass {
       this.crustType = crustType
     }
 
-    override def toString = {
+    override def toString: String = {
       "A %s inch pizza with %s crust.".format(crustSize, crustType)
     }
 

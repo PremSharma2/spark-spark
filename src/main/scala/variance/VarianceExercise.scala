@@ -60,7 +60,7 @@ TODO what if SomeType is higherKinded type List[T] ??
   
   //Covariant API Implementation
   //TODO If your Generic class creates or contains elements of type T it should be +T
-  case class CParking[+T](vehicles :List[T])   {
+  case class CParking[+T](  vehicles :List[T])   {
     // we need to do the heck the compiler because method argument are in contravariant position
    // def park [S>:T] (vehicle:S):T= ???
     def get():CParking[T] = CParking(vehicles)
@@ -75,7 +75,7 @@ TODO what if SomeType is higherKinded type List[T] ??
   //TODO Contravariant implementation are majorly used in type class
   //Todo beacuse we need to take an action on type
   
-    class XParking[-T] (vehicles :List[T]){
+    class XParking[-T] (  vehicles :List[T]){
      def park (vehicle:T):XParking[T]= ???
      def impound (vehicles:List[T]):XParking[T]= ???
      def checkVehicles [S<:T](conditions:String):List[S] = ???
@@ -89,7 +89,7 @@ TODO what if SomeType is higherKinded type List[T] ??
       *
       * Explanation:
       *
-      * this is basically nothing but (f: Function1[T,XParking[S]]
+      * this is basically nothing but (f: Function1[T,XParking[S]])
       * and Function1 is at contravariant position on its input params because of second thumb rule
       * by API specification for Function1 in scala api docs (T is contravariant and XParking[S]
       * is covariant position)
@@ -115,7 +115,7 @@ TODO what if SomeType is higherKinded type List[T] ??
 
    */
    class IList[T]
-  class CParking2[+T](  vehicles :IList[T])   {
+  class CParking2[+T](   vehicles :IList[T])   {
     // we need to do the hacking of compiler to avoid second ThumB Rule
     // for variance i.e to make the method argument is at
      // contravariant position
@@ -131,6 +131,11 @@ TODO what if SomeType is higherKinded type List[T] ??
     def impound [S>:T] (vehicles:IList[S]):CParking2[S]= ???
     //covariant type T occurs in invariant position in type (conditions: String)
      //Covariant type T occurs in invariant position in type VarianceExercise.IList[T] of value checkVehicles
+    /*
+     IList's invariance means that the fact that checkVehicles is in a covariant return position does not cause a variance issue.
+    However, it does not "remove" covariance—rather,
+    it ensures that covariance is not applied to IList[T] directly.
+     */
     def checkVehicles [S>:T](conditions:String):IList[S] = ???
      //Covariant type T occurs in contravariant position in type T of value S
     // def checkVehicles [S<:T](conditions:String):IList[S] = ???
@@ -167,8 +172,17 @@ TODO
                 then it still not accepting it
         Error: contravariant type T occurs in covariant position in type >: T of type S
          this position has become covariant hence we will heck in this way
+         T is contravariant, and by forcing S to be a supertype (S >: T), we are trying to return a more general type.
+         S >: T is not allowed because it places
+         T in a covariant position (forcing the return type to be more general).
+       TODO
          [S<:T]
-         Note : Scala smartly converted this Contravariant  position into Covariant
+         Note : Scala compiler  sees  this T as  Contravariant
+         S = Car, T = Vehicle
+           Car <: Vehicle, so S <: T holds.
+          impound accepts IList[S] (IList[Car]),
+          which is valid since S and IList[S] are used together.
+          i.e s derives the Ilist[s] so in way way its invarient nature keeps intact
       */
      def impound [S<:T](vehicles:IList[S]):XParking2[S]= ???
 //Contravariant type T occurs in covariant position in type T of value S

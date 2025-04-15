@@ -7,7 +7,8 @@ import java.lang.Thread
 object Intro  extends  App {
 
   //jvm threads
-  val aThread= new Thread(new Runnable {
+  val aThread= new Thread(
+    new Runnable {
     override def run(): Unit = println("Running in parallel")
   })
 
@@ -23,7 +24,7 @@ object Intro  extends  App {
   1 to 2 foreach { x =>
     pool.execute(
       new Runnable {
-        def run {
+        def run() {
           println("n: %s, thread: %s".format(x, Thread.currentThread.getId))
           val account =new BankAccount(50000)
           account.buy(account,"shoes",3000)

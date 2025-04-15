@@ -1,7 +1,8 @@
 package ImplicitsAndTypeClasses
 // old traditional way of designing serialising API
 object TypeClasses  extends App {
-// Design to Serialize domain objects to render html
+
+// Design to Serialize domain objects to render HTML
   trait HtmlSerializable{
     def serializeToHtml:String
   }
@@ -20,13 +21,13 @@ case class User(name:String, age:Int , email:String) extends HtmlSerializable {
 
   /*
   Disadvantages of this design
-  1: This only works for the Types we write i.e it is per implementation specific
+  1: This only works for the Types we write i.e., it is per implementation specific
   2: This one implementation out of quite a number
    */
 
   // Design number 2
   /*
-  Here we are trying to make this pattern general purpose for every types
+  Here we are trying to make this pattern general purpose for every type
   we mae on companion object
   In this design we will pattern match the Instances
   so that it can be reused for other Types of instances
@@ -37,7 +38,7 @@ case class User(name:String, age:Int , email:String) extends HtmlSerializable {
    */
 
   object HtmlSerializable{
-    def serializableToHtml(value :Any) = value match{
+    def serializableToHtml(value :Any): Unit = value match{
       case User(n,a,e) =>
       case _ =>
     }
@@ -62,10 +63,14 @@ case class User(name:String, age:Int , email:String) extends HtmlSerializable {
     def serialize(value : T):String
   }
 
+
+  //type class instances
+
   object UserSerializer extends HtmlSerializer[User] {
     override def serialize(user: User): String =
         s"<div> $user.name {$user.age yo} <a href = $user.email /> </div>"
   }
+
 
   import java.util.Date
   object DateSerializer extends HtmlSerializer[Date] {

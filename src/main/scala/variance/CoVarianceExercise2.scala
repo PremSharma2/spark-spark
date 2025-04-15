@@ -20,7 +20,7 @@ object CoVarianceExercise2 extends App {
         B can be any supertype of A even if it's not related to Animal at all,
         which is clearly not what you intended.
 
-    To fix the error, you need to ensure that B is also constrained as a subtype of Animal:
+       To fix the error, you need to ensure that B is also constrained as a subtype of Animal:
    */
   class Container[+A <: Animal] private (private val animals: List[A]) {
 

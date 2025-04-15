@@ -2,6 +2,8 @@ package ImplicitsAndTypeClasses
 
 import org.apache.spark.sql.SparkSession
 
+import scala.util.matching.Regex
+
 object CustomStringInterpolator {
 
   import org.apache.spark
@@ -38,7 +40,7 @@ TODO
         we don't have to escape
         the backslashes in the regular expression.
  */
-  val regex = raw"\d{2}-\d{2}-\d{4}".r
+  val regex: Regex = raw"\d{2}-\d{2}-\d{4}".r
 
 /*
 TODO
@@ -107,9 +109,10 @@ TODO
   //and you are doing a lot of parsing from strings
   // in the form of “name,age” into instances of this Person class
 
+
   case class Person(name: String, age: Int)
 //normal way of parsing a text file into Person object
-  def stringToPerson(line: String): Person = {
+  private def stringToPerson(line: String): Person = {
     // assume the strings are always "name,age"
     val tokens = line.split(",")
     Person(tokens(0), tokens(1).toInt)

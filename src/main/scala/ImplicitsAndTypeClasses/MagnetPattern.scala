@@ -5,11 +5,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object MagnetPattern extends App {
   // This Pattern solves the problem created by method over loading
-  class P2PRequest
-  class P2PResponse
+  //lets design Request Response Adts
+  sealed trait Request
+  sealed trait Response
+  class P2PRequest extends Request
+  class P2PResponse extends Response
+
   class Serializer[T]
 
-  // This Actor receives multiple Request of different type
+  // This Actor receives multiple Request of a different type
   trait Actor{
     def receive(statusCode:Int):Int
     def receive(request:P2PRequest) :Int
@@ -19,12 +23,23 @@ object MagnetPattern extends App {
     def receive(future : Future[P2PRequest]): Int
     //def receive(future : Future[P2PResponse]): Int
     //val recive: Future[P2PResponse] => Int =  receive(_: Future[P2PResponse])
+    /*
     // Problems with overloading
   // 1:  def receive(future : Future[P2PResponse]): Int
-    // this is not compiling because of the  type erasure
-    // what happens here is that type of Generics is removed at run time
-    // so it will look same  as this one
-    // def receive(future : Future[P2PRequest]): Int hence it results in ambiguity
+     this is not compiling because of the  type erasure
+     what happens here is that type of Generics is removed at run time
+     so it will look same  as this one
+     def receive(future : Future[P2PRequest]): Int
+     def receive(future : Future[P2PResponse]): Int
+    get erased to the same JVM signature due to type erasure:
+    def receive(Future): Int
+    The JVM does not know the difference between
+    Future[P2PRequest] and Future[P2PResponse] at runtime — they're both just Future
+    This is why the compiler says it's "already defined".
+
+    //
+
+     */
     /*
     TODO
         //val recive: Future[P2PResponse] => Int =  receive(_: Future[P2PResponse])
@@ -41,13 +56,14 @@ object MagnetPattern extends App {
   }
 
 
+
   // TODO : -> this problem can be solved implicit conversion
   trait MessageMagnet[Result]{
     def apply():Result
   }
 
   // in actor api we will only have this receive method here
-  // here to implement overloading smartly we will pass type class instances
+  //  to implement overloading smartly we will pass type class instances
   // so that receive method can consume all types of messages so messages are in form of type class instances
 def receive[R](magnet: MessageMagnet[R]):R= magnet.apply()
 

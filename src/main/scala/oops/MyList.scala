@@ -28,6 +28,7 @@ trait MyList {
 
 /**
  * Singleton object that represents Empty List Data structure
+ * ADT sum type
  */
 case object CNil extends MyList {
 
@@ -42,11 +43,11 @@ case object CNil extends MyList {
   def printElements: String = ""
 }
 
-
+//product type
 class Node(h: Int, nodeTail: MyList) extends MyList {
-  def head: Int = h
+  override val head: Int = h
 
-  def tail: MyList = nodeTail
+  override val tail: MyList = nodeTail
 
   def isEmpty: Boolean = false
 

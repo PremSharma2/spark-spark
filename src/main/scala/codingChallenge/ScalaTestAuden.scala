@@ -115,7 +115,8 @@ TODO
                              lowerBoundary: Option[Int],
                              upperBoundary: Option[Int]
                            ): List[Vehicle] = {
-    inputVehicles.filter { vehicle =>
+    inputVehicles.filter {
+      vehicle =>
       val speed = vehicle.speed
       val lb = lowerBoundary.getOrElse(Int.MinValue)
       val ub = upperBoundary.getOrElse(Int.MaxValue)

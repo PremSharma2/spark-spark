@@ -3,7 +3,6 @@ package oops.companionObject
 object CompanionRealworldEaxmple {
 
 
-
   class Director(val firstName: String, val lastName: String, val yearOfBirth: Int) {
     def name: String = firstName concat " " concat lastName
 

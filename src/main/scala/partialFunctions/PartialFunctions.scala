@@ -3,6 +3,7 @@ package partialFunctions
 object PartialFunctions extends App {
 // ths function for all values of domain A
   val aFunction: Int => Int = (x: Int) => x + 1 //Function1[Int,Int]
+
 // a function which is applicable on certain set of inputs
   val aFussyFunction: Int => Int = (x: Int) =>
     if (x == 1) 42
@@ -11,12 +12,15 @@ object PartialFunctions extends App {
     else throw new FunctionNotApplicableException
 
   class FunctionNotApplicableException extends RuntimeException
-  /*
-  A partial function of type PartialFunction[A, B] is a unary function
-   where the domain does not necessarily include all values of type A.
-  The function isDefinedAt allows [you] to test dynamically
-   if a value is in the domain of the function.”
 
+  /*
+ TODO
+     A partial function of type PartialFunction[A, B] is a unary function
+     where the domain does not necessarily include all values of type A.
+    The function isDefinedAt allows [you] to test dynamically
+    if a value is in the domain of the function.”
+
+TODO
    In short, a function is a mapping A => B that
    relates each value of type A to a value of type B–modulo bottom.
    A and B are called domain and codomain, respectively.
@@ -24,8 +28,8 @@ object PartialFunctions extends App {
    the domain is the set of all values that you may provide as input to your function,
    while the codomain is the result of the function application to the input,
     that is your function output.
-On the other hand a partial function
-from A to B is not defined for some inputs of type A
+   On the other hand a partial function
+   from A to B is not defined for some inputs of type A
    */
 
   val anicerFussyFunction: Int => Int = {
@@ -35,7 +39,8 @@ from A to B is not defined for some inputs of type A
     case 3 => 999
 
   }
-// Partial Function with pattern  matching
+
+//todo  Partial Function with pattern  matching
   val anonymousPartialFunction: Int => Int = {
 //TODO this function uses anoumous partial function
     case 1 => 42
@@ -55,6 +60,7 @@ from A to B is not defined for some inputs of type A
     case 2 => 43
     case 3 => 999
   }
+
   println(aPartialFunction(2))
   // Partial Function are based on the pattern matching hence it will throw a matching error
   //println(aPartialFunction(53))
@@ -75,18 +81,25 @@ from A to B is not defined for some inputs of type A
     case 2 => 43
     case 3 => 999
   }
+
   val chainedfunction: PartialFunction[Int, Int] = {
     case 34 => 67
   }
+
+
  val shouldHandleAlldomainValues: PartialFunction[Int, Int] = newPartialFunction orElse chainedfunction
+
   println(shouldHandleAlldomainValues.apply(34))
+
   // Partial function extends Function1[]
   // Hence we can write Total Function with Single Argument or
   // Normal Function Like Partial Function Syntax
   //Because Partial Function are subTypes of Normal Functions
+
   val aTotalFuntion: Int => Int = {
     case 1 => 99
   }
+
   // Both are Same because as we aware that Partial Function works on pattern match
   //Although i not partial function but because as we are aware that Partial Function Extends Function
   // Then they also can be used for the same purpose if we want to
@@ -94,6 +107,8 @@ from A to B is not defined for some inputs of type A
   val aTotalFuntion1: Int => Int = {
     case 1 => 99
   }
+
+
   val mypf: PartialFunction[Int, Int] =PartialFunction.apply(aTotalFuntion)
   //HoFs also accepts Partial Functions
   val MappedList = List(1, 2, 3).map {
@@ -101,6 +116,7 @@ from A to B is not defined for some inputs of type A
     case 2 => 43
     case 3 => 999
   }
+
   /*
   {
     case 1 => 42

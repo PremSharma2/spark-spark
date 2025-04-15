@@ -217,14 +217,16 @@ case class Person (
 If you answered, “Infinite,” that’s a good answer. Because a String has an infinite number of possibilities,
  Person can have an infinite number of concrete instances.
 
-While I don’t concern myself with ADTs too much, this particular point had a significant impact on me. When I first saw this, I realized that any time a function accepted a String, that String had an infinite number of possibilities. That’s a lot to account for. Similarly, a boolean value has two possibilities, a Byte has 256 possible values, and the Direction Sum type has four possibilities. The lesson for me is that the fewer possibilities you have to deal with, the simpler your code will be. (At the very least, this was the last time I ever used a series of string constants instead of enumerations.)
+While I don’t concern myself with ADTs too much,
+this particular point had a significant impact on me. When I first saw this, I realized that any time a function accepted a String, that String had an infinite number of possibilities. That’s a lot to account for. Similarly, a boolean value has two possibilities, a Byte has 256 possible values, and the Direction Sum type has four possibilities. The lesson for me is that the fewer possibilities you have to deal with, the simpler your code will be. (At the very least, this was the last time I ever used a series of string constants instead of enumerations.)
 
 
 
 Before we move on, here are a few important points about the Product type:
 
 Writing case class and defining the constructor parameters is essentially the “product” operator.
-The number of possible values of a Product type is the product of all possible combinations of the constructor parameters (i.e., a Cartesian product).
+The number of possible values of a Product type is the product of all possible
+combinations of the constructor parameters (i.e., a Cartesian product).
 We use the phrases “has a” and “and” when talking about Product types. Pair has a a and a b; Person has a firstName, lastName, mother, and father.
 As shown in the Person example, Product types can be recursive; mother and father are declared as Person types inside the Person definition.
 Hybrid types

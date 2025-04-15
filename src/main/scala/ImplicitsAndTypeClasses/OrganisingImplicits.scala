@@ -3,7 +3,10 @@ package ImplicitsAndTypeClasses
 object OrganisingImplicits  extends App {
 //implicit val reversedOrdering :Ordering[Int] = Ordering.fromLessThan(_ > _)
 
-  implicit def normalOrdering :Ordering[Int] = Ordering.fromLessThan(_ < _)
+  implicit def normalOrdering :Ordering[Int] =
+    Ordering
+      .fromLessThan(_ < _)
+
   println(List(1,2,3).sorted)
 
 /*
@@ -18,7 +21,8 @@ TODO
 //Exercise
 
   //ascending order
-implicit val ageOrdering :Ordering[Person] = Ordering.fromLessThan(
+implicit val ageOrdering :Ordering[Person] =
+  Ordering.fromLessThan(
   (a,b) => a.age.compareTo(b.age) < 0)
 
   // todo: both are same
@@ -33,6 +37,7 @@ implicit val ageOrdering :Ordering[Person] = Ordering.fromLessThan(
     Person("Steve",5),
     Person("Bold",2)
   )
+
   /*
   object Person{
     implicit val alphabeticOrdering :Ordering[Person] = Ordering.fromLessThan(

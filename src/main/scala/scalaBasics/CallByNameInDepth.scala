@@ -13,7 +13,7 @@ TODO
   I’m not going to use 3-dollar words to describe what CBN does.
   Instead, here’s the thing: if you write a normal function
  */
-def byValueFunction(x: Int) = x+2
+private def byValueFunction(x: Int) = x+2
   byValueFunction(2 + 3)
   /*
 TODO Explanation
@@ -32,8 +32,13 @@ TODO Explanation
     println(x)
     println(x)
   }
+
   val expression: Int = 2 + 3
   byNameFunction1(expression)
+
+
+
+
   /*
 TODO Explanation
    what you’re passing is not the value of 2 + 3,
@@ -85,20 +90,27 @@ TODO Trick 2 callbyNeed: ->
   here LazyList contains the elements of type T
   In short Containers are always covariant
  */
+
+  //TODO : data modelling in terms  of ADTS of List
+
 abstract class LazyList[+T] {
   def head: T
   def tail: LazyList[T]
 }
 
   case object Empty extends LazyList[Nothing] {
-    override def head = throw new NoSuchElementException
-    override def tail = throw new NoSuchElementException
+    override def head: Nothing = throw new NoSuchElementException
+    override def tail: LazyList[Nothing] = throw new NoSuchElementException
   }
+
+
 
   class NonEmpty[+T](h: => T, t: => LazyList[T]) extends LazyList[T] {
     override lazy val head: T = h
     override lazy val tail: LazyList[T] = t
   }
+
+
   /*
 TODO Explanation
   The magic happens in the NonEmpty class.
@@ -109,7 +121,8 @@ TODO Explanation
   nor the internal fields are evaluated on construction.
   Even better - if the fields are ever used,
   they’re evaluated once and then reused,
-  so no more System.nanoTime shenanigans if you’re afraid of them. If you’re brave, you can also use something like
+  so no more System.nanoTime shenanigans
+  if you’re afraid of them. If you’re brave, you can also use something like
    */
 /*
 TODO

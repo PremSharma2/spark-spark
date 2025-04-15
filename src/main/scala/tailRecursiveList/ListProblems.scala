@@ -407,6 +407,7 @@ TODO
         if (remaining.isEmpty) accumulator.reverse
         else flatmapTailRec(remaining.tail, f.apply(remaining.head).reverse ++ accumulator)
       }
+
       /*
        TODO
           What we are trying to do here is that
@@ -662,6 +663,8 @@ TODO
       [1,2,3].rotate(3) where k is divisible by the length of List
       so [1,2,3].rotate(3) == [1,2,3]
       [1,2,3].rotate(6) == [1,2,3]
+
+      todo
        else if(remaining.isEmpty) rotateTailRec(this,rotationsLeft,RNil)
        this condition will occur when
         [1,2,3].rotate(4) =
@@ -711,7 +714,7 @@ TODO
                    now we will get into  else if(rotationsLeft==0) remaining ++ accumulator.reverse
                    [2,3] ++ [1] but it will turned into by ++ def [3,2] ++ [1] = [2,3,1]
                    Complexity(O(max(N,K))
-                   becase if k<N
+                   because if k<N
                    then complexity will depend upon  else if(rotationsLeft==0) remaining ++ accumulator.reverse this case
                    and this has the complexity O(M+N)
                    and if k>N then we need to iterate till if(remaining.isEmpty && rotationsLeft==0) case
@@ -796,9 +799,11 @@ TODO
         here check is 4<5 so it will stay after 4 we will add up in after list
         [3,2,1].reverse ++ (4 :: 5)
         [1,2,3,4,5]
-        complexity is O(n) where n is the size if after list because we dont know where this element will be placed
+        complexity is O(n) where n is the size
+        if after list because we dont know where this element will be placed
         we need to traverse the whole after list
        */
+
       @tailrec
       def insertSorted(element: T, before: RList[S], after: RList[S]): RList[S] = {
         //insertSorted(4,[3,2,1],[4,5]) we are in this stage
@@ -850,12 +855,13 @@ TODO
          now  if(listA.isEmpty) accumulator.reverse ++ listB
          o/p will [1,2,3,4,5,6,7]
        */
+
       @tailrec
-      def merge(listA: RList[S], listB: RList[S], accumulator: RList[S]): RList[S] = {
+      def sort(listA: RList[S], listB: RList[S], accumulator: RList[S]): RList[S] = {
         if (listA.isEmpty) accumulator.reverse ++ listB
         else if (listB.isEmpty) accumulator.reverse ++ listA
-        else if (ordering.lteq(listA.head, listB.head)) merge(listA.tail, listB, listA.head :: accumulator)
-        else merge(listA, listB.tail, listB.head :: accumulator)
+        else if (ordering.lteq(listA.head, listB.head)) sort(listA.tail, listB, listA.head :: accumulator)
+        else sort(listA, listB.tail, listB.head :: accumulator)
       }
 
       /*
@@ -933,6 +939,7 @@ TODO
       def mergeSortTailRec(smallList: RList[RList[S]], bigList: RList[RList[S]]                                                              ): RList[S] = {
         if (smallList.isEmpty) {
           if (bigList.isEmpty) RNil
+            //then a big list contains only a single element, which is a sorted list hence all done
           else if (bigList.tail.isEmpty) bigList.head
           else mergeSortTailRec(bigList, RNil)
         } else if (smallList.tail.isEmpty) {
@@ -942,7 +949,7 @@ TODO
         else {
           val first = smallList.head
           val second = smallList.tail.head
-          val merged = merge(first, second, RNil)
+          val merged = sort(first, second, RNil)
           mergeSortTailRec(smallList.tail.tail, merged :: bigList)
         }
       }
@@ -1103,6 +1110,7 @@ TODO
     val listz = list ++ list1
     val iterable: Iterable[Int] = 1 to 10000
    val iterable1: Iterable[Int] = Iterable.apply(2, 3, 4)
+    iterable.toList
 
     val aLargeList = RList.from(1 to 10000)
     // TODO This expression is right associative by default in scala

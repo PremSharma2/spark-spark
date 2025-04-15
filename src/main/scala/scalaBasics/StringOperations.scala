@@ -11,7 +11,7 @@ object StringOperations extends App {
   println(str.split(" ").toList)
   val splitArray: Array[String] = str.split(" ")
   val doubleSplit: Array[Array[String]] = {
-    splitArray.map(_.split(","))
+      splitArray.map(_.split(","))
 
   }
   val strreplace = "Hello, world!"

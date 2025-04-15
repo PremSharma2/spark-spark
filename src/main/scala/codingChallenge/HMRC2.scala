@@ -93,7 +93,7 @@ object HMRC2 extends App {
 
     def totalDiscounts: Double = offers.map(_.discountedAmount).sum
 
-    def total = subTotal - totalDiscounts
+    def total: Double = subTotal - totalDiscounts
 
     def display(): Unit = {
       println(s"Subtotal: $subTotal")

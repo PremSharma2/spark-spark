@@ -1,5 +1,7 @@
 package ImplicitsAndTypeClasses
 
+import scala.language.implicitConversions
+
 object PimpMyLibraryExercise extends App {
   //Exercise 1
 // implicit && value class  this represent the implicit conversion
@@ -67,4 +69,17 @@ object PimpMyLibraryExercise extends App {
 val conditionedValue= if (3) "OK" else "Something Wrong"
   val condition: Boolean = 3
   println(conditionedValue)
+
+  class StringOps(s: String) {
+    def snakeCase: String = s.replaceAll("([A-Z])", "_$1").toLowerCase
+    def camelCase: String = s.split("_").map(_.capitalize).mkString
+  }
+
+  implicit def toStringOps(s: String): StringOps = new StringOps(s)
+
+  // Usage:
+  val str = "helloWorld"
+  println(str.snakeCase) // prints "hello_world"
+  println("hello_world".camelCase) // prints "HelloWorld"
+
 }

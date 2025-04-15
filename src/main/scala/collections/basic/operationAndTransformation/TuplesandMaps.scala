@@ -41,7 +41,7 @@ object TuplesandMaps extends App {
   }
    */
 
-
+//reducing the Array of tuples to Seq[A]
 
   import Function.tupled
  val x: immutable.Seq[String] = arrayOfTuples.map(
@@ -94,8 +94,9 @@ object TuplesandMaps extends App {
   val createUser: (String, Int) => User = (name, age) => User(name, age >= 18)
 
   createUser("prem",21)
-
-  val users: immutable.Iterable[User] = data.map(createUser.tupled)
+  // Tuple2[T1, T2] => R
+val function: ((String, Int)) => User = createUser.tupled
+  val users: immutable.Iterable[User] = data.map(function)
   // Maps
 
   val aMap: Map[String, Int] = Map()
@@ -134,6 +135,7 @@ object TuplesandMaps extends App {
   println(phonebook.filterKeys(x => x.startsWith("J")))
 
   //TODO : Transforms this map by applying a function to every retrieved value from Key-Value
+  // TODO this is good when we need to transform only values and remain keys intact
   println(phonebook.mapValues(phonenumber => "03256--" + phonenumber))
 
   //conversions
@@ -169,13 +171,17 @@ object TuplesandMaps extends App {
 
 /**
 TODO
-    If the function passed to map returns a tuple (K, V)
+    If the function passed to map HOF of Map returns a tuple (K, V)
     where K and V could be any type, then the result will be a Map[K, V].
    If the function returns something other than a tuple,
    then the result will be an Iterable.
  */
   val myMap = Map("a" -> 1, "b" -> 2, "c" -> 3)
-  val result: immutable.Iterable[String] = myMap.map{ case (key, value) => s"$key: $value" }
+
+  val result: immutable.Iterable[String] = myMap.map{
+    case (key, value) => s"$key: $value"
+  }
+
   println(result)  // Output: Map(a: 1, b: 2, c: 3)
   println(result.getClass)  // Output: class scala.collection.immutable.Map
 
@@ -241,7 +247,9 @@ TODO
  // **Scenario**: Suppose you have a map of categories to lists of sales amounts and you want to compute the total sales per category.
 
   val sales = Map("electronics" -> List(100, 200, 300), "clothing" -> List(50, 75, 125))
-  val totalSales = sales.map { case (category, amounts) => (category, amounts.sum) }
+  val totalSales = sales.map {
+    case (category, amounts) => (category, amounts.sum)
+  }
   println(totalSales)
   // Output: Map(electronics -> 600, clothing -> 250)
 
@@ -262,7 +270,7 @@ TODO
                                                                }
 
   // Calculate the average price
-  val averagePrice = if (count > 0) totalCost / count else 0.0
+  val averagePrice = if (count > 0) totalCost / count1 else 0.0
 
   println(averagePrice)
   // Output: 2.75

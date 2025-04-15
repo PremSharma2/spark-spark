@@ -6,7 +6,8 @@ import scala.util.{Failure, Random, Success, Try}
 
 object FuturePromiseExercise extends App {
 
-  def fulFillImmediately[T](callByNameExpression: T): Future[T] = Future.apply {
+  def fulFillImmediately[T](callByNameExpression : T): Future[T] =
+    Future.apply {
     callByNameExpression
   }
 
@@ -28,9 +29,9 @@ object FuturePromiseExercise extends App {
   // implement new future with a first value of two futures
   def first[A](fa: Future[A], fb: Future[A]): Future[A] = {
     // here promise is a controller for fa here basically
-    // i.e it is for Type[A]
+    // i.e., it is for Type[A]
     val promise = Promise[A]
-    // calling a call back function of scala concurrency
+    // calling a callback function of scala concurrency
     fa.onComplete {
       case Success(value) => promise.success(value)
       case Failure(exception) => promise.failure(exception)
@@ -83,7 +84,7 @@ object FuturePromiseExercise extends App {
   // refactored Impls for safe
   def modifiedSafeImpl[A](fa: Future[A], fb: Future[A]): Future[A] = {
     // here promise is a controller for fa here basically
-    // or promise is gurantee for task of the future
+    // or promise is guarantee for a task of the future
     val promise = Promise[A]
 
     /*
@@ -92,6 +93,7 @@ object FuturePromiseExercise extends App {
      */
     def tryCompletePromise(promise: Promise[A], result: Try[A]) = {
       result match {
+
         case Success(value) => try {
           promise.success(value)
         } catch {
@@ -157,10 +159,10 @@ object FuturePromiseExercise extends App {
 
   // This will return the last promised future out of the two
   def last[A](fa: Future[A], fb: Future[A]): Future[A] = {
-    // initially both the threads try to fulfill the bothPromise
-    // but whoever finishes first will fulfill first hence second
+    // initially both the threads try to fulfill the bothPromise. However,
+    //  whoever finishes first will fulfill first hence second
     // one cant finish the same promise
-    // because same promise cant be fulfilled twice as we discussed earlier
+    // Same  cant be fulfilled twice as we discussed earlier
     // so for second thread or the remaining thread can fulfill the second promise
 
 

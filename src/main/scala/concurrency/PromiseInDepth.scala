@@ -62,7 +62,8 @@ TODO
     val p = Promise[T]
     ec.execute { () =>
       try {
-        p.success(block)
+        val value=block
+        p.success(value)
       } catch {
         case NonFatal(e) => p.failure(e)
       }

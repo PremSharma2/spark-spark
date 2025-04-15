@@ -2,7 +2,7 @@ package oops
 
 object MoreOnNothing  extends App {
 
-  // if i defined my class like this
+  // if I defined my class like this
   class MyClass// scala implicitly add extends AnyRef
 
 /*
@@ -21,7 +21,7 @@ TODO
   def gimmeARference ():MyClass = null
 //  def gimmeARference1 ():MyClass = Nothing
   def afunctonAboutNothing(a: Nothing):Int= 45
-  // as we know that the any expression can return nothing is Exception throw new NoSuchElementException
+  // as we know that any expression can return nothing is Exception throw new NoSuchElementException
   afunctonAboutNothing(throw new NoSuchElementException)
   // Nothing is very useful in Generics
   trait MyGenericList[+A] {

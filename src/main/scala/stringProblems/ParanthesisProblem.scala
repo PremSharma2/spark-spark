@@ -31,6 +31,7 @@ TODO  vpt("())",0)
    */
   // complexity is O(n)
   def hasValidParanthesis(str: String): Boolean = {
+    @tailrec
     def validParanthesTailRec(remaining: String, openParanths: Int): Boolean = {
       if (remaining.isEmpty) openParanths == 0
       else if (openParanths == 0 && remaining.head == ')') false
@@ -89,23 +90,23 @@ TODO  vpt("())",0)
     if (s.isEmpty) true
     else {
       @tailrec
-      def go(index: Int, accumulator: List[Char]): Boolean = {
+      def loop(index: Int, accumulator: List[Char]): Boolean = {
         if (index == s.length) accumulator.isEmpty
         else {
           val char = s(index)
           val isOpening = OpenToClose.contains(char)
           val isClosing = CloseToOpen.contains(char)
-          if (isOpening) go(index + 1, char :: accumulator)
+          if (isOpening) loop(index + 1, char :: accumulator)
           else if (isClosing) {
             accumulator match {
-              case _ :: tail =>   go(index + 1, tail)
+              case _ :: tail =>   loop(index + 1, tail)
               case _ => false
             }
           } else false
         }
       }
 
-      go(index = 0, accumulator = Nil)
+      loop(index = 0, accumulator = Nil)
     }
   }
 
@@ -114,6 +115,7 @@ TODO  vpt("())",0)
       @tailrec
       def go(index: Int, accumulator: List[Char]): Boolean = {
          if (index == s.length) accumulator.isEmpty
+           else if(accumulator.isEmpty) false
          else if(accumulator.tail.isEmpty) false
         else if  (OpenToClose.contains(s(index))) go(index + 1, s.head :: accumulator)
         else if (CloseToOpen.contains(s(index)))  go(index + 1, accumulator.tail)
@@ -126,7 +128,7 @@ TODO  vpt("())",0)
 
 
   def main(args: Array[String]): Unit = {
-    println(parenthesesAreBalancedModified("(())"))
+    println(parenthesesAreBalanced("([{{[(())]}}])"))
     println(parenthesesAreBalanced("(())"))
     println(parenthesesAreBalanced("())"))
     println(parenthesesAreBalanced("()"))

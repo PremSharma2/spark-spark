@@ -9,7 +9,7 @@ object FunctionalCollection extends App {
     Hence we can pass the reference of MySet as input to any HOF(map, flatmap...etc)
      */
   trait MySet[A] extends (A => Boolean) {
-    def apply(element: A): Boolean = contains(element)
+   override def apply(element: A): Boolean = contains(element)
 
     def contains(element: A): Boolean
 
@@ -17,7 +17,7 @@ object FunctionalCollection extends App {
 
     def ++(element: MySet[A]): MySet[A] // this is called union operator
     def map[B](fx: A => B): MySet[B]
-
+                   //ETW pattern
     def flatMap[B](fx: A => MySet[B]): MySet[B]
 
     def filter(predicate: A => Boolean): MySet[A]
@@ -237,7 +237,7 @@ and now recursion traces back
      */
     override def ++(anotherSet: MySet[A]): MySet[A] =
       new PropertyBasedSet[A](x => property(x) || anotherSet.contains(x))
-//all inclusive set i.e all integers of domain Int we apply map function x=> _%3
+    //all inclusive set i.e all integers of domain Int we apply map function x=> _%3
     // now we dont know whether is is infinite set or finite set
     // and if its finite then we dont know or whether it will satisfy the property
     override def map[B](fx: A => B): MySet[B] = politlyFail

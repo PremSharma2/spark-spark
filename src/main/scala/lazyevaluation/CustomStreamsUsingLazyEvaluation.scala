@@ -6,6 +6,7 @@ import scala.annotation.tailrec
 
 object CustomStreamsUsingLazyEvaluation extends App {
 
+
  trait MyStream[+A] {
     def head: A
 
@@ -271,13 +272,14 @@ TODO
     // once we ask for tail it is evaluated
     //i.e it will not piled up the function calls in stack like we do while looping using recursion
     //MyStream.from(accumulator)(fx) thi is the callByname expression its output is tail
-    // so when someone uses node.tail then it will get evaluated
-    // initilly it will return
-    // lazystream=  new Node[A](start, MyStream.from(accumulator)(fx))
+    // so when someone uses node.tail then it willj  get evaluated
+    // initilly it will returnn                                                                                                                                                                                                    ,
+    // lazystream=  new Node[A](start, MyStream.from(accumulator)(fx)) #o                                ]
     //MyStream.from(accumulator)(fx) :-> this is callbyname expression
     // when you call lazystream.tail then it will get evaluated
+    //Even though from looks recursive, the recursion is deferred by the lazy tail
     def from[A](start: A)(fx: A => A): MyStream[A] = {
-      var accumulator = fx.apply(start)
+      val accumulator = fx.apply(start)
       new Node[A](start, from(accumulator)(fx))
     }
   }
@@ -399,7 +401,25 @@ and flatMap will then generate a new Node with elements 2 and 3.
 
 The crucial point here is that each step happens only when you ask for it.
 If you never access an element, no computation is performed for that element.
-This allows your code to be extremely efficient and makes it possible to work with infinite or computationally expensive streams.
+This allows your code to be extremely efficient and makes it possible to work
+with infinite or computationally expensive streams.
+val lazyytail=[flatMap(from(2))]
+
+flatMappedStream =
+  Node(1,
+    Node(2,
+      lazyytail))
+
+      flatMappedStream
+├─ head = 1                          ← from f(1)
+├─ tail
+│  ├─ head = 2                      ← from f(1)
+│  ├─ tail
+│  │  ├─ thunk: flatMap(from(2))   ← from(2) not evaluated yet
+│  │  │  ├─ println("Generating: 2")
+│  │  │  ├─ f(2) → Node(2, Node(3))
+│  │  │  ├─ ++ thunk: flatMap(from(3))
+
    */
 val flatMappedStream=startFrom0Naturals.flatMap(x => new Node[Int](x, new Node[Int](x+1,EmptyStream)))
 // here in case of flat map we have the implementation like this

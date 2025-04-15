@@ -70,10 +70,12 @@ TODO API Design
   trait Recipe[+A <: Food] {
     def name: String
     def recipeIngredients: List[A]
+    //todo : -> helper method to add more ingredient if u want
     def add[B >: A <: Food](ingredient: B): Recipe[B]
   }
 
-  //todo : Companion object
+  //todo : Companion object or smart constructors
+
   object Recipe {
     def empty[A <: Food]: MyRecipe[A] = new MyRecipe(List.empty[A])
   }
@@ -81,7 +83,7 @@ TODO API Design
 
 //TODO : -> Producer API Design
 //TODO: -> Producer API Design
-class MyRecipe[+A <: Food](val recipeIngredients: List[A]) extends Recipe[A] {
+class MyRecipe[+A <: Food](override val recipeIngredients: List[A]) extends Recipe[A] {
 
   def name: String = s"Recipe based on ${recipeIngredients.map(_.name).mkString(", ")}"
 

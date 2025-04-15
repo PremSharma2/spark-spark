@@ -39,16 +39,16 @@ TODO
   Trait A: x = 42
 Class B: x = 42
 But actually, you will see:
-
-Trait A: x = 0
-Class B: x = 42
-Scala starts by initializing the superclass of B (which is Object by default). A is not initialized yet.
-Trait Initialization:
-Then Scala moves on to initialize A. However,
-the field x in A is not yet initialized because x is overridden in B and B is not yet initialized.
-Scala tries to access x when printing, but it gets the default value for integers, which is 0.
-Subclass Initialization:
-Finally, Scala initializes B, setting x to 42 and printing the correct value.
+TODO
+ Trait A: x = 0
+ Class B: x = 42
+ Scala starts by initializing the superclass of B (which is Object by default). A is not initialized yet.
+ Trait Initialization:
+ Then Scala moves on to initialize A. However,
+ the field x in A is not yet initialized because x is overridden in B and B is not yet initialized.
+ Scala tries to access x when printing, but it gets the default value for integers, which is 0.
+ Subclass Initialization:
+ Finally, Scala initializes B, setting x to 42 and printing the correct value.
    */
 
 }

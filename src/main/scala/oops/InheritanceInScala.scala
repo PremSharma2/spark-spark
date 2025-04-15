@@ -31,7 +31,7 @@ object InheritanceInScala extends App {
 
   // Constructor Chaining
   class Adult(name: String, age: Int, idcard: String) extends Person(name, age){
-    override val breath = super.breath
+    override val breath: String = super.breath
   }
 
   //-----------------------------------------------------------------------------------------------------------------------------
@@ -49,11 +49,11 @@ object InheritanceInScala extends App {
   }
 
   // or we can override class fields in this way
-  //here it is clear that def can be over ridden as val
+  //here it is clear that def can be over-ridden as val
   class Bird(override val creatureType: String) extends Animal {
 
     override val eat: String = {
-      //calling super class function eat here
+      //calling super class def eat here
       super.eat
     }
   }

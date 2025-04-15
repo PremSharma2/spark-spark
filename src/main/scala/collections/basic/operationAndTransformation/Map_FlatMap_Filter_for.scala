@@ -5,7 +5,7 @@ import scala.collection.immutable.{NumericRange, Range}
 import scala.util.matching.Regex
 
 object Map_FlatMap_Filter_for extends App {
-
+//todo : ->  LinearSeq LinkedList here
   val list = List(1, 2, 3)
   val input = List("hello-world", "scala", "prem")
 
@@ -19,6 +19,11 @@ object Map_FlatMap_Filter_for extends App {
    */
 
   val rExists: Boolean = input.exists(_.matches("hello-world"))
+
+  val userRoles: List[String] = List("Editor", "Viewer", "Contributor")
+
+  // Check if the user has at least one of the required roles
+  val hasAccess: Boolean = userRoles.exists(role => role == "Admin" || role == "Manager")
 
 
   //TODO: the findFirstIn method finds the first match in the String and returns an Option[String]:
@@ -147,10 +152,11 @@ TODO
  val rrr: immutable.Seq[List[Int]] = list.map(x => List(x + 1))
 
   //filter
-  /*
+  /**
     TODO
         Selects all elements of this traversable collection which satisfy a predicate.
    */
+
   println(list.filter(x => x % 2 == 0))
   println(list.filter(_ % 2 == 0))
   val regex = "a.c".r
@@ -160,9 +166,12 @@ TODO
 
   //flatmap
 
+
   val transform: Int => (Int, Int) = x => (x, x + 1)
 
   //ETW
+  //todo : -> transformer: A=>M[B]
+
   val transformer = (x: Int) => List(transform.apply(x))
   //TODO def flatMap[B, A](f: A => List[B])
   println(list.flatMap(transformer))
@@ -185,7 +194,7 @@ TODO
   println(forcomprehension)
 
   
-  // syntax overload
+  //todo : ->  syntax overload
   list.map(//pattern matching using partial function
     x => x * 2)
   // dropRight
@@ -326,7 +335,8 @@ TODO
       It provides a way to lazily iterate over the elements of a collection,
       which can be especially useful for processing large datasets or streams
       of data without loading everything into memory at once.
-      Processing Large Datasets: When dealing with large datasets that cannot fit
+      Processing Large Datasets:
+         When dealing with large datasets that cannot fit
      entirely in memory, you can use an Iterator to process data in a memory-efficient manner.
     You can read data from a file, database, or network stream,
   and process each element as you iterate through it.

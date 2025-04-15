@@ -1,173 +1,79 @@
 package monads
 
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
+import scala.util.{Success, Failure}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object MonadicLawsUseCases  extends App {
-  /**
-TODO
-    Here's a real-time use case in Scala where understanding Monadic
-    Left Identity can be crucial: Imagine you're developing an application
-    that performs asynchronous operations for file processing.
-    You decide to use the Future monad to handle these operations.
-    To validate that your monadic operations adhere to the laws,
-     you would like to test the Left Identity Law.
-  **/
+object MonadicLawsUseCases extends App {
 
-  import scala.concurrent.{Future, ExecutionContext}
-  import scala.util.{Success, Failure}
-  import scala.concurrent.ExecutionContext.Implicits.global // Importing global execution context
+  println("==== Testing Monad Laws in Scala ====\n")
 
-  // Simulates downloading a file and returns the content as a string wrapped in a Future
+  // --- 1. Left Identity Law ---
   def downloadFile(fileName: String): Future[String] = Future {
-    // Simulated file content
     s"Content of file: $fileName"
   }
 
-
   val fileName = "example.txt"
-
-  // Wraps the value using Future.successful (analogous to `pure` for Future)
-  val wrappedValue: Future[String] = Future.successful(fileName)
-
-  // Function to apply, same as downloadFile
+  val wrappedValue = Future.successful(fileName)
   val f: String => Future[String] = downloadFile
 
-  // Using flatMap on the wrapped value
-  val leftHandSide: Future[String] = wrappedValue.flatMap(f)
+  val leftIdentity = wrappedValue.flatMap(f)
+  val rightIdentity = f(fileName)
 
-  // Directly applying the function to the plain value
-  val rightHandSide: Future[String] = f(fileName)
-
-  // Testing if both sides are equal
-  leftHandSide.onComplete {
-    case Success(lhsValue) =>
-      rightHandSide.onComplete {
-        case Success(rhsValue) =>
-          if (lhsValue == rhsValue) {
-            println(s"Left Identity Law holds: $lhsValue == $rhsValue")
-          } else {
-            println("Left Identity Law does not hold.")
-          }
-        case Failure(_) =>
-          println("Failed to evaluate right-hand side.")
-      }
-    case Failure(_) =>
-      println("Failed to evaluate left-hand side.")
+  val leftIdentityTest = for {
+    lhs <- leftIdentity
+    rhs <- rightIdentity
+  } yield {
+    println("== Left Identity Law ==")
+    if (lhs == rhs)
+      println(s"✔ Holds: $lhs == $rhs\n")
+    else
+      println(s"✘ Does not hold: $lhs != $rhs\n")
   }
 
-
-  //2nd Law
-
-  /**
-TODO
-     Imagine you are developing an application that fetches
-     user data from a database.
-      You decide to use Slick,
-     a database query and access library for Scala,
-     which returns results as Future monads.
-     To make sure your database operations are reliable,
-     you'd like to validate that they adhere to the Right Identity Law.
-     First, let's create a function that simulates fetching a user by ID from the database:
-   **/
-
-
-  import scala.concurrent.{Future, ExecutionContext}
-  import scala.util.{Success, Failure}
-  import scala.concurrent.ExecutionContext.Implicits.global // Importing global execution context
-
+  // --- 2. Right Identity Law ---
   case class User(id: Int, name: String)
-
-  // Simulates fetching a user by ID and returns a User wrapped in a Future
-  def fetchUserById(id: Int): Future[User] = Future {
-    User(id, s"User_$id")
-  }
+  def fetchUserById(id: Int): Future[User] = Future.successful(User(id, s"User_$id"))
 
   val userId1 = 42
+  val monadicValue = fetchUserById(userId1)
 
-  // Fetches a user by ID (monadic value)
-  val monadicValue: Future[User] = fetchUserById(userId)
-
-  // Function that wraps the value back into a Future (analogous to `pure`)
-  val f1: User => Future[User] = Future.successful[User]
-
-  // Using flatMap on the monadic value
-  val leftHandSide1: Future[User] = monadicValue.flatMap(user => Future.successful(user))
-
-  // Right-hand side is just the original monadic value
-  val rightHandSide1: Future[User] = monadicValue
-
-  // Testing if both sides are equal
-  leftHandSide.onComplete {
-    case Success(lhsValue) =>
-      rightHandSide.onComplete {
-        case Success(rhsValue) =>
-          if (lhsValue == rhsValue) {
-            println(s"Right Identity Law holds: $lhsValue == $rhsValue")
-          } else {
-            println("Right Identity Law does not hold.")
-          }
-        case Failure(_) =>
-          println("Failed to evaluate right-hand side.")
-      }
-    case Failure(_) =>
-      println("Failed to evaluate left-hand side.")
+  val rightIdentityTest = for {
+    lhs <- monadicValue.flatMap(user => Future.successful(user))
+    rhs <- monadicValue
+  } yield {
+    println("== Right Identity Law ==")
+    if (lhs == rhs)
+      println(s"✔ Holds: $lhs == $rhs\n")
+    else
+      println(s"✘ Does not hold: $lhs != $rhs\n")
   }
 
-
-  /*
-  3rd Law
-TODO
-  Let's consider a situation where you are developing
-  a service that interacts with various external APIs.
-  You need to get some user details from one API,
-  use those details to fetch some additional information from a second API,
-  and then save this aggregated data somewhere.
-   */
-
-  import scala.concurrent.{Future, ExecutionContext}
-  import scala.util.{Success, Failure}
-  import scala.concurrent.ExecutionContext.Implicits.global // Importing global execution context
-
+  // --- 3. Associativity Law ---
   case class UserDetails(id: Int, name: String)
   case class AdditionalInfo(id: Int, data: String)
 
-  def getUserDetails(userId: Int): Future[UserDetails] = Future {
-    UserDetails(userId, s"User_$userId")
-  }
+  def getUserDetails(userId: Int): Future[UserDetails] = Future.successful(UserDetails(userId, s"User_$userId"))
+  def getAdditionalInfo(details: UserDetails): Future[AdditionalInfo] =
+    Future.successful(AdditionalInfo(details.id, s"Additional_data_for_${details.name}"))
 
-  def getAdditionalInfo(details: UserDetails): Future[AdditionalInfo] = Future {
-    AdditionalInfo(details.id, s"Additional_data_for_${details.name}")
-  }
   val userId = 1
-
-  // Initial monadic value
-  val m1: Future[Int] = Future.successful[Int](userId)
-
-  // Functions to apply
+  val m = Future.successful(userId)
   val f2: Int => Future[UserDetails] = getUserDetails
   val g: UserDetails => Future[AdditionalInfo] = getAdditionalInfo
 
-  // Left-hand side: m.flatMap(f).flatMap(g)
-  val leftHandSide2: Future[AdditionalInfo] = m1.flatMap(f2).flatMap(g)
-
-  // Right-hand side: m.flatMap(x => f(x).flatMap(g))
-  val rightHandSide2: Future[AdditionalInfo] = m1.flatMap(x => f2(x).flatMap(g))
-
-  // Test if both sides are equal
-  leftHandSide.onComplete {
-    case Success(lhsValue) =>
-      rightHandSide.onComplete {
-        case Success(rhsValue) =>
-          if (lhsValue == rhsValue) {
-            println(s"Associativity Law holds: $lhsValue == $rhsValue")
-          } else {
-            println("Associativity Law does not hold.")
-          }
-        case Failure(_) =>
-          println("Failed to evaluate right-hand side.")
-      }
-    case Failure(_) =>
-      println("Failed to evaluate left-hand side.")
+  val associativityTest = for {
+    lhs <- m.flatMap(f2).flatMap(g)
+    rhs <- m.flatMap(x => f2(x).flatMap(g))
+  } yield {
+    println("== Associativity Law ==")
+    if (lhs == rhs)
+      println(s"✔ Holds: $lhs == $rhs\n")
+    else
+      println(s"✘ Does not hold: $lhs != $rhs\n")
   }
 
+  // Wait for all tests to complete
+  Await.result(Future.sequence(Seq(leftIdentityTest, rightIdentityTest, associativityTest)), 5.seconds)
 }

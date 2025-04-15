@@ -4,7 +4,8 @@ object HigherOrderFunctionAndCurries extends App {
 
 /*
 TODO
-   Elegance and Scalability: The curried approach allows for more elegant and scalable code.
+   Elegance and Scalability:
+   The curried approach allows for more elegant and scalable code.
     You don't need to define a new function for
     every variant of add you might need. Instead,
     you can partially apply addCurried as needed,
@@ -268,7 +269,7 @@ TODO
 
 
   // This one is curried to normal i.e revrese
-  def fromCurry(function: (Int => Int => Int)): (Int, Int) => Int =
+  def fromCurry(function: Int => Int => Int): (Int, Int) => Int =
   /**
    * TODO
       it is equivalent to x,y=> x+y
@@ -302,6 +303,7 @@ TODO
   val f1: (Int, Int) => Int = (a, b) => a + b
   val f2: Int => String = _.toString
   val f3: (Int, Int) => String = (x, y) => f2(f1(x, y))
+  val f3_1: Int => Int => String = x => y => f2(f1(x, y))
   val fx11 : String => Int = x => x.toInt
    //val f5: (Int, Int) => String =   f2.compose(f1)
   /**

@@ -16,6 +16,8 @@ TODO
   and in Scala we write a + next to the type argument, like
   abstract class List[+T]
    */
+
+  //ADts
   class Animal
 
   class Dog(val name: String) extends Animal
@@ -28,6 +30,7 @@ TODO
   val lassie: Animal = new Dog("Laika")
   val hachi: Animal = new Dog("Laika")
   val myDogs: List[Animal] = List(lassie, hachi, laika) // List[Dog]
+
   /*
 TODO Explanation of above Code
    This is more easily understood. Dog subtype of Animal, therefore List[Dog] subtype of List[Animal].
@@ -38,6 +41,7 @@ TODO Explanation of above Code
     Dog subtype of Animal? I don’t care. List[Dog] and List[Animal]
     are two different types, with no relationship between them. That means if you write
    */
+
   /*
   TODO Contravariance: ->
      Let’s get this straight.
@@ -60,6 +64,7 @@ TODO Explanation of above Code
 
   val myAnimals: MyContraList[Dog] = new MyContraList[Animal] // some animals
 
+
   /*
   TODO Contravariance use case :->
       Let’s go back to the Dog-Animal relationship and
@@ -72,6 +77,7 @@ TODO Explanation of above Code
   trait Vet[-T] { // we can also insert an optional -T <: Animal here if we wanted to impose a type constraint
     def heal(animal: T): Boolean
   }
+
 
   def gimmeAVet: Vet[Dog] = new Vet[Animal] {
       override def heal(animal: Animal): Boolean = {
